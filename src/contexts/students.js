@@ -1,8 +1,8 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useCallback, useMemo, useState } from 'react';
 
-// Create the context with default values
 const StudentContext = createContext({
   students: [],
+  getStudentStatus: 'loading' | 'ready' | 'error' | '404',
   addStudent: () => {},
   updateStudent: () => {},
 });
@@ -14,16 +14,24 @@ export const StudentProvider = ({ children }) => {
     setStudents([...students, student]);
   };
 
-  const updateStudent = (updatedStudent) => {
-    setStudents(students.map(student => 
-      student.id === updatedStudent.id ? updatedStudent : student
-    ));
-  };
+  const updateStudent = useCallback((updatedStudent) => {
+      setStudents(students.map(student => 
+        student.id === updatedStudent.id ? updatedStudent : student
+      ));
+  });
 
+  const getStudents = useCallback(() => {
+      setStudents([])
+  })
 
+  const values = useMemo(() => {
+    return{ students, addStudent, updateStudent, removeStudent }
+  }, [
+    students, addStudent, updateStudent
+  ])
 
   return (
-    <StudentContext.Provider value={{ students, addStudent, updateStudent, removeStudent }}>
+    <StudentContext.Provider value={values}>
       {children}
     </StudentContext.Provider>
   );

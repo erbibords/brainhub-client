@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-
 import Enrollment from "./pages/enrollment/enrollment";
 import Login from "./pages/login/login-page";
 import Students from "./pages/students/students-list";
@@ -11,10 +10,12 @@ import ViewPayment from "./pages/payments/view-payment";
 import Courses from "./pages/courses/course-list";
 import ViewCourse from "./pages/courses/view-course";
 import AddCourse from "./pages/courses/add-course";
+import Navbar from "./components/NavBar/Navbar";
 
 const App = () => {
   return (
     <Router>
+      <Navbar />
       <Routes>
         <Route path="/enrollment" element={<Enrollment />} />
         <Route path="/login" element={<Login />} />
