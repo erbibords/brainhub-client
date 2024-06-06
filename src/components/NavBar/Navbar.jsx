@@ -14,7 +14,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-secondary px-4 py-2">
-      <div className="flex justify-between items-center max-w-6xl mx-auto">
+      <div className="flex justify-between items-center mx-auto">
         <div className="text-white text-2xl font-bold">Brain Hub</div>
         <Dropdown overlay={menu} placement="bottomRight">
           <Avatar

@@ -17,8 +17,11 @@ const App = () => {
     <Router>
       <Navbar />
       <Routes>
-        <Route path="/enrollment" element={<Enrollment />} />
         <Route path="/login" element={<Login />} />
+
+      
+
+        <Route path="/enrollment" element={<Enrollment />} />
         <Route path="/students" element={<Students />} />
         <Route
           path="/students/profile/:studentId"
