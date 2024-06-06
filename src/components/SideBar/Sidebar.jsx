@@ -32,8 +32,8 @@ const Sidebar = () => {
       > 
         <Menu.Item key="4" icon={<LaptopOutlined  />}>Enrollment</Menu.Item>
         <Menu.SubMenu key="sub1" icon={<UserOutlined />} title="Student">
-          <Menu.Item key="1">Student List</Menu.Item>
-          <Menu.Item key="2">View Student</Menu.Item>
+          <Menu.Item key="1"> <Link to="/students">Student List</Link></Menu.Item>
+          <Menu.Item key="2"><Link to="/students/profile/:studentId">View Student</Link> </Menu.Item>
         </Menu.SubMenu>
         
         
@@ -45,17 +45,17 @@ const Sidebar = () => {
           <Menu.Item key="5">
             <Link to="/courses">Course List</Link>
           </Menu.Item>
-          <Menu.Item key="6">Update Course</Menu.Item>
+          <Menu.Item key="6"> <Link to="/courses/:courseId">Update Course</Link></Menu.Item>
         </Menu.SubMenu>
         <Menu.SubMenu
           key="sub4"
           icon={<DollarCircleOutlined />}
           title="Payment"
         >
-          <Menu.Item key="7">Payments List</Menu.Item>
-          <Menu.Item key="8">View Payment Method</Menu.Item>
+          <Menu.Item key="7"><Link to="/payment/list">Payments List</Link> </Menu.Item>
+          <Menu.Item key="8"><Link to="/payment/:id">Payments List</Link></Menu.Item>
         </Menu.SubMenu>
-        <Menu.Item key="9" icon={<PlusOutlined  />}>Add Payment</Menu.Item>
+        <Menu.Item key="9" icon={<PlusOutlined  />}> <Link to="/payment/add">Add Payment</Link></Menu.Item>
       </Menu>
     </Sider>
   );
