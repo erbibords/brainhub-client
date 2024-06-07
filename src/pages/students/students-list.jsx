@@ -12,9 +12,9 @@ const StudentsList = () => {
   const [searchValue, setSearchValue] = useState('');
   
   const data = [
-    { key: '1', name: 'Louie Martea', school: "WVSU", status: '1st Taker', contact: "09323232222" },
-    { key: '2', name: 'Johny Seens', school: "UI", status: 'Re-Taker', contact: "09332133212" },
-    // Add more data as needed
+    { key: '1', name: 'Louie Martea', school: "WVSU", status: '1st Taker', contact: "09323232222", address: "North Molo" },
+    { key: '2', name: 'Johny Seens', school: "UI", status: 'Re-Taker', contact: "09332133212", address: "South Lapaz" },
+ 
   ];
   
   const columns = [
@@ -22,6 +22,7 @@ const StudentsList = () => {
     { title: 'School', dataIndex: 'school', key: 'school' },
     { title: 'Student Status', dataIndex: 'status', key: 'status' },
     { title: 'Contact No.', dataIndex: 'contact', key: 'contact' },
+    { title: 'Address.', dataIndex: 'address', key: 'address' },
     {
       title: 'Action',
       key: 'action',
@@ -36,7 +37,7 @@ const StudentsList = () => {
   ];
 
   const handleViewStudent = (studentId) => {
-    window.open(`/students/profile/${studentId}`, "_blank");
+    window.location.href = `/students/profile/${studentId}`;
   };
 
   const searchStudent = (value) => {
@@ -49,6 +50,7 @@ const StudentsList = () => {
     student.status.toLowerCase().includes(searchValue.toLowerCase()) ||
     student.contact.toLowerCase().includes(searchValue.toLowerCase())
   );
+  
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -59,7 +61,7 @@ const StudentsList = () => {
             <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>Students List</h1>
             <Row gutter={[16, 16]}>
               <Col span={4}>
-                <Search type="text" placeholder="Search Keyword" onChange={(e) => searchStudent(e.target.value)} />
+                <Search type="text" placeholder="Search..." onChange={(e) => searchStudent(e.target.value)} />
               </Col>
               <Col span={24}>
                 <Table dataSource={filteredData} columns={columns} />
