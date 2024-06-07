@@ -18,9 +18,6 @@ const App = () => {
       <Navbar />
       <Routes>
         <Route path="/login" element={<Login />} />
-
-      
-
         <Route path="/enrollment" element={<Enrollment />} />
         <Route path="/students" element={<Students />} />
         <Route
