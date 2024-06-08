@@ -1,8 +1,7 @@
-// auth.jsx
 import React, { createContext, useContext, useCallback, useState } from "react";
 import axios from "axios";
 
-export const AuthContext = createContext(); // Export AuthContext directly
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

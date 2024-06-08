@@ -20,7 +20,7 @@ const Sidebar = () => {
     const pathname = location.pathname;
     let selectedKey = [];
     let openKeys = [];
-  
+
     if (pathname.startsWith("/enrollment")) {
       selectedKey = ["enrollment"];
     } else if (pathname.startsWith("/students")) {
@@ -33,12 +33,11 @@ const Sidebar = () => {
       selectedKey = ["payments"];
       openKeys = ["sub4"];
     }
-  
+
     return { selectedKey, openKeys };
   };
 
   const { selectedKey, openKeys } = getMenuKeys();
-  
 
   return (
     <Sider
@@ -50,16 +49,16 @@ const Sidebar = () => {
       trigger={null}
     >
       <Menu
-         mode="inline"
-          selectedKeys={selectedKey} // Set the selectedKeys dynamically
-          defaultOpenKeys={openKeys} // Set the defaultOpenKeys dynamically
-          style={{ height: "100%", borderRight: 0 }}
-        >
-        <Menu.Item key="enrollment" icon={<LaptopOutlined />}>
-          <Link to="/enrollment">Enrollment</Link>
-        </Menu.Item>
+        mode="inline"
+        selectedKeys={selectedKey} // Set the selectedKeys dynamically
+        defaultOpenKeys={openKeys} // Set the defaultOpenKeys dynamically
+        style={{ height: "100%", borderRight: 0 }}
+      >
         <Menu.Item key="student_list" icon={<UserOutlined />}>
-          <Link to="/students">Student List</Link>
+          <Link to="/students">Students</Link>
+        </Menu.Item>
+        <Menu.Item key="enrollment" icon={<LaptopOutlined />}>
+          <Link to="/enrollments">Enrollments</Link>
         </Menu.Item>
 
         {/* <Menu.SubMenu key="sub1" icon={<UserOutlined />} title="Student">

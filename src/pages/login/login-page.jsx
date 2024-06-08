@@ -1,4 +1,3 @@
-// src/pages/login/login-page.js
 import React, { useCallback } from "react";
 import CustomInput from "../../components/Input/Input";
 import { Form, Button, Card } from "antd";
@@ -8,10 +7,10 @@ const Login = () => {
   const onFinish = useCallback(async (values) => {
     console.log("Received values of form: ", values);
 
-    // await login({
-    //   email: values.email,
-    //   password: values.password,
-    // });
+    await login({
+      email: values.email,
+      password: values.password,
+    });
   }, []);
 
   return (

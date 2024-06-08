@@ -10,6 +10,11 @@ module.exports = {
         secondary: '#FF474C', 
         tertiary: '#B2BEB5', 
       },
+      screens: {
+        'sm': '576px',  
+        'md': '768px',
+        'lg': '1024px',
+      },
     },
   },
   plugins: [],

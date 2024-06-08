@@ -5,7 +5,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import axios from "axios";
 import "./index.css";
-// import { AuthContext } from "./contexts/auth.jsx"; // Import using curly braces
+import { AuthProvider } from "./contexts/auth.jsx"; // Import using curly braces
 
 if (process.env.NODE_ENV === "development") {
   axios.defaults.baseURL = "https://brainhub-service.onrender.com/";
@@ -15,8 +15,8 @@ if (process.env.NODE_ENV === "development") {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    {/* <AuthContext.Provider> */}
-    <App />
-    {/* </AuthContext.Provider> */}
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </React.StrictMode>
 );
