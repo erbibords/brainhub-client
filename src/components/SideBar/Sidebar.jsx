@@ -25,13 +25,16 @@ const Sidebar = () => {
       selectedKey = ["enrollment"];
     } else if (pathname.startsWith("/students")) {
       selectedKey = ["student_list"];
-      openKeys = ["student_list"];
+      
     } else if (pathname.startsWith("/courses")) {
       selectedKey = ["courses"];
-      openKeys = ["sub3"];
-    } else if (pathname.startsWith("/payment")) {
+     
+    } else if (pathname.startsWith("/payments")) {
       selectedKey = ["payments"];
-      openKeys = ["sub4"];
+      openKeys = ["payments"];
+    }else if (pathname.startsWith("/addPayment")) {
+      selectedKey = ["addPayment"];
+      openKeys = ["addPayment"];
     }
 
     return { selectedKey, openKeys };
@@ -61,35 +64,16 @@ const Sidebar = () => {
           <Link to="/enrollments">Enrollments</Link>
         </Menu.Item>
 
-        {/* <Menu.SubMenu key="sub1" icon={<UserOutlined />} title="Student">
-          <Menu.Item key="students">
-            <Link to="/students">Student List</Link>
-          </Menu.Item>
-          <Menu.Item key="viewStudent">
-            <Link to="/students/profile/:studentId">View Student</Link>
-          </Menu.Item>
-        </Menu.SubMenu> */}
+        <Menu.Item key="courses" icon={<BookOutlined />}>
+          <Link to="/courses">Course</Link>
+        </Menu.Item>
 
-        <Menu.SubMenu key="sub3" icon={<BookOutlined />} title="Course">
-          <Menu.Item key="courses">
-            <Link to="/courses">Course List</Link>
-          </Menu.Item>
-          <Menu.Item key="updateCourse">
-            <Link to="/courses/:courseId">Update Course</Link>
-          </Menu.Item>
-        </Menu.SubMenu>
-        <Menu.SubMenu
-          key="sub4"
-          icon={<DollarCircleOutlined />}
-          title="Payment"
-        >
-          <Menu.Item key="paymentsList">
-            <Link to="/payment/list">Payments List</Link>
-          </Menu.Item>
-          <Menu.Item key="viewPayment">
-            <Link to="/payment/:id">View Payment</Link>
-          </Menu.Item>
-        </Menu.SubMenu>
+
+        <Menu.Item key="payments" icon={<DollarCircleOutlined />}>
+          <Link to="/payment/list">Payments</Link>
+        </Menu.Item>
+  
+         
         <Menu.Item key="addPayment" icon={<PlusOutlined />}>
           <Link to="/payment/add">Add Payment</Link>
         </Menu.Item>

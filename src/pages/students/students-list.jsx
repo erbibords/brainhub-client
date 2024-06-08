@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Sidebar from "../../components/SideBar/Sidebar";
-import { Layout, Input, Table, Space,Row, Col } from "antd";
+import { Layout, Input, Table, Space, Row, Col } from "antd";
 import { EyeOutlined } from '@ant-design/icons';
 
 const { Content } = Layout;
@@ -8,15 +8,15 @@ const { Search } = Input;
 
 const StudentsList = () => {
   const initialMarginBottom = "2vh";
-  
-  const [searchValue, setSearchValue] = useState('');
-  
+
+  const [searchName, setSearchName] = useState('');
+  const [searchSchool, setSearchSchool] = useState('');
+
   const data = [
     { key: '1', name: 'Louie Martea', school: "WVSU", status: '1st Taker', contact: "09323232222", address: "North Molo" },
     { key: '2', name: 'Johny Seens', school: "UI", status: 'Re-Taker', contact: "09332133212", address: "South Lapaz" },
- 
   ];
-  
+
   const columns = [
     { title: 'Name', dataIndex: 'name', key: 'name' },
     { title: 'School', dataIndex: 'school', key: 'school' },
@@ -40,17 +40,18 @@ const StudentsList = () => {
     window.location.href = `/students/profile/${studentId}`;
   };
 
-  const searchStudent = (value) => {
-    setSearchValue(value);
+  const searchByName = (value) => {
+    setSearchName(value);
+  };
+
+  const searchBySchool = (value) => {
+    setSearchSchool(value);
   };
 
   const filteredData = data.filter(student =>
-    student.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-    student.school.toLowerCase().includes(searchValue.toLowerCase()) ||
-    student.status.toLowerCase().includes(searchValue.toLowerCase()) ||
-    student.contact.toLowerCase().includes(searchValue.toLowerCase())
+    student.name.toLowerCase().includes(searchName.toLowerCase()) &&
+    student.school.toLowerCase().includes(searchSchool.toLowerCase())
   );
-  
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -60,8 +61,11 @@ const StudentsList = () => {
           <div>
             <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>Students List</h1>
             <Row gutter={[16, 16]}>
-              <Col span={4}>
-                <Search type="text" placeholder="Search..." onChange={(e) => searchStudent(e.target.value)} />
+              <Col span={6}>
+                <Search type="text" placeholder="Search by name..." onChange={(e) => searchByName(e.target.value)} />
+              </Col>
+              <Col span={6}>
+                <Search type="text" placeholder="Search by school..." onChange={(e) => searchBySchool(e.target.value)} />
               </Col>
               <Col span={24}>
                 <Table dataSource={filteredData} columns={columns} />
