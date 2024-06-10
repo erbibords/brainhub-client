@@ -61,25 +61,10 @@ const Enrollment = () => {
             <Row gutter={[16, 16]}>
               <Col span={24}>
                 <Row gutter={[16, 16]}>
-                  <Col span={4}>
-                    <DatePicker
-                      placeholder="Date From"
-                      style={{ width: "100%", marginBottom: "10px" }}
-                      value={dateFrom}
-                      onChange={(date) => setDateFrom(date)}
-                    />
-                  </Col>
-                  <Col span={4}>
-                    <DatePicker
-                      placeholder="Date To"
-                      style={{ width: "100%", marginBottom: "10px" }}
-                      value={dateTo}
-                      onChange={(date) => setDateTo(date)}
-                    />
-                  </Col>
+                  
                   <Col span={4}>
                     <Input
-                      placeholder="Name"
+                      placeholder="Student Name"
                       value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
                       style={{ marginBottom: "10px" }}
@@ -91,7 +76,7 @@ const Enrollment = () => {
                       style={{ marginBottom: "10px" }}
                     />
                   </Col>
-                  <Col span={4}>
+                  <Col span={8}>
                     <Input
                       placeholder="School"
                       style={{ marginBottom: "10px" }}
@@ -108,8 +93,39 @@ const Enrollment = () => {
                       <Option value="3rd">3rd</Option>
                     </Select>
                   </Col>
+
+                  <Col span={4}>
+                    <Select
+                      placeholder="Select Year"
+                      style={{ width: "100%", marginBottom: "10px" }}
+                      onChange={(value) => setSelectedSemester(value)}
+                    >
+                      <Option value="2020">2020</Option>
+                      <Option value="2021">2021</Option>
+                      <Option value="2022">2022</Option>
+                      <Option value="2023">2023</Option>
+                      <Option value="2024">2024</Option>
+                    </Select>
+                  </Col>
+
+                  <Col span={4}>
+                    <DatePicker
+                      placeholder="Date From"
+                      style={{ width: "100%", marginBottom: "10px" }}
+                      value={dateFrom}
+                      onChange={(date) => setDateFrom(date)}
+                    />
+                  </Col>
+                  <Col span={4}>
+                    <DatePicker
+                      placeholder="Date To"
+                      style={{ width: "100%", marginBottom: "10px" }}
+                      value={dateTo}
+                      onChange={(date) => setDateTo(date)}
+                    />
+                  </Col>
                   
-                  <Col span={24}>
+                  <Col span={4}>
                     <Button
                       type="primary"
                       icon={<SearchOutlined />}
