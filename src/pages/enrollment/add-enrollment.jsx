@@ -90,7 +90,7 @@ const Enrollment = () => {
     <Layout style={{ minHeight: "100vh" }}>
       <Sidebar />
       <Layout className="site-layout">
-        <Content style={{ margin: "25px 25px", paddingRight: screenWidth <= 1024 ? 0 : "35%" }}>
+        <Content style={{ margin: "25px 25px", paddingRight: screenWidth <= 1024 ? 0 : "45%" }}>
         <Form
           name="enrollment"
           initialValues={{ remember: true }}
@@ -100,7 +100,7 @@ const Enrollment = () => {
             
           <div>
             <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>Add Enrollment</h1>
-            <div style={{ display: "flex", flexDirection: "row", marginBottom: initialMarginBottom }}>
+            {/* <div style={{ display: "flex", flexDirection: "row", marginBottom: initialMarginBottom }}>
               <div style={{ flex: 1, marginRight: "1rem" }}>
                 <span>Name</span>
                 <Form.Item
@@ -131,13 +131,39 @@ const Enrollment = () => {
                 </Form.Item>
               
               </div>
-            </div>
+            </div> */}
+
+                <span>First Name:</span>
+                <Form.Item
+                    name="fname"
+                    rules={[{ required: true, message: "Please input your School" }]}
+                >
+                <CustomInput type="text" name="first_name" placeholder="" onChange={handleChange} />
+                </Form.Item>
+
+                <span>Middle Name</span>
+                <Form.Item
+                    name="mname"
+                    rules={[{ required: true, message: "Please input your Middle Name" }]}
+                >
+                <CustomInput type="text" name="middleName" placeholder="" onChange={handleChange} />
+                </Form.Item>
+
+                <span>Last Name</span>
+                <Form.Item
+                    name="lname"
+                    rules={[{ required: true, message: "Please input your Last Name" }]}
+                >
+                <CustomInput type="text" name="lastName" placeholder="" onChange={handleChange} />
+                </Form.Item>
+
+            
                 <span>School</span>
                 <Form.Item
                     name="school"
                     rules={[{ required: true, message: "Please input your School" }]}
                 >
-                <CustomInput type="text" name="school" placeholder="School" onChange={handleChange} />
+                <CustomInput type="text" name="school" placeholder="" onChange={handleChange} />
                 </Form.Item>
           
                 <span>Select Status</span>
