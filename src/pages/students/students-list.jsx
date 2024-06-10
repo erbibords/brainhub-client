@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Sidebar from "../../components/SideBar/Sidebar";
-import { Layout, Input, Table, Space, Row, Col } from "antd";
+import { Layout, Input, Table, Space, Row, Col, Button } from "antd";
 import { EyeOutlined } from '@ant-design/icons';
 
 const { Content } = Layout;
@@ -28,9 +28,9 @@ const StudentsList = () => {
       key: 'action',
       render: (text, record) => (
         <Space size="middle">
-          <button onClick={() => handleViewStudent(record.key)} title="View Student Profile">
-            <EyeOutlined />
-          </button>
+   
+          <Button type="primary" onClick={() => handleViewStudent(record.key)} title="View Profile" className="w-auto bg-primary text-white">View Profile</Button>
+          
         </Space>
       ),
     },

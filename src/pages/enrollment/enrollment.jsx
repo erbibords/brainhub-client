@@ -31,9 +31,7 @@ const Enrollment = () => {
       key: 'action',
       render: (text, record) => (
         <Space size="middle">
-          <button onClick={() => handleViewEnrollment(record.key)} title="View">
-            <EyeOutlined />
-          </button>
+          <Button type="primary" onClick={() => handleViewEnrollment(record.key)} title="View" className="w-auto bg-primary text-white">View</Button>
         </Space>
       ),
     },
@@ -84,7 +82,7 @@ const Enrollment = () => {
                   </Col>
                   <Col span={4}>
                     <Select
-                      placeholder="Select Semester"
+                      placeholder="Semester"
                       style={{ width: "100%", marginBottom: "10px" }}
                       onChange={(value) => setSelectedSemester(value)}
                     >
@@ -96,7 +94,7 @@ const Enrollment = () => {
 
                   <Col span={4}>
                     <Select
-                      placeholder="Select Year"
+                      placeholder="Year"
                       style={{ width: "100%", marginBottom: "10px" }}
                       onChange={(value) => setSelectedSemester(value)}
                     >
@@ -128,12 +126,14 @@ const Enrollment = () => {
                   <Col span={4}>
                     <Button
                       type="primary"
+                      className="w-auto bg-primary text-white"
                       icon={<SearchOutlined />}
                       onClick={searchEnrollent}
                       style={{ marginBottom: "10px" }}
                     >
                       Search
                     </Button>
+                    
                   </Col>
                 </Row>
               </Col>

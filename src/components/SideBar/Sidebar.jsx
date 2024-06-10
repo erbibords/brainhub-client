@@ -29,12 +29,12 @@ const Sidebar = () => {
     } else if (pathname.startsWith("/courses")) {
       selectedKey = ["courses"];
      
-    } else if (pathname.startsWith("/payments")) {
-      selectedKey = ["payments"];
-      openKeys = ["payments"];
-    }else if (pathname.startsWith("/addPayment")) {
+    }  else if (pathname.startsWith("/payments/add")) {
       selectedKey = ["addPayment"];
       openKeys = ["addPayment"];
+    }else if (pathname.startsWith("/payments/list")) {
+      selectedKey = ["payments_list"];
+      openKeys = ["payments_list"];
     }
 
     return { selectedKey, openKeys };
@@ -69,13 +69,13 @@ const Sidebar = () => {
         </Menu.Item>
 
 
-        <Menu.Item key="payments" icon={<DollarCircleOutlined />}>
-          <Link to="/payment/list">Payments</Link>
+        <Menu.Item key="payments_list" icon={<DollarCircleOutlined />}>
+          <Link to="/payments/list">Payments</Link>
         </Menu.Item>
   
          
         <Menu.Item key="addPayment" icon={<PlusOutlined />}>
-          <Link to="/payment/add">Add Payment</Link>
+          <Link to="/payments/add">Add Payment</Link>
         </Menu.Item>
       </Menu>
     </Sider>

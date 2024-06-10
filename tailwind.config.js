@@ -9,6 +9,7 @@ module.exports = {
         primary: '#111111', 
         secondary: '#FF474C', 
         tertiary: '#B2BEB5', 
+        success: '#04AA6D', 
       },
       screens: {
         'sm': '576px',  

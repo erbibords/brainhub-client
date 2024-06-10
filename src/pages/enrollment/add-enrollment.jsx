@@ -16,8 +16,7 @@ const Enrollment = () => {
         };
 
         window.addEventListener("resize", handleResize);
-
-        // Cleanup
+ 
         return () => {
         window.removeEventListener("resize", handleResize);
         };
@@ -28,7 +27,7 @@ const Enrollment = () => {
 
         await enrollment({
             first_name: values.first_name,
-            // password: values.password,
+        
             mname: values.mname,
             lname: values.lname,
             school: values.school,
@@ -72,19 +71,7 @@ const Enrollment = () => {
       }
     }));
   };
-
-//   const handleSave = () => {
-//     if (!formData.first_name || !formData.lastName || !formData.contactNo || !formData.status || !formData.address) {
-//       Swal.fire({
-//         icon: 'error',
-//         title: 'Oops...',
-//         text: 'Please fill in all required fields!',
-//       });
-//       return;
-//     }
-//     console.log("Form Data:", formData);
-//     // You can perform additional actions here, such as sending the data to an API
-//   };
+ 
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -100,38 +87,7 @@ const Enrollment = () => {
             
           <div>
             <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>Add Enrollment</h1>
-            {/* <div style={{ display: "flex", flexDirection: "row", marginBottom: initialMarginBottom }}>
-              <div style={{ flex: 1, marginRight: "1rem" }}>
-                <span>Name</span>
-                <Form.Item
-                    name="first_name"
-                    rules={[{ required: true, message: "Please input your First Name" }]}
-                >
-                <CustomInput type="text" name="first_name" placeholder="First Name" onChange={handleChange} />
-                </Form.Item>
-                
-              </div>
-              <div style={{ flex: 1, marginRight: "1rem" }}>
-                <span>&nbsp;</span>
-                <Form.Item
-                    name="mname"
-                    rules={[{ required: true, message: "Please input your First Name" }]}
-                >
-                <CustomInput type="text" name="middleName" placeholder="Middle Name" onChange={handleChange} />
-                </Form.Item>
-                
-              </div>
-              <div style={{ flex: 1 }}>
-                <span>&nbsp;</span>
-                <Form.Item
-                    name="lname"
-                    rules={[{ required: true, message: "Please input your First Name" }]}
-                >
-                <CustomInput type="text" name="lastName" placeholder="Last Name" onChange={handleChange} />
-                </Form.Item>
-              
-              </div>
-            </div> */}
+      
 
                 <span>First Name:</span>
                 <Form.Item
@@ -207,7 +163,7 @@ const Enrollment = () => {
 
             {/* Save button */}
             <div style={{ textAlign: "right", marginBottom: "20px" }}>
-              {/* <Button type="primary" onClick={handleSave}>Save</Button> */}
+             
               <Form.Item>
                     <Button
                     type="primary"
