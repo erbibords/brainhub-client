@@ -1,17 +1,43 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import CustomInput from "../../components/Input/Input";
 import { Form, Button, Card } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-
+import { useAuth } from "../../contexts/auth";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 const Login = () => {
-  const onFinish = useCallback(async (values) => {
-    console.log("Received values of form: ", values);
+  const navigate = useNavigate();
+  const { isAuthenticated, login, isLoading } = useAuth();
 
-    await login({
-      email: values.email,
-      password: values.password,
-    });
-  }, []);
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/students");
+    }
+  }, [isAuthenticated]);
+
+  const onFinish = useCallback(
+    async (values) => {
+      console.log("Received values of form: ", values);
+
+      const shouldLogin = await login(values.email, values.password);
+
+      if (shouldLogin) {
+        Swal.fire({
+          icon: "success",
+          title: "Login success",
+          timer: 2000,
+        });
+        navigate("/students");
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Login Error",
+          text: "The email and password you entered did not match our records. Please double check and try again!",
+        });
+      }
+    },
+    [login]
+  );
 
   return (
     <div className="flex items-center justify-center h-[calc(100vh-56px)]">
@@ -27,7 +53,13 @@ const Login = () => {
         >
           <Form.Item
             name="email"
-            rules={[{ required: true, message: "Please input your email!" }]}
+            rules={[
+              { required: true, message: "Please input your email!" },
+              {
+                type: "email",
+                message: "The input is not a valid email!",
+              },
+            ]}
           >
             <CustomInput
               prefix={<UserOutlined className="site-form-item-icon" />}
@@ -48,6 +80,7 @@ const Login = () => {
           </Form.Item>
           <Form.Item>
             <Button
+              loading={isLoading}
               type="primary"
               htmlType="submit"
               size="large"
