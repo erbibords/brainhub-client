@@ -25,31 +25,32 @@ const Enrollment = () => {
     const onFinish = useCallback(async (values) => {
         console.log("Received values of form: ", values);
 
-        await enrollment({
-            first_name: values.first_name,
+        // await enrollment({
+        //     firstName: values.firstName,
         
-            mname: values.mname,
-            lname: values.lname,
-            school: values.school,
-            contactNo: values.contactNo,
-        });
+        //     middleName: values.middleName,
+        //     firstName: values.firstName,
+        //     school: values.school,
+        //     contactNumber: values.contactNumber,
+        // });
         }, []);
 
 
   const initialMarginBottom = "2vh";
+  
   const [formData, setFormData] = useState({
-    first_name: "",
+    firstName: "",
     middleName: "",
     lastName: "",
-    school: "",
+    schoolId: "",
     status: "",
     address: "",
-    contactNo: "",
+    contactNumber: "",
     emergencyContact: {
       name: "",
       relationship: "",
       address: "",
-      contactNo: ""
+      contactNumber: ""
     }
   });
 
@@ -74,10 +75,6 @@ const Enrollment = () => {
  
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sidebar />
-      <Layout className="site-layout">
-        <Content style={{ margin: "25px 25px", paddingRight: screenWidth <= 1024 ? 0 : "45%" }}>
         <Form
           name="enrollment"
           initialValues={{ remember: true }}
@@ -86,83 +83,127 @@ const Enrollment = () => {
         >
             
           <div>
-            <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>Add Enrollment</h1>
-      
-
-                <span>First Name:</span>
-                <Form.Item
-                    name="fname"
-                    rules={[{ required: true, message: "Please input your School" }]}
-                >
-                <CustomInput type="text" name="first_name" placeholder="" onChange={handleChange} />
+            <h1 className="text-2xl mb-[2vh]">Add Enrollment</h1>
+            
+               
+                <Form.Item label="Review Program" name="review_program">
+                <Select className="w-full mb=[2vh]" size="large" defaultValue="Intensive">
+                    <Option value="Intensive">Intensive</Option>
+                    <Option value="Enhancement-Intensive">Enhancement-Intensive</Option>
+                </Select>
+                </Form.Item>
+ 
+                <Form.Item label="Semester" name="semester">
+                <Select className="w-full mb=[2vh]" size="large" defaultValue="1st">
+                    <Option value="1st">1st</Option>
+                    <Option value="2nd">2nd</Option>
+                </Select>
+                </Form.Item>
+ 
+                <Form.Item label="Year" name="year">
+                <Select className="w-full mb=[2vh]" size="large" defaultValue="2023">
+                {[...Array(8)].map((_, index) => {
+                  const year = 2023 + index;
+                  return (
+                    <Option key={year} value={year}>
+                      {year}
+                    </Option>
+                  );
+                })}
+                </Select>
+                </Form.Item>
+ 
+                <Form.Item label="Course Offering" name="courseId">
+                <Select className="w-full mb=[2vh]" size="large" defaultValue="">
+                </Select>
                 </Form.Item>
 
-                <span>Middle Name</span>
+                <br /> 
+                <hr />
+                <br />
+              
                 <Form.Item
-                    name="mname"
+                    label="First Name"
+                    name="firstName"
+                    rules={[{ required: true, message: "Please input your School" }]}
+                >
+                <CustomInput type="text" name="firstName" placeholder="" onChange={handleChange} />
+                </Form.Item>
+ 
+                <Form.Item
+                    label="Middle Name"
+                    name="middleName"
                     rules={[{ required: true, message: "Please input your Middle Name" }]}
                 >
                 <CustomInput type="text" name="middleName" placeholder="" onChange={handleChange} />
                 </Form.Item>
-
-                <span>Last Name</span>
+ 
                 <Form.Item
-                    name="lname"
+                    label="Last Name"
+                    name="lastName"
                     rules={[{ required: true, message: "Please input your Last Name" }]}
                 >
                 <CustomInput type="text" name="lastName" placeholder="" onChange={handleChange} />
                 </Form.Item>
-
-            
-                <span>School</span>
+ 
                 <Form.Item
-                    name="school"
+                    label="School"
+                    name="schoolId"
                     rules={[{ required: true, message: "Please input your School" }]}
                 >
-                <CustomInput type="text" name="school" placeholder="" onChange={handleChange} />
+                <CustomInput type="text" name="schoolId" placeholder="" onChange={handleChange} />
                 </Form.Item>
-          
-                <span>Select Status</span>
-                <Select style={{ width: "100%", marginBottom: initialMarginBottom }} size="large" defaultValue="1st Taker">
+           
+                <Form.Item label="Status" name="takerType">
+                <Select className="w-full mb=[2vh]" size="large" defaultValue="1st Taker">
                     <Option value="1st Taker">1st Taker</Option>
                     <Option value="Re-Taker">Re-Taker</Option>
                     <Option value="Summer">Summer</Option>
                 </Select>
-                <span>Address</span>
-                
-                <TextArea type="text" name="address" placeholder="" rows={4} style={{ marginBottom: initialMarginBottom }} size="large" onChange={handleChange} />
-                <span>Contact No.</span>
+                </Form.Item>
+              
+                <Form.Item label="Address"  name="address">
+                <TextArea type="text" name="address" placeholder="" rows={4} className="mb-[2vh]" size="large" onChange={handleChange} />
+                </Form.Item>
+            
                 <Form.Item
-                    name="contactNo"
+                    label="Contact No."
+                    name="contactNumber"
                     rules={[{ required: true, message: "Please input your Contact No." }]}
                 >
   
-                <Input type="number" name="contactNo" placeholder="" size="large" style={{ marginBottom: initialMarginBottom }} onChange={handleChange} />
+                <Input type="number" name="contactNumber" placeholder="" size="large" className="mb-[2vh]" onChange={handleChange} />
                 </Form.Item>
              
 
-            <br />
-            <br />
+           
+        
             <hr />
             <br />
-            <div style={{ display: "inline", flexDirection: "row", marginBottom: initialMarginBottom }}>
-              <div style={{ marginBottom: initialMarginBottom }}>
-                <small><i style={{ marginBottom: initialMarginBottom }}>Person to be notified in case of emergency:</i></small>
+            <div className="inline flex-row mb-[2vh]">
+              <div className="mb-[2vh]">
+                <small><i className="mb-[2vh]">Person to be notified in case of emergency:</i></small>
               </div>
-              <span>Name</span>
-              <CustomInput type="text" name="name" placeholder="" style={{ marginBottom: initialMarginBottom }} onChange={handleEmergencyContactChange} />
+            
+              <Form.Item label="Name" name="name">
+              <CustomInput type="text" name="name" placeholder="" className="mb-[2vh]" onChange={handleEmergencyContactChange} />
+              </Form.Item>
+ 
+              <Form.Item label="Relationship" name="relationship">
+              <CustomInput type="text" name="relationship" placeholder="" className="mb-[2vh]" onChange={handleEmergencyContactChange} />
+              </Form.Item>
+ 
+              <Form.Item label="Address" name="address">
+              <TextArea type="text" name="address" placeholder="" rows={4} className="mb-[2vh]" size="large" onChange={handleEmergencyContactChange} />
+              </Form.Item> 
 
-              <span>Relationship</span>
-              <CustomInput type="text" name="relationship" placeholder="" style={{ marginBottom: initialMarginBottom }} onChange={handleEmergencyContactChange} />
-
-              <span>Address</span>
-              <TextArea type="text" name="address" placeholder="" rows={4} style={{ marginBottom: initialMarginBottom }} size="large" onChange={handleEmergencyContactChange} />
-              <span>Contact No.</span>
-              <Input type="number" name="contactNo" placeholder="" size="large" style={{ marginBottom: initialMarginBottom }} onChange={handleEmergencyContactChange} />
+              <Form.Item label="Contact No." name="contactNumber">
+              <Input type="number" name="contactNumber" placeholder="" size="large" className="mb-[2vh]" onChange={handleEmergencyContactChange} />
+              </Form.Item>
             </div>
 
             {/* Save button */}
-            <div style={{ textAlign: "right", marginBottom: "20px" }}>
+            <div className="text-right mb-5">
              
               <Form.Item>
                     <Button
@@ -177,9 +218,9 @@ const Enrollment = () => {
             </div>
           </div>
           </Form>
-        </Content>
-      </Layout>
-    </Layout>
+       
+   
+     
   );
 };
 

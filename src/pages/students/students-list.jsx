@@ -1,80 +1,101 @@
+// src/pages/StudentsList/StudentsList.jsx
 import React, { useState } from "react";
-import Sidebar from "../../components/SideBar/Sidebar";
 import { Layout, Input, Table, Space, Row, Col, Button } from "antd";
-import { EyeOutlined } from '@ant-design/icons';
-
-const { Content } = Layout;
+import CustomInput from "../../components/Input/Input";
+ 
 const { Search } = Input;
 
 const StudentsList = () => {
-  const initialMarginBottom = "2vh";
-
-  const [searchName, setSearchName] = useState('');
-  const [searchSchool, setSearchSchool] = useState('');
+ 
+  const [searchName, setSearchName] = useState("");
+  const [searchSchool, setSearchSchool] = useState("");
 
   const data = [
-    { key: '1', name: 'Louie Martea', school: "WVSU", status: '1st Taker', contact: "09323232222", address: "North Molo" },
-    { key: '2', name: 'Johny Seens', school: "UI", status: 'Re-Taker', contact: "09332133212", address: "South Lapaz" },
+    { key: "1", firstName: 'Louie', middleName: 'Emms', lastName: 'Emms', schoolId: "WVSU", takerType: "1st Taker", contactNumber: "09323232222", address: "North Molo" },
+    { key: "2", firstName: 'Johny', middleName: 'S', lastName: 'Seens', schoolId: "UI", takerType: "Re-Taker", contactNumber: "09332133212", address: "South Lapaz" },
   ];
 
   const columns = [
-    { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'School', dataIndex: 'school', key: 'school' },
-    { title: 'Student Status', dataIndex: 'status', key: 'status' },
-    { title: 'Contact No.', dataIndex: 'contact', key: 'contact' },
-    { title: 'Address.', dataIndex: 'address', key: 'address' },
+    // { title: "Name", dataIndex: "name", key: "name" },
+    { 
+      title: 'Name', 
+      dataIndex: ['firstName', 'middleName', 'lastName'],
+      render: (text, record) => (
+        <span>{record.firstName} {record.middleName} {record.lastName}</span>
+      ) 
+    },
+    { title: "School", dataIndex: "schoolId", key: "schoolId" },
+    { title: "Student Status", dataIndex: "takerType", key: "takerType" },
+    { title: "Contact No.", dataIndex: "contactNumber", key: "contactNumber" },
+    { title: "Address.", dataIndex: "address", key: "address" },
     {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       render: (text, record) => (
         <Space size="middle">
-   
-          <Button type="primary" onClick={() => handleViewStudent(record.key)} title="View Profile" className="w-auto bg-primary text-white">View Profile</Button>
-          
+          <Button
+            type="primary"
+            onClick={() => handleEditStudentProfile(record.key)}
+            title="Edit Student Profile"
+            className="w-auto bg-success text-white"
+          >
+            Edit
+          </Button>
+
+          <Button
+            type="primary"
+            onClick={() => handleViewStudentProfile(record.key)}
+            title="View Profile"
+            className="w-auto bg-primary text-white"
+          >
+            View Profile
+          </Button>
         </Space>
       ),
     },
   ];
 
-  const handleViewStudent = (studentId) => {
+  const handleViewStudentProfile = (studentId) => {
     window.location.href = `/students/profile/${studentId}`;
   };
 
-  const searchByName = (value) => {
-    setSearchName(value);
+  const handleEditStudentProfile = (studentId) => {
+    // window.location.href = `/students/profile/${studentId}`;
+    console.log($studentId);
   };
 
-  const searchBySchool = (value) => {
-    setSearchSchool(value);
-  };
+ 
+ 
 
-  const filteredData = data.filter(student =>
-    student.name.toLowerCase().includes(searchName.toLowerCase()) &&
-    student.school.toLowerCase().includes(searchSchool.toLowerCase())
-  );
+ 
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sidebar />
-      <Layout className="site-layout">
-        <Content style={{ margin: "25px 25px" }}>
-          <div>
-            <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>Students List</h1>
-            <Row gutter={[16, 16]}>
-              <Col span={6}>
-                <Search type="text" placeholder="Search by name..." onChange={(e) => searchByName(e.target.value)} />
-              </Col>
-              <Col span={6}>
-                <Search type="text" placeholder="Search by school..." onChange={(e) => searchBySchool(e.target.value)} />
-              </Col>
-              <Col span={24}>
-                <Table dataSource={filteredData} columns={columns} />
-              </Col>
-            </Row>
-          </div>
-        </Content>
-      </Layout>
-    </Layout>
+     
+      <div>
+        <h1 className="text-2xl mb-[2vh]">Students List</h1>
+        <Row gutter={[16, 16]}>
+          <Col span={6}>
+            <CustomInput type="text" placeholder="Search by name..."/>
+          </Col>
+          <Col span={6}>
+            <CustomInput type="text" placeholder="Search by school..."/>
+          </Col>
+          <Col span={6} className="pt-2">
+          <Button
+            type="primary"
+            onClick={() => handleSearch()}
+            title="Search"
+            className="w-auto bg-primary text-white"
+          >
+            Search
+          </Button>
+          </Col>
+          <Col span={24}>
+            <Table dataSource={data} columns={columns} />
+          </Col>
+        </Row>
+      </div>
+  
   );
 };
 

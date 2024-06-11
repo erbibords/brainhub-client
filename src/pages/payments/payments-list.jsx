@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import Sidebar from "../../components/SideBar/Sidebar";
+ 
+import CustomInput from "../../components/Input/Input";
 import { Layout, Input, Table, Space, Row, Col, Button, Select, DatePicker } from "antd";
 import { EyeOutlined, SearchOutlined } from '@ant-design/icons';
 
@@ -14,16 +15,22 @@ const PaymentsList = () => {
   const [dateTo, setDateTo] = useState(null);
 
   const data = [
-    { key: '1', reference: 'Louie Martea',  name: 'Louie Martea', school: "WVSU", status: '1st Taker', course: "BSIT", semester: "1st", date: "2024-06-10", payments: "7500"},
-    { key: '2', reference: 'Louie Martea', name: 'Johny Seens', school: "UI", status: 'Re-Taker', course: "BSEM", semester: "2nd", date: "2024-05-22", payments: "6000" },
+    { key: '1', reference: 'Reference 02131',  firstName: 'Louie', middleName: 'Emms', lastName: 'Emms', schoolId: "WVSU", takerType: '1st Taker', courseId: "BSIT", semester: "1st", date: "2024-06-10", payments: "7500"},
+    { key: '2', reference: 'Reference 32131', firstName: 'Johny', middleName: 'S', lastName: 'Seens', schoolId: "UI", takerType: 'Re-Taker', courseId: "BSEM", semester: "2nd", date: "2024-05-22", payments: "6000" },
   ];
   
   const columns = [
     { title: 'Reference', dataIndex: 'reference', key: 'reference' },
-    { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'School', dataIndex: 'school', key: 'school' },
-    { title: 'Student Status', dataIndex: 'status', key: 'status' },
-    { title: 'Course.', dataIndex: 'course', key: 'course' },
+    { 
+      title: 'Name', 
+      dataIndex: ['firstName', 'middleName', 'lastName'],
+      render: (text, record) => (
+        <span>{record.firstName} {record.middleName} {record.lastName}</span>
+      ) 
+    },
+    { title: 'School', dataIndex: 'schoolId', key: 'schoolId' },
+    { title: 'Student Status', dataIndex: 'takerType', key: 'takerType' },
+    { title: 'Course.', dataIndex: 'courseId', key: 'course' },
     { title: 'Semester', dataIndex: 'semester', key: 'semester' },
     { title: 'Date.', dataIndex: 'date', key: 'date' },
     { title: 'Payments', dataIndex: 'payments', key: 'payments' },
@@ -56,10 +63,7 @@ const PaymentsList = () => {
   }
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sidebar />
-      <Layout className="site-layout">
-        <Content style={{ margin: "25px 25px" }}>
+ 
           <div>
             <h1 style={{ fontSize: "2em", marginBottom: "2vh" }}>Payment Lists</h1>
             <Row gutter={[16, 16]}>
@@ -67,7 +71,7 @@ const PaymentsList = () => {
                 <Row gutter={[16, 16]}>
 
                 <Col span={4}>
-                    <Input
+                    <CustomInput
                       placeholder="Reference"
                       value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
@@ -76,7 +80,7 @@ const PaymentsList = () => {
                   </Col>
                   
                   <Col span={4}>
-                    <Input
+                    <CustomInput
                       placeholder="Student Name"
                       value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
@@ -84,13 +88,13 @@ const PaymentsList = () => {
                     />
                   </Col>
                   <Col span={4}>
-                    <Input
+                    <CustomInput
                       placeholder="Course"
                       style={{ marginBottom: "10px" }}
                     />
                   </Col>
                   <Col span={8}>
-                    <Input
+                    <CustomInput
                       placeholder="School"
                       style={{ marginBottom: "10px" }}
                     />
@@ -100,10 +104,11 @@ const PaymentsList = () => {
                       placeholder="Semester"
                       style={{ width: "100%", marginBottom: "10px" }}
                       onChange={(value) => setSelectedSemester(value)}
+                      className="h-[50px]"
                     >
                       <Option value="1st">1st</Option>
                       <Option value="2nd">2nd</Option>
-                      <Option value="3rd">3rd</Option>
+            
                     </Select>
                   </Col>
 
@@ -112,6 +117,7 @@ const PaymentsList = () => {
                       placeholder="Year"
                       style={{ width: "100%", marginBottom: "10px" }}
                       onChange={(value) => setSelectedSemester(value)}
+                       className="h-[50px]"
                     >
                       <Option value="2020">2020</Option>
                       <Option value="2021">2021</Option>
@@ -127,6 +133,7 @@ const PaymentsList = () => {
                       style={{ width: "100%", marginBottom: "10px" }}
                       value={dateFrom}
                       onChange={(date) => setDateFrom(date)}
+                       className="h-[50px]"
                     />
                   </Col>
                   <Col span={4}>
@@ -135,19 +142,21 @@ const PaymentsList = () => {
                       style={{ width: "100%", marginBottom: "10px" }}
                       value={dateTo}
                       onChange={(date) => setDateTo(date)}
+                      className="h-[50px]"
                     />
                   </Col>
                   
                   <Col span={4}>
                     <Button
                       type="primary"
-                      className="w-auto bg-primary text-white"
+                      className="bg-primary text-white w-auto mb-[10px] h-[50px]text-white"
                       icon={<SearchOutlined />}
                       onClick={searchPaymentList}
-                      style={{ marginBottom: "10px" }}
+                       
                     >
                       Search
                     </Button>
+ 
                     
                   </Col>
 
@@ -155,7 +164,7 @@ const PaymentsList = () => {
                   <Col span={24}>
                     <Button
                       type="primary"
-                      className="w-auto bg-success text-white"
+                      className="w-auto bg-success text-white mb-[10px]"
                       
                       onClick={printPaymentList}
                       style={{ marginBottom: "10px", float:"right"}}
@@ -171,9 +180,7 @@ const PaymentsList = () => {
               </Col>
             </Row>
           </div>
-        </Content>
-      </Layout>
-    </Layout>
+ 
   );
 };
 

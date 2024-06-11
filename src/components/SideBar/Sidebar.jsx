@@ -1,13 +1,8 @@
+// src/components/SideBar/Sidebar.jsx
 import React from "react";
 import { Layout, Menu } from "antd";
 import { Link, useLocation } from "react-router-dom";
-import {
-  UserOutlined,
-  LaptopOutlined,
-  DollarCircleOutlined,
-  BookOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { UserOutlined, LaptopOutlined, DollarCircleOutlined, BookOutlined, PlusOutlined } from "@ant-design/icons";
 import { useMediaQuery } from "react-responsive";
 
 const { Sider } = Layout;
@@ -25,14 +20,12 @@ const Sidebar = () => {
       selectedKey = ["enrollment"];
     } else if (pathname.startsWith("/students")) {
       selectedKey = ["student_list"];
-      
     } else if (pathname.startsWith("/courses")) {
       selectedKey = ["courses"];
-     
-    }  else if (pathname.startsWith("/payments/add")) {
+    } else if (pathname.startsWith("/payments/add")) {
       selectedKey = ["addPayment"];
       openKeys = ["addPayment"];
-    }else if (pathname.startsWith("/payments/list")) {
+    } else if (pathname.startsWith("/payments/list")) {
       selectedKey = ["payments_list"];
       openKeys = ["payments_list"];
     }
@@ -45,17 +38,17 @@ const Sidebar = () => {
   return (
     <Sider
       width={200}
-      className="site-layout-background"
       collapsed={isMobile}
       collapsible
       breakpoint="lg"
       trigger={null}
+      className="bg-white h-full"
     >
       <Menu
         mode="inline"
-        selectedKeys={selectedKey} // Set the selectedKeys dynamically
-        defaultOpenKeys={openKeys} // Set the defaultOpenKeys dynamically
-        style={{ height: "100%", borderRight: 0 }}
+        selectedKeys={selectedKey}
+        defaultOpenKeys={openKeys}
+        className="h-full border-r-0"
       >
         <Menu.Item key="student_list" icon={<UserOutlined />}>
           <Link to="/students">Students</Link>
@@ -63,17 +56,12 @@ const Sidebar = () => {
         <Menu.Item key="enrollment" icon={<LaptopOutlined />}>
           <Link to="/enrollments">Enrollments</Link>
         </Menu.Item>
-
         <Menu.Item key="courses" icon={<BookOutlined />}>
           <Link to="/courses">Course</Link>
         </Menu.Item>
-
-
         <Menu.Item key="payments_list" icon={<DollarCircleOutlined />}>
           <Link to="/payments/list">Payments</Link>
         </Menu.Item>
-  
-         
         <Menu.Item key="addPayment" icon={<PlusOutlined />}>
           <Link to="/payments/add">Add Payment</Link>
         </Menu.Item>

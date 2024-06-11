@@ -4,14 +4,12 @@ import Sidebar from "../../components/SideBar/Sidebar";
 import { Layout, Input, Table, Space, Row, Col, Button, Modal, Form } from "antd";
 import { EditOutlined, DeleteOutlined, SaveOutlined } from '@ant-design/icons';
 import CustomInput from "../../components/Input/Input";
+import CustomModal from "../../components/CustomModal/CustomModal";
 
 const { Content } = Layout;
-const { Search } = Input;
 const { TextArea } = Input;
-const { confirm } = Modal;
 
 const CourseList = () => {
-  const initialMarginBottom = "2vh";
   const [searchCourse, setSearchCourse] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [courseData, setCourseData] = useState([
@@ -60,7 +58,7 @@ const CourseList = () => {
                   Save
                 </Button>
 
-                <Button  onClick={() => cancelEditing()}>
+                <Button onClick={() => cancelEditing()}>
                   Cancel
                 </Button>
               </>
@@ -77,7 +75,6 @@ const CourseList = () => {
             )
           }
         </Space>
-
       ),
     },
   ];
@@ -96,16 +93,14 @@ const CourseList = () => {
     setEditingKey(key);
   };
 
-  
   const cancelEditing = () => {
     setEditingKey('');
-  }
+  };
 
   const saveCourse = (key) => {
     const course = courseData.find(course => course.key === key);
     axios.post('/api/courses/update', course)
       .then(response => {
-        console.log(response.data);
         setEditingKey('');
       })
       .catch(error => {
@@ -114,17 +109,13 @@ const CourseList = () => {
   };
 
   const confirmDeleteCourse = (courseId, courseName) => {
-    confirm({
+    Modal.confirm({
       title: 'Are you sure you want to delete this course?',
-      content: 'This action cannot be undone.',
       okText: 'Yes',
       okType: 'danger',
       cancelText: 'No',
       onOk() {
         handleDeleteCourse(courseId, courseName);
-      },
-      onCancel() {
-        console.log('Cancel');
       },
     });
   };
@@ -132,7 +123,6 @@ const CourseList = () => {
   const handleDeleteCourse = (courseId, courseName) => {
     axios.delete(`/api/courses/${courseId}`)
       .then(response => {
-        console.log(response.data);
         const newData = courseData.filter(item => item.key !== courseId);
         setCourseData(newData);
         alert(`Course ${courseName} has been deleted`);
@@ -157,29 +147,6 @@ const CourseList = () => {
 
   const handleSaveCourse = (values) => {
     console.log(values);
-    // form.validateFields()
-    //   .then(values => {
-    //     axios.post('/api/courses', {
-    //       course_name: values.courseName,
-    //       description: values.description,
-    //     })
-    //       .then(response => {
-    //         console.log(response.data);
-    //         setCourseData([...courseData, {
-    //           key: response.data.key,
-    //           course_name: response.data.course_name,
-    //           description: response.data.description,
-    //         }]);
-    //         setIsModalVisible(false);
-    //         form.resetFields();
-    //       })
-    //       .catch(error => {
-    //         console.error('There was an error saving the course!', error);
-    //       });
-    //   })
-    //   .catch(info => {
-    //     console.log('Validate Failed:', info);
-    //   });
   };
 
   const filteredData = courseData.filter(course =>
@@ -187,55 +154,27 @@ const CourseList = () => {
   );
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sidebar />
-      <Layout className="site-layout">
-        <Content style={{ margin: "25px 25px" }}>
-          <div>
-            <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>Course List</h1>
-            <div style={{ textAlign: "right", marginBottom: "20px" }}>
-              <Button type="primary" onClick={showModal} className="w-auto bg-primary text-white">Add Course</Button>
-            </div>
-            <Row gutter={[16, 16]}>
-              <Col span={8}>
-                <Search type="text" placeholder="Search by Course..." onChange={(e) => searchByCourse(e.target.value)} />
-              </Col>
-              <Col span={24}>
-                <Table dataSource={filteredData} columns={columns} />
-              </Col>
-            </Row>
-          </div>
-        </Content>
-      </Layout>
-      <Modal
-        title={<div style={{ marginBottom: "25px", fontSize: "1.2em" }}>Add New Course</div>}
-        visible={isModalVisible}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="cancel" onClick={handleCancel}>
-            Cancel
-          </Button>,
-          <Button key="submit" type="primary" className="w-auto bg-primary text-white" onClick={() => handleSaveCourse(form.getFieldsValue())}>
-            Save
-          </Button>,
-        ]}
-        width={700}
-      >
-        <Form
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 19 }}
-          labelAlign="left"
-        >
-          <Form.Item label="Course Name" name="courseName" rules={[{ required: true, message: 'Please input the course name!' }]}>
-            <CustomInput type="text" name="course" />
-          </Form.Item>
-          <Form.Item label="Description" name="description" rules={[{ required: true, message: 'Please input the description!' }]}>
-            <TextArea rows={4} name="description" />
-          </Form.Item>
-        </Form>
-      </Modal>
-    </Layout>
+    <div>
+      <h1 className="text-2xl">Course List</h1>
+      <div className="text-right">
+        <Button type="primary" onClick={showModal} className="w-auto bg-primary text-white">Add Course</Button>
+      </div>
+      <Row gutter={[16, 16]}>
+        <Col span={8}>
+          <CustomInput type="text" placeholder="Search by Course..." onChange={(e) => searchByCourse(e.target.value)} />
+        </Col>
+        <Col span={24}>
+          <Table dataSource={filteredData} columns={columns} />
+        </Col>
+      </Row>
+
+      <CustomModal
+            isVisible={isModalVisible}
+            handleCancel={handleCancel}
+            handleSave={handleSaveCourse}
+            form={form}
+        />
+    </div>
   );
 };
 

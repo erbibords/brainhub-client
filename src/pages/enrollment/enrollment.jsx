@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Sidebar from "../../components/SideBar/Sidebar";
 import { Layout, Input, Table, Space, Row, Col, Button, Select, DatePicker } from "antd";
 import { EyeOutlined, SearchOutlined } from '@ant-design/icons';
+import CustomInput from "../../components/Input/Input";
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -14,15 +15,22 @@ const Enrollment = () => {
   const [dateTo, setDateTo] = useState(null);
 
   const data = [
-    { key: '1', name: 'Louie Martea', school: "WVSU", status: '1st Taker', course: "BSIT", semester: "1st", date: "2024-06-10"},
-    { key: '2', name: 'Johny Seens', school: "UI", status: 'Re-Taker', course: "BSEM", semester: "2nd", date: "2024-05-22" },
+    { key: '1', firstName: 'Louie', middleName: 'M', lastName: 'Emms', schoolId: "WVSU", takerType: '1st Taker', courseId: "BSIT", semester: "1st", date: "2024-06-10"},
+    { key: '2', firstName: 'Johny', middleName: 'S', lastName: 'Seens',  schoolId: "UI", takerType: 'Re-Taker', courseId: "BSEM", semester: "2nd", date: "2024-05-22" },
   ];
   
   const columns = [
-    { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'School', dataIndex: 'school', key: 'school' },
-    { title: 'Student Status', dataIndex: 'status', key: 'status' },
-    { title: 'Course.', dataIndex: 'course', key: 'course' },
+    // { title: 'Name', dataIndex: 'name', key: 'name' },
+    { 
+      title: 'Name', 
+      dataIndex: ['firstName', 'middleName', 'lastName'],
+      render: (text, record) => (
+        <span>{record.firstName} {record.middleName} {record.lastName}</span>
+      ) 
+    },
+    { title: 'School', dataIndex: 'schoolId', key: 'schoolId' },
+    { title: 'Student Status', dataIndex: 'takerType', key: 'takerType' },
+    { title: 'Course.', dataIndex: 'courseId', key: 'courseId' },
     { title: 'Semester', dataIndex: 'semester', key: 'semester' },
     { title: 'Date.', dataIndex: 'date', key: 'date' },
     
@@ -50,40 +58,37 @@ const Enrollment = () => {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sidebar />
-      <Layout className="site-layout">
-        <Content style={{ margin: "25px 25px" }}>
+     
           <div>
-            <h1 style={{ fontSize: "2em", marginBottom: "2vh" }}>Enrollments</h1>
+            <h1 className="text-2xl mb-[2vh]">Enrollments</h1>
             <Row gutter={[16, 16]}>
               <Col span={24}>
                 <Row gutter={[16, 16]}>
                   
                   <Col span={4}>
-                    <Input
+                    <CustomInput
                       placeholder="Student Name"
                       value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
-                      style={{ marginBottom: "10px" }}
+                      className="mb-4" 
                     />
                   </Col>
                   <Col span={4}>
-                    <Input
+                    <CustomInput
                       placeholder="Course"
-                      style={{ marginBottom: "10px" }}
+                      className="mb-4"
                     />
                   </Col>
                   <Col span={8}>
-                    <Input
+                    <CustomInput
                       placeholder="School"
-                      style={{ marginBottom: "10px" }}
+                      className="mb-4"
                     />
                   </Col>
                   <Col span={4}>
                     <Select
                       placeholder="Semester"
-                      style={{ width: "100%", marginBottom: "10px" }}
+                      className="w-full mb-4 h-[40px]"
                       onChange={(value) => setSelectedSemester(value)}
                     >
                       <Option value="1st">1st</Option>
@@ -95,7 +100,7 @@ const Enrollment = () => {
                   <Col span={4}>
                     <Select
                       placeholder="Year"
-                      style={{ width: "100%", marginBottom: "10px" }}
+                      className="w-full mb-4 h-[40px]"
                       onChange={(value) => setSelectedSemester(value)}
                     >
                       <Option value="2020">2020</Option>
@@ -109,7 +114,7 @@ const Enrollment = () => {
                   <Col span={4}>
                     <DatePicker
                       placeholder="Date From"
-                      style={{ width: "100%", marginBottom: "10px" }}
+                      className="w-full mb-4 h-[40px]"
                       value={dateFrom}
                       onChange={(date) => setDateFrom(date)}
                     />
@@ -117,7 +122,7 @@ const Enrollment = () => {
                   <Col span={4}>
                     <DatePicker
                       placeholder="Date To"
-                      style={{ width: "100%", marginBottom: "10px" }}
+                      className="w-full mb-4 h-[40px]"
                       value={dateTo}
                       onChange={(date) => setDateTo(date)}
                     />
@@ -126,10 +131,10 @@ const Enrollment = () => {
                   <Col span={4}>
                     <Button
                       type="primary"
-                      className="w-auto bg-primary text-white"
+                      className="w-auto bg-primary text-white mb-4"
                       icon={<SearchOutlined />}
                       onClick={searchEnrollent}
-                      style={{ marginBottom: "10px" }}
+                      
                     >
                       Search
                     </Button>
@@ -142,9 +147,7 @@ const Enrollment = () => {
               </Col>
             </Row>
           </div>
-        </Content>
-      </Layout>
-    </Layout>
+       
   );
 };
 
