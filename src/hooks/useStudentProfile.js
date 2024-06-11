@@ -1,9 +1,8 @@
 import useSWR from 'swr';
-
-const fetcher = (url) => fetch(url).then((res) => res.json());
+import { DEFAULT_BRANCH_ID } from '../constants';
 
 function useProfile(id) {
-  const { data, error } = useSWR(`/students/${id}`, fetcher);
+  const { data, error } = useSWR(`branches/${DEFAULT_BRANCH_ID}/students/${id}`);
   const isLoading = !data && !error;
 
   return {
