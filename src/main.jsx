@@ -1,22 +1,15 @@
-// index.js
 import React from "react";
 import "antd/dist/reset.css";
 import ReactDOM from "react-dom/client";
+import { SWRConfig } from "swr";
 import App from "./App.jsx";
-import axios from "axios";
+import fetcher from "./utils/fetcher.js";
 import "./index.css";
-import { AuthProvider } from "./contexts/auth.jsx"; // Import using curly braces
-
-if (process.env.NODE_ENV === "development") {
-  axios.defaults.baseURL = "https://brainhub-service.onrender.com/";
-} else {
-  axios.defaults.baseURL = "https://brainhub-service.onrender.com/";
-}
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <AuthProvider>
+    <SWRConfig value={{ fetcher }}>
       <App />
-    </AuthProvider>
+    </SWRConfig>
   </React.StrictMode>
 );
