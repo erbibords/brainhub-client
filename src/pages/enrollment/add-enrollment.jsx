@@ -5,6 +5,7 @@ import { Layout, Select, Input, Button, Form } from "antd";
 import { useStudentContext } from "../../contexts/students";
 
 import Swal from "sweetalert2";
+
 const { Content } = Layout;
 const { Option } = Select;
 const { TextArea } = Input;
@@ -37,7 +38,13 @@ const Enrollment = () => {
       address: values.address,
       age: 20,
       contactNumber: values.contactNumber,
-      email: "test@test.com",
+      email: "test1@test.com",
+      emergencyContact: {
+        name: "Rey Guidoriagao Sr.",
+        relationship: "Father",
+        address: "North baluarte molo, iloilo city",
+        contactNumber: "09182254320",
+      },
     };
 
     const student = await addStudent(createStudentValues);

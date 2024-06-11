@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Sidebar from "../../components/SideBar/Sidebar";
-import { Layout, Input, Table, Space, Row, Col } from "antd";
-import { EyeOutlined } from '@ant-design/icons';
+import { Layout, Input, Table, Space, Row, Col, Button } from "antd";
+import { useStudentContext } from "../../contexts/students";
 
 const { Content } = Layout;
 const { Search } = Input;
@@ -9,28 +9,23 @@ const { Search } = Input;
 const StudentsList = () => {
   const initialMarginBottom = "2vh";
 
-  const [searchName, setSearchName] = useState('');
-  const [searchSchool, setSearchSchool] = useState('');
-
-  const data = [
-    { key: '1', name: 'Louie Martea', school: "WVSU", status: '1st Taker', contact: "09323232222", address: "North Molo" },
-    { key: '2', name: 'Johny Seens', school: "UI", status: 'Re-Taker', contact: "09332133212", address: "South Lapaz" },
-  ];
+  const [searchName, setSearchName] = useState("");
+  const [searchSchool, setSearchSchool] = useState("");
+  const { students, studentDataLoading, getStudentError } = useStudentContext();
 
   const columns = [
-    { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'School', dataIndex: 'school', key: 'school' },
-    { title: 'Student Status', dataIndex: 'status', key: 'status' },
-    { title: 'Contact No.', dataIndex: 'contact', key: 'contact' },
-    { title: 'Address.', dataIndex: 'address', key: 'address' },
+    { title: "Name", dataIndex: "name", key: "name" },
+    { title: "School", dataIndex: "school", key: "school" },
+    { title: "Student Status", dataIndex: "status", key: "status" },
+    { title: "Contact No.", dataIndex: "contactNumber", key: "contact" },
+    { title: "Address.", dataIndex: "address", key: "address" },
     {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       render: (text, record) => (
-        <Space size="middle">
-          <button onClick={() => handleViewStudent(record.key)} title="View Student Profile">
-            <EyeOutlined />
-          </button>
+        <Space size="small">
+          <Button className="bg-green-600 text-white">Edit</Button>
+          <Button className="bg-primary text-white">View Profile</Button>
         </Space>
       ),
     },
@@ -48,10 +43,18 @@ const StudentsList = () => {
     setSearchSchool(value);
   };
 
-  const filteredData = data.filter(student =>
-    student.name.toLowerCase().includes(searchName.toLowerCase()) &&
-    student.school.toLowerCase().includes(searchSchool.toLowerCase())
-  );
+  const filteredData = useMemo(() => {
+    if (studentDataLoading || getStudentError) return;
+    return students.data.map((student) => {
+      return {
+        ...student,
+        name: `${student.firstName} ${student.middleName} ${student.lastName}`,
+        school: student.school.name,
+      };
+    });
+  }, [students, studentDataLoading, getStudentError]);
+
+  console.log(filteredData);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -59,13 +62,23 @@ const StudentsList = () => {
       <Layout className="site-layout">
         <Content style={{ margin: "25px 25px" }}>
           <div>
-            <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>Students List</h1>
+            <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>
+              Students List
+            </h1>
             <Row gutter={[16, 16]}>
               <Col span={6}>
-                <Search type="text" placeholder="Search by name..." onChange={(e) => searchByName(e.target.value)} />
+                <Search
+                  type="text"
+                  placeholder="Search by name..."
+                  onChange={(e) => searchByName(e.target.value)}
+                />
               </Col>
               <Col span={6}>
-                <Search type="text" placeholder="Search by school..." onChange={(e) => searchBySchool(e.target.value)} />
+                <Search
+                  type="text"
+                  placeholder="Search by school..."
+                  onChange={(e) => searchBySchool(e.target.value)}
+                />
               </Col>
               <Col span={24}>
                 <Table dataSource={filteredData} columns={columns} />

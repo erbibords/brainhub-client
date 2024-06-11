@@ -35,14 +35,13 @@ export const StudentProvider = ({ children }) => {
       firstName,
       lastName,
       middleName,
-      schoolId,
-      address,
+      schoolId = "3e2374a3-47d5-4908-af02-057742d68208",
+      address = "North baluarte zone 1, molo",
       age,
       contactNumber,
       email,
     }) => {
       try {
-        alert(firstName);
         console.log({
           firstName,
           lastName,
@@ -59,11 +58,17 @@ export const StudentProvider = ({ children }) => {
             firstName,
             lastName,
             middleName,
-            schoolId,
+            schoolId: "3e2374a3-47d5-4908-af02-057742d68208",
             address,
             age,
             contactNumber,
             email,
+            emergencyContact: {
+              name: "Rey Guidoriagao Sr.",
+              relationship: "Father",
+              address: "North baluarte molo, iloilo city",
+              contactNumber: "09182254320",
+            },
           }
         );
 

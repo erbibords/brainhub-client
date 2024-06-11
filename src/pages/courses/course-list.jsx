@@ -38,20 +38,8 @@ const CourseList = () => {
       key: "action",
       render: (text, record) => (
         <Space size="middle">
-          <button
-            onClick={() => handleUpdateCourse(record.key)}
-            title="Update Course"
-            style={{ color: "green" }}
-          >
-            <EditOutlined />
-          </button>
-          <button
-            onClick={() => handleUpdateCourse(record.key)}
-            title="Remove Course"
-            style={{ color: "red" }}
-          >
-            <DeleteOutlined />
-          </button>
+          <Button className="bg-green-600 text-white">Edit</Button>
+          <Button className="bg-primary text-white">View</Button>
         </Space>
       ),
     },
@@ -79,15 +67,15 @@ const CourseList = () => {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout className="min-h-screen">
       <Sidebar />
       <Layout className="site-layout">
-        <Content style={{ margin: "25px 25px" }}>
+        <Content className="m-[25px]">
           <div>
             <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>
               Course List
             </h1>
-            <div style={{ textAlign: "right", marginBottom: "20px" }}>
+            <div className="text-right mb-[20px]">
               <Button
                 type="primary"
                 onClick={showModal}
