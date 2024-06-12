@@ -6,6 +6,7 @@ import { EyeOutlined, SearchOutlined } from '@ant-design/icons';
 
 const { Content } = Layout;
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 const PaymentsList = () => {
   const [searchValue, setSearchValue] = useState('');
@@ -65,7 +66,7 @@ const PaymentsList = () => {
   return (
  
           <div>
-            <h1 style={{ fontSize: "2em", marginBottom: "2vh" }}>Payment Lists</h1>
+            <h1 className="text-2xl mb-[2vh]">Payment Lists</h1>
             <Row gutter={[16, 16]}>
               <Col span={24}>
                 <Row gutter={[16, 16]}>
@@ -75,7 +76,7 @@ const PaymentsList = () => {
                       placeholder="Reference"
                       value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
-                      style={{ marginBottom: "10px" }}
+                      className = "mb-[10px]"
                     />
                   </Col>
                   
@@ -84,27 +85,26 @@ const PaymentsList = () => {
                       placeholder="Student Name"
                       value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
-                      style={{ marginBottom: "10px" }}
+                      className = "mb-[10px]"
                     />
                   </Col>
                   <Col span={4}>
                     <CustomInput
                       placeholder="Course"
-                      style={{ marginBottom: "10px" }}
+                      className = "mb-[10px]"
                     />
                   </Col>
                   <Col span={8}>
                     <CustomInput
                       placeholder="School"
-                      style={{ marginBottom: "10px" }}
+                      className = "mb-[10px]"
                     />
                   </Col>
                   <Col span={4}>
                     <Select
                       placeholder="Semester"
-                      style={{ width: "100%", marginBottom: "10px" }}
                       onChange={(value) => setSelectedSemester(value)}
-                      className="h-[50px]"
+                      className="h-[50px] w-full mb-[10px]"
                     >
                       <Option value="1st">1st</Option>
                       <Option value="2nd">2nd</Option>
@@ -115,9 +115,9 @@ const PaymentsList = () => {
                   <Col span={4}>
                     <Select
                       placeholder="Year"
-                      style={{ width: "100%", marginBottom: "10px" }}
+               
                       onChange={(value) => setSelectedSemester(value)}
-                       className="h-[50px]"
+                      className="h-[50px] w-full mb-[10px]"
                     >
                       <Option value="2020">2020</Option>
                       <Option value="2021">2021</Option>
@@ -128,28 +128,16 @@ const PaymentsList = () => {
                   </Col>
 
                   <Col span={4}>
-                    <DatePicker
-                      placeholder="Date From"
-                      style={{ width: "100%", marginBottom: "10px" }}
-                      value={dateFrom}
-                      onChange={(date) => setDateFrom(date)}
-                       className="h-[50px]"
-                    />
+                  
+                    
+                    <RangePicker placeholder={['Date From', 'Date To']} className="h-[50px]" />
                   </Col>
-                  <Col span={4}>
-                    <DatePicker
-                      placeholder="Date To"
-                      style={{ width: "100%", marginBottom: "10px" }}
-                      value={dateTo}
-                      onChange={(date) => setDateTo(date)}
-                      className="h-[50px]"
-                    />
-                  </Col>
+                
                   
                   <Col span={4}>
                     <Button
                       type="primary"
-                      className="bg-primary text-white w-auto mb-[10px] h-[50px]text-white"
+                      className="bg-primary text-white w-auto mt-[10px]"
                       icon={<SearchOutlined />}
                       onClick={searchPaymentList}
                        
@@ -164,10 +152,9 @@ const PaymentsList = () => {
                   <Col span={24}>
                     <Button
                       type="primary"
-                      className="w-auto bg-success text-white mb-[10px]"
-                      
+                      className="w-auto bg-success text-white mb-[10px] float-right"
                       onClick={printPaymentList}
-                      style={{ marginBottom: "10px", float:"right"}}
+         
                     >
                       Print List
                     </Button>
