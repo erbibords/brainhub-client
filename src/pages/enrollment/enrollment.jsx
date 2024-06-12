@@ -6,6 +6,7 @@ import CustomInput from "../../components/Input/Input";
 
 const { Content } = Layout;
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 const Enrollment = () => {
   const [searchValue, setSearchValue] = useState('');
@@ -112,26 +113,13 @@ const Enrollment = () => {
                   </Col>
 
                   <Col span={4}>
-                    <DatePicker
-                      placeholder="Date From"
-                      className="w-full mb-4 h-[40px]"
-                      value={dateFrom}
-                      onChange={(date) => setDateFrom(date)}
-                    />
-                  </Col>
-                  <Col span={4}>
-                    <DatePicker
-                      placeholder="Date To"
-                      className="w-full mb-4 h-[40px]"
-                      value={dateTo}
-                      onChange={(date) => setDateTo(date)}
-                    />
+                    <RangePicker placeholder={['Date From', 'Date To']} className="h-[50px]" />
                   </Col>
                   
                   <Col span={4}>
                     <Button
                       type="primary"
-                      className="w-auto bg-primary text-white mb-4"
+                      className="w-auto bg-primary text-white mt-[10px]"
                       icon={<SearchOutlined />}
                       onClick={searchEnrollent}
                       
