@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from "react";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button"
-import AddOfferingsModal from "../../components/AddOfferingsModal/AddOfferingsModal";
 import {  Table, Space, Row, Col, Button , Select} from "antd";
 import { useNavigate } from "react-router";
 
