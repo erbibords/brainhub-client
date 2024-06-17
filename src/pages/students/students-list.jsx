@@ -54,13 +54,10 @@ const StudentsList = () => {
     });
   }, [students, studentDataLoading, getStudentError]);
 
-  console.log(filteredData);
-
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sidebar />
+    <Layout className="min-h-screen">
       <Layout className="site-layout">
-        <Content style={{ margin: "25px 25px" }}>
+        <Content>
           <div>
             <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>
               Students List

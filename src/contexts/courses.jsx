@@ -1,6 +1,5 @@
-import React, { createContext, useCallback, useMemo, useState } from "react";
+import React, { createContext, useMemo, useState, useContext } from "react";
 import useCourses from "../hooks/useCourses";
-import axiosInstance from "../utils/axiosInstance";
 
 const CoursesContext = createContext({
   courses: [],
@@ -18,23 +17,27 @@ export const CoursesProvider = ({ children }) => {
   });
 
   const {
-    data,
+    courses,
     isLoading: coursesLoading,
     error: coursesError,
   } = useCourses(params);
 
   const values = useMemo(() => {
     return {
-      data,
+      courses,
       getCoursesLoading: coursesLoading,
       getCoursesError: coursesError,
       setParams,
     };
-  }, [data, coursesLoading, coursesError, setParams]);
+  }, [courses, coursesLoading, coursesError, setParams]);
 
   return (
     <CoursesContext.Provider value={values}>{children}</CoursesContext.Provider>
   );
+};
+
+export const useCourse = () => {
+  return useContext(CoursesContext);
 };
 
 export default CoursesContext;

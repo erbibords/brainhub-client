@@ -1,10 +1,10 @@
 import useSWR from 'swr';
-import { DEFAULT_BRANCH_ID} from '../constants'
+import {  GET_COURSE_URL} from '../constants'
 
 function useCourses(params = {}) {
   const { name = undefined,  pageNo = 1, pageSize = 25 } = params;
   
-  let url = `branches/${DEFAULT_BRANCH_ID}/courses`;
+  let url = GET_COURSE_URL;
   const queryParams = new URLSearchParams();
 
   if (name) queryParams.append('name', name);
@@ -16,6 +16,7 @@ function useCourses(params = {}) {
   }
 
   const { data, error } = useSWR(url);
+
   const isLoading = !data && !error;
 
   return {

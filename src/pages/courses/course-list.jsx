@@ -1,79 +1,122 @@
-import React, { useState } from "react";
-import axios from "axios"; // Import Axios
-import Sidebar from "../../components/SideBar/Sidebar";
-import { Layout, Input, Table, Space, Row, Col, Button, Modal, Form } from "antd";
-import { EditOutlined, DeleteOutlined, SaveOutlined } from '@ant-design/icons';
+import React, { useCallback, useState, useMemo, useEffect } from "react";
+import { Input, Table, Space, Row, Col, Button, Modal, Form } from "antd";
 import CustomInput from "../../components/Input/Input";
-import CustomModal from "../../components/CustomModal/CustomModal";
+import AddCourseModal from "../../components/AddCourseModal/AddCourseModal";
+import useMutation from "../../hooks/useMutation";
+import { GET_COURSE_URL } from "../../constants";
+import { useCourse } from "../../contexts/courses";
+import Swal from "sweetalert2";
 
-const { Content } = Layout;
 const { TextArea } = Input;
 
 const CourseList = () => {
-  const [searchCourse, setSearchCourse] = useState('');
+  const [searchCourse, setSearchCourse] = useState("");
+  const { courses, coursesLoading, coursesError } = useCourse();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [courseData, setCourseData] = useState([
-    { key: '1', course_name: 'Information Technology', description: "WVSU" },
-    { key: '2', course_name: 'Business Administration', description: "UI" },
-  ]);
-  const [editingKey, setEditingKey] = useState('');
+  const [selectedCourse, setSelectedCourse] = useState(undefined);
+  const {
+    mutate: addCourse,
+    loading: addCourseLoading,
+    error: addCourseError,
+  } = useMutation(GET_COURSE_URL, "POST", GET_COURSE_URL);
+
+  const {
+    mutate: deleteCourse,
+    loading: deleteCourseLoading,
+    error: deleteCourseError,
+  } = useMutation(
+    `${GET_COURSE_URL}/${selectedCourse?.id}`,
+    "DELETE",
+    GET_COURSE_URL
+  );
+
+  const [editingKey, setEditingKey] = useState("");
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    console.log(selectedCourse);
+  }, [selectedCourse]);
 
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'course_name',
-      key: 'course_name',
-      render: (text, record) => (
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text, record) =>
         editingKey === record.key ? (
           <Input
             value={record.course_name}
-            onChange={e => handleFieldChange(e, record.key, 'course_name')}
+            onChange={(e) => handleFieldChange(e, record.key, "name")}
           />
-        ) : text
-      )
+        ) : (
+          text
+        ),
     },
     {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
-      render: (text, record) => (
-        editingKey === record.key ? (
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+      render: (text, record) =>
+        editingKey === record.id ? (
           <TextArea
             value={record.description}
-            onChange={e => handleFieldChange(e, record.key, 'description')}
+            onChange={(e) => handleFieldChange(e, record.id, "description")}
           />
-        ) : text
-      )
+        ) : (
+          text
+        ),
     },
     {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       render: (text, record) => (
         <Space size="middle">
-          {
-            editingKey === record.key ? (
-              <>
-                <Button type="primary" className="w-auto bg-primary text-white" onClick={() => saveCourse(record.key)}>
-                  Save
-                </Button>
+          {editingKey === record.id ? (
+            <>
+              <Button type="primary" className="w-auto bg-primary text-white">
+                Save
+              </Button>
 
-                <Button onClick={() => cancelEditing()}>
-                  Cancel
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button type="success" className="w-auto bg-success text-white" onClick={() => editCourse(record.key)}>
-                  Update
-                </Button>
+              <Button onClick={() => cancelEditing()}>Cancel</Button>
+            </>
+          ) : (
+            <>
+              <Button
+                type="success"
+                className="w-auto bg-success text-white"
+                onClick={() => editCourse(record.id)}
+              >
+                Update
+              </Button>
 
-                <Button type="secondary" className="w-auto bg-secondary text-white" onClick={() => confirmDeleteCourse(record.key, record.course_name)}>
-                  Delete
-                </Button>
-              </>
-            )
-          }
+              <Button
+                type="secondary"
+                className="w-auto bg-secondary text-white"
+                onClick={() => {
+                  setSelectedCourse(record);
+                  console.log(record);
+                  handleDeleteCourse();
+                  //   Modal.confirm({
+                  //     title: "Are you sure you want to delete this course?",
+                  //     okText: "Yes",
+                  //     okType: "danger",
+                  //     cancelText: "No",
+                  //     onOk: () => {
+                  //       setTimeout(() => {
+                  //         handleDeleteCourse();
+                  //       }, 2000);
+                  //     },
+                  //     // onCancel: () => {
+                  //     //   alert("test");
+                  //     //   setSelectedCourse(undefined);
+                  //     // },
+                  //   });
+                }}
+              >
+                Delete
+              </Button>
+            </>
+          )}
         </Space>
       ),
     },
@@ -81,7 +124,7 @@ const CourseList = () => {
 
   const handleFieldChange = (e, key, field) => {
     const newData = [...courseData];
-    const index = newData.findIndex(item => key === item.key);
+    const index = newData.findIndex((item) => key === item.key);
     if (index > -1) {
       const item = newData[index];
       newData.splice(index, 1, { ...item, [field]: e.target.value });
@@ -94,43 +137,30 @@ const CourseList = () => {
   };
 
   const cancelEditing = () => {
-    setEditingKey('');
+    setEditingKey("");
   };
 
-  const saveCourse = (key) => {
-    const course = courseData.find(course => course.key === key);
-    axios.post('/api/courses/update', course)
-      .then(response => {
-        setEditingKey('');
-      })
-      .catch(error => {
-        console.error('There was an error updating the course!', error);
-      });
-  };
-
-  const confirmDeleteCourse = (courseId, courseName) => {
-    Modal.confirm({
-      title: 'Are you sure you want to delete this course?',
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
-      onOk() {
-        handleDeleteCourse(courseId, courseName);
-      },
-    });
-  };
-
-  const handleDeleteCourse = (courseId, courseName) => {
-    axios.delete(`/api/courses/${courseId}`)
-      .then(response => {
-        const newData = courseData.filter(item => item.key !== courseId);
-        setCourseData(newData);
-        alert(`Course ${courseName} has been deleted`);
-      })
-      .catch(error => {
-        console.error('There was an error deleting the course!', error);
-      });
-  };
+  const handleDeleteCourse = useCallback(() => {
+    console.log(selectedCourse);
+    if (!selectedCourse) {
+      alert("SELECTED COURSE NOT FOUND");
+      return;
+    }
+    // try {
+    //   const res = await deleteCourse();
+    //   if (res) {
+    //     Swal.fire({
+    //       icon: "success",
+    //       title: "Course Deleted",
+    //       timer: 2000,
+    //     });
+    //     setSelectedCourse(undefined);
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    //   setSelectedCourse(undefined);
+    // }
+  }, [selectedCourse]);
 
   const searchByCourse = (value) => {
     setSearchCourse(value);
@@ -145,35 +175,75 @@ const CourseList = () => {
     form.resetFields();
   };
 
-  const handleSaveCourse = (values) => {
-    console.log(values);
-  };
+  const handleSaveCourse = useCallback(
+    async (values) => {
+      try {
+        const res = await addCourse(values);
 
-  const filteredData = courseData.filter(course =>
-    course.course_name.toLowerCase().includes(searchCourse.toLowerCase())
+        if (res) {
+          form.resetFields();
+          setIsModalVisible(false);
+          Swal.fire({
+            icon: "success",
+            title: "Course Added",
+            timer: 2000,
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Something went wrong",
+          text: "It looks like there might be an encoding issue or a conflict with your entries. Please review and try again.",
+        });
+      }
+    },
+    [addCourse]
   );
+
+  const filteredData = useMemo(() => {
+    if (coursesError) return [];
+    if (!courses) return [];
+    if (!searchCourse) return courses?.data;
+    return courses?.data?.filter((course) =>
+      course.name.toLowerCase().includes(searchCourse.toLowerCase())
+    );
+  }, [searchCourse, courses, coursesError]);
 
   return (
     <div>
       <h1 className="text-2xl">Course List</h1>
       <div className="text-right">
-        <Button type="primary" onClick={showModal} className="w-auto bg-primary text-white">Add Course</Button>
+        <Button
+          type="primary"
+          onClick={showModal}
+          className="w-auto bg-primary text-white"
+        >
+          Add Course
+        </Button>
       </div>
       <Row gutter={[16, 16]}>
         <Col span={8}>
-          <CustomInput type="text" placeholder="Search by Course..." onChange={(e) => searchByCourse(e.target.value)} />
+          <CustomInput
+            type="text"
+            placeholder="Search by Course..."
+            onChange={(e) => searchByCourse(e.target.value)}
+          />
         </Col>
         <Col span={24}>
-          <Table dataSource={filteredData} columns={columns} />
+          <Table
+            dataSource={courses && courses.data && filteredData}
+            columns={columns}
+            loading={coursesLoading || addCourseLoading || deleteCourseLoading}
+          />
         </Col>
       </Row>
 
-      <CustomModal
-            isVisible={isModalVisible}
-            handleCancel={handleCancel}
-            handleSave={handleSaveCourse}
-            form={form}
-        />
+      <AddCourseModal
+        isVisible={isModalVisible}
+        handleCancel={handleCancel}
+        handleSave={handleSaveCourse}
+        form={form}
+      />
     </div>
   );
 };

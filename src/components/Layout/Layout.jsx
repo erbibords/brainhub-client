@@ -16,8 +16,8 @@ const MainLayout = ({ children, showSidebar = true }) => {
     <AuthProvider>
       <StudentProvider>
         <CoursesProvider>
-          <Layout style={{ minHeight: "100vh" }}>
-            <Header style={{ padding: 0, background: "#fff" }}>
+          <Layout className="min-h-screen">
+            <Header className="p-0 bg-white">
               <Navbar currentRoute={location.pathname} />
             </Header>
             <Layout>
@@ -26,8 +26,8 @@ const MainLayout = ({ children, showSidebar = true }) => {
                   <Sidebar />
                 </Sider>
               )}
-              <Layout style={{ padding: "0 24px 24px" }}>
-                <Content style={{ margin: "16px 0" }}>{children}</Content>
+              <Layout style={{ padding: "0 24px 24px" }} className="p-[24px]">
+                <Content className="my-[16px] mx-0">{children}</Content>
               </Layout>
             </Layout>
           </Layout>

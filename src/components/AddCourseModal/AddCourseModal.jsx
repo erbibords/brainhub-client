@@ -1,4 +1,4 @@
- import React from "react";
+import React from "react";
 import { Modal, Button, Form, Input } from "antd";
 import CustomInput from "../Input/Input";
 
@@ -14,21 +14,30 @@ const CustomModal = ({ isVisible, handleCancel, handleSave, form }) => {
         <Button key="cancel" onClick={handleCancel}>
           Cancel
         </Button>,
-        <Button key="submit" type="primary" className="w-auto bg-primary text-white" onClick={() => form.submit()}>
+        <Button
+          key="submit"
+          type="primary"
+          className="w-auto bg-primary text-white"
+          onClick={() => form.submit()}
+        >
           Save
         </Button>,
       ]}
       width={700}
     >
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={handleSave}
-      >
-        <Form.Item label="Course Name" name="name" rules={[{ required: true, message: 'Please input the Course Name!' }]}>
+      <Form form={form} layout="vertical" onFinish={handleSave}>
+        <Form.Item
+          label="Course Name"
+          name="name"
+          rules={[{ required: true, message: "Please input the Course Name!" }]}
+        >
           <CustomInput type="text" name="name" />
         </Form.Item>
-        <Form.Item label="Description" name="description" rules={[{ required: true, message: 'Please input the Description!' }]}>
+        <Form.Item
+          label="Description"
+          name="description"
+          rules={[{ required: true, message: "Please input the Description!" }]}
+        >
           <TextArea rows={4} name="description" />
         </Form.Item>
       </Form>
