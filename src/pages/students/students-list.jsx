@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import Sidebar from "../../components/SideBar/Sidebar";
 import { Layout, Input, Table, Space, Row, Col, Button } from "antd";
+import { useNavigate } from "react-router-dom";
 import { useStudentContext } from "../../contexts/students";
 
 const { Content } = Layout;
@@ -8,6 +9,7 @@ const { Search } = Input;
 
 const StudentsList = () => {
   const initialMarginBottom = "2vh";
+  const navigate = useNavigate();
 
   const [searchName, setSearchName] = useState("");
   const [searchSchool, setSearchSchool] = useState("");
@@ -25,14 +27,21 @@ const StudentsList = () => {
       render: (text, record) => (
         <Space size="small">
           <Button className="bg-green-600 text-white">Edit</Button>
-          <Button className="bg-primary text-white">View Profile</Button>
+          <Button
+            className="bg-primary text-white"
+            onClick={() => {
+              handleViewStudent(record.id);
+            }}
+          >
+            View Profile
+          </Button>
         </Space>
       ),
     },
   ];
 
   const handleViewStudent = (studentId) => {
-    window.location.href = `/students/profile/${studentId}`;
+    navigate(`/students/profile/${studentId}`);
   };
 
   const searchByName = (value) => {
