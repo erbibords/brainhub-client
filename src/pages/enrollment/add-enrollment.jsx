@@ -1,9 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
-import Sidebar from "../../components/SideBar/Sidebar";
 import CustomInput from "../../components/Input/Input";
+import CustomSelect from "../../components/Select/Select";
 import { Layout, Select, Input, Button, Form } from "antd";
-import Swal from "sweetalert2";
-const { Content } = Layout;
 const { Option } = Select;
 const { TextArea } = Input;
 
@@ -25,14 +23,7 @@ const Enrollment = () => {
     const onFinish = useCallback(async (values) => {
         console.log("Received values of form: ", values);
 
-        // await enrollment({
-        //     firstName: values.firstName,
-        
-        //     middleName: values.middleName,
-        //     firstName: values.firstName,
-        //     school: values.school,
-        //     contactNumber: values.contactNumber,
-        // });
+      
         }, []);
 
 
@@ -86,7 +77,7 @@ const Enrollment = () => {
             <h1 className="text-2xl mb-[2vh]">Add Enrollment</h1>
             
                
-                <Form.Item label="Review Program" name="review_program">
+                <Form.Item label="Review Program" name="reviewProgram">
                 <Select className="w-full mb=[2vh]" size="large" defaultValue="Intensive">
                     <Option value="Intensive">Intensive</Option>
                     <Option value="Enhancement-Intensive">Enhancement-Intensive</Option>

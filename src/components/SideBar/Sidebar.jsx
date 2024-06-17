@@ -8,7 +8,7 @@ import { useMediaQuery } from "react-responsive";
 const { Sider } = Layout;
 
 const Sidebar = () => {
-  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 768px) (background:white;)" });
   const location = useLocation();
 
   const getMenuKeys = () => {
@@ -57,7 +57,10 @@ const Sidebar = () => {
           <Link to="/enrollments">Enrollments</Link>
         </Menu.Item>
         <Menu.Item key="courses" icon={<BookOutlined />}>
-          <Link to="/courses">Course</Link>
+          <Link to="/courses">Courses</Link>
+        </Menu.Item>
+        <Menu.Item key="course_offering" icon={<BookOutlined />}>
+          <Link to="/course_offering">Offerings</Link>
         </Menu.Item>
         <Menu.Item key="payments_list" icon={<DollarCircleOutlined />}>
           <Link to="/payments/list">Payments</Link>

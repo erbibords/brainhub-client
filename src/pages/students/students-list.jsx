@@ -1,10 +1,7 @@
 import React, { useMemo, useState } from "react";
-import Sidebar from "../../components/SideBar/Sidebar";
+import CustomInput from "../../components/Input/Input";
 import { Layout, Input, Table, Space, Row, Col, Button } from "antd";
 import { useStudentContext } from "../../contexts/students";
-
-const { Content } = Layout;
-const { Search } = Input;
 
 const StudentsList = () => {
   const initialMarginBottom = "2vh";
@@ -57,31 +54,28 @@ const StudentsList = () => {
   console.log(filteredData);
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sidebar />
-      <Layout className="site-layout">
-        <Content style={{ margin: "25px 25px" }}>
+
           <div>
             <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>
               Students List
             </h1>
             <Row gutter={[16, 16]}>
               <Col span={4}>
-                <Search
-                  type="text"
-                  placeholder="Search by name..."
-                  onChange={(e) => searchByName(e.target.value)}
-                />
+                <CustomInput
+                    placeholder="Search by name..."
+                    onChange={(e) => searchBySchool(e.target.value)}
+                    className="mb-4" 
+                  />
               </Col>
               <Col span={4}>
-                <Search
-                  type="text"
-                  placeholder="Search by school..."
-                  onChange={(e) => searchBySchool(e.target.value)}
-                />
+                <CustomInput
+                    placeholder="Search by school..."
+                    onChange={(e) => searchBySchool(e.target.value)}
+                    className="mb-4" 
+                  />
               </Col>
               <Col span={3}>
-                <Button className="w-auto bg-primary text-white">
+                <Button className="w-auto bg-primary text-white mt-[2px]">
                   Search
                 </Button>
               </Col>
@@ -90,9 +84,7 @@ const StudentsList = () => {
               </Col>
             </Row>
           </div>
-        </Content>
-      </Layout>
-    </Layout>
+      
   );
 };
 

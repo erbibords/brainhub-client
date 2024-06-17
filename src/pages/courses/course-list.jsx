@@ -121,15 +121,16 @@ const CourseList = () => {
   };
 
   const handleDeleteCourse = (courseId, courseName) => {
-    axios.delete(`/api/courses/${courseId}`)
-      .then(response => {
-        const newData = courseData.filter(item => item.key !== courseId);
-        setCourseData(newData);
-        alert(`Course ${courseName} has been deleted`);
-      })
-      .catch(error => {
-        console.error('There was an error deleting the course!', error);
-      });
+    console.log(courseId)
+    // axios.delete(`/api/courses/${courseId}`)
+    //   .then(response => {
+    //     const newData = courseData.filter(item => item.key !== courseId);
+    //     setCourseData(newData);
+    //     alert(`Course ${courseName} has been deleted`);
+    //   })
+    //   .catch(error => {
+    //     console.error('There was an error deleting the course!', error);
+    //   });
   };
 
   const searchByCourse = (value) => {

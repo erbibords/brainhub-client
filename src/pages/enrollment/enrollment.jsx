@@ -40,7 +40,7 @@ const Enrollment = () => {
       key: 'action',
       render: (text, record) => (
         <Space size="middle">
-          <Button type="primary" onClick={() => handleViewEnrollment(record.key)} title="View" className="w-auto bg-primary text-white">View</Button>
+          <Button type="primary" onClick={() => handleViewEnrollment(record.id)} title="View" className="w-auto bg-primary text-white">View</Button>
         </Space>
       ),
     },
