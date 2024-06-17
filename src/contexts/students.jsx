@@ -92,7 +92,6 @@ export const StudentProvider = ({ children }) => {
       addStudent,
     };
   }, [students, studentDataLoading, getStudentError, setParams, addStudent]);
-
   return (
     <StudentContext.Provider value={values}>{children}</StudentContext.Provider>
   );

@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import axiosInstance from '../utils/axiosInstance';
-import { mutate } from 'swr';
+import { mutate as swrMutate } from 'swr';
 
 const useMutation = (url, method = 'POST', revalidationUrl = null) => {
   const [loading, setLoading] = useState(false);
@@ -26,7 +26,10 @@ const useMutation = (url, method = 'POST', revalidationUrl = null) => {
       }
 
       if (revalidationUrl) {
-        mutate(revalidationUrl);
+        console.log('Revalidating URL:', revalidationUrl);
+        const revalidatedData = await axiosInstance.get(revalidationUrl).then(res => res.data);
+        await swrMutate(revalidationUrl, revalidatedData, { revalidate: true });
+        console.log('Revalidation complete');
       }
 
       return response.data;

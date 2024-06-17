@@ -10,7 +10,6 @@ import AddPayment from "./pages/payments/add-new-payment";
 import ViewPayment from "./pages/payments/view-payment";
 import Courses from "./pages/courses/course-list";
 import ViewCourse from "./pages/courses/view-course";
-import AddCourse from "./pages/courses/add-course";
 import Layout from "./components/Layout/Layout";
 
 const App = () => {
@@ -22,12 +21,14 @@ const App = () => {
           <Route path="/add-enrollment" element={<AddEnrollment />} />
           <Route path="/enrollments" element={<Enrollment />} />
           <Route path="/students" element={<Students />} />
-          <Route path="/students/profile/:studentId" element={<StudentProfile />} />
+          <Route
+            path="/students/profile/:studentId"
+            element={<StudentProfile />}
+          />
           <Route path="/payments/list" element={<PaymentsList />} />
           <Route path="/payments/add" element={<AddPayment />} />
           <Route path="/payments/:id" element={<ViewPayment />} />
           <Route path="/courses" element={<Courses />} />
-          <Route path="/courses/add" element={<AddCourse />} />
           <Route path="/courses/:courseId" element={<ViewCourse />} />
         </Routes>
       </Layout>

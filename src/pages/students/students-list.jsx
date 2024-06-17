@@ -51,10 +51,7 @@ const StudentsList = () => {
     });
   }, [students, studentDataLoading, getStudentError]);
 
-  console.log(filteredData);
-
   return (
-
           <div>
             <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>
               Students List
