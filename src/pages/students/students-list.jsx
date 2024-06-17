@@ -23,14 +23,13 @@ const StudentsList = () => {
       key: "action",
       render: (text, record) => (
         <Space size="small">
-          <Button className="bg-green-600 text-white">Edit</Button>
           <Button
             className="bg-primary text-white"
             onClick={() => {
               handleViewStudent(record.id);
             }}
           >
-            View Profile
+            View
           </Button>
         </Space>
       ),
@@ -38,7 +37,7 @@ const StudentsList = () => {
   ];
 
   const handleViewStudent = (studentId) => {
-    navigate(`/students/profile/${studentId}`);
+    navigate(`/students/${studentId}`);
   };
 
   const searchByName = (value) => {
@@ -61,36 +60,35 @@ const StudentsList = () => {
   }, [students, studentDataLoading, getStudentError]);
 
   return (
-          <div>
-            <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>
-              Students List
-            </h1>
-            <Row gutter={[16, 16]}>
-              <Col span={4}>
-                <CustomInput
-                    placeholder="Search by name..."
-                    onChange={(e) => searchBySchool(e.target.value)}
-                    className="mb-4" 
-                  />
-              </Col>
-              <Col span={4}>
-                <CustomInput
-                    placeholder="Search by school..."
-                    onChange={(e) => searchBySchool(e.target.value)}
-                    className="mb-4" 
-                  />
-              </Col>
-              <Col span={3}>
-                <Button className="w-auto bg-primary text-white mt-[2px]">
-                  Search
-                </Button>
-              </Col>
-              <Col span={24}>
-                <Table dataSource={filteredData} columns={columns} />
-              </Col>
-            </Row>
-          </div>
-      
+    <div>
+      <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>
+        Students List
+      </h1>
+      <Row gutter={[16, 16]}>
+        <Col span={4}>
+          <CustomInput
+            placeholder="Search by name..."
+            onChange={(e) => searchBySchool(e.target.value)}
+            className="mb-4"
+          />
+        </Col>
+        <Col span={4}>
+          <CustomInput
+            placeholder="Search by school..."
+            onChange={(e) => searchBySchool(e.target.value)}
+            className="mb-4"
+          />
+        </Col>
+        <Col span={3}>
+          <Button className="w-auto bg-primary text-white mt-[2px]">
+            Search
+          </Button>
+        </Col>
+        <Col span={24}>
+          <Table dataSource={filteredData} columns={columns} />
+        </Col>
+      </Row>
+    </div>
   );
 };
 
