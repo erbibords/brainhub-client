@@ -116,7 +116,7 @@ const PaymentsList = () => {
                     <Select
                       placeholder="Year"
                
-                      onChange={(value) => setSelectedSemester(value)}
+                      onChange={(value) => setSelectedYear(value)}
                       className="h-[50px] w-full mb-[10px]"
                     >
                       <Option value="2020">2020</Option>
