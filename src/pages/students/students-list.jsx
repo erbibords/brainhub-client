@@ -1,11 +1,8 @@
 import React, { useMemo, useState } from "react";
-import Sidebar from "../../components/SideBar/Sidebar";
+import CustomInput from "../../components/Input/Input";
 import { Layout, Input, Table, Space, Row, Col, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useStudentContext } from "../../contexts/students";
-
-const { Content } = Layout;
-const { Search } = Input;
 
 const StudentsList = () => {
   const initialMarginBottom = "2vh";
@@ -64,36 +61,36 @@ const StudentsList = () => {
   }, [students, studentDataLoading, getStudentError]);
 
   return (
-    <Layout className="min-h-screen">
-      <Layout className="site-layout">
-        <Content>
           <div>
             <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>
               Students List
             </h1>
             <Row gutter={[16, 16]}>
-              <Col span={6}>
-                <Search
-                  type="text"
-                  placeholder="Search by name..."
-                  onChange={(e) => searchByName(e.target.value)}
-                />
+              <Col span={4}>
+                <CustomInput
+                    placeholder="Search by name..."
+                    onChange={(e) => searchBySchool(e.target.value)}
+                    className="mb-4" 
+                  />
               </Col>
-              <Col span={6}>
-                <Search
-                  type="text"
-                  placeholder="Search by school..."
-                  onChange={(e) => searchBySchool(e.target.value)}
-                />
+              <Col span={4}>
+                <CustomInput
+                    placeholder="Search by school..."
+                    onChange={(e) => searchBySchool(e.target.value)}
+                    className="mb-4" 
+                  />
+              </Col>
+              <Col span={3}>
+                <Button className="w-auto bg-primary text-white mt-[2px]">
+                  Search
+                </Button>
               </Col>
               <Col span={24}>
                 <Table dataSource={filteredData} columns={columns} />
               </Col>
             </Row>
           </div>
-        </Content>
-      </Layout>
-    </Layout>
+      
   );
 };
 

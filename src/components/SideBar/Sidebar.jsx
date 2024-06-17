@@ -14,7 +14,7 @@ import { useMediaQuery } from "react-responsive";
 const { Sider } = Layout;
 
 const Sidebar = () => {
-  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 768px) (background:white;)" });
   const location = useLocation();
 
   const getMenuKeys = () => {

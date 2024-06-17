@@ -21,6 +21,7 @@ const StudentProfile = () => {
     emergency_address: "South Lapaz",
     emergency_contact_no: "099323221322",
   });
+
   const [tempData, setTempData] = useState(profileData);
 
   const handleEdit = () => {

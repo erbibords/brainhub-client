@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import CustomInput from "../../components/Input/Input";
+import CustomSelect from "../../components/Select/Select";
 import { Layout, Select, Input, Button, Form } from "antd";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";

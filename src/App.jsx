@@ -11,6 +11,7 @@ import ViewPayment from "./pages/payments/view-payment";
 import Courses from "./pages/courses/course-list";
 import ViewCourse from "./pages/courses/view-course";
 import Layout from "./components/Layout/Layout";
+import Offerings from "./pages/offerings/offerings";
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
             path="/students/profile/:studentId"
             element={<StudentProfile />}
           />
+          <Route path="/offerings/offerings" element={<Offerings />} />
           <Route path="/payments/list" element={<PaymentsList />} />
           <Route path="/payments/add" element={<AddPayment />} />
           <Route path="/payments/:id" element={<ViewPayment />} />
