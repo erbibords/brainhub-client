@@ -1,8 +1,9 @@
 import React, { useState, useCallback, useEffect } from "react";
-import Sidebar from "../../components/SideBar/Sidebar";
 import CustomInput from "../../components/Input/Input";
 import { Layout, Select, Input, Button, Form } from "antd";
 import Swal from "sweetalert2";
+import CustomButton from "../../components/Button/Button";
+
 const { Content } = Layout;
 const { Option } = Select;
 const { TextArea } = Input;
@@ -256,14 +257,9 @@ const Enrollment = () => {
         {/* Save button */}
         <div className="text-right mb-5">
           <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              size="large"
-              className="w-auto bg-primary text-white"
-            >
-              Save
-            </Button>
+            <CustomButton type="primary" htmlType="submit" size="large">
+              Submit
+            </CustomButton>
           </Form.Item>
         </div>
       </div>
