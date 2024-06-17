@@ -66,19 +66,24 @@ const StudentsList = () => {
               Students List
             </h1>
             <Row gutter={[16, 16]}>
-              <Col span={6}>
+              <Col span={4}>
                 <Search
                   type="text"
                   placeholder="Search by name..."
                   onChange={(e) => searchByName(e.target.value)}
                 />
               </Col>
-              <Col span={6}>
+              <Col span={4}>
                 <Search
                   type="text"
                   placeholder="Search by school..."
                   onChange={(e) => searchBySchool(e.target.value)}
                 />
+              </Col>
+              <Col span={3}>
+                <Button className="w-auto bg-primary text-white">
+                  Search
+                </Button>
               </Col>
               <Col span={24}>
                 <Table dataSource={filteredData} columns={columns} />
