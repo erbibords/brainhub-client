@@ -92,8 +92,9 @@ const AddNewPayment = () => {
                   <span>Semester:</span>
                   <Form.Item name="semester" rules={[{ required: true, message: "Please select a Semester" }]}>
                     <Select className="w-full mb-[2vh]" size="large" placeholder="Semester">
-                      <Option value="1st">1st</Option>
-                      <Option value="2nd">2nd</Option>
+                      <Option value="FIRST_SEMESTER">1st</Option>
+                      <Option value="SECOND_SEMESTER">2nd</Option>
+                      <Option value="SUMMER">Summer</Option>
                     </Select>
                   </Form.Item>
                   <span>Year:</span>

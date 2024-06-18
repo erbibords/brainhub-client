@@ -80,8 +80,8 @@ const Offerings = () => {
             onChange={(value) => setSelectedSemester(value)}
             className="h-[40px] w-full mb-[10px]"
           >
-            <Option value="1st">1st</Option>
-            <Option value="2nd">2nd</Option>
+            <Option value="FIRST_SEMESTER">1st</Option>
+            <Option value="SECOND_SEMESTER">2nd</Option>
             <Option value="Summer">Summer</Option>
           </Select>
         </Col>

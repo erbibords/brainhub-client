@@ -223,9 +223,9 @@ const CourseList = () => {
       </div>
       <Row gutter={[16, 16]}>
         <Col span={8}>
+          <p>Course: </p>
           <CustomInput
             type="text"
-            placeholder="Search by Course..."
             onChange={(e) => searchByCourse(e.target.value)}
           />
         </Col>
