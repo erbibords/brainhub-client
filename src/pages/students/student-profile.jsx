@@ -136,9 +136,7 @@ const StudentProfile = () => {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Layout className="site-layout">
-        <Content style={{ margin: "25px 25px" }}>
+    
           <div>
             <Row gutter={[16, 16]}>
               <Col xs={24} sm={24} md={36} lg={36}>
@@ -258,22 +256,33 @@ const StudentProfile = () => {
                     {isEditing && (
                       <>
                         <strong>Last name:</strong>{" "}
-                        <CustomInput
+
+                        <Form.Item
                           name="lastName"
+                          rules={[{ required: true, message: "Please input your Last Name" }]}
+                        >
+                          <CustomInput
+                             name="lastName"
                           value={tempData.lastName}
                           onChange={handleInputChange}
-                        />
+                          />
+                       </Form.Item>
                         <Divider />
                       </>
                     )}
                     <p>
                       <strong>School:</strong>{" "}
                       {isEditing ? (
+                        <Form.Item
+                          name="school"
+                          rules={[{ required: true, message: "Please select School" }]}
+                        >
                         <CustomInput
                           name="school"
                           value={tempData.school.name}
                           onChange={handleInputChange}
                         />
+                        </Form.Item>
                       ) : (
                         data.school.name
                       )}
@@ -282,11 +291,16 @@ const StudentProfile = () => {
                     <p>
                       <strong>Address:</strong>{" "}
                       {isEditing ? (
+                        <Form.Item
+                          name="address"
+                        
+                        >
                         <CustomInput
                           name="address"
                           value={tempData.address}
                           onChange={handleInputChange}
                         />
+                        </Form.Item>
                       ) : (
                         data.address
                       )}
@@ -295,11 +309,16 @@ const StudentProfile = () => {
                     <p>
                       <strong>Contact No.:</strong>{" "}
                       {isEditing ? (
+                        <Form.Item
+                          name="contactNumber"
+                          rules={[{ required: true, message: "Please input Contact Number" }]}
+                        >
                         <CustomInput
                           name="contactNumber"
                           value={tempData.contactNumber}
                           onChange={handleInputChange}
                         />
+                        </Form.Item>
                       ) : (
                         data.contactNumber
                       )}
@@ -315,11 +334,15 @@ const StudentProfile = () => {
                     <p>
                       <strong>Contact Name:</strong>{" "}
                       {isEditing ? (
+                        <Form.Item
+                          name="emergencyContactName"
+                        >
                         <CustomInput
                           name="emergencyContactName"
                           value={tempData.emergencyContact.name}
                           onChange={handleInputChange}
                         />
+                        </Form.Item>
                       ) : (
                         data.emergencyContact.name
                       )}
@@ -328,11 +351,15 @@ const StudentProfile = () => {
                     <p>
                       <strong>Relationship:</strong>{" "}
                       {isEditing ? (
+                        <Form.Item
+                          name="emergencyContactRelationShip"
+                        >
                         <CustomInput
                           name="emergencyContactRelationShip"
                           value={tempData.emergencyContact.relationship}
                           onChange={handleInputChange}
                         />
+                        </Form.Item>
                       ) : (
                         data.emergencyContact.relationship
                       )}
@@ -341,11 +368,15 @@ const StudentProfile = () => {
                     <p>
                       <strong>Emergency Address:</strong>{" "}
                       {isEditing ? (
+                        <Form.Item
+                          name="emergencyContactAddress"
+                        >
                         <CustomInput
                           name="emergencyContactAddress"
                           value={tempData.emergencyContact.address}
                           onChange={handleInputChange}
                         />
+                        </Form.Item>
                       ) : (
                         data.emergencyContact.address
                       )}
@@ -354,11 +385,15 @@ const StudentProfile = () => {
                     <p>
                       <strong>Emergency Contact No.:</strong>{" "}
                       {isEditing ? (
+                        <Form.Item
+                          name="emergencyContactContactNumber"
+                        >
                         <CustomInput
                           name="emergencyContactContactNumber"
                           value={tempData.emergencyContact.contactNumber}
                           onChange={handleInputChange}
                         />
+                        </Form.Item>
                       ) : (
                         data.emergencyContact.contactNumber
                       )}
@@ -369,9 +404,7 @@ const StudentProfile = () => {
               </Col>
             </Row>
           </div>
-        </Content>
-      </Layout>
-    </Layout>
+        
   );
 };
 
