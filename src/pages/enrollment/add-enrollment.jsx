@@ -1,9 +1,12 @@
 import React, { useState, useCallback, useEffect } from "react";
+
+ 
 import CustomInput from "../../components/Input/Input";
 import CustomSelect from "../../components/Select/Select";
 import useSchools from "../../hooks/useSchools";
 import { useCourse } from "../../contexts/courses";
-import { Layout, Select, Input, Button, Form } from "antd";
+ 
+import { Layout, Select, Input, Button, Form, Divider, Radio} from "antd";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
 import { useOfferingsContext } from "../../contexts/offerings";
@@ -11,6 +14,7 @@ import { useOfferingsContext } from "../../contexts/offerings";
 const { Content } = Layout;
 const { Option } = Select;
 const { TextArea } = Input;
+ 
 
 const Enrollment = () => {
 
@@ -24,6 +28,30 @@ const Enrollment = () => {
   const [offeringsSearchParams, setOfferingsSearchParams] = useState({});
   const [selectedCourseId, setSelectedCourseId] = useState(undefined);
   const [selectedSchoolId, setSelectedSchoolId] = useState(undefined);
+  const [visibleCourseOffering, setVisibleCourseOffering] = useState(false);
+  const [radioValue, setRadioValue] = useState('existing');
+
+  const handleCourseChange = (value) => {
+    console.log('tes1');
+    setSelectedCourseId(value);
+    setVisibleCourseOffering(true); // Make "Course Offering" visible when a course is selected
+  };
+ 
+  const options = [
+    {
+      label: 'Existing',
+      value: 'existing',
+    },
+    {
+      label: 'New',
+      value: 'new',
+    }
+  ];
+
+  const getRadioStudent = ({ target: { value } }) => {
+    console.log('radio3 checked', value);
+    setRadioValue(value);
+  };
 
   const {
     data: offerings,
@@ -38,24 +66,7 @@ const Enrollment = () => {
     }
   }, [offeringsSearchParams]);
 
-  const onFinish = useCallback(async (values) => {
-    // console.log("Received values of form: ", values);
-    console.log(
-     
-      selectedCourseId,
-      selectedSchoolId,
-     
-    );
-
-    // await enrollment({
-    //     firstName: values.firstName,
-
-    //     middleName: values.middleName,
-    //     firstName: values.firstName,
-    //     school: values.school,
-    //     contactNumber: values.contactNumber,
-    // });
-  }, []);
+  
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -97,12 +108,28 @@ const Enrollment = () => {
   return (
     <Form
       name="enrollment"
-      onFinish={onFinish}
+      // onFinish={onFinish}
       layout="vertical"
       className="w-1/2"
     >
       <div>
         <h1 className="text-2xl mb-[2vh]">Enroll Student</h1>
+
+        <div className="mb-[2vh]">
+          <p>
+            <small>
+              <i className="mb-[2vh]">
+              Select Student to Enroll
+              </i>
+            </small>
+          </p>
+      
+          <Radio.Group options={options} onChange={getRadioStudent} value={radioValue} optionType="button" />
+        </div>
+ 
+        <Divider>  </Divider>
+       
+      
 
         <Form.Item label="Review Program" name="review_program">
           <Select
@@ -163,39 +190,45 @@ const Enrollment = () => {
 
 
         <Form.Item label="Course" name="course_name" >
-          <Select
-              className="w-full"
-              loading={getCoursesLoading}
-              disabled={getCoursesLoading || getCoursesError}
-              onChange={(value) => setSelectedCourseId(value)}
-            >
-              {courses &&
-                courses?.data?.map((course) => (
-                  <Option value={course.id}> {course.name}</Option>
-                ))}
-            </Select>
+        <Select
+          className="w-full"
+          loading={getCoursesLoading}
+          disabled={getCoursesLoading || getCoursesError}
+          onChange={handleCourseChange}
+        >
+        
+          {courses &&
+            courses?.data?.map((course) => (
+              <Option key={course.id} value={course.id}> 
+                {course.name}
+              </Option>
+            ))}
+        </Select>
         </Form.Item>
 
-        <Form.Item label="Course Offering" name="courseId" hidden>
+     
+         {visibleCourseOffering && (
+        <Form.Item label="Course Offering" name="courseId">
           <Select
-            className="w-full mb=[2vh]"
+            className="w-full mb-[2vh]"
             size="large"
             disabled={getOfferingsLoading || getOfferingsError}
           >
             {offerings &&
               offerings?.data?.map((offering) => (
-                <Option value={offering?.id}>
-                  {" "}
+                <Option key={offering?.id} value={offering?.id}>
                   {`${offering?.course?.name}-${offering?.program}-${offering?.yearOffered}-${offering?.semester}`}
                 </Option>
               ))}
           </Select>
         </Form.Item>
+        )}
+ 
 
         <br />
         <hr />
         <br />
-
+        
         <Form.Item
           label="First Name"
           name="firstName"
