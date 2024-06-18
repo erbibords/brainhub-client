@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useEffect } from "react";
 import CustomInput from "../../components/Input/Input";
 import CustomSelect from "../../components/Select/Select";
+import useSchools from "../../hooks/useSchools";
+import { useCourse } from "../../contexts/courses";
 import { Layout, Select, Input, Button, Form } from "antd";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
@@ -11,7 +13,18 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const Enrollment = () => {
+
+  const {
+    data: schools,
+    loading: schoolsLoading,
+    error: schoolsError,
+  } = useSchools();
+  const { courses, getCoursesLoading, getCoursesError } = useCourse();
+
   const [offeringsSearchParams, setOfferingsSearchParams] = useState({});
+  const [selectedCourseId, setSelectedCourseId] = useState(undefined);
+  const [selectedSchoolId, setSelectedSchoolId] = useState(undefined);
+
   const {
     data: offerings,
     getOfferingsLoading,
@@ -26,7 +39,13 @@ const Enrollment = () => {
   }, [offeringsSearchParams]);
 
   const onFinish = useCallback(async (values) => {
-    console.log("Received values of form: ", values);
+    // console.log("Received values of form: ", values);
+    console.log(
+     
+      selectedCourseId,
+      selectedSchoolId,
+     
+    );
 
     // await enrollment({
     //     firstName: values.firstName,
@@ -142,7 +161,22 @@ const Enrollment = () => {
           </Select>
         </Form.Item>
 
-        <Form.Item label="Course Offering" name="courseId">
+
+        <Form.Item label="Course" name="course_name" >
+          <Select
+              className="w-full"
+              loading={getCoursesLoading}
+              disabled={getCoursesLoading || getCoursesError}
+              onChange={(value) => setSelectedCourseId(value)}
+            >
+              {courses &&
+                courses?.data?.map((course) => (
+                  <Option value={course.id}> {course.name}</Option>
+                ))}
+            </Select>
+        </Form.Item>
+
+        <Form.Item label="Course Offering" name="courseId" hidden>
           <Select
             className="w-full mb=[2vh]"
             size="large"
@@ -165,7 +199,7 @@ const Enrollment = () => {
         <Form.Item
           label="First Name"
           name="firstName"
-          rules={[{ required: true, message: "Please input your School" }]}
+          rules={[{ required: true, message: "Please input your First Name" }]}
         >
           <CustomInput type="text" name="firstName" onChange={handleChange} />
         </Form.Item>
@@ -191,7 +225,17 @@ const Enrollment = () => {
           name="schoolId"
           rules={[{ required: true, message: "Please input your School" }]}
         >
-          <CustomInput type="text" name="schoolId" onChange={handleChange} />
+           <Select
+              className="w-full"
+              oading={schoolsLoading}
+              disabled={schoolsLoading || schoolsError}
+              onChange={(value) => setSelectedSchoolId(value)}
+            >
+              {schools &&
+                schools?.map((school) => (
+                  <Option value={school.id}> {school.name}</Option>
+                ))}
+            </Select>
         </Form.Item>
 
         <Form.Item label="Status" name="takerType">

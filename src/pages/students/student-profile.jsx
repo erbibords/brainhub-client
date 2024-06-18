@@ -211,15 +211,27 @@ const StudentProfile = () => {
                       </Col>
                     </Row>
                     <Divider />
-
+                    <Form
+                        name="update_student"
+                        
+                        layout="vertical"
+                        className="w-1/2"
+                      >
                     {isEditing && (
                       <>
                         <strong>First name:</strong>{" "}
-                        <CustomInput
+                        <Form.Item
+                         
                           name="firstName"
-                          value={tempData.firstName}
-                          onChange={handleInputChange}
-                        />
+                          rules={[{ required: true, message: "Please input your First Name" }]}
+                        >
+                          <CustomInput
+                            name="firstName"
+                            value={tempData.firstName}
+                            onChange={handleInputChange}
+                          />
+                        </Form.Item>
+                       
                         <Divider />
                       </>
                     )}
@@ -227,11 +239,18 @@ const StudentProfile = () => {
                     {isEditing && (
                       <>
                         <strong>Middle name:</strong>{" "}
-                        <CustomInput
-                          name="middleName"
-                          value={tempData.middleName}
-                          onChange={handleInputChange}
-                        />
+                        <Form.Item
+                         
+                         name="middleName"
+                         rules={[{ required: true, message: "Please input your Middle Name" }]}
+                       >
+                         <CustomInput
+                           name="middleName"
+                           value={tempData.middleName}
+                           onChange={handleInputChange}
+                         />
+                       </Form.Item>
+                       
                         <Divider />
                       </>
                     )}
@@ -344,6 +363,7 @@ const StudentProfile = () => {
                         data.emergencyContact.contactNumber
                       )}
                     </p>
+                    </Form>
                   </Card>
                 )}
               </Col>
