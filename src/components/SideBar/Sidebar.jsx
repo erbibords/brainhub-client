@@ -34,6 +34,8 @@ const Sidebar = () => {
     } else if (pathname.startsWith("/payments/list")) {
       selectedKey = ["payments_list"];
       openKeys = ["payments_list"];
+    }else if (pathname.startsWith("/offerings")) {
+      selectedKey = ["offerings"];
     }
 
     return { selectedKey, openKeys };
