@@ -120,11 +120,11 @@ const AddOfferings = () => {
           rules={[{ required: true, message: "Please select review program!" }]}
         >
           <Select
-            defaultValue="Intensive"
+            defaultValue="INTENSIVE"
             className="h-[40px] w-full mb-[10px]"
           >
             <Option value="INTENSIVE">Intensive</Option>
-            <Option value="ENHANCEMENT-INTENSIVE">Enhancement-Intensive</Option>
+            <Option value="ENHANCEMENT">Enhancement-Intensive</Option>
           </Select>
         </Form.Item>
 
@@ -152,7 +152,7 @@ const AddOfferings = () => {
           <Select
             placeholder="Year"
             defaultValue="2024"
-            className="h-[40px] w-full mb-[10px]"
+            className="h-[40px] w-full"
           >
             <Option value={2023}>2023</Option>
             <Option value={2024}>2024</Option>

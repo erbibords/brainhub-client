@@ -58,7 +58,6 @@ const Offerings = () => {
           <CustomInput
             placeholder="Search by course.."
             onChange={(e) => searchByOfferings(e.target.value)}
-            className="mb-4"
           />
         </Col>
 

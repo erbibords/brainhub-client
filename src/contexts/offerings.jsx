@@ -2,9 +2,9 @@ import React, { createContext, useMemo, useState, useContext } from "react";
 import useOfferings from "../hooks/useOfferings";
 
 const OfferingsContext = createContext({
-  courses: [],
-  coursesLoading: false,
-  coursesError: false,
+  offerings: [],
+  getOfferingsLoading: false,
+  getOfferingsError: false,
   setParams: (params) => {},
 });
 
@@ -18,7 +18,7 @@ export const OfferingsProvider = ({ children }) => {
     data,
     isLoading: getOfferingsLoading,
     error: getOfferingsError,
-  } = useOfferings(params);
+  } = useOfferings("9bacb542-6bf7-4252-b353-bfe7e6d13c08", params);
 
   const values = useMemo(() => {
     return {

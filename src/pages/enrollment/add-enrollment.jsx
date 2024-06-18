@@ -4,25 +4,26 @@ import CustomSelect from "../../components/Select/Select";
 import { Layout, Select, Input, Button, Form } from "antd";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
+import { useOfferingsContext } from "../../contexts/offerings";
 
 const { Content } = Layout;
 const { Option } = Select;
 const { TextArea } = Input;
 
 const Enrollment = () => {
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const [offeringsSearchParams, setOfferingsSearchParams] = useState({});
+  const {
+    data: offerings,
+    getOfferingsLoading,
+    getOfferingsError,
+    setParams: setOfferingsSearchParamsInContext,
+  } = useOfferingsContext();
 
   useEffect(() => {
-    const handleResize = () => {
-      setScreenWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+    if (offeringsSearchParams) {
+      setOfferingsSearchParamsInContext(offeringsSearchParams);
+    }
+  }, [offeringsSearchParams]);
 
   const onFinish = useCallback(async (values) => {
     console.log("Received values of form: ", values);
@@ -36,8 +37,6 @@ const Enrollment = () => {
     //     contactNumber: values.contactNumber,
     // });
   }, []);
-
-  const initialMarginBottom = "2vh";
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -74,10 +73,11 @@ const Enrollment = () => {
     }));
   };
 
+  console.log(offerings);
+
   return (
     <Form
       name="enrollment"
-      initialValues={{ remember: true }}
       onFinish={onFinish}
       layout="vertical"
       className="w-1/2"
@@ -89,23 +89,31 @@ const Enrollment = () => {
           <Select
             className="w-full mb=[2vh]"
             size="large"
-            defaultValue="Intensive"
+            defaultValue="INTENSIVE"
+            onChange={(value) =>
+              setOfferingsSearchParams({
+                ...offeringsSearchParams,
+                program: value,
+              })
+            }
           >
-            <Option value="Intensive">Intensive</Option>
-            <Option value="Enhancement-Intensive">Enhancement-Intensive</Option>
-          </Select>
-        </Form.Item>
-
-        <Form.Item label="Semester" name="semester">
-          <Select className="w-full mb=[2vh]" size="large" defaultValue="1st">
-            <Option value="1st">1st</Option>
-            <Option value="2nd">2nd</Option>
-            <Option value="Summer">Summer</Option>
+            <Option value="INTENSIVE">Intensive</Option>
+            <Option value="ENHANCEMENT">Enhancement-Intensive</Option>
           </Select>
         </Form.Item>
 
         <Form.Item label="Year" name="year">
-          <Select className="w-full mb=[2vh]" size="large" defaultValue="2024">
+          <Select
+            className="w-full mb=[2vh]"
+            size="large"
+            defaultValue="2024"
+            onChange={(value) =>
+              setOfferingsSearchParams({
+                ...offeringsSearchParams,
+                yearOffered: value,
+              })
+            }
+          >
             {[...Array(8)].map((_, index) => {
               const year = 2024 + index;
               return (
@@ -117,12 +125,37 @@ const Enrollment = () => {
           </Select>
         </Form.Item>
 
+        <Form.Item
+          label="Semester"
+          name="semester"
+          onChange={(value) =>
+            setOfferingsSearchParams({
+              ...offeringsSearchParams,
+              semester: value,
+            })
+          }
+        >
+          <Select className="w-full mb=[2vh]" size="large" defaultValue="1st">
+            <Option value="FIRST_SEMESTER">1st</Option>
+            <Option value="SECOND_SEMESTER">2nd</Option>
+            <Option value="SUMMER">Summer</Option>
+          </Select>
+        </Form.Item>
+
         <Form.Item label="Course Offering" name="courseId">
           <Select
             className="w-full mb=[2vh]"
             size="large"
-            defaultValue=""
-          ></Select>
+            disabled={getOfferingsLoading || getOfferingsError}
+          >
+            {offerings &&
+              offerings?.data?.map((offering) => (
+                <Option value={offering?.id}>
+                  {" "}
+                  {`${offering?.course?.name}-${offering?.program}-${offering?.yearOffered}-${offering?.semester}`}
+                </Option>
+              ))}
+          </Select>
         </Form.Item>
 
         <br />
