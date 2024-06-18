@@ -4,31 +4,13 @@ import CustomSelect from "../../components/Select/Select";
 import { Layout, Select, Input, Button, Form } from "antd";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
-<<<<<<< HEAD
-=======
 import { useOfferingsContext } from "../../contexts/offerings";
->>>>>>> master
 
 const { Content } = Layout;
 const { Option } = Select;
 const { TextArea } = Input;
 
 const Enrollment = () => {
-<<<<<<< HEAD
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setScreenWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-=======
   const [offeringsSearchParams, setOfferingsSearchParams] = useState({});
   const {
     data: offerings,
@@ -42,7 +24,6 @@ const Enrollment = () => {
       setOfferingsSearchParamsInContext(offeringsSearchParams);
     }
   }, [offeringsSearchParams]);
->>>>>>> master
 
   const onFinish = useCallback(async (values) => {
     console.log("Received values of form: ", values);
@@ -57,11 +38,6 @@ const Enrollment = () => {
     // });
   }, []);
 
-<<<<<<< HEAD
-  const initialMarginBottom = "2vh";
-
-=======
->>>>>>> master
   const [formData, setFormData] = useState({
     firstName: "",
     middleName: "",
@@ -97,18 +73,11 @@ const Enrollment = () => {
     }));
   };
 
-<<<<<<< HEAD
-  return (
-    <Form
-      name="enrollment"
-      initialValues={{ remember: true }}
-=======
   console.log(offerings);
 
   return (
     <Form
       name="enrollment"
->>>>>>> master
       onFinish={onFinish}
       layout="vertical"
       className="w-1/2"
@@ -120,20 +89,6 @@ const Enrollment = () => {
           <Select
             className="w-full mb=[2vh]"
             size="large"
-<<<<<<< HEAD
-            defaultValue="Intensive"
-          >
-            <Option value="Intensive">Intensive</Option>
-            <Option value="Enhancement-Intensive">Enhancement-Intensive</Option>
-          </Select>
-        </Form.Item>
-
-        <Form.Item label="Semester" name="semester">
-          <Select className="w-full mb=[2vh]" size="large" defaultValue="1st">
-            <Option value="1st">1st</Option>
-            <Option value="2nd">2nd</Option>
-            <Option value="Summer">Summer</Option>
-=======
             defaultValue="INTENSIVE"
             onChange={(value) =>
               setOfferingsSearchParams({
@@ -144,14 +99,10 @@ const Enrollment = () => {
           >
             <Option value="INTENSIVE">Intensive</Option>
             <Option value="ENHANCEMENT">Enhancement-Intensive</Option>
->>>>>>> master
           </Select>
         </Form.Item>
 
         <Form.Item label="Year" name="year">
-<<<<<<< HEAD
-          <Select className="w-full mb=[2vh]" size="large" defaultValue="2024">
-=======
           <Select
             className="w-full mb=[2vh]"
             size="large"
@@ -163,7 +114,6 @@ const Enrollment = () => {
               })
             }
           >
->>>>>>> master
             {[...Array(8)].map((_, index) => {
               const year = 2024 + index;
               return (
@@ -175,8 +125,6 @@ const Enrollment = () => {
           </Select>
         </Form.Item>
 
-<<<<<<< HEAD
-=======
         <Form.Item
           label="Semester"
           name="semester"
@@ -194,15 +142,10 @@ const Enrollment = () => {
           </Select>
         </Form.Item>
 
->>>>>>> master
         <Form.Item label="Course Offering" name="courseId">
           <Select
             className="w-full mb=[2vh]"
             size="large"
-<<<<<<< HEAD
-            defaultValue=""
-          ></Select>
-=======
             disabled={getOfferingsLoading || getOfferingsError}
           >
             {offerings &&
@@ -213,7 +156,6 @@ const Enrollment = () => {
                 </Option>
               ))}
           </Select>
->>>>>>> master
         </Form.Item>
 
         <br />

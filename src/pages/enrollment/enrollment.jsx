@@ -1,68 +1,14 @@
 import React, { useState } from "react";
-<<<<<<< HEAD
-import Sidebar from "../../components/SideBar/Sidebar";
-import {
-  Layout,
-  Input,
-  Table,
-  Space,
-  Row,
-  Col,
-  Button,
-  Select,
-  DatePicker,
-} from "antd";
-import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
-import CustomInput from "../../components/Input/Input";
-
-const { Content } = Layout;
-=======
 import { Table, Space, Row, Col, Button, Select, DatePicker } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
 import { useCourse } from "../../contexts/courses";
 import { DateTime } from "luxon";
->>>>>>> master
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const Enrollment = () => {
-<<<<<<< HEAD
-  const [searchValue, setSearchValue] = useState("");
-  const [selectedSemester, setSelectedSemester] = useState("");
-  const [selectedYear, setSelectedYear] = useState("");
-  const [dateFrom, setDateFrom] = useState(null);
-  const [dateTo, setDateTo] = useState(null);
-
-  const data = [
-    {
-      key: "1",
-      firstName: "Louie",
-      middleName: "M",
-      lastName: "Emms",
-      schoolId: "WVSU",
-      takerType: "1st Taker",
-      courseId: "BSIT",
-      semester: "1st",
-      date: "2024-06-10",
-    },
-    {
-      key: "2",
-      firstName: "Johny",
-      middleName: "S",
-      lastName: "Seens",
-      schoolId: "UI",
-      takerType: "Re-Taker",
-      courseId: "BSEM",
-      semester: "2nd",
-      date: "2024-05-22",
-    },
-  ];
-
-  const columns = [
-    // { title: 'Name', dataIndex: 'name', key: 'name' },
-=======
   const {
     data: schools,
     loading: schoolsLoading,
@@ -81,7 +27,6 @@ const Enrollment = () => {
   const [selectedYear, setSelectedYear] = useState(undefined);
 
   const columns = [
->>>>>>> master
     {
       title: "Name",
       dataIndex: ["firstName", "middleName", "lastName"],
@@ -102,9 +47,6 @@ const Enrollment = () => {
       key: "action",
       render: (text, record) => (
         <Space size="middle">
-<<<<<<< HEAD
-          <Button type="primary" onClick={() => handleViewEnrollment(record.id)} title="View" className="w-auto bg-primary text-white">View</Button>
-=======
           <Button
             type="primary"
             onClick={() => handleViewEnrollment(record.id)}
@@ -113,7 +55,6 @@ const Enrollment = () => {
           >
             View
           </Button>
->>>>>>> master
         </Space>
       ),
     },
@@ -123,14 +64,6 @@ const Enrollment = () => {
     alert("debugging...");
   };
 
-<<<<<<< HEAD
-  const searchEnrollent = () => {
-    console.log("Search value:", searchValue);
-    console.log("Selected semester:", selectedSemester);
-    console.log("Selected year:", selectedYear);
-    console.log("Date From:", dateFrom ? dateFrom.format("YYYY-MM-DD") : null);
-    console.log("Date To:", dateTo ? dateTo.format("YYYY-MM-DD") : null);
-=======
   const searchEnrollment = () => {
     console.log(
       dateRange,
@@ -160,7 +93,6 @@ const Enrollment = () => {
     } else {
       setDateRange({ start: null, end: null });
     }
->>>>>>> master
   };
 
   return (
@@ -169,26 +101,6 @@ const Enrollment = () => {
       <Row gutter={[16, 16]}>
         <Col span={24}>
           <Row gutter={[16, 16]}>
-<<<<<<< HEAD
-            <Col span={4}>
-              <CustomInput
-                placeholder="Student Name"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                className="mb-4"
-              />
-            </Col>
-            <Col span={4}>
-              <CustomInput placeholder="Course" className="mb-4" />
-            </Col>
-            <Col span={8}>
-              <CustomInput placeholder="School" className="mb-4" />
-            </Col>
-            <Col span={4}>
-              <Select
-                placeholder="Semester"
-                className="w-full mb-4 h-[40px]"
-=======
             <Col span={6}>
               <RangePicker
                 placeholder={["Date From", "Date To"]}
@@ -236,28 +148,10 @@ const Enrollment = () => {
               <Select
                 placeholder="Semester"
                 className="w-full"
->>>>>>> master
                 onChange={(value) => setSelectedSemester(value)}
               >
                 <Option value="1st">1st</Option>
                 <Option value="2nd">2nd</Option>
-<<<<<<< HEAD
-                <Option value="3rd">3rd</Option>
-              </Select>
-            </Col>
-
-            <Col span={4}>
-              <Select
-                placeholder="Year"
-                className="w-full mb-4 h-[40px]"
-                onChange={(value) => setSelectedSemester(value)}
-              >
-                <Option value="2020">2020</Option>
-                <Option value="2021">2021</Option>
-                <Option value="2022">2022</Option>
-                <Option value="2023">2023</Option>
-                <Option value="2024">2024</Option>
-=======
                 <Option value="SUMMER">Summer</Option>
               </Select>
             </Col>
@@ -276,32 +170,16 @@ const Enrollment = () => {
                 <Option value="2029">2029</Option>
                 <Option value="2030">2030</Option>
                 <Option value="2031">2031</Option>
->>>>>>> master
               </Select>
             </Col>
 
             <Col span={4}>
-<<<<<<< HEAD
-              <RangePicker
-                placeholder={["Date From", "Date To"]}
-                className="h-[50px]"
-              />
-            </Col>
-
-            <Col span={4}>
-              <Button
-                type="primary"
-                className="w-auto bg-primary text-white mt-[10px]"
-                icon={<SearchOutlined />}
-                onClick={searchEnrollent}
-=======
               <Button
                 type="primary"
                 size="large"
                 className="w-auto bg-primary text-white h-[50px]"
                 icon={<SearchOutlined />}
                 onClick={searchEnrollment}
->>>>>>> master
               >
                 Search
               </Button>
@@ -309,11 +187,7 @@ const Enrollment = () => {
           </Row>
         </Col>
         <Col span={24}>
-<<<<<<< HEAD
-          <Table dataSource={data} columns={columns} />
-=======
           <Table dataSource={[]} columns={columns} />
->>>>>>> master
         </Col>
       </Row>
     </div>

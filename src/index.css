@@ -9,9 +9,6 @@ html, body {
     margin: 0;
     height: 100%;
     width: 100%;
-<<<<<<< HEAD
-}
-=======
 }
 
 .custom-select .ant-select-selector {
@@ -22,4 +19,3 @@ html, body {
     height: 50px !important;
     width: 100%;
   }
->>>>>>> master

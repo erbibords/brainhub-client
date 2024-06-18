@@ -1,14 +1,5 @@
 import React, { useMemo, useState } from "react";
 import CustomInput from "../../components/Input/Input";
-<<<<<<< HEAD
-import { Layout, Input, Table, Space, Row, Col, Button } from "antd";
-import { useNavigate } from "react-router-dom";
-import { useStudentContext } from "../../contexts/students";
-
-const StudentsList = () => {
-  const initialMarginBottom = "2vh";
-  const navigate = useNavigate();
-=======
 import { Select, Table, Space, Row, Col, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useStudentContext } from "../../contexts/students";
@@ -22,7 +13,6 @@ const StudentsList = () => {
     loading: schoolsLoading,
     error: schoolsError,
   } = useSchools();
->>>>>>> master
 
   const [searchName, setSearchName] = useState("");
   const [searchSchool, setSearchSchool] = useState("");
@@ -39,21 +29,13 @@ const StudentsList = () => {
       key: "action",
       render: (text, record) => (
         <Space size="small">
-<<<<<<< HEAD
-          <Button className="bg-green-600 text-white">Edit</Button>
-=======
->>>>>>> master
           <Button
             className="bg-primary text-white"
             onClick={() => {
               handleViewStudent(record.id);
             }}
           >
-<<<<<<< HEAD
-            View Profile
-=======
             View
->>>>>>> master
           </Button>
         </Space>
       ),
@@ -61,11 +43,7 @@ const StudentsList = () => {
   ];
 
   const handleViewStudent = (studentId) => {
-<<<<<<< HEAD
-    navigate(`/students/profile/${studentId}`);
-=======
     navigate(`/students/${studentId}`);
->>>>>>> master
   };
 
   const searchByName = (value) => {
@@ -88,38 +66,6 @@ const StudentsList = () => {
   }, [students, studentDataLoading, getStudentError]);
 
   return (
-<<<<<<< HEAD
-          <div>
-            <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>
-              Students List
-            </h1>
-            <Row gutter={[16, 16]}>
-              <Col span={4}>
-                <CustomInput
-                    placeholder="Search by name..."
-                    onChange={(e) => searchBySchool(e.target.value)}
-                    className="mb-4" 
-                  />
-              </Col>
-              <Col span={4}>
-                <CustomInput
-                    placeholder="Search by school..."
-                    onChange={(e) => searchBySchool(e.target.value)}
-                    className="mb-4" 
-                  />
-              </Col>
-              <Col span={3}>
-                <Button className="w-auto bg-primary text-white mt-[2px]">
-                  Search
-                </Button>
-              </Col>
-              <Col span={24}>
-                <Table dataSource={filteredData} columns={columns} />
-              </Col>
-            </Row>
-          </div>
-      
-=======
     <div>
       <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>
         Students List
@@ -155,7 +101,6 @@ const StudentsList = () => {
         </Col>
       </Row>
     </div>
->>>>>>> master
   );
 };
 
