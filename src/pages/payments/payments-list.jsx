@@ -1,6 +1,7 @@
 import React, { useState } from "react";
  
 import CustomInput from "../../components/Input/Input";
+import CustomButton from "../../components/Button/Button";
 import { Layout, Input, Table, Space, Row, Col, Button, Select, DatePicker } from "antd";
 import { EyeOutlined, SearchOutlined } from '@ant-design/icons';
 
@@ -72,9 +73,9 @@ const PaymentsList = () => {
                 <Row gutter={[16, 16]}>
 
                 <Col span={4}>
+
                     <CustomInput
                       placeholder="Reference"
-                      value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
                       className = "mb-[10px]"
                     />
@@ -83,7 +84,6 @@ const PaymentsList = () => {
                   <Col span={4}>
                     <CustomInput
                       placeholder="Student Name"
-                      value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
                       className = "mb-[10px]"
                     />
@@ -114,48 +114,43 @@ const PaymentsList = () => {
                   </Col>
 
                   <Col span={4}>
-                    <Select
-                      placeholder="Year"
-               
-                      onChange={(value) => setSelectedYear(value)}
-                      className="h-[50px] w-full mb-[10px]"
-                    >
-                      <Option value="2020">2020</Option>
-                      <Option value="2021">2021</Option>
-                      <Option value="2022">2022</Option>
-                      <Option value="2023">2023</Option>
-                      <Option value="2024">2024</Option>
-                    </Select>
+                  <p>Year</p>
+                  <Select
+                    className="w-full"
+                    
+                  >
+                    <Option value="2024">2024</Option>
+                    <Option value="2025">2025</Option>
+                    <Option value="2026">2026</Option>
+                    <Option value="2027">2027</Option>
+                    <Option value="2028">2028</Option>
+                    <Option value="2029">2029</Option>
+                    <Option value="2030">2030</Option>
+                    <Option value="2031">2031</Option>
+                  </Select>
                   </Col>
 
                   <Col span={4}>
                   
-                    
+                  <p>Date From/Date To:</p>
                     <RangePicker placeholder={['Date From', 'Date To']} className="h-[50px]" />
                   </Col>
                 
                   
-                  <Col span={4}>
-                    <Button
-                      type="primary"
-                      className="bg-primary text-white w-auto mt-[10px]"
-                      icon={<SearchOutlined />}
-                      onClick={searchPaymentList}
-                       
-                    >
+                  
+                  <Col span={4} className="flex items-end mb-1">
+                  <CustomButton   size="large" >
                       Search
-                    </Button>
- 
-                    
+                    </CustomButton>
                   </Col>
 
 
-                  <Col span={24}>
+                  <Col span={12} >
                     <Button
                       type="primary"
-                      className="w-auto bg-success text-white mb-[10px] float-right"
+                      className="w-auto bg-success text-white mt-[2vh] float-right"
                       onClick={printPaymentList}
-         
+                      size="large"
                     >
                       Print List
                     </Button>
