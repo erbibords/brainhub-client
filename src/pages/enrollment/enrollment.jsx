@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+<<<<<<< HEAD
 import Sidebar from "../../components/SideBar/Sidebar";
 import {
   Layout,
@@ -15,10 +16,19 @@ import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import CustomInput from "../../components/Input/Input";
 
 const { Content } = Layout;
+=======
+import { Table, Space, Row, Col, Button, Select, DatePicker } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import CustomInput from "../../components/Input/Input";
+import useSchools from "../../hooks/useSchools";
+import { useCourse } from "../../contexts/courses";
+import { DateTime } from "luxon";
+>>>>>>> master
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const Enrollment = () => {
+<<<<<<< HEAD
   const [searchValue, setSearchValue] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
@@ -52,6 +62,26 @@ const Enrollment = () => {
 
   const columns = [
     // { title: 'Name', dataIndex: 'name', key: 'name' },
+=======
+  const {
+    data: schools,
+    loading: schoolsLoading,
+    error: schoolsError,
+  } = useSchools();
+  const { courses, getCoursesLoading, getCoursesError } = useCourse();
+
+  const [dateRange, setDateRange] = useState({
+    from: null,
+    to: null,
+  });
+  const [studentNameFilter, setStudentNameFilter] = useState("");
+  const [selectedCourseId, setSelectedCourseId] = useState(undefined);
+  const [selectedSchoolId, setSelectedSchoolId] = useState(undefined);
+  const [selectedSemester, setSelectedSemester] = useState(undefined);
+  const [selectedYear, setSelectedYear] = useState(undefined);
+
+  const columns = [
+>>>>>>> master
     {
       title: "Name",
       dataIndex: ["firstName", "middleName", "lastName"],
@@ -72,7 +102,18 @@ const Enrollment = () => {
       key: "action",
       render: (text, record) => (
         <Space size="middle">
+<<<<<<< HEAD
           <Button type="primary" onClick={() => handleViewEnrollment(record.id)} title="View" className="w-auto bg-primary text-white">View</Button>
+=======
+          <Button
+            type="primary"
+            onClick={() => handleViewEnrollment(record.id)}
+            title="View"
+            className="w-auto bg-primary text-white"
+          >
+            View
+          </Button>
+>>>>>>> master
         </Space>
       ),
     },
@@ -82,12 +123,44 @@ const Enrollment = () => {
     alert("debugging...");
   };
 
+<<<<<<< HEAD
   const searchEnrollent = () => {
     console.log("Search value:", searchValue);
     console.log("Selected semester:", selectedSemester);
     console.log("Selected year:", selectedYear);
     console.log("Date From:", dateFrom ? dateFrom.format("YYYY-MM-DD") : null);
     console.log("Date To:", dateTo ? dateTo.format("YYYY-MM-DD") : null);
+=======
+  const searchEnrollment = () => {
+    console.log(
+      dateRange,
+      studentNameFilter,
+      selectedCourseId,
+      selectedSchoolId,
+      selectedSemester,
+      selectedYear
+    );
+  };
+
+  const handleDateRangeChange = (dates, dateStrings) => {
+    if (dates) {
+      const [startDate, endDate] = dates;
+      const formatedStartDate = DateTime.fromJSDate(startDate.toDate()).toISO({
+        includeOffset: false,
+      });
+      const formattedEndDate = DateTime.fromJSDate(endDate.toDate()).toISO({
+        includeOffset: false,
+      });
+
+      setDateRange({
+        from: formatedStartDate,
+        to: formattedEndDate,
+      });
+      console.log(formatedStartDate, formattedEndDate);
+    } else {
+      setDateRange({ start: null, end: null });
+    }
+>>>>>>> master
   };
 
   return (
@@ -96,6 +169,7 @@ const Enrollment = () => {
       <Row gutter={[16, 16]}>
         <Col span={24}>
           <Row gutter={[16, 16]}>
+<<<<<<< HEAD
             <Col span={4}>
               <CustomInput
                 placeholder="Student Name"
@@ -114,10 +188,60 @@ const Enrollment = () => {
               <Select
                 placeholder="Semester"
                 className="w-full mb-4 h-[40px]"
+=======
+            <Col span={6}>
+              <RangePicker
+                placeholder={["Date From", "Date To"]}
+                className="h-[50px]"
+                onChange={handleDateRangeChange}
+              />
+            </Col>
+            <Col span={6}>
+              <CustomInput
+                placeholder="Student Name"
+                value={studentNameFilter}
+                onChange={(e) => setStudentNameFilter(e.target.value)}
+                size="large"
+              />
+            </Col>
+            <Col span={6}>
+              <Select
+                placeholder="Course"
+                className="w-full"
+                loading={getCoursesLoading}
+                disabled={getCoursesLoading || getCoursesError}
+                onChange={(value) => setSelectedCourseId(value)}
+              >
+                {courses &&
+                  courses?.data?.map((course) => (
+                    <Option value={course.id}> {course.name}</Option>
+                  ))}
+              </Select>
+            </Col>
+            <Col span={6}>
+              <Select
+                placeholder="School"
+                className="w-full"
+                oading={schoolsLoading}
+                disabled={schoolsLoading || schoolsError}
+                onChange={(value) => setSelectedSchoolId(value)}
+              >
+                {schools &&
+                  schools?.map((school) => (
+                    <Option value={school.id}> {school.name}</Option>
+                  ))}
+              </Select>
+            </Col>
+            <Col span={3}>
+              <Select
+                placeholder="Semester"
+                className="w-full"
+>>>>>>> master
                 onChange={(value) => setSelectedSemester(value)}
               >
                 <Option value="1st">1st</Option>
                 <Option value="2nd">2nd</Option>
+<<<<<<< HEAD
                 <Option value="3rd">3rd</Option>
               </Select>
             </Col>
@@ -133,10 +257,31 @@ const Enrollment = () => {
                 <Option value="2022">2022</Option>
                 <Option value="2023">2023</Option>
                 <Option value="2024">2024</Option>
+=======
+                <Option value="SUMMER">Summer</Option>
+              </Select>
+            </Col>
+
+            <Col span={3}>
+              <Select
+                placeholder="Year"
+                className="w-full"
+                onChange={(value) => setSelectedYear(value)}
+              >
+                <Option value="2024">2024</Option>
+                <Option value="2025">2025</Option>
+                <Option value="2026">2026</Option>
+                <Option value="2027">2027</Option>
+                <Option value="2028">2028</Option>
+                <Option value="2029">2029</Option>
+                <Option value="2030">2030</Option>
+                <Option value="2031">2031</Option>
+>>>>>>> master
               </Select>
             </Col>
 
             <Col span={4}>
+<<<<<<< HEAD
               <RangePicker
                 placeholder={["Date From", "Date To"]}
                 className="h-[50px]"
@@ -149,6 +294,14 @@ const Enrollment = () => {
                 className="w-auto bg-primary text-white mt-[10px]"
                 icon={<SearchOutlined />}
                 onClick={searchEnrollent}
+=======
+              <Button
+                type="primary"
+                size="large"
+                className="w-auto bg-primary text-white h-[50px]"
+                icon={<SearchOutlined />}
+                onClick={searchEnrollment}
+>>>>>>> master
               >
                 Search
               </Button>
@@ -156,7 +309,11 @@ const Enrollment = () => {
           </Row>
         </Col>
         <Col span={24}>
+<<<<<<< HEAD
           <Table dataSource={data} columns={columns} />
+=======
+          <Table dataSource={[]} columns={columns} />
+>>>>>>> master
         </Col>
       </Row>
     </div>
