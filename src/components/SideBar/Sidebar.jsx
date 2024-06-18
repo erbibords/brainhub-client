@@ -73,9 +73,9 @@ const Sidebar = () => {
         <Menu.Item key="payments_list" icon={<DollarCircleOutlined />}>
           <Link to="/payments/list">Payments</Link>
         </Menu.Item>
-        <Menu.Item key="addPayment" icon={<PlusOutlined />}>
+        {/* <Menu.Item key="addPayment" icon={<PlusOutlined />}>
           <Link to="/payments/add">Add Payment</Link>
-        </Menu.Item>
+        </Menu.Item> */}
       </Menu>
     </Sider>
   );

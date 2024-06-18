@@ -30,6 +30,12 @@ const StudentsList = () => {
       render: (text, record) => (
         <Space size="small">
           <Button
+            className="bg-success text-white"
+           
+          >
+            Add Payment
+          </Button>
+          <Button
             className="bg-primary text-white"
             onClick={() => {
               handleViewStudent(record.id);
