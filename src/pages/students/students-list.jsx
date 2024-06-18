@@ -1,12 +1,18 @@
 import React, { useMemo, useState } from "react";
 import CustomInput from "../../components/Input/Input";
-import { Layout, Input, Table, Space, Row, Col, Button } from "antd";
+import { Select, Table, Space, Row, Col, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useStudentContext } from "../../contexts/students";
-
+import useSchools from "../../hooks/useSchools";
+const { Option } = Select;
 const StudentsList = () => {
   const initialMarginBottom = "2vh";
   const navigate = useNavigate();
+  const {
+    data: schools,
+    loading: schoolsLoading,
+    error: schoolsError,
+  } = useSchools();
 
   const [searchName, setSearchName] = useState("");
   const [searchSchool, setSearchSchool] = useState("");
@@ -65,22 +71,28 @@ const StudentsList = () => {
         Students List
       </h1>
       <Row gutter={[16, 16]}>
-        <Col span={4}>
-          <CustomInput
-            placeholder="Search by name..."
-            onChange={(e) => searchBySchool(e.target.value)}
-            className="mb-4"
-          />
+        <Col span={6}>
+          <p>Student Name: </p>
+          <CustomInput onChange={(e) => searchBySchool(e.target.value)} />
         </Col>
-        <Col span={4}>
-          <CustomInput
-            placeholder="Search by school..."
-            onChange={(e) => searchBySchool(e.target.value)}
-            className="mb-4"
-          />
+        <Col span={6}>
+          <p>School: </p>
+          <Select
+            loading={schoolsLoading}
+            disabled={schoolsLoading}
+            size="large"
+            placeholder="Select School"
+            onChange={(value) => setSelectedCourseId(value)}
+            className="custom-select"
+          >
+            {schools &&
+              schools?.map((school) => (
+                <Option value={school.id}> {school.name} </Option>
+              ))}
+          </Select>
         </Col>
-        <Col span={3}>
-          <Button className="w-auto bg-primary text-white mt-[2px]">
+        <Col span={3} className="flex items-end mb-1">
+          <Button className="w-auto bg-primary text-white" size="large">
             Search
           </Button>
         </Col>

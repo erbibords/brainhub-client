@@ -1,4 +1,4 @@
-import React, { createContext, useMemo, useState } from "react";
+import React, { createContext, useMemo, useState, useContext } from "react";
 import useOfferings from "../hooks/useOfferings";
 
 const OfferingsContext = createContext({
@@ -37,3 +37,7 @@ export const OfferingsProvider = ({ children }) => {
 };
 
 export default OfferingsContext;
+
+export const useOfferingsContext = () => {
+  return useContext(OfferingsContext);
+};

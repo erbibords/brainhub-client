@@ -10,3 +10,12 @@ html, body {
     height: 100%;
     width: 100%;
 }
+
+.custom-select .ant-select-selector {
+    padding: 12px !important; 
+  }
+
+  .ant-select {
+    height: 50px !important;
+    width: 100%;
+  }
