@@ -9,7 +9,6 @@ import Swal from "sweetalert2";
 const { Content } = Layout;
 
 const StudentProfile = () => {
-  const initialMarginBottom = "2vh";
   const [isEditing, setIsEditing] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
@@ -148,11 +147,7 @@ const StudentProfile = () => {
                   <Card>
                     <Row gutter={[16, 16]}>
                       <Col xs={24} sm={24} md={16} lg={18}>
-                        <h1
-                          style={{
-                            fontSize: "2em",
-                            marginBottom: initialMarginBottom,
-                          }}
+                        <h1 className="text-2xl mb-[2vh]"
                         >
                           {data.firstName} {data.middleName} {data.lastName}
                         </h1>
@@ -326,7 +321,7 @@ const StudentProfile = () => {
                     <Divider />
                     <div style={{ marginTop: "15px", marginBottom: "20px" }}>
                       <small>
-                        <i style={{ marginBottom: initialMarginBottom }}>
+                        <i className="mb-[2vh]">
                           Person to be notified in case of emergency:
                         </i>
                       </small>

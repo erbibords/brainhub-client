@@ -73,7 +73,7 @@ const StudentsList = () => {
 
   return (
     <div>
-      <h1 style={{ fontSize: "2em", marginBottom: initialMarginBottom }}>
+      <h1 className="text-2xl mb-[2vh]">
         Students List
       </h1>
       <Row gutter={[16, 16]}>

@@ -17,7 +17,7 @@ const MainLayout = ({ children, showSidebar = true }) => {
         <CoursesProvider>
           <OfferingsProvider>
             <div className="flex min-h-screen">
-              <header className="fixed top-0 left-0 right-0 z-50 w-full bg-red shadow">
+              <header className="fixed top-0 left-0 right-0 z-50 w-full bg-white shadow">
                 <Navbar currentRoute={location.pathname} />
               </header>
               {showSidebar && (
@@ -25,7 +25,7 @@ const MainLayout = ({ children, showSidebar = true }) => {
                   <Sidebar />
                 </aside>
               )}
-              <main className="flex-1 p-6 pt-24 ml-52">
+              <main className="flex-1 p-6 pt-24 ml-52 bg">
                 {children}
               </main>
             </div>
