@@ -275,11 +275,11 @@ const Enrollment = () => {
           <Select
             className="w-full mb=[2vh]"
             size="large"
-            defaultValue="1st Taker"
+            defaultValue="FIRST_TAKER"
           >
-            <Option value="1st Taker">1st Taker</Option>
-            <Option value="Re-Taker">Re-Taker</Option>
-            <Option value="Summer">Summer</Option>
+            <Option value="FIRST_TAKER">1st Taker</Option>
+            <Option value="SECOND_TAKER">Re-Taker</Option>
+            <Option value="SUMMER">Summer</Option>
           </Select>
         </Form.Item>
 
