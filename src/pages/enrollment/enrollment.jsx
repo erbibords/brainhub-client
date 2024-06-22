@@ -102,7 +102,7 @@ const Enrollment = () => {
         <Col span={24}>
           <Row gutter={[16, 16]}>
             <Col span={6}>
-              <p>Date From/Date To:</p>
+              <p>Date From - Date To:</p>
               <RangePicker
                 placeholder={["Date From", "Date To"]}
                 className="h-[50px] w-full"
@@ -140,7 +140,7 @@ const Enrollment = () => {
                 onChange={(value) => setSelectedSchoolId(value)}
               >
                 {schools &&
-                  schools?.map((school) => (
+                  schools?.data?.map((school) => (
                     <Option value={school.id}> {school.name}</Option>
                   ))}
               </Select>

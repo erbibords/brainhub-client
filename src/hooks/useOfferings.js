@@ -1,11 +1,15 @@
 import useSWR from 'swr';
 import { DEFAULT_BRANCH_ID} from '../constants'
 
-function useOfferings(courseId, params = {}) {
-  if(!courseId) return;
-  const {pageNo = 1, pageSize = 25, program, yearOffered, semester } = params;
-  
-  let url = `branches/${DEFAULT_BRANCH_ID}/courses/${courseId}/offerings`;
+function useOfferings(params = {}) {
+  const {pageNo = 1, pageSize = 25, courseId, program, yearOffered, semester } = params;
+
+  let url = `branches/${DEFAULT_BRANCH_ID}/offerings`;
+
+  if(courseId) {
+     url = `branches/${DEFAULT_BRANCH_ID}/courses/${courseId}/offerings`;
+  }
+
   const queryParams = new URLSearchParams();
 
   if (pageNo) queryParams.append('pageNo', pageNo);

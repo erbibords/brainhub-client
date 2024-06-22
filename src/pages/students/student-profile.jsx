@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import CustomInput from "../../components/Input/Input";
-import { Layout, Button, Row, Col, Card, Divider, Skeleton } from "antd";
+import { Button, Row, Col, Card, Divider, Skeleton, Form } from "antd";
 import useProfile from "../../hooks/useStudentProfile";
 import { useParams, useNavigate } from "react-router-dom";
 import useMutation from "../../hooks/useMutation";
 import { DEFAULT_BRANCH_ID } from "../../constants";
 import Swal from "sweetalert2";
-const { Content } = Layout;
 
 const StudentProfile = () => {
   const [isEditing, setIsEditing] = useState(false);

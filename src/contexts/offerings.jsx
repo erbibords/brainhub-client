@@ -18,7 +18,7 @@ export const OfferingsProvider = ({ children }) => {
     data,
     isLoading: getOfferingsLoading,
     error: getOfferingsError,
-  } = useOfferings("9bacb542-6bf7-4252-b353-bfe7e6d13c08", params);
+  } = useOfferings(params);
 
   const values = useMemo(() => {
     return {
@@ -29,6 +29,7 @@ export const OfferingsProvider = ({ children }) => {
     };
   }, [data, getOfferingsLoading, getOfferingsError, setParams]);
 
+  console.log(params);
   return (
     <OfferingsContext.Provider value={values}>
       {children}

@@ -5,50 +5,58 @@ import { Table, Space, Row, Col, Button, Select } from "antd";
 import { useNavigate } from "react-router";
 import { useOfferingsContext } from "../../contexts/offerings";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
-const Option = { Select };
+const { Option } = Select;
+
+const columns = [
+  {
+    title: "Course",
+    dataIndex: "course",
+    key: "course",
+    render: (_, record) => <p>{record?.course?.name}</p>,
+  },
+  {
+    title: "Review Program",
+    dataIndex: "program",
+    key: "program",
+  },
+  {
+    title: "Enrollment Capacity",
+    dataIndex: "enrollmentCapacity",
+    key: "enrollmentCapacity",
+  },
+  { title: "Semester Offered", dataIndex: "semester", key: "semester" },
+  { title: "Year offered", dataIndex: "yearOffered", key: "yearOffered" },
+  { title: "Start Date", dataIndex: "startDate", key: "startDate" },
+  {
+    title: "Payment Deadline",
+    dataIndex: "paymentDeadline",
+    key: "paymentDeadline",
+  },
+  { title: "Review Cost", dataIndex: "reviewCost", key: "reviewCost" },
+  {
+    title: "Budget Proposal",
+    dataIndex: "budgetProposal",
+    key: "budgetProposal",
+  },
+
+  {
+    title: "Action",
+    key: "action",
+    render: (text, record) => (
+      <Space size="small">
+        <CustomButton type="edit">Edit</CustomButton>
+      </Space>
+    ),
+  },
+];
 
 const Offerings = () => {
   const navigate = useNavigate();
-  const { data, getOfferingsLoading, getOfferingsError } =
-    useOfferingsContext();
-
-  const columns = [
-    { title: "Course", dataIndex: "course", key: "course" },
-    {
-      title: "Review Program",
-      dataIndex: "program",
-      key: "program",
-    },
-    {
-      title: "Enrollment Capacity",
-      dataIndex: "enrollmentCapacity",
-      key: "enrollmentCapacity",
-    },
-    { title: "Semester Offered", dataIndex: "semester", key: "semester" },
-    { title: "Year offered", dataIndex: "yearOffered", key: "yearOffered" },
-    { title: "Start Date", dataIndex: "startDate", key: "startDate" },
-    {
-      title: "Payment Deadline",
-      dataIndex: "paymentDeadline",
-      key: "paymentDeadline",
-    },
-    { title: "Review Cost", dataIndex: "reviewCost", key: "reviewCost" },
-    {
-      title: "Budget Proposal",
-      dataIndex: "budgetProposal",
-      key: "budgetProposal",
-    },
-
-    {
-      title: "Action",
-      key: "action",
-      render: (text, record) => (
-        <Space size="small">
-          <CustomButton type="edit">Edit</CustomButton>
-        </Space>
-      ),
-    },
-  ];
+  const {
+    data: offerings,
+    getOfferingsLoading,
+    getOfferingsError,
+  } = useOfferingsContext();
 
   return (
     <div>
@@ -106,7 +114,7 @@ const Offerings = () => {
           ) : (
             <Table
               size="small"
-              dataSource={data}
+              dataSource={offerings && offerings?.data}
               columns={columns}
               loading={getOfferingsLoading}
             />

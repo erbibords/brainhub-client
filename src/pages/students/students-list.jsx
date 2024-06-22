@@ -4,6 +4,8 @@ import { Select, Table, Space, Row, Col, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useStudentContext } from "../../contexts/students";
 import useSchools from "../../hooks/useSchools";
+import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
+
 const { Option } = Select;
 const StudentsList = () => {
   const initialMarginBottom = "2vh";
@@ -85,7 +87,7 @@ const StudentsList = () => {
             className="custom-select"
           >
             {schools &&
-              schools?.map((school) => (
+              schools?.data?.map((school) => (
                 <Option value={school.id}> {school.name} </Option>
               ))}
           </Select>
@@ -96,7 +98,11 @@ const StudentsList = () => {
           </Button>
         </Col>
         <Col span={24}>
-          <Table dataSource={filteredData} columns={columns} />
+          {getStudentError ? (
+            <GenericErrorDisplay className="!mt-5" />
+          ) : (
+            <Table dataSource={filteredData} columns={columns} />
+          )}
         </Col>
       </Row>
     </div>

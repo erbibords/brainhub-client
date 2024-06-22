@@ -35,11 +35,12 @@ export const StudentProvider = ({ children }) => {
       firstName,
       lastName,
       middleName,
-      schoolId = "3e2374a3-47d5-4908-af02-057742d68208",
-      address = "North baluarte zone 1, molo",
+      schoolId,
+      address,
       age,
       contactNumber,
       email,
+      emergencyContact,
     }) => {
       try {
         console.log({
@@ -51,6 +52,7 @@ export const StudentProvider = ({ children }) => {
           age,
           contactNumber,
           email,
+          emergencyContact,
         });
         const res = await axiosInstance.post(
           `branches/${DEFAULT_BRANCH_ID}/students`,
@@ -58,17 +60,12 @@ export const StudentProvider = ({ children }) => {
             firstName,
             lastName,
             middleName,
-            schoolId: "3e2374a3-47d5-4908-af02-057742d68208",
+            schoolId,
             address,
             age,
             contactNumber,
             email,
-            emergencyContact: {
-              name: "Rey Guidoriagao Sr.",
-              relationship: "Father",
-              address: "North baluarte molo, iloilo city",
-              contactNumber: "09182254320",
-            },
+            emergencyContact,
           }
         );
 
