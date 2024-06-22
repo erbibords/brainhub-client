@@ -102,23 +102,24 @@ const Enrollment = () => {
         <Col span={24}>
           <Row gutter={[16, 16]}>
             <Col span={6}>
+              <p>Date From/Date To:</p>
               <RangePicker
                 placeholder={["Date From", "Date To"]}
-                className="h-[50px]"
+                className="h-[50px] w-full"
                 onChange={handleDateRangeChange}
               />
             </Col>
             <Col span={6}>
+              <p>Student Name:</p>
               <CustomInput
-                placeholder="Student Name"
                 value={studentNameFilter}
                 onChange={(e) => setStudentNameFilter(e.target.value)}
                 size="large"
               />
             </Col>
             <Col span={6}>
+              <p>Course:</p>
               <Select
-                placeholder="Course"
                 className="w-full"
                 loading={getCoursesLoading}
                 disabled={getCoursesLoading || getCoursesError}
@@ -131,8 +132,8 @@ const Enrollment = () => {
               </Select>
             </Col>
             <Col span={6}>
+              <p>School</p>
               <Select
-                placeholder="School"
                 className="w-full"
                 oading={schoolsLoading}
                 disabled={schoolsLoading || schoolsError}
@@ -145,20 +146,20 @@ const Enrollment = () => {
               </Select>
             </Col>
             <Col span={3}>
+              <p>Semester</p>
               <Select
-                placeholder="Semester"
                 className="w-full"
                 onChange={(value) => setSelectedSemester(value)}
               >
-                <Option value="1st">1st</Option>
-                <Option value="2nd">2nd</Option>
+                <Option value="FIRST_SEMESTER">1st</Option>
+                <Option value="SECOND_SEMESTER">2nd</Option>
                 <Option value="SUMMER">Summer</Option>
               </Select>
             </Col>
 
             <Col span={3}>
+              <p>Year</p>
               <Select
-                placeholder="Year"
                 className="w-full"
                 onChange={(value) => setSelectedYear(value)}
               >
@@ -173,12 +174,10 @@ const Enrollment = () => {
               </Select>
             </Col>
 
-            <Col span={4}>
+            <Col span={3} className="flex items-end mb-1">
               <Button
-                type="primary"
+                className="w-auto bg-primary text-white"
                 size="large"
-                className="w-auto bg-primary text-white h-[50px]"
-                icon={<SearchOutlined />}
                 onClick={searchEnrollment}
               >
                 Search

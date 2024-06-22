@@ -3,12 +3,10 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "../NavBar/Navbar";
 import Sidebar from "../SideBar/Sidebar";
-import { Layout as Layout } from "antd";
 import { AuthProvider } from "../../contexts/auth";
 import { StudentProvider } from "../../contexts/students";
 import { CoursesProvider } from "../../contexts/courses";
 import { OfferingsProvider } from "../../contexts/offerings";
-const { Header, Sider, Content } = Layout;
 
 const MainLayout = ({ children, showSidebar = true }) => {
   const location = useLocation();
@@ -18,21 +16,17 @@ const MainLayout = ({ children, showSidebar = true }) => {
       <StudentProvider>
         <CoursesProvider>
           <OfferingsProvider>
-            <Layout className="min-h-screen">
-              <Header className="p-0 bg-white">
+            <div className="flex min-h-screen">
+              <header className="fixed top-0 left-0 right-0 z-50 w-full bg-white shadow">
                 <Navbar currentRoute={location.pathname} />
-              </Header>
-              <Layout>
-                {showSidebar && (
-                  <Sider width={200} className="site-layout-background">
-                    <Sidebar />
-                  </Sider>
-                )}
-                <Layout style={{ padding: "0 24px 24px" }} className="p-[24px]">
-                  <Content className="my-[16px] mx-0">{children}</Content>
-                </Layout>
-              </Layout>
-            </Layout>
+              </header>
+              {showSidebar && (
+                <aside className="fixed top-16 left-0 bottom-0 z-40 w-52 bg-gray-100 shadow">
+                  <Sidebar />
+                </aside>
+              )}
+              <main className="flex-1 p-6 pt-24 ml-52 bg">{children}</main>
+            </div>
           </OfferingsProvider>
         </CoursesProvider>
       </StudentProvider>

@@ -1,6 +1,9 @@
 import React, { useState } from "react";
  
 import CustomInput from "../../components/Input/Input";
+import CustomButton from "../../components/Button/Button";
+import useSchools from "../../hooks/useSchools";
+import { useCourse } from "../../contexts/courses";
 import { Layout, Input, Table, Space, Row, Col, Button, Select, DatePicker } from "antd";
 import { EyeOutlined, SearchOutlined } from '@ant-design/icons';
 
@@ -11,9 +14,14 @@ const { RangePicker } = DatePicker;
 const PaymentsList = () => {
   const [searchValue, setSearchValue] = useState('');
   const [selectedSemester, setSelectedSemester] = useState('');
-  const [selectedYear, setSelectedYear] = useState('');
-  const [dateFrom, setDateFrom] = useState(null);
-  const [dateTo, setDateTo] = useState(null);
+ 
+  const {
+    data: schools,
+    loading: schoolsLoading,
+    error: schoolsError,
+  } = useSchools();
+  const { courses, getCoursesLoading, getCoursesError } = useCourse();
+ 
 
   const data = [
     { key: '1', reference: 'Reference 02131',  firstName: 'Louie', middleName: 'Emms', lastName: 'Emms', schoolId: "WVSU", takerType: '1st Taker', courseId: "BSIT", semester: "1st", date: "2024-06-10", payments: "7500"},
@@ -72,89 +80,103 @@ const PaymentsList = () => {
                 <Row gutter={[16, 16]}>
 
                 <Col span={4}>
+                  
+                  <p>Date From/Date To:</p>
+                    <RangePicker className="h-[50px]" />
+                  </Col>
+
+                <Col span={4}>
+                <p>Reference:</p>
                     <CustomInput
                       placeholder="Reference"
-                      value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
-                      className = "mb-[10px]"
+                      
                     />
                   </Col>
                   
                   <Col span={4}>
+                  <p>Student Name:</p>
                     <CustomInput
-                      placeholder="Student Name"
-                      value={searchValue}
+                    
                       onChange={(e) => setSearchValue(e.target.value)}
-                      className = "mb-[10px]"
+                
                     />
                   </Col>
                   <Col span={4}>
-                    <CustomInput
-                      placeholder="Course"
-                      className = "mb-[10px]"
-                    />
+                  <p>Course:</p>
+                  <Select
+                    className="w-full"
+                    loading={getCoursesLoading}
+                    disabled={getCoursesLoading || getCoursesError}
+            
+                  >
+                    {courses &&
+                      courses?.data?.map((course) => (
+                        <Option value={course.id}> {course.name}</Option>
+                      ))}
+                  </Select>
                   </Col>
                   <Col span={8}>
-                    <CustomInput
-                      placeholder="School"
-                      className = "mb-[10px]"
-                    />
+                  <p>School:</p>
+                  <Select
+                      className="w-full"
+                      oading={schoolsLoading}
+                      disabled={schoolsLoading || schoolsError}
+                  
+                    >
+                      {schools &&
+                        schools?.map((school) => (
+                          <Option value={school.id}> {school.name}</Option>
+                        ))}
+                    </Select>
                   </Col>
                   <Col span={4}>
-                    <Select
-                      placeholder="Semester"
+                  <p>Semester:</p>
+                    <Select 
                       onChange={(value) => setSelectedSemester(value)}
                       className="h-[50px] w-full mb-[10px]"
                     >
-                      <Option value="1st">1st</Option>
-                      <Option value="2nd">2nd</Option>
+                      <Option value="FIRST_SEMESTER">1st</Option>
+                      <Option value="SECOND_SEMESTER">2nd</Option>
+                      <Option value="SUMMER">Summer</Option>
             
                     </Select>
                   </Col>
 
                   <Col span={4}>
-                    <Select
-                      placeholder="Year"
-               
-                      onChange={(value) => setSelectedYear(value)}
-                      className="h-[50px] w-full mb-[10px]"
-                    >
-                      <Option value="2020">2020</Option>
-                      <Option value="2021">2021</Option>
-                      <Option value="2022">2022</Option>
-                      <Option value="2023">2023</Option>
-                      <Option value="2024">2024</Option>
-                    </Select>
+                  <p>Year</p>
+                  <Select
+                    className="w-full"
+                    
+                  >
+                    <Option value="2024">2024</Option>
+                    <Option value="2025">2025</Option>
+                    <Option value="2026">2026</Option>
+                    <Option value="2027">2027</Option>
+                    <Option value="2028">2028</Option>
+                    <Option value="2029">2029</Option>
+                    <Option value="2030">2030</Option>
+                    <Option value="2031">2031</Option>
+                  </Select>
                   </Col>
 
-                  <Col span={4}>
                   
-                    
-                    <RangePicker placeholder={['Date From', 'Date To']} className="h-[50px]" />
-                  </Col>
                 
                   
-                  <Col span={4}>
-                    <Button
-                      type="primary"
-                      className="bg-primary text-white w-auto mt-[10px]"
-                      icon={<SearchOutlined />}
-                      onClick={searchPaymentList}
-                       
-                    >
+                  
+                  <Col span={4} className="flex items-end mb-1">
+                  <CustomButton type="primary" size="large" className="bg-primary text-white mb-[10px]">
                       Search
-                    </Button>
- 
-                    
+                    </CustomButton>
                   </Col>
 
 
-                  <Col span={24}>
+                  <Col span={12} >
                     <Button
                       type="primary"
-                      className="w-auto bg-success text-white mb-[10px] float-right"
+                      className="w-auto bg-success text-white mt-[25px] float-right"
                       onClick={printPaymentList}
-         
+                      size="large"
                     >
                       Print List
                     </Button>
