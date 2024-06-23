@@ -63,15 +63,17 @@ const Offerings = () => {
       <h1 className="text-2xl mb-[2vh]">Offerings</h1>
       <Row gutter={[16, 16]}>
         <Col span={4}>
+        <p>Course: </p>
           <CustomInput
-            placeholder="Search by course.."
+            
             onChange={(e) => searchByOfferings(e.target.value)}
           />
         </Col>
 
         <Col span={4}>
+          <p>Year: </p>
           <Select
-            placeholder="Year"
+             
             onChange={(value) => setSelectedYear(value)}
             className="h-[40px] w-full mb-[10px]"
           >
@@ -83,8 +85,9 @@ const Offerings = () => {
           </Select>
         </Col>
         <Col span={4}>
+        <p>Semester: </p>
           <Select
-            placeholder="Semester"
+          
             onChange={(value) => setSelectedSemester(value)}
             className="h-[40px] w-full mb-[10px]"
           >
@@ -93,13 +96,15 @@ const Offerings = () => {
             <Option value="Summer">Summer</Option>
           </Select>
         </Col>
-        <Col span={3}>
-          <CustomButton type="primary">Search</CustomButton>
+        <Col span={3} className="flex items-end mb-[2vh]">
+          <Button className="w-auto bg-primary text-white" size="large">
+            Search
+          </Button>
         </Col>
-
+        
         <Col span={8}>
           <Button
-            className="w-auto bg-primary text-white float-right"
+            className="w-auto bg-primary text-white float-right mt-[3vh]"
             size="large"
             onClick={() => {
               navigate(`/offerings/add`);

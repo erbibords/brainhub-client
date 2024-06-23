@@ -13,6 +13,7 @@ import ViewCourse from "./pages/courses/view-course";
 import Layout from "./components/Layout/Layout";
 import Offerings from "./pages/offerings/offerings";
 import AddOfferings from "./pages/offerings/add-offerings";
+import PrintEnrollment from "./pages/enrollment/print-enrollment";
 
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
           <Route path="/payments/:id" element={<ViewPayment />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:courseId" element={<ViewCourse />} />
+          <Route path="/enrollments/:enrollmentId" element={<PrintEnrollment />} />
         </Routes>
       </Layout>
     </Router>
