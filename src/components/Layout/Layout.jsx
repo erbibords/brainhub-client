@@ -1,4 +1,3 @@
-// src/components/Layout/Layout.jsx
 import React from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "../NavBar/Navbar";
@@ -11,6 +10,7 @@ import { EnrollmentsProvider } from "../../contexts/enrollments";
 
 const MainLayout = ({ children, showSidebar = true }) => {
   const location = useLocation();
+  const isPrintPage = location.pathname.startsWith("/enrollments/");
 
   return (
     <AuthProvider>

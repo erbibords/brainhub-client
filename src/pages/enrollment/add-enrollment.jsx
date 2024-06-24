@@ -232,7 +232,7 @@ const Enrollment = () => {
   }, [enrollStudent, selectedOfferingId, takerType, selectedExistingStudentId]);
 
   return (
-    <div className="w-full h-[800px] overflow-y-auto">
+    <div className="w-full">
       <div>
         <Form layout="vertical" className="w-1/2">
           <h1 className="text-2xl mb-[2vh]">Enroll Student</h1>

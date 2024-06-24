@@ -36,6 +36,8 @@ const Sidebar = () => {
       openKeys = ["payments_list"];
     }else if (pathname.startsWith("/offerings")) {
       selectedKey = ["offerings"];
+    }else if (pathname.startsWith("/view-enrollment")) {
+      selectedKey = ["enrollment"];
     }
 
     return { selectedKey, openKeys };

@@ -159,7 +159,7 @@ const Offerings = () => {
 
         <Col span={24}>
           <Button
-            className="w-auto bg-primary text-white float-right"
+            className="w-auto bg-primary text-white float-right mt-[3vh]"
             size="large"
             onClick={() => {
               navigate(`/offerings/add`);
