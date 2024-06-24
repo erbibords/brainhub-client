@@ -71,9 +71,8 @@ const columns = [
   {
     title: "Action",
     key: "action",
-    render: (text, record) => (
+    render: () => (
       <Space size="small">
-        <CustomButton type="edit">Edit</CustomButton>
         <CustomButton type="primary">View</CustomButton>
       </Space>
     ),
