@@ -37,7 +37,7 @@ const Enrollment = () => {
       ),
     },
     { title: "School", dataIndex: "schoolId", key: "schoolId" },
-    { title: "Student Status", dataIndex: "takerType", key: "takerType" },
+    { title: "Taker Type", dataIndex: "takerType", key: "takerType" },
     { title: "Course.", dataIndex: "courseId", key: "courseId" },
     { title: "Semester", dataIndex: "semester", key: "semester" },
     { title: "Date.", dataIndex: "date", key: "date" },
