@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
 import { Table, Space, Row, Col, Button, Select } from "antd";
 import { useNavigate } from "react-router";
 import { useOfferingsContext } from "../../contexts/offerings";
+import { useCourse } from "../../contexts/courses";
+
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
+import { DateTime } from "luxon";
+import { formatSemester, formatAmount } from "../../utils/formatting";
+import { REVIEW_PROGRAM, SEMESTER, YEAR } from "../../constants";
 const { Option } = Select;
 
 const columns = [
@@ -19,24 +24,48 @@ const columns = [
     dataIndex: "program",
     key: "program",
   },
+
+  {
+    title: "Semester Offered",
+    dataIndex: "semester",
+    key: "semester",
+    render: (data) => {
+      return formatSemester(data);
+    },
+  },
+  { title: "Year offered", dataIndex: "yearOffered", key: "yearOffered" },
+  {
+    title: "Start Date",
+    dataIndex: "startDate",
+    key: "startDate",
+    render: (data) => {
+      return DateTime.fromISO(data).toFormat("MMM dd, yyyy");
+    },
+  },
+  {
+    title: "Payment Deadline",
+    dataIndex: "paymentDeadline",
+    key: "paymentDeadline",
+    render: (data) => {
+      return DateTime.fromISO(data).toFormat("MMM dd, yyyy");
+    },
+  },
   {
     title: "Enrollment Capacity",
     dataIndex: "enrollmentCapacity",
     key: "enrollmentCapacity",
   },
-  { title: "Semester Offered", dataIndex: "semester", key: "semester" },
-  { title: "Year offered", dataIndex: "yearOffered", key: "yearOffered" },
-  { title: "Start Date", dataIndex: "startDate", key: "startDate" },
   {
-    title: "Payment Deadline",
-    dataIndex: "paymentDeadline",
-    key: "paymentDeadline",
+    title: "Review Cost",
+    dataIndex: "reviewCost",
+    key: "reviewCost",
+    render: (data) => formatAmount(data),
   },
-  { title: "Review Cost", dataIndex: "reviewCost", key: "reviewCost" },
   {
     title: "Budget Proposal",
     dataIndex: "budgetProposal",
     key: "budgetProposal",
+    render: (data) => formatAmount(data),
   },
 
   {
@@ -45,6 +74,7 @@ const columns = [
     render: (text, record) => (
       <Space size="small">
         <CustomButton type="edit">Edit</CustomButton>
+        <CustomButton type="primary">View</CustomButton>
       </Space>
     ),
   },
@@ -52,52 +82,82 @@ const columns = [
 
 const Offerings = () => {
   const navigate = useNavigate();
+  const { courses, getCoursesLoading, getCoursesError } = useCourse();
   const {
     data: offerings,
     getOfferingsLoading,
     getOfferingsError,
+    setParams,
   } = useOfferingsContext();
+
+  useEffect(() => {
+    setParams({
+      pageNo: 1,
+      pageSize: 25,
+    });
+  }, []);
 
   return (
     <div>
       <h1 className="text-2xl mb-[2vh]">Offerings</h1>
       <Row gutter={[16, 16]}>
         <Col span={4}>
-          <CustomInput
-            placeholder="Search by course.."
-            onChange={(e) => searchByOfferings(e.target.value)}
-          />
+          <p>Course: </p>
+          <Select
+            className="h-[40px] w-full"
+            disabled={getCoursesLoading || getCoursesError}
+            loading={getCoursesLoading}
+          >
+            {courses?.data?.map((course) => (
+              <Option value={course.id} key={course.id}>
+                {course.name}
+              </Option>
+            ))}
+          </Select>
+          {getCoursesError && (
+            <label className="text-secondary"> Unable to fetch courses. </label>
+          )}
         </Col>
 
         <Col span={4}>
-          <Select
-            placeholder="Year"
-            onChange={(value) => setSelectedYear(value)}
-            className="h-[40px] w-full mb-[10px]"
-          >
-            <Option value="2020">2020</Option>
-            <Option value="2021">2021</Option>
-            <Option value="2022">2022</Option>
-            <Option value="2023">2023</Option>
-            <Option value="2024">2024</Option>
+          <p>Program: </p>
+          <Select className="h-[40px] w-full">
+            {REVIEW_PROGRAM.map((program) => (
+              <Option value={program.value} key={program.value}>
+                {program.label}
+              </Option>
+            ))}
+          </Select>
+        </Col>
+
+        <Col span={4}>
+          <p>Year Offered: </p>
+          <Select className="h-[40px] w-full">
+            {YEAR.map((y) => (
+              <Option value={y} key={y}>
+                {y}
+              </Option>
+            ))}
           </Select>
         </Col>
         <Col span={4}>
-          <Select
-            placeholder="Semester"
-            onChange={(value) => setSelectedSemester(value)}
-            className="h-[40px] w-full mb-[10px]"
-          >
-            <Option value="FIRST_SEMESTER">1st</Option>
-            <Option value="SECOND_SEMESTER">2nd</Option>
-            <Option value="Summer">Summer</Option>
+          <p>Semester Offered: </p>
+          <Select className="h-[40px] w-full">
+            {SEMESTER.map((sem) => (
+              <Option value={sem.value} key={sem.value}>
+                {sem.label}
+              </Option>
+            ))}
           </Select>
         </Col>
-        <Col span={3}>
-          <CustomButton type="primary">Search</CustomButton>
+        <Col span={3} className="flex items-center mt-4">
+          <CustomButton type="primary" className="mr-2">
+            Filter
+          </CustomButton>
+          <CustomButton type="primary">Clear</CustomButton>
         </Col>
 
-        <Col span={8}>
+        <Col span={24}>
           <Button
             className="w-auto bg-primary text-white float-right"
             size="large"

@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Table, Space, Row, Col, Button, Select, DatePicker } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
 import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
+import { useEnrollmentsContext } from "../../contexts/enrollments";
 import { useCourse } from "../../contexts/courses";
 import { DateTime } from "luxon";
+import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
+import { getCourseById, getSchoolById } from "../../utils/mappings";
+import CustomButton from "../../components/Button/Button";
+
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -15,7 +19,8 @@ const Enrollment = () => {
     error: schoolsError,
   } = useSchools();
   const { courses, getCoursesLoading, getCoursesError } = useCourse();
-
+  const { enrollments, getEnrollmentsLoading, getEnrollmentsError } =
+    useEnrollmentsContext();
   const [dateRange, setDateRange] = useState({
     from: null,
     to: null,
@@ -26,43 +31,84 @@ const Enrollment = () => {
   const [selectedSemester, setSelectedSemester] = useState(undefined);
   const [selectedYear, setSelectedYear] = useState(undefined);
 
-  const columns = [
-    {
-      title: "Name",
-      dataIndex: ["firstName", "middleName", "lastName"],
-      render: (text, record) => (
-        <span>
-          {record.firstName} {record.middleName} {record.lastName}
-        </span>
-      ),
-    },
-    { title: "School", dataIndex: "schoolId", key: "schoolId" },
-    { title: "Student Status", dataIndex: "takerType", key: "takerType" },
-    { title: "Course.", dataIndex: "courseId", key: "courseId" },
-    { title: "Semester", dataIndex: "semester", key: "semester" },
-    { title: "Date.", dataIndex: "date", key: "date" },
-
-    {
-      title: "Action",
-      key: "action",
-      render: (text, record) => (
-        <Space size="middle">
-          <Button
-            type="primary"
-            onClick={() => handleViewEnrollment(record.id)}
-            title="View"
-            className="w-auto bg-primary text-white"
-          >
-            View
-          </Button>
-        </Space>
-      ),
-    },
-  ];
-
   const handleViewEnrollment = (studentId) => {
     alert("debugging...");
   };
+
+  const columns = useMemo(
+    () => [
+      {
+        title: "Name",
+        dataIndex: "student",
+        render: (student) => (
+          <label>
+            {student.firstName} {student.middleName} {student.lastName}
+          </label>
+        ),
+      },
+      {
+        title: "School",
+        dataIndex: "student",
+        render: (data) => {
+          if (!data || schoolsLoading || schoolsError) return null;
+          const school = getSchoolById(schools.data, data.schoolId);
+          return school ? school.name : null;
+        },
+      },
+      { title: "Student Status", dataIndex: "takerType", key: "takerType" },
+      {
+        title: "Course",
+        dataIndex: "courseOffering",
+        render: (data) => {
+          if (!data || getCoursesLoading || getCoursesError) return null;
+          const course = getCourseById(courses.data, data.course.id);
+          return course ? course.name : null;
+        },
+      },
+      {
+        title: "Semester",
+        dataIndex: "courseOffering",
+        render: (course) => {
+          return course.semester;
+        },
+      },
+      {
+        title: "Enrollment Date",
+        dataIndex: "createdAt",
+        key: "createdAt",
+        render: (val) => {
+          const date = DateTime.fromISO(val);
+          const formattedDate = date.toFormat("MMM dd, yyyy");
+          return <label>{formattedDate}</label>;
+        },
+      },
+      {
+        title: "Action",
+        key: "action",
+        render: (text, record) => (
+          <Space size="middle">
+            <CustomButton
+              type="primary"
+              onClick={() => handleViewEnrollment(record.id)}
+              title="View"
+              className="w-auto bg-primary text-white"
+            >
+              View
+            </CustomButton>
+          </Space>
+        ),
+      },
+    ],
+    [
+      courses.data,
+      getCoursesLoading,
+      getCoursesError,
+      handleViewEnrollment,
+      schools.data,
+      schoolsError,
+      schoolsLoading,
+    ]
+  );
 
   const searchEnrollment = () => {
     console.log(
@@ -127,7 +173,9 @@ const Enrollment = () => {
               >
                 {courses &&
                   courses?.data?.map((course) => (
-                    <Option value={course.id}> {course.name}</Option>
+                    <Option value={course.id} key={course.id}>
+                      {course.name}
+                    </Option>
                   ))}
               </Select>
             </Col>
@@ -141,7 +189,10 @@ const Enrollment = () => {
               >
                 {schools &&
                   schools?.data?.map((school) => (
-                    <Option value={school.id}> {school.name}</Option>
+                    <Option value={school.id} key={school.id}>
+                      {" "}
+                      {school.name}
+                    </Option>
                   ))}
               </Select>
             </Col>
@@ -175,18 +226,22 @@ const Enrollment = () => {
             </Col>
 
             <Col span={3} className="flex items-end mb-1">
-              <Button
-                className="w-auto bg-primary text-white"
-                size="large"
-                onClick={searchEnrollment}
-              >
+              <CustomButton size="large" onClick={searchEnrollment}>
                 Search
-              </Button>
+              </CustomButton>
             </Col>
           </Row>
         </Col>
         <Col span={24}>
-          <Table dataSource={[]} columns={columns} />
+          {!getEnrollmentsError && enrollments ? (
+            <Table
+              dataSource={enrollments.data}
+              columns={columns}
+              loading={getEnrollmentsLoading}
+            />
+          ) : (
+            <GenericErrorDisplay />
+          )}
         </Col>
       </Row>
     </div>

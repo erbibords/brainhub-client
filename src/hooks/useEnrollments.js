@@ -1,16 +1,21 @@
 import useSWR from 'swr';
 import { DEFAULT_BRANCH_ID} from '../constants'
 
-function useEnrollments(offeringsid, params = {}) {
-  if(!offeringsid) return;
-  const { name = undefined,  pageNo = 1, pageSize = 25 } = params;
+function useEnrollments( params = {}) {
+  const { pageNo = 1, pageSize = 25, courseOfferingid = undefined, semester = undefined, schoolId = undefined, yearOffered = undefined } = params;
   
-  let url = `branches/${DEFAULT_BRANCH_ID}/courses`;
+  let url = `branches/${DEFAULT_BRANCH_ID}/enrollments`;
   const queryParams = new URLSearchParams();
 
-  if (name) queryParams.append('name', name);
   if (pageNo) queryParams.append('pageNo', pageNo);
   if (pageSize) queryParams.append('pageSize', pageSize);
+  if (courseOfferingid) queryParams.append('courseOfferingid', courseOfferingid);
+  if (semester) queryParams.append('semester', semester);
+  if (schoolId) queryParams.append('schoolId', schoolId);
+  if (yearOffered) queryParams.append('yearOffered', yearOffered);
+   queryParams.append('includeStudent', 'true');
+   queryParams.append('includeCourseOffering', 'true');
+
 
   if (queryParams.toString()) {
     url += `?${queryParams.toString()}`;
@@ -20,7 +25,7 @@ function useEnrollments(offeringsid, params = {}) {
   const isLoading = !data && !error;
 
   return {
-    courses: data,
+    data,
     error,
     isLoading,
   };

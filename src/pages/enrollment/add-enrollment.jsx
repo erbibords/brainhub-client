@@ -1,10 +1,9 @@
-import React, { useState, useCallback, useEffect } from "react";
-
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
 import { useCourse } from "../../contexts/courses";
 import { useStudentContext } from "../../contexts/students";
-import { Select, Input, Form, Divider, Radio } from "antd";
+import { Select, Input, Form, Divider, Radio, AutoComplete } from "antd";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
 import { useOfferingsContext } from "../../contexts/offerings";
@@ -36,38 +35,30 @@ const Enrollment = () => {
     error: schoolsError,
   } = useSchools();
   const { courses, getCoursesLoading, getCoursesError } = useCourse();
-  const [offeringsSearchParams, setOfferingsSearchParams] = useState({});
+  const [offeringsSearchParams, setOfferingsSearchParams] = useState({
+    pageNo: 1,
+    pageSize: 25,
+    yearOffered: new Date().getFullYear(),
+    semester: "FIRST_SEMESTER",
+    program: "INTENSIVE",
+  });
+  const [studentSearchText, setStudentSearchText] = useState();
   const { students, studentDataLoading, getStudentError, addStudent } =
     useStudentContext();
   const [studentToEnrollRadioValue, setstudentToEnrollRadioValue] =
-    useState("new");
+    useState("existing");
   const [selectedOfferingId, setSelectedOfferingId] = useState(undefined);
+  const [selectedExistingStudentId, setSelectedStudentId] = useState(undefined);
+  const [takerType, setTakerType] = useState("FIRST_TAKER");
 
   const getRadioStudent = ({ target: { value } }) => {
     setstudentToEnrollRadioValue(value);
   };
 
-  console.log(selectedOfferingId);
-
-  const {
-    mutate: addEnrollment,
-    loading: addEnrollmentLoading,
-    error: addEnrollmentError,
-  } = useMutation(
+  const { mutate: addEnrollment, loading: addEnrollmentLoading } = useMutation(
     `/branches/${DEFAULT_BRANCH_ID}/offerings/${selectedOfferingId}/enrollments`,
     "PUT"
   );
-
-  useEffect(() => {
-    if (addEnrollmentError) {
-      Swal.fire({
-        icon: "error",
-        title: "Error enrolling student!",
-        message: "It may be due to inputs, Please double check and try again!",
-        timer: 2000,
-      });
-    }
-  }, [addEnrollmentError]);
 
   const {
     data: offerings,
@@ -82,6 +73,66 @@ const Enrollment = () => {
     }
   }, [offeringsSearchParams]);
 
+  const mapStudentsToAutocompleteOptions = (students) => {
+    if (!students || students.length < 1) {
+      return [];
+    }
+
+    return students?.map((student) => {
+      const studentName = `${student.firstName} ${student.middleName} ${student.lastName}`;
+      return {
+        label: studentName,
+        value: studentName,
+        id: student.id,
+      };
+    });
+  };
+
+  const filteredStudentOptions = useMemo(() => {
+    if (
+      !studentSearchText ||
+      studentSearchText === "" ||
+      !students ||
+      students.data < 1
+    ) {
+      return [];
+    }
+
+    const res = students.data.filter((item) =>
+      item.firstName.toLowerCase().includes(studentSearchText.toLowerCase())
+    );
+    return mapStudentsToAutocompleteOptions(
+      students.data.filter((item) =>
+        item.firstName.toLowerCase().includes(studentSearchText.toLowerCase())
+      )
+    );
+  }, [studentSearchText, students]);
+
+  const enrollNewStudent = useCallback(
+    async (values) => {
+      try {
+        const res = await addStudent(values);
+        if (res && res.id) {
+          const studentId = res.id;
+          const enrollmentData = {
+            takerType: "FIRST_TAKER",
+            status: "",
+            studentId,
+          };
+          await enrollStudent(enrollmentData);
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error adding student!",
+          text: "It may be due to inputs, Please double check and try again!",
+          timer: 2000,
+        });
+      }
+    },
+    [addStudent, addEnrollment]
+  );
+
   const onFinish = useCallback(
     async (values) => {
       if (!selectedOfferingId) {
@@ -90,7 +141,6 @@ const Enrollment = () => {
           title: "Please select course offering!",
           timer: 2000,
         });
-
         return;
       }
       const addStudentValue = {
@@ -101,7 +151,9 @@ const Enrollment = () => {
         schoolId: values?.schoolId,
         address: values?.address,
         age: 0,
-        email: `${values?.firstName}generateFourDigitRandomNumber@brainhub.com`,
+        email: `${
+          values?.firstName
+        }${generateFourDigitRandomNumber()}@brainhub.com`,
         emergencyContact: {
           name: values?.emergencyContactName,
           relationship: values?.emergencyContactRelationship,
@@ -110,26 +162,74 @@ const Enrollment = () => {
         },
       };
 
-      console.log(addStudentValue);
+      await enrollNewStudent(addStudentValue);
+    },
+    [addStudent, setSelectedOfferingId, addEnrollment, enrollNewStudent]
+  );
+
+  const enrollStudent = useCallback(
+    async (data) => {
+      if (!data) return;
+
+      if (!data.studentId) {
+        Swal.fire({
+          icon: "warning",
+          title: "Please add student to enroll!",
+          timer: 2500,
+        });
+
+        return;
+      }
+
+      if (!data.takerType) {
+        Swal.fire({
+          icon: "warning",
+          title: "Please add taker type!",
+          timer: 2500,
+        });
+        return;
+      }
 
       try {
-        const res = await addStudent(addStudentValue);
-        if (res && res.id) {
-          const studentId = res.id;
-          const enrollmentData = {
-            takerType: "FIRST_TAKER",
-            status: "",
-            studentId,
-          };
-          addEnrollment(enrollmentData);
-          console.log(enrollmentData);
+        const enrollmentRes = await addEnrollment(data);
+        if (enrollmentRes) {
+          Swal.fire({
+            icon: "success",
+            title: "Enrollment successful!",
+            text: "Redirecting to enrollment form printing...",
+            timer: 2500,
+          });
         }
       } catch (error) {
-        alert("error");
+        Swal.fire({
+          icon: "error",
+          title: "Enrollment failed!",
+          text: "This may be due to inputs. Please try again later!",
+          timer: 2500,
+        });
       }
     },
-    [addStudent, setSelectedOfferingId, addEnrollment]
+    [addEnrollment]
   );
+
+  const enrollExistingStudent = useCallback(async () => {
+    if (!selectedOfferingId) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please select course offering!",
+        timer: 2000,
+      });
+      return;
+    }
+
+    const data = {
+      takerType,
+      studentId: selectedExistingStudentId,
+      status: "",
+    };
+
+    await enrollStudent(data);
+  }, [enrollStudent, selectedOfferingId, takerType, selectedExistingStudentId]);
 
   return (
     <div className="w-full h-[800px] overflow-y-auto">
@@ -181,13 +281,12 @@ const Enrollment = () => {
               className="w-full mb=[2vh]"
               size="large"
               defaultValue="1st"
-              // onChange={(value) => {
-              //   console.log(value);
-              //   setOfferingsSearchParams({
-              //     ...offeringsSearchParams,
-              //     semester: value,
-              //   });
-              // }}
+              onChange={(value) => {
+                setOfferingsSearchParams({
+                  ...offeringsSearchParams,
+                  semester: value,
+                });
+              }}
             >
               <Option value="FIRST_SEMESTER">1st</Option>
               <Option value="SECOND_SEMESTER">2nd</Option>
@@ -207,7 +306,6 @@ const Enrollment = () => {
                 })
               }
             >
-              <Option value="test"> Test </Option>
               {courses &&
                 courses?.data?.map((course) => (
                   <Option key={course.id} value={course.id}>
@@ -222,10 +320,9 @@ const Enrollment = () => {
           label="Course Offering:"
           name="courseId"
           layout="vertical"
-          className="w-1/2"
+          className="w-1/2 mb-[2vh]"
         >
           <Select
-            className="w-full mb-[2vh]"
             size="large"
             disabled={getOfferingsLoading || getOfferingsError}
             onChange={(value) => setSelectedOfferingId(value)}
@@ -237,6 +334,12 @@ const Enrollment = () => {
                 </Option>
               ))}
           </Select>
+
+          {getOfferingsError && (
+            <label className="text-secondary">
+              Error loading offerings. please try again later!{" "}
+            </label>
+          )}
         </Form.Item>
 
         <div className="mb-[2vh]">
@@ -253,54 +356,72 @@ const Enrollment = () => {
             optionType="button"
           />
           {studentToEnrollRadioValue === "existing" && (
-            <Form.Item
-              label="Student Name"
-              name="studentId"
-              className="mt-[10px] w-1/2"
-              layout="vertical"
-            >
-              <Select
-                className="w-full"
-                loading={studentDataLoading}
-                disabled={studentDataLoading || getStudentError}
+            <>
+              <Form.Item
+                label="Student Name"
+                name="studentId"
+                className="mt-[10px] w-1/2"
+                layout="vertical"
               >
-                {students &&
-                  students?.data?.map((student) => (
-                    <Option key={student.studentId} value={student.studentId}>
-                      {student.firstName} {student.middleName}{" "}
-                      {student.lastName}
-                    </Option>
-                  ))}
-              </Select>
+                <AutoComplete
+                  loading={studentDataLoading}
+                  disabled={studentDataLoading || getStudentError}
+                  className="w-full"
+                  placeholder="Select student"
+                  onSelect={(value, option) => {
+                    setSelectedStudentId(option.id);
+                  }}
+                  onSearch={(value) => {
+                    setStudentSearchText(value);
+                  }}
+                  options={filteredStudentOptions}
+                />
+                {getStudentError && (
+                  <label className="text-secondary">
+                    Error loading students. please try again later!{" "}
+                  </label>
+                )}
+              </Form.Item>
 
-              {getStudentError && (
-                <label className="text-secondary">
-                  Error loading students. please try again later!{" "}
-                </label>
-              )}
-            </Form.Item>
+              <Form.Item label="Taker type" layout="vertical" className="w-1/2">
+                <Select
+                  className="w-full mb=[2vh]"
+                  size="large"
+                  defaultValue="1st"
+                  onChange={(value) => {
+                    setTakerType(value);
+                  }}
+                >
+                  <Option value="FIRST_TAKER">1st Taker</Option>
+                  <Option value="RE_TAKER">Re-taker</Option>
+                  <Option value="SUMMER">Summer</Option>
+                </Select>
+              </Form.Item>
+            </>
           )}
         </div>
-        <Divider />
+
         {studentToEnrollRadioValue === "new" && (
           <Form
             name="enrollment"
             onFinish={onFinish}
             layout="vertical"
             className="w-1/2"
-            initialValues={{
-              lastName: "John",
-              middleName: "Day",
-              firstName: "Doe",
-              contactNumber: "09182254329",
-              address: "Lopez Jaena",
-              age: 0,
-              email: `test${generateFourDigitRandomNumber}@brainhub.com`,
-              emergencyContactName: "Jane Day Doe",
-              emergencyContactRelationship: "Spouse",
-              emergencyContactAddress: "USA",
-              emergencyContactNumber: "09101214090",
-            }}
+            initialValues={
+              {
+                // lastName: "John",
+                // middleName: "Day",
+                // firstName: "Doe",
+                // contactNumber: "09182254329",
+                // address: "Lopez Jaena",
+                // age: 0,
+                // email: `test${generateFourDigitRandomNumber()}@brainhub.com`,
+                // emergencyContactName: "Jane Day Doe",
+                // emergencyContactRelationship: "Spouse",
+                // emergencyContactAddress: "USA",
+                // emergencyContactNumber: "09101214090",
+              }
+            }
           >
             <>
               <Form.Item
@@ -460,7 +581,7 @@ const Enrollment = () => {
                     className="w-full mb-[2vh] py-[5px]"
                   />
                 </Form.Item>
-                <Form.Item>
+                <Form.Item className="flex justify-center">
                   <CustomButton
                     type="primary"
                     htmlType="submit"
@@ -478,8 +599,12 @@ const Enrollment = () => {
 
         {/* Save button */}
         {studentToEnrollRadioValue === "existing" && (
-          <div className="text-right mb-5">
-            <CustomButton type="primary" size="large">
+          <div className="text-right mb-5 w-1/2 flex justify-center">
+            <CustomButton
+              type="primary"
+              size="large"
+              onClick={enrollExistingStudent}
+            >
               Submit
             </CustomButton>
           </div>

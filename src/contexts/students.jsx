@@ -19,7 +19,7 @@ const StudentContext = createContext({
 
 export const StudentProvider = ({ children }) => {
   const [params, setParams] = useState({
-    name: undefined,
+    studentName: undefined,
     school: undefined,
     pageNo: 1,
     pageSize: 25,
@@ -30,6 +30,7 @@ export const StudentProvider = ({ children }) => {
     error: getStudentError,
   } = useStudents(params);
 
+  console.log(params);
   const addStudent = useCallback(
     async ({
       firstName,

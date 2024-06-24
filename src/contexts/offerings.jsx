@@ -29,7 +29,6 @@ export const OfferingsProvider = ({ children }) => {
     };
   }, [data, getOfferingsLoading, getOfferingsError, setParams]);
 
-  console.log(params);
   return (
     <OfferingsContext.Provider value={values}>
       {children}
