@@ -1,10 +1,10 @@
 import useSWR from 'swr';
-import {  GET_COURSE_URL} from '../constants'
+import { COURSE_BASE_URL } from '../constants';
 
 function useCourses(params = {}) {
-  const { name = undefined,  pageNo = 1, pageSize = 25 } = params;
-  
-  let url = GET_COURSE_URL;
+  const { name = undefined, pageNo = 1, pageSize = 25 } = params;
+
+  let url = COURSE_BASE_URL;
   const queryParams = new URLSearchParams();
 
   if (name) queryParams.append('name', name);

@@ -1,47 +1,74 @@
 import React, { useEffect, useState } from 'react';
-import CustomInput from '../../components/Input/Input';
-import { Select, Button, Row, Col, Card, Divider, Skeleton, Form } from 'antd';
+import {
+  Button,
+  Select,
+  Row,
+  Col,
+  Card,
+  Divider,
+  Skeleton,
+  Form,
+  DatePicker,
+} from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import useProfile from '../../hooks/useStudentProfile';
-import useSchools from '../../hooks/useSchools';
 import { useParams, useNavigate } from 'react-router-dom';
+import { DateTime } from 'luxon';
 import useMutation from '../../hooks/useMutation';
+import { useCourse } from '../../contexts/courses';
 import Swal from 'sweetalert2';
-import { STUDENT_BASE_URL } from '../../constants';
+import { OFFERING_BASE_URL } from '../../constants';
+import useOffering from '../../hooks/useOffering';
+import { formatSemester } from '../../utils/formatting';
+import { REVIEW_PROGRAM, SEMESTER, YEAR } from '../../constants';
+import CustomInput from '../../components/Input/Input';
 
-const StudentProfile = () => {
+const ViewOffering = () => {
   const navigate = useNavigate();
   const params = useParams();
-  if (!params?.studentId) {
-    navigate('/students');
+
+  console.log('parameters', params);
+
+  if (!params?.offeringId) {
+    navigate('/courses');
   }
 
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
 
-  const { data, error, isLoading } = useProfile(params?.studentId);
+  const { courses, coursesLoading, coursesError } = useCourse();
   const {
-    data: schools,
-    error: isSchoolError,
-    isLoading: isSchoolsLoading,
-  } = useSchools();
+    data: offering,
+    isLoading,
+    error: offeringError,
+  } = useOffering(params.offeringId);
 
-  if (error || isSchoolError) {
-    navigate('/students');
+  if (coursesError || offeringError) {
+    Swal.fire({
+      icon: 'Error',
+      title: 'Error viewing course offering. Please try again later',
+      timer: 2000,
+    });
+    navigate('/courses');
   }
 
-  const STUDENT_ENTITY_URL = `${STUDENT_BASE_URL}/${params.studentId}`;
-  const { mutate: updateStudentProfile, loading: updateStudentLoading } =
-    useMutation(STUDENT_ENTITY_URL, 'PUT', STUDENT_ENTITY_URL);
+  console.log('courses', courses);
+  console.log('offering', offering);
+
+  const OFFERING_ENTITY_URL = `${OFFERING_BASE_URL}/${params.offeringId}`;
+  const { mutate: updateOffering, loading: updateStudentLoading } = useMutation(
+    OFFERING_ENTITY_URL,
+    'PUT',
+    OFFERING_ENTITY_URL
+  );
 
   useEffect(() => {
-    if (data) {
+    if (offering) {
       form.setFieldsValue({
-        ...data,
-        schoolId: data.school.id,
+        ...offering,
+        testDate: DateTime.fromISO(offering.startDate).toJSDate(),
       });
     }
-  }, [data]);
+  }, [offering]);
 
   const onFormFailed = (errorInfo) => {
     Swal.fire({
@@ -52,12 +79,19 @@ const StudentProfile = () => {
   };
 
   const onFormSubmission = async (values) => {
+    console.log(values);
+    const { course, ...body } = values;
     try {
-      const res = await updateStudentProfile(values);
+      const res = await updateOffering({
+        ...body,
+        courseId: course.id,
+        startDate: offering.startDate,
+        paymentDeadline: offering.paymentDeadline,
+      });
       if (res) {
         Swal.fire({
           icon: 'success',
-          title: 'Student information updated!',
+          title: 'Course information updated!',
           timer: 2000,
         });
         setIsEditing(false);
@@ -65,7 +99,7 @@ const StudentProfile = () => {
     } catch (error) {
       Swal.fire({
         icon: 'error',
-        title: 'Student Information Update Error',
+        title: 'Course Information Update Error',
         text: 'There might be some error in your entries. Please double check and try again!',
       });
     }
@@ -75,14 +109,14 @@ const StudentProfile = () => {
     <div>
       <Button
         type="text"
-        onClick={() => navigate('/students')}
+        onClick={() => navigate('/courses')}
         icon={<ArrowLeftOutlined />}
         className="mb-6"
       />
 
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={24} md={36} lg={36}>
-          {!data || (isLoading && isSchoolsLoading) ? (
+          {!offering || isLoading ? (
             <Card>
               <Skeleton />
             </Card>
@@ -97,7 +131,10 @@ const StudentProfile = () => {
                 <Row gutter={[16, 16]}>
                   <Col xs={24} sm={24} md={16} lg={18}>
                     <h1 className="text-2xl mb-[2vh]">
-                      {data.firstName} {data.middleName} {data.lastName}
+                      {offering.course.name}:{' '}
+                      {formatSemester(offering.semester)}
+                      {' semester of '}
+                      {offering.yearOffered}
                     </h1>
                   </Col>
                   <Col xs={24} sm={24} md={8} lg={6}>
@@ -136,7 +173,7 @@ const StudentProfile = () => {
                           type="primary"
                           size="large"
                           className="w-auto bg-primary text-white"
-                          disabled={!data && isLoading}
+                          disabled={!offering && isLoading}
                           onClick={() => setIsEditing(true)}
                         >
                           Edit
@@ -147,155 +184,133 @@ const StudentProfile = () => {
                 </Row>
                 <Divider />
                 <div layout="vertical" className="w-1/2">
-                  {isEditing && (
-                    <>
-                      <strong>First name:</strong>{' '}
-                      <Form.Item
-                        name="firstName"
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Please input your First Name',
-                          },
-                        ]}
-                      >
-                        <CustomInput />
-                      </Form.Item>
-                      <Divider />
-                    </>
-                  )}
-
-                  {isEditing && (
-                    <>
-                      <strong>Middle name:</strong>{' '}
-                      <Form.Item
-                        name="middleName"
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Please input your Middle Name',
-                          },
-                        ]}
-                      >
-                        <CustomInput />
-                      </Form.Item>
-                      <Divider />
-                    </>
-                  )}
-
-                  {isEditing && (
-                    <>
-                      <strong>Last name:</strong>{' '}
-                      <Form.Item
-                        name="lastName"
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Please input your Last Name',
-                          },
-                        ]}
-                      >
-                        <CustomInput />
-                      </Form.Item>
-                      <Divider />
-                    </>
-                  )}
                   <p>
-                    <strong>School:</strong>{' '}
+                    <strong>Course:</strong>{' '}
                     {isEditing ? (
-                      <Form.Item name="schoolId">
+                      <Form.Item name={['course', 'id']}>
                         <Select
-                          options={schools.data.map((school) => ({
-                            value: school.id,
-                            label: school.name,
+                          options={courses.data.map((course) => ({
+                            value: course.id,
+                            label: course.name,
                           }))}
                         />
                       </Form.Item>
                     ) : (
-                      data.school.name
+                      offering.course.name
                     )}
                   </p>
                   <Divider />
+
                   <p>
-                    <strong>Address:</strong>{' '}
+                    <strong>Review program:</strong>{' '}
                     {isEditing ? (
-                      <Form.Item name="address">
-                        <CustomInput />
+                      <Form.Item name="program">
+                        <Select
+                          options={REVIEW_PROGRAM.map((program) => ({
+                            value: program.value,
+                            label: program.value,
+                          }))}
+                        />
                       </Form.Item>
                     ) : (
-                      data.address
+                      offering.program
                     )}
                   </p>
                   <Divider />
+
                   <p>
-                    <strong>Contact No.:</strong>{' '}
+                    <strong>Semester Offered:</strong>{' '}
                     {isEditing ? (
-                      <Form.Item
-                        name="contactNumber"
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Please input Contact Number',
-                          },
-                        ]}
-                      >
-                        <CustomInput />
+                      <Form.Item name="semester">
+                        <Select
+                          options={SEMESTER.map((semester) => ({
+                            value: semester.value,
+                            label: semester.value,
+                          }))}
+                        />
                       </Form.Item>
                     ) : (
-                      data.contactNumber
+                      formatSemester(offering.semester)
                     )}
                   </p>
                   <Divider />
-                  <div style={{ marginTop: '15px', marginBottom: '20px' }}>
-                    <small>
-                      <i className="mb-[2vh]">
-                        Person to be notified in case of emergency:
-                      </i>
-                    </small>
-                  </div>
+
                   <p>
-                    <strong>Contact Name:</strong>{' '}
+                    <strong>Year Offered:</strong>{' '}
                     {isEditing ? (
-                      <Form.Item name={['emergencyContact', 'name']}>
-                        <CustomInput />
+                      <Form.Item name="yearOffered">
+                        <Select
+                          options={YEAR.map((year) => ({
+                            value: year,
+                            label: year,
+                          }))}
+                        />
                       </Form.Item>
                     ) : (
-                      data.emergencyContact.name
+                      offering.yearOffered
                     )}
                   </p>
                   <Divider />
+
                   <p>
-                    <strong>Relationship:</strong>{' '}
+                    <strong>Start date:</strong>{' '}
                     {isEditing ? (
-                      <Form.Item name={['emergencyContact', 'relationship']}>
-                        <CustomInput />
+                      <Form.Item>
+                        <DatePicker className="w-full" size="large" />
                       </Form.Item>
                     ) : (
-                      data.emergencyContact.relationship
+                      offering.startDate
                     )}
                   </p>
                   <Divider />
+
                   <p>
-                    <strong>Emergency Address:</strong>{' '}
+                    <strong>Payment Deadline:</strong>{' '}
                     {isEditing ? (
-                      <Form.Item name={['emergencyContact', 'address']}>
-                        <CustomInput />
+                      <Form.Item>
+                        <DatePicker className="w-full" size="large" />
                       </Form.Item>
                     ) : (
-                      data.emergencyContact.address
+                      offering.paymentDeadline
                     )}
                   </p>
                   <Divider />
+
                   <p>
-                    <strong>Emergency Contact No.:</strong>{' '}
+                    <strong>Capacity:</strong>{' '}
                     {isEditing ? (
-                      <Form.Item name={['emergencyContact', 'contactNumber']}>
+                      <Form.Item name="enrollmentCapacity">
                         <CustomInput />
                       </Form.Item>
                     ) : (
-                      data.emergencyContact.contactNumber
+                      offering.enrollmentCapacity
                     )}
                   </p>
+                  <Divider />
+
+                  <p>
+                    <strong>Review cost:</strong>{' '}
+                    {isEditing ? (
+                      <Form.Item name="reviewCost">
+                        <CustomInput />
+                      </Form.Item>
+                    ) : (
+                      offering.reviewCost
+                    )}
+                  </p>
+                  <Divider />
+
+                  <p>
+                    <strong>Budget proposal:</strong>{' '}
+                    {isEditing ? (
+                      <Form.Item name="budgetProposal">
+                        <CustomInput />
+                      </Form.Item>
+                    ) : (
+                      offering.budgetProposal
+                    )}
+                  </p>
+                  <Divider />
                 </div>
               </Form>
             </Card>
@@ -306,4 +321,4 @@ const StudentProfile = () => {
   );
 };
 
-export default StudentProfile;
+export default ViewOffering;
