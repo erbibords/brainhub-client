@@ -35,7 +35,7 @@ const StudentsList = () => {
       key: "action",
       render: (text, record) => (
         <Space size="small">
-          <CustomButton>Add Payment</CustomButton>
+          <CustomButton type="edit">Add Payment</CustomButton>
           <CustomButton
             onClick={() => {
               handleViewStudent(record.id);

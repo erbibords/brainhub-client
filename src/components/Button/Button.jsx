@@ -10,6 +10,7 @@ const CustomButton = ({ children, type = "primary", ...others }) => {
         "bg-secondary": type === "secondary",
         "bg-tertiary": type === "tertiary",
         "bg-success": type === "edit",
+        "bg-info": type === "info",
         "bg-secondary": type === "delete",
       })}
       size="large"

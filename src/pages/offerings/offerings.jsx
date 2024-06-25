@@ -73,7 +73,8 @@ const columns = [
     key: "action",
     render: () => (
       <Space size="small">
-        <CustomButton type="primary">View</CustomButton>
+        <CustomButton type="edit">Edit</CustomButton>
+        {/* <CustomButton type="primary">View</CustomButton> */}
       </Space>
     ),
   },
