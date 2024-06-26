@@ -13,12 +13,12 @@ const columns = [
 
 const dataSource = [
   {
-    key: '1',
-    date: '06/01/2024',
-    day: 'Monday',
-    name: 'John Doe',
-    amount: '3,333',
-    receiptNo: '12345',
+    key: "1",
+    date: "06/01/2024",
+    day: "Monday",
+    name: "John Doe",
+    amount: "3,333",
+    receiptNo: "12345",
   },
   // Add more data here
 ];
@@ -38,7 +38,6 @@ const RevieweesPayments = () => {
         <Row>
           <Col span={24} className="text-right">
             <Form.Item label="MONTH:" className="mb-4 inline-block w-auto">
-              
               <Input
                 className="border-t-0 border-x-0 border-b-2 bg-transparent"
                 readOnly
@@ -113,7 +112,12 @@ const RevieweesPayments = () => {
         </p>
       </div>
 
-      <Table dataSource={dataSource} columns={columns} pagination={false} bordered />
+      <Table
+        dataSource={dataSource}
+        columns={columns}
+        pagination={false}
+        bordered
+      />
     </div>
   );
 };
