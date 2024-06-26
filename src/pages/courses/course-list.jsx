@@ -1,16 +1,19 @@
-import React, { useCallback, useState, useMemo, useEffect } from "react";
-import { Input, Table, Space, Row, Col, Button, Modal, Form } from "antd";
-import CustomInput from "../../components/Input/Input";
-import AddCourseModal from "../../components/AddCourseModal/AddCourseModal";
-import useMutation from "../../hooks/useMutation";
-import { GET_COURSE_URL } from "../../constants";
-import { useCourse } from "../../contexts/courses";
-import Swal from "sweetalert2";
+import React, { useCallback, useState, useMemo, useEffect } from 'react';
+import { Input, Table, Space, Row, Col, Button, Modal, Form } from 'antd';
+import CustomInput from '../../components/Input/Input';
+import AddCourseModal from '../../components/AddCourseModal/AddCourseModal';
+import useMutation from '../../hooks/useMutation';
+import { COURSE_BASE_URL } from '../../constants';
+import { useCourse } from '../../contexts/courses';
+import Swal from 'sweetalert2';
+import CustomButton from '../../components/Button/Button';
+import { useNavigate } from 'react-router-dom';
 
 const { TextArea } = Input;
 
 const CourseList = () => {
-  const [searchCourse, setSearchCourse] = useState("");
+  const navigate = useNavigate();
+  const [searchCourse, setSearchCourse] = useState('');
   const { courses, coursesLoading, coursesError } = useCourse();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(undefined);
@@ -18,19 +21,19 @@ const CourseList = () => {
     mutate: addCourse,
     loading: addCourseLoading,
     error: addCourseError,
-  } = useMutation(GET_COURSE_URL, "POST", GET_COURSE_URL);
+  } = useMutation(COURSE_BASE_URL, 'POST', COURSE_BASE_URL);
 
   const {
     mutate: deleteCourse,
     loading: deleteCourseLoading,
     error: deleteCourseError,
   } = useMutation(
-    `${GET_COURSE_URL}/${selectedCourse?.id}`,
-    "DELETE",
-    GET_COURSE_URL
+    `${COURSE_BASE_URL}/${selectedCourse?.id}`,
+    'DELETE',
+    COURSE_BASE_URL
   );
 
-  const [editingKey, setEditingKey] = useState("");
+  const [editingKey, setEditingKey] = useState('');
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -39,84 +42,41 @@ const CourseList = () => {
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
       render: (text, record) =>
         editingKey === record.key ? (
           <Input
             value={record.course_name}
-            onChange={(e) => handleFieldChange(e, record.key, "name")}
+            onChange={(e) => handleFieldChange(e, record.key, 'name')}
           />
         ) : (
           text
         ),
     },
     {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description',
       render: (text, record) =>
         editingKey === record.id ? (
           <TextArea
             value={record.description}
-            onChange={(e) => handleFieldChange(e, record.id, "description")}
+            onChange={(e) => handleFieldChange(e, record.id, 'description')}
           />
         ) : (
           text
         ),
     },
     {
-      title: "Action",
-      key: "action",
+      title: 'Action',
+      key: 'action',
       render: (text, record) => (
         <Space size="middle">
-          {editingKey === record.id ? (
-            <>
-              <Button type="primary" className="w-auto bg-primary text-white">
-                Save
-              </Button>
-
-              <Button onClick={() => cancelEditing()}>Cancel</Button>
-            </>
-          ) : (
-            <>
-              <Button
-                type="success"
-                className="w-auto bg-success text-white"
-                onClick={() => editCourse(record.id)}
-              >
-                Update
-              </Button>
-
-              <Button
-                type="secondary"
-                className="w-auto bg-secondary text-white"
-                onClick={() => {
-                  setSelectedCourse(record);
-                  console.log(record);
-                  handleDeleteCourse();
-                  //   Modal.confirm({
-                  //     title: "Are you sure you want to delete this course?",
-                  //     okText: "Yes",
-                  //     okType: "danger",
-                  //     cancelText: "No",
-                  //     onOk: () => {
-                  //       setTimeout(() => {
-                  //         handleDeleteCourse();
-                  //       }, 2000);
-                  //     },
-                  //     // onCancel: () => {
-                  //     //   alert("test");
-                  //     //   setSelectedCourse(undefined);
-                  //     // },
-                  //   });
-                }}
-              >
-                Delete
-              </Button>
-            </>
-          )}
+          <CustomButton onClick={() => navigate(`${record.id}`)}>
+            View
+          </CustomButton>
         </Space>
       ),
     },
@@ -137,13 +97,13 @@ const CourseList = () => {
   };
 
   const cancelEditing = () => {
-    setEditingKey("");
+    setEditingKey('');
   };
 
   const handleDeleteCourse = useCallback(() => {
     console.log(selectedCourse);
     if (!selectedCourse) {
-      alert("SELECTED COURSE NOT FOUND");
+      alert('SELECTED COURSE NOT FOUND');
       return;
     }
     // try {
@@ -184,16 +144,16 @@ const CourseList = () => {
           form.resetFields();
           setIsModalVisible(false);
           Swal.fire({
-            icon: "success",
-            title: "Course Added",
+            icon: 'success',
+            title: 'Course Added',
             timer: 2000,
           });
         }
       } catch (error) {
         Swal.fire({
-          icon: "error",
-          title: "Something went wrong",
-          text: "It looks like there might be an encoding issue or a conflict with your entries. Please review and try again.",
+          icon: 'error',
+          title: 'Something went wrong',
+          text: 'It looks like there might be an encoding issue or a conflict with your entries. Please review and try again.',
         });
       }
     },

@@ -17,8 +17,8 @@ import EditOfferings from "./pages/offerings/edit-offerings";
 import ViewEnrollment from "./pages/enrollment/view-enrollment";
 import PrintEnrollment from "./pages/prints/print-enrollment";
 import RevieweesPayments from "./pages/prints/reviewees-payments";
-import RevieweesAccounting from "./pages/prints/reviewees-accounting"; 
-import ReviewProgramAccounting from "./pages/prints/review-program-accounting"; 
+import RevieweesAccounting from "./pages/prints/reviewees-accounting";
+import ReviewProgramAccounting from "./pages/prints/review-program-accounting";
 
 const App = () => {
   return (
@@ -31,19 +31,37 @@ const App = () => {
           <Route path="/students" element={<Students />} />
           <Route path="/students/:studentId" element={<StudentProfile />} />
           <Route path="/offerings" element={<Offerings />} />
+          <Route path="offerings/:offeringId" element={<ViewOffering />} />
           <Route path="/offerings/add" element={<AddOfferings />} />
-          <Route path="/offerings/edit/:offeringId" element={<EditOfferings />} />
+          <Route
+            path="/offerings/edit/:offeringId"
+            element={<EditOfferings />}
+          />
           <Route path="/payments/list" element={<PaymentsList />} />
           <Route path="/payments/add" element={<AddPayment />} />
           <Route path="/payments/:id" element={<ViewPayment />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:courseId" element={<ViewCourse />} />
-          <Route path="/view-enrollment/:enrollmentId" element={<ViewEnrollment />} />
-          <Route path="/prints/enrollment/:enrollmentId" element={<PrintEnrollment />} />
-          <Route path="/prints/reviewees-payment/:revieweesId" element={<RevieweesPayments />} />
-          <Route path="/prints/reviewees-accounting/:revieweesId" element={<RevieweesAccounting />} />
-          <Route path="/prints/review-program-accounting/:revieweesId" element={<ReviewProgramAccounting />} />
-      
+          <Route
+            path="/view-enrollment/:enrollmentId"
+            element={<ViewEnrollment />}
+          />
+          <Route
+            path="/prints/enrollment/:enrollmentId"
+            element={<PrintEnrollment />}
+          />
+          <Route
+            path="/prints/reviewees-payment/:revieweesId"
+            element={<RevieweesPayments />}
+          />
+          <Route
+            path="/prints/reviewees-accounting/:revieweesId"
+            element={<RevieweesAccounting />}
+          />
+          <Route
+            path="/prints/review-program-accounting/:revieweesId"
+            element={<ReviewProgramAccounting />}
+          />
         </Routes>
       </Layout>
     </Router>
