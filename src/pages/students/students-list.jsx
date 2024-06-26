@@ -65,6 +65,15 @@ const StudentsList = () => {
 
   console.log(searchName, searchSchool);
 
+
+  // const paginationConfig = {
+  //   pageSize: 10, // Default page size
+  //   showSizeChanger: true, // Enable the page size changer
+  //   pageSizeOptions: ['10', '20', '30'], // Options for different page sizes
+  //   showTotal: (total) => `Total ${total} items`, // Display total number of items
+  //   // position: ['bottomLeft'], 
+  // };
+
   return (
     <div>
       <h1 className="text-2xl mb-[2vh]">Students List</h1>
@@ -130,7 +139,7 @@ const StudentsList = () => {
           {getStudentError ? (
             <GenericErrorDisplay className="!mt-5" />
           ) : (
-            <Table dataSource={filteredData} columns={columns} />
+            <Table dataSource={filteredData} columns={columns}  />
           )}
         </Col>
       </Row>

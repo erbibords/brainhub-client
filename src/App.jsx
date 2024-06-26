@@ -19,6 +19,7 @@ import PrintEnrollment from "./pages/prints/print-enrollment";
 import RevieweesPayments from "./pages/prints/reviewees-payments";
 import RevieweesAccounting from "./pages/prints/reviewees-accounting"; 
 import ReviewProgramAccounting from "./pages/prints/review-program-accounting"; 
+import ReviewProgram from "./pages/program/review-program";
 
 const App = () => {
   return (
@@ -43,6 +44,7 @@ const App = () => {
           <Route path="/prints/reviewees-payment/:revieweesId" element={<RevieweesPayments />} />
           <Route path="/prints/reviewees-accounting/:revieweesId" element={<RevieweesAccounting />} />
           <Route path="/prints/review-program-accounting/:revieweesId" element={<ReviewProgramAccounting />} />
+          <Route path="/review-program" element={<ReviewProgram />} />
       
         </Routes>
       </Layout>

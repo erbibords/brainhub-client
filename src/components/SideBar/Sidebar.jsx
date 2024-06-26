@@ -8,6 +8,8 @@ import {
   DollarCircleOutlined,
   BookOutlined,
   PlusOutlined,
+  FlagOutlined,
+  NotificationOutlined,
 } from "@ant-design/icons";
 import { useMediaQuery } from "react-responsive";
 
@@ -38,6 +40,8 @@ const Sidebar = () => {
       selectedKey = ["offerings"];
     }else if (pathname.startsWith("/view-enrollment")) {
       selectedKey = ["enrollment"];
+    }else if (pathname.startsWith("/review-program")) {
+      selectedKey = ["program"];
     }
 
     return { selectedKey, openKeys };
@@ -69,7 +73,11 @@ const Sidebar = () => {
         <Menu.Item key="courses" icon={<BookOutlined />}>
           <Link to="/courses">Courses</Link>
         </Menu.Item>
-        <Menu.Item key="offerings" icon={<BookOutlined />}>
+        <Menu.Item key="program" icon={<FlagOutlined />}>
+          <Link to="/review-program">Review Program</Link>
+        </Menu.Item>
+        
+        <Menu.Item key="offerings" icon={<NotificationOutlined />}>
           <Link to="/offerings">Offerings</Link>
         </Menu.Item>
         <Menu.Item key="payments_list" icon={<DollarCircleOutlined />}>
