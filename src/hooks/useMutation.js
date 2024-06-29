@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import axiosInstance from '../utils/axiosInstance';
 import { mutate as swrMutate } from 'swr';
 
-const useMutation = (url, method = 'POST', revalidationUrl = null) => {
+const useMutation = (url, method = 'POST', cacheKey = null) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -25,11 +25,8 @@ const useMutation = (url, method = 'POST', revalidationUrl = null) => {
           throw new Error(`Unsupported method: ${method}`);
       }
 
-      if (revalidationUrl) {
-        console.log('Revalidating URL:', revalidationUrl);
-        const revalidatedData = await axiosInstance.get(revalidationUrl).then(res => res.data);
-        await swrMutate(revalidationUrl, revalidatedData, { revalidate: true });
-        console.log('Revalidation complete');
+      if (cacheKey) {
+        swrMutate(cacheKey)
       }
 
       return response.data;
@@ -39,7 +36,7 @@ const useMutation = (url, method = 'POST', revalidationUrl = null) => {
     } finally {
       setLoading(false);
     }
-  }, [url, method, revalidationUrl]);
+  }, [url, method, cacheKey]);
 
   return { mutate: executeMutation, loading, error };
 };

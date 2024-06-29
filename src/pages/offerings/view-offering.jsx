@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Select,
@@ -9,27 +9,27 @@ import {
   Skeleton,
   Form,
   DatePicker,
-} from 'antd';
-import { ArrowLeftOutlined } from '@ant-design/icons';
-import { useParams, useNavigate } from 'react-router-dom';
-import { DateTime } from 'luxon';
-import useMutation from '../../hooks/useMutation';
-import { useCourse } from '../../contexts/courses';
-import Swal from 'sweetalert2';
-import { OFFERING_BASE_URL } from '../../constants';
-import useOffering from '../../hooks/useOffering';
-import { formatSemester } from '../../utils/formatting';
-import { REVIEW_PROGRAM, SEMESTER, YEAR } from '../../constants';
-import CustomInput from '../../components/Input/Input';
+} from "antd";
+import { ArrowLeftOutlined } from "@ant-design/icons";
+import { useParams, useNavigate } from "react-router-dom";
+import { DateTime } from "luxon";
+import useMutation from "../../hooks/useMutation";
+import { useCourse } from "../../contexts/courses";
+import Swal from "sweetalert2";
+import { OFFERING_BASE_URL } from "../../constants";
+import useOffering from "../../hooks/useOffering";
+import { formatSemester } from "../../utils/formatting";
+import { REVIEW_PROGRAM, SEMESTER, YEAR } from "../../constants";
+import CustomInput from "../../components/Input/Input";
 
 const ViewOffering = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  console.log('parameters', params);
+  console.log("parameters", params);
 
   if (!params?.offeringId) {
-    navigate('/courses');
+    navigate("/courses");
   }
 
   const [form] = Form.useForm();
@@ -44,21 +44,21 @@ const ViewOffering = () => {
 
   if (coursesError || offeringError) {
     Swal.fire({
-      icon: 'Error',
-      title: 'Error viewing course offering. Please try again later',
+      icon: "Error",
+      title: "Error viewing course offering. Please try again later",
       timer: 2000,
     });
-    navigate('/courses');
+    navigate("/courses");
   }
 
-  console.log('courses', courses);
-  console.log('offering', offering);
+  console.log("courses", courses);
+  console.log("offering", offering);
 
   const OFFERING_ENTITY_URL = `${OFFERING_BASE_URL}/${params.offeringId}`;
   const { mutate: updateOffering, loading: updateStudentLoading } = useMutation(
     OFFERING_ENTITY_URL,
-    'PUT',
-    OFFERING_ENTITY_URL
+    "PUT",
+    "offerings"
   );
 
   useEffect(() => {
@@ -72,8 +72,8 @@ const ViewOffering = () => {
 
   const onFormFailed = (errorInfo) => {
     Swal.fire({
-      icon: 'error',
-      title: 'Student Information Update Error',
+      icon: "error",
+      title: "Student Information Update Error",
       text: JSON.stringify(errorInfo),
     });
   };
@@ -90,17 +90,17 @@ const ViewOffering = () => {
       });
       if (res) {
         Swal.fire({
-          icon: 'success',
-          title: 'Course information updated!',
+          icon: "success",
+          title: "Course information updated!",
           timer: 2000,
         });
         setIsEditing(false);
       }
     } catch (error) {
       Swal.fire({
-        icon: 'error',
-        title: 'Course Information Update Error',
-        text: 'There might be some error in your entries. Please double check and try again!',
+        icon: "error",
+        title: "Course Information Update Error",
+        text: "There might be some error in your entries. Please double check and try again!",
       });
     }
   };
@@ -109,7 +109,7 @@ const ViewOffering = () => {
     <div>
       <Button
         type="text"
-        onClick={() => navigate('/courses')}
+        onClick={() => navigate("/courses")}
         icon={<ArrowLeftOutlined />}
         className="mb-6"
       />
@@ -131,24 +131,24 @@ const ViewOffering = () => {
                 <Row gutter={[16, 16]}>
                   <Col xs={24} sm={24} md={16} lg={18}>
                     <h1 className="text-2xl mb-[2vh]">
-                      {offering.course.name}:{' '}
+                      {offering.course.name}:{" "}
                       {formatSemester(offering.semester)}
-                      {' semester of '}
+                      {" semester of "}
                       {offering.yearOffered}
                     </h1>
                   </Col>
                   <Col xs={24} sm={24} md={8} lg={6}>
-                    <div style={{ textAlign: 'right', marginBottom: '20px' }}>
+                    <div style={{ textAlign: "right", marginBottom: "20px" }}>
                       {isEditing ? (
                         <div
                           style={{
-                            display: 'flex',
-                            justifyContent: 'flex-end',
+                            display: "flex",
+                            justifyContent: "flex-end",
                           }}
                         >
                           <Button
                             size="large"
-                            style={{ marginRight: '10px' }}
+                            style={{ marginRight: "10px" }}
                             className="mr-[10px]"
                             loading={updateStudentLoading}
                             disabled={updateStudentLoading}
@@ -185,9 +185,9 @@ const ViewOffering = () => {
                 <Divider />
                 <div layout="vertical" className="w-1/2">
                   <p>
-                    <strong>Course:</strong>{' '}
+                    <strong>Course:</strong>{" "}
                     {isEditing ? (
-                      <Form.Item name={['course', 'id']}>
+                      <Form.Item name={["course", "id"]}>
                         <Select
                           options={courses.data.map((course) => ({
                             value: course.id,
@@ -202,7 +202,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Review program:</strong>{' '}
+                    <strong>Review program:</strong>{" "}
                     {isEditing ? (
                       <Form.Item name="program">
                         <Select
@@ -219,7 +219,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Semester Offered:</strong>{' '}
+                    <strong>Semester Offered:</strong>{" "}
                     {isEditing ? (
                       <Form.Item name="semester">
                         <Select
@@ -236,7 +236,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Year Offered:</strong>{' '}
+                    <strong>Year Offered:</strong>{" "}
                     {isEditing ? (
                       <Form.Item name="yearOffered">
                         <Select
@@ -253,7 +253,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Start date:</strong>{' '}
+                    <strong>Start date:</strong>{" "}
                     {isEditing ? (
                       <Form.Item>
                         <DatePicker className="w-full" size="large" />
@@ -265,7 +265,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Payment Deadline:</strong>{' '}
+                    <strong>Payment Deadline:</strong>{" "}
                     {isEditing ? (
                       <Form.Item>
                         <DatePicker className="w-full" size="large" />
@@ -277,7 +277,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Capacity:</strong>{' '}
+                    <strong>Capacity:</strong>{" "}
                     {isEditing ? (
                       <Form.Item name="enrollmentCapacity">
                         <CustomInput />
@@ -289,7 +289,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Review cost:</strong>{' '}
+                    <strong>Review cost:</strong>{" "}
                     {isEditing ? (
                       <Form.Item name="reviewCost">
                         <CustomInput />
@@ -301,7 +301,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Budget proposal:</strong>{' '}
+                    <strong>Budget proposal:</strong>{" "}
                     {isEditing ? (
                       <Form.Item name="budgetProposal">
                         <CustomInput />

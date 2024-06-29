@@ -15,6 +15,7 @@ import Offerings from "./pages/offerings/offerings";
 import AddOfferings from "./pages/offerings/add-offerings";
 import EditOfferings from "./pages/offerings/edit-offerings";
 import ViewEnrollment from "./pages/enrollment/view-enrollment";
+import ViewOffering from "./pages/offerings/view-offering";
 import PrintEnrollment from "./pages/prints/print-enrollment";
 import RevieweesPayments from "./pages/prints/reviewees-payments";
 import RevieweesAccounting from "./pages/prints/reviewees-accounting";

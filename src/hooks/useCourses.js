@@ -1,5 +1,6 @@
 import useSWR from 'swr';
 import { COURSE_BASE_URL } from '../constants';
+import fetcher from '../utils/fetcher';
 
 function useCourses(params = {}) {
   const { name = undefined, pageNo = 1, pageSize = 25 } = params;
@@ -15,7 +16,7 @@ function useCourses(params = {}) {
     url += `?${queryParams.toString()}`;
   }
 
-  const { data, error } = useSWR(url);
+  const { data, error } = useSWR("courses", () => fetcher(url));
 
   const isLoading = !data && !error;
 

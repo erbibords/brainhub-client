@@ -57,7 +57,8 @@ const Enrollment = () => {
 
   const { mutate: addEnrollment, loading: addEnrollmentLoading } = useMutation(
     `/branches/${DEFAULT_BRANCH_ID}/offerings/${selectedOfferingId}/enrollments`,
-    "PUT"
+    "PUT",
+    "enrollments"
   );
 
   const {
@@ -500,7 +501,6 @@ const Enrollment = () => {
                 ]}
               >
                 <CustomInput
-                  type="number"
                   name="contactNumber"
                   className="w-full mb-[2vh] py-[5px]"
                 />
@@ -575,7 +575,6 @@ const Enrollment = () => {
                   ]}
                 >
                   <CustomInput
-                    type="number"
                     name="emergencyContactNumber"
                     size="large"
                     className="w-full mb-[2vh] py-[5px]"

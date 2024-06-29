@@ -8,6 +8,7 @@ import { DateTime } from "luxon";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { getCourseById, getSchoolById } from "../../utils/mappings";
 import CustomButton from "../../components/Button/Button";
+import { formatSemester, formatTakerType } from "../../utils/formatting";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -51,17 +52,21 @@ const Enrollment = () => {
         dataIndex: "student",
         render: (data) => {
           if (!data || schoolsLoading || schoolsError) return null;
-          const school = getSchoolById(schools.data, data.schoolId);
+          const school = getSchoolById(schools?.data, data.schoolId);
           return school ? school.name : null;
         },
       },
-      { title: "Student Status", dataIndex: "takerType", key: "takerType" },
+      {
+        title: "Student Status",
+        dataIndex: "takerType",
+        render: (data) => formatTakerType(data),
+      },
       {
         title: "Course",
         dataIndex: "courseOffering",
         render: (data) => {
           if (!data || getCoursesLoading || getCoursesError) return null;
-          const course = getCourseById(courses.data, data.course.id);
+          const course = getCourseById(courses?.data, data.course.id);
           return course ? course.name : null;
         },
       },
@@ -69,7 +74,7 @@ const Enrollment = () => {
         title: "Semester",
         dataIndex: "courseOffering",
         render: (course) => {
-          return course.semester;
+          return formatSemester(course.semester);
         },
       },
       {
@@ -100,11 +105,11 @@ const Enrollment = () => {
       },
     ],
     [
-      courses.data,
+      courses,
       getCoursesLoading,
       getCoursesError,
       handleViewEnrollment,
-      schools.data,
+      schools,
       schoolsError,
       schoolsLoading,
     ]
@@ -233,14 +238,14 @@ const Enrollment = () => {
           </Row>
         </Col>
         <Col span={24}>
-          {!getEnrollmentsError && enrollments ? (
+          {getEnrollmentsError ? (
+            <GenericErrorDisplay />
+          ) : (
             <Table
-              dataSource={enrollments.data}
+              dataSource={enrollments?.data}
               columns={columns}
               loading={getEnrollmentsLoading}
             />
-          ) : (
-            <GenericErrorDisplay />
           )}
         </Col>
       </Row>

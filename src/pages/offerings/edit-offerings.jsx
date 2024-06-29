@@ -17,14 +17,12 @@ const EditOfferings = () => {
   const [selectedCourseId, setSelectedCourseId] = useState(undefined);
   const { mutate: AddOffering, loading: AddOfferingLoading } = useMutation(
     `branches/${DEFAULT_BRANCH_ID}/courses/${selectedCourseId}/offerings`,
-    "POST"
+    "POST",
+    "offerings"
   );
   if (getCoursesError) {
     return <GenericErrorDisplay />;
   }
-
- 
- 
 
   return (
     <div className="w-1/2">
@@ -62,7 +60,7 @@ const EditOfferings = () => {
               })}
           </Select>
         </Form.Item>
-        
+
         <Form.Item
           label="Review Program"
           name="program"
@@ -82,7 +80,10 @@ const EditOfferings = () => {
           name="semester"
           rules={[{ required: true, message: "Please select semester!" }]}
         >
-          <Select defaultValue="FIRST_SEMESTER" className="h-[40px] w-full mb-[10px]">
+          <Select
+            defaultValue="FIRST_SEMESTER"
+            className="h-[40px] w-full mb-[10px]"
+          >
             <Option value="FIRST_SEMESTER">1st</Option>
             <Option value="SECOND_SEMESTER">2nd</Option>
             <Option value="SUMMER">Summer</Option>
@@ -116,7 +117,7 @@ const EditOfferings = () => {
           name="startDate"
           rules={[{ required: true, message: "Please select start date!" }]}
         >
-          <DatePicker className="w-full" size="large" value = "2024-06-25"/>
+          <DatePicker className="w-full" size="large" value="2024-06-25" />
         </Form.Item>
 
         <Form.Item
@@ -126,7 +127,7 @@ const EditOfferings = () => {
             { required: true, message: "Please select payment deadline!" },
           ]}
         >
-          <DatePicker className="w-full" size="large" value = "2024-08-25" />
+          <DatePicker className="w-full" size="large" value="2024-08-25" />
         </Form.Item>
 
         <Form.Item
@@ -134,7 +135,7 @@ const EditOfferings = () => {
           name="enrollmentCapacity"
           rules={[{ required: true, message: "Please input capacity!" }]}
         >
-          <CustomInput type="number" className="w-full" value="23"/>
+          <CustomInput type="number" className="w-full" value="23" />
         </Form.Item>
 
         <Form.Item
@@ -142,7 +143,11 @@ const EditOfferings = () => {
           name="reviewCost"
           rules={[{ required: true, message: "Please input review cost!" }]}
         >
-          <CustomInput type="text" className="w-full h-[40px]" value="33,333.00" />
+          <CustomInput
+            type="text"
+            className="w-full h-[40px]"
+            value="33,333.00"
+          />
         </Form.Item>
 
         <Form.Item

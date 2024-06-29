@@ -17,7 +17,8 @@ const AddOfferings = () => {
   const [selectedCourseId, setSelectedCourseId] = useState(undefined);
   const { mutate: AddOffering, loading: AddOfferingLoading } = useMutation(
     `branches/${DEFAULT_BRANCH_ID}/courses/${selectedCourseId}/offerings`,
-    "POST"
+    "POST",
+    "offerings"
   );
   if (getCoursesError) {
     return <GenericErrorDisplay />;

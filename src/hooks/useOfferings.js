@@ -1,5 +1,6 @@
 import useSWR from 'swr';
 import { DEFAULT_BRANCH_ID} from '../constants'
+import fetcher from '../utils/fetcher';
 
 function useOfferings(params = {}) {
   const {pageNo = 1, pageSize = 25, courseId, program, yearOffered, semester } = params;
@@ -20,7 +21,7 @@ function useOfferings(params = {}) {
     url += `?${queryParams.toString()}`;
   }
 
-  const { data, error } = useSWR(url);
+  const { data, error } = useSWR('offerings', () => fetcher(url));
   const isLoading = !data && !error;
 
   return {
