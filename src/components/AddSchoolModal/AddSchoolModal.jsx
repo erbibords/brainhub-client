@@ -33,13 +33,7 @@ const SchoolModal = ({ isVisible, handleCancel, handleSave, form }) => {
         >
           <CustomInput type="text" name="name" />
         </Form.Item>
-        <Form.Item
-          label="Description"
-          name="description"
-          rules={[{ required: true, message: "Please input the Description!" }]}
-        >
-          <TextArea rows={4} name="description" />
-        </Form.Item>
+       
       </Form>
     </Modal>
   );
