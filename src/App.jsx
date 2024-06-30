@@ -40,7 +40,7 @@ const App = () => {
             element={<EditOfferings />}
           />
           <Route path="/payments/list" element={<PaymentsList />} />
-          <Route path="/payments/add" element={<AddPayment />} />
+          <Route path="/payments/add/:studentId" element={<AddPayment />} />
           <Route path="/payments/:id" element={<ViewPayment />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:courseId" element={<ViewCourse />} />

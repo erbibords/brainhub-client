@@ -6,7 +6,6 @@ const CoursesContext = createContext({
   coursesLoading: false,
   coursesError: false,
   setParams: (params) => {},
-  addCourse: () => {},
 });
 
 export const CoursesProvider = ({ children }) => {

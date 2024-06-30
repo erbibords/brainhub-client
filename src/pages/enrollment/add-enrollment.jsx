@@ -8,8 +8,8 @@ import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
 import { useOfferingsContext } from "../../contexts/offerings";
 import useMutation from "../../hooks/useMutation";
-import { DEFAULT_BRANCH_ID } from "../../constants";
-
+import { DEFAULT_BRANCH_ID, SEMESTER } from "../../constants";
+import { useProgramContext } from "../../contexts/programs";
 function generateFourDigitRandomNumber() {
   return Math.floor(1000 + Math.random() * 9000);
 }
@@ -35,12 +35,15 @@ const Enrollment = () => {
     error: schoolsError,
   } = useSchools();
   const { courses, getCoursesLoading, getCoursesError } = useCourse();
+  const { programs, getProgramsLoading, getProgramsError } =
+    useProgramContext();
+
   const [offeringsSearchParams, setOfferingsSearchParams] = useState({
     pageNo: 1,
     pageSize: 25,
     yearOffered: new Date().getFullYear(),
     semester: "FIRST_SEMESTER",
-    program: "INTENSIVE",
+    reviewProgramId: undefined,
   });
   const [studentSearchText, setStudentSearchText] = useState();
   const { students, studentDataLoading, getStudentError, addStudent } =
@@ -70,6 +73,7 @@ const Enrollment = () => {
 
   useEffect(() => {
     if (offeringsSearchParams) {
+      console.log(offeringsSearchParams);
       setOfferingsSearchParamsInContext(offeringsSearchParams);
     }
   }, [offeringsSearchParams]);
@@ -232,6 +236,7 @@ const Enrollment = () => {
     await enrollStudent(data);
   }, [enrollStudent, selectedOfferingId, takerType, selectedExistingStudentId]);
 
+  console.log(programs);
   return (
     <div className="w-full">
       <div>
@@ -241,16 +246,22 @@ const Enrollment = () => {
             <Select
               className="w-full mb=[2vh]"
               size="large"
+              loading={getProgramsLoading}
+              disabled={getProgramsLoading || getProgramsError}
               defaultValue="INTENSIVE"
               onChange={(value) =>
                 setOfferingsSearchParams({
                   ...offeringsSearchParams,
-                  program: value,
+                  reviewProgramId: value,
                 })
               }
             >
-              <Option value="INTENSIVE">Intensive</Option>
-              <Option value="ENHANCEMENT">Enhancement-Intensive</Option>
+              {programs &&
+                programs?.data?.map((program) => (
+                  <Option value={program?.id} key={program.id}>
+                    {program.name}
+                  </Option>
+                ))}
             </Select>
           </Form.Item>
 
@@ -289,9 +300,11 @@ const Enrollment = () => {
                 });
               }}
             >
-              <Option value="FIRST_SEMESTER">1st</Option>
-              <Option value="SECOND_SEMESTER">2nd</Option>
-              <Option value="SUMMER">Summer</Option>
+              {SEMESTER.map((sem) => (
+                <Option value={sem.value} key={sem.value}>
+                  {sem.label}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
 

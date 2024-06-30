@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Table, Space, Row, Col, Button, Select, DatePicker } from "antd";
+import { Table, Row, Col, Select, DatePicker } from "antd";
 import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
 import { useEnrollmentsContext } from "../../contexts/enrollments";
@@ -9,7 +9,7 @@ import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErr
 import { getCourseById, getSchoolById } from "../../utils/mappings";
 import CustomButton from "../../components/Button/Button";
 import { formatSemester, formatTakerType } from "../../utils/formatting";
-
+import { SEMESTER } from "../../constants";
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -32,9 +32,9 @@ const Enrollment = () => {
   const [selectedSemester, setSelectedSemester] = useState(undefined);
   const [selectedYear, setSelectedYear] = useState(undefined);
 
-  const handleViewEnrollment = (studentId) => {
-    alert("debugging...");
-  };
+  // const handleViewEnrollment = (studentId) => {
+  //   alert("debugging...");
+  // };
 
   const columns = useMemo(
     () => [
@@ -87,28 +87,28 @@ const Enrollment = () => {
           return <label>{formattedDate}</label>;
         },
       },
-      {
-        title: "Action",
-        key: "action",
-        render: (text, record) => (
-          <Space size="middle">
-            <CustomButton
-              type="primary"
-              onClick={() => handleViewEnrollment(record.id)}
-              title="View"
-              className="w-auto bg-primary text-white"
-            >
-              View
-            </CustomButton>
-          </Space>
-        ),
-      },
+      // {
+      //   title: "Action",
+      //   key: "action",
+      //   render: (text, record) => (
+      //     <Space size="middle">
+      //       <CustomButton
+      //         type="primary"
+      //         onClick={() => handleViewEnrollment(record.id)}
+      //         title="View"
+      //         className="w-auto bg-primary text-white"
+      //       >
+      //         View
+      //       </CustomButton>
+      //     </Space>
+      //   ),
+      // },
     ],
     [
       courses,
       getCoursesLoading,
       getCoursesError,
-      handleViewEnrollment,
+      // handleViewEnrollment,
       schools,
       schoolsError,
       schoolsLoading,
@@ -207,9 +207,11 @@ const Enrollment = () => {
                 className="w-full"
                 onChange={(value) => setSelectedSemester(value)}
               >
-                <Option value="FIRST_SEMESTER">1st</Option>
-                <Option value="SECOND_SEMESTER">2nd</Option>
-                <Option value="SUMMER">Summer</Option>
+                {SEMESTER.map((sem) => (
+                  <Option value={sem.value} key={sem.value}>
+                    {sem.label}
+                  </Option>
+                ))}
               </Select>
             </Col>
 

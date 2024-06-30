@@ -4,7 +4,13 @@ import CustomInput from "../Input/Input";
 
 const { TextArea } = Input;
 
-const CustomModal = ({ isVisible, handleCancel, handleSave, form }) => {
+const CustomModal = ({
+  isVisible,
+  handleCancel,
+  handleSave,
+  form,
+  buttonLoading,
+}) => {
   return (
     <Modal
       title={<div className="mb-6 text-lg">Add New Program</div>}
@@ -17,6 +23,7 @@ const CustomModal = ({ isVisible, handleCancel, handleSave, form }) => {
         <Button
           key="submit"
           type="primary"
+          loading={buttonLoading}
           className="w-auto bg-primary text-white"
           onClick={() => form.submit()}
         >
@@ -28,8 +35,13 @@ const CustomModal = ({ isVisible, handleCancel, handleSave, form }) => {
       <Form form={form} layout="vertical" onFinish={handleSave}>
         <Form.Item
           label="Name"
-          name="reviewPRogram"
-          rules={[{ required: true, message: "Please input the Review Program Name!" }]}
+          name="name"
+          rules={[
+            {
+              required: true,
+              message: "Please input the Review Program Name!",
+            },
+          ]}
         >
           <CustomInput type="text" name="name" />
         </Form.Item>

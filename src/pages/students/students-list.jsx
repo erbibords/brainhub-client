@@ -21,6 +21,7 @@ const StudentsList = () => {
     useStudentContext();
 
   const handleFilter = useCallback(() => {
+    console.log(searchParams);
     setParams(cleanParams(searchParams));
   }, [setParams, searchParams]);
 
@@ -33,18 +34,28 @@ const StudentsList = () => {
     {
       title: "Action",
       key: "action",
-      render: (_, record) => (
-        <Space size="small">
-          <CustomButton type="edit">Add Payment</CustomButton>
-          <CustomButton
-            onClick={() => {
-              handleViewStudent(record.id);
-            }}
-          >
-            View
-          </CustomButton>
-        </Space>
-      ),
+      render: (_, record) => {
+        console.log(record);
+        return (
+          <Space size="small">
+            <CustomButton
+              type="edit"
+              onClick={() => {
+                navigate(`/payments/add/${record?.id}`);
+              }}
+            >
+              Add Payment
+            </CustomButton>
+            <CustomButton
+              onClick={() => {
+                handleViewStudent(record.id);
+              }}
+            >
+              View
+            </CustomButton>
+          </Space>
+        );
+      },
     },
   ];
 

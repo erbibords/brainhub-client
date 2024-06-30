@@ -30,7 +30,6 @@ export const StudentProvider = ({ children }) => {
     error: getStudentError,
   } = useStudents(params);
 
-  console.log(params);
   const addStudent = useCallback(
     async ({
       firstName,

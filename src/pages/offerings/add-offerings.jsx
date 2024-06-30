@@ -6,7 +6,7 @@ import { useCourse } from "../../contexts/courses";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { DateTime } from "luxon";
 import useMutation from "../../hooks/useMutation";
-import { DEFAULT_BRANCH_ID } from "../../constants";
+import { DEFAULT_BRANCH_ID, SEMESTER } from "../../constants";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 const { Option } = Select;
@@ -134,11 +134,11 @@ const AddOfferings = () => {
           name="semester"
           rules={[{ required: true, message: "Please select semester!" }]}
         >
-          <Select placeholder="Semester" className="h-[40px] w-full mb-[10px]">
-            <Option value="FIRST_SEMESTER">1st</Option>
-            <Option value="SECOND_SEMESTER">2nd</Option>
-            <Option value="SUMMER">Summer</Option>
-          </Select>
+          {SEMESTER.map((sem) => (
+            <Option value={sem.value} key={sem.value}>
+              {sem.label}
+            </Option>
+          ))}
         </Form.Item>
 
         <Form.Item

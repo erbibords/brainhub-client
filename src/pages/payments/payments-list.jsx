@@ -1,29 +1,22 @@
 import React, { useState } from "react";
-
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
 import useSchools from "../../hooks/useSchools";
 import { useCourse } from "../../contexts/courses";
-import {
-  Layout,
-  Input,
-  Table,
-  Space,
-  Row,
-  Col,
-  Button,
-  Select,
-  DatePicker,
-} from "antd";
-import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
+import { Table, Row, Col, Button, Select, DatePicker } from "antd";
+import { SEMESTER } from "../../constants";
+import { usePaymentsContext } from "../../contexts/payments";
+import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
+import { getFullName } from "../../utils/mappings";
 
-const { Content } = Layout;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const PaymentsList = () => {
   const [searchValue, setSearchValue] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("");
+  const { payments, getPaymentsLoading, getPaymentsError } =
+    usePaymentsContext();
 
   const {
     data: schools,
@@ -32,67 +25,25 @@ const PaymentsList = () => {
   } = useSchools();
   const { courses, getCoursesLoading, getCoursesError } = useCourse();
 
-  const data = [
-    {
-      key: "1",
-      reference: "Reference 02131",
-      firstName: "Louie",
-      middleName: "Emms",
-      lastName: "Emms",
-      schoolId: "WVSU",
-      takerType: "1st Taker",
-      courseId: "BSIT",
-      semester: "1st",
-      date: "2024-06-10",
-      payments: "7500",
-    },
-    {
-      key: "2",
-      reference: "Reference 32131",
-      firstName: "Johny",
-      middleName: "S",
-      lastName: "Seens",
-      schoolId: "UI",
-      takerType: "Re-Taker",
-      courseId: "BSEM",
-      semester: "2nd",
-      date: "2024-05-22",
-      payments: "6000",
-    },
-  ];
-
   const columns = [
-    { title: "Reference", dataIndex: "reference", key: "reference" },
     {
       title: "Name",
-      dataIndex: ["firstName", "middleName", "lastName"],
-      render: (text, record) => (
-        <span>
-          {record.firstName} {record.middleName} {record.lastName}
-        </span>
-      ),
+      dataIndex: ["firstName"],
+      render: (_, record) => getFullName(record),
     },
-    { title: "School", dataIndex: "schoolId", key: "schoolId" },
-    { title: "Student Status", dataIndex: "takerType", key: "takerType" },
-    { title: "Course.", dataIndex: "courseId", key: "course" },
-    { title: "Semester", dataIndex: "semester", key: "semester" },
-    { title: "Date.", dataIndex: "date", key: "date" },
-    { title: "Payments", dataIndex: "payments", key: "payments" },
+    { title: "Reference", dataIndex: "referenceNo" },
 
-    // {
-    //   title: 'Action',
-    //   key: 'action',
-    //   render: (text, record) => (
-    //     <Space size="middle">
-    //       <Button type="primary" onClick={() => handleViewPaymentList(record.key)} title="View" className="w-auto bg-primary text-white">View</Button>
-    //     </Space>
-    //   ),
-    // },
+    { title: "Payment Amount", dataIndex: "amountPaid" },
+    {
+      title: "Payment Method",
+      dataIndex: "paymentMethod",
+      key: "paymentMethod",
+    },
+    { title: "Payment Date", dataIndex: "createdAt" },
+    { title: "Attachment", dataIndex: "attachment" },
+    { title: "Offering", dataIndex: "offering" },
+    { title: "Processed by", dataIndex: "processedBy" },
   ];
-
-  const handleViewPaymentList = (studentId) => {
-    alert("debugging...");
-  };
 
   const searchPaymentList = () => {
     console.log("Search value:", searchValue);
@@ -100,10 +51,6 @@ const PaymentsList = () => {
     console.log("Selected year:", selectedYear);
     console.log("Date From:", dateFrom ? dateFrom.format("YYYY-MM-DD") : null);
     console.log("Date To:", dateTo ? dateTo.format("YYYY-MM-DD") : null);
-  };
-
-  const printPaymentList = () => {
-    alert("..");
   };
 
   return (
@@ -161,9 +108,11 @@ const PaymentsList = () => {
                 onChange={(value) => setSelectedSemester(value)}
                 className="h-[50px] w-full mb-[10px]"
               >
-                <Option value="FIRST_SEMESTER">1st</Option>
-                <Option value="SECOND_SEMESTER">2nd</Option>
-                <Option value="SUMMER">Summer</Option>
+                {SEMESTER.map((sem) => (
+                  <Option value={sem.value} key={sem.value}>
+                    {sem.label}
+                  </Option>
+                ))}
               </Select>
             </Col>
 
@@ -195,7 +144,6 @@ const PaymentsList = () => {
               <Button
                 type="primary"
                 className="w-auto bg-success text-white mt-[25px] float-right"
-                onClick={printPaymentList}
                 size="large"
               >
                 Print List
@@ -204,7 +152,15 @@ const PaymentsList = () => {
           </Row>
         </Col>
         <Col span={24}>
-          <Table dataSource={data} columns={columns} />
+          {getPaymentsError ? (
+            <GenericErrorDisplay />
+          ) : (
+            <Table
+              dataSource={payments && payments?.data}
+              columns={columns}
+              loading={getPaymentsLoading}
+            />
+          )}
         </Col>
       </Row>
     </div>

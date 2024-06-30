@@ -42,14 +42,14 @@ const Offerings = () => {
     },
 
     {
-      title: "Semester Offered",
+      title: "Semester",
       dataIndex: "semester",
       key: "semester",
       render: (value) => {
         return formatSemester(value);
       },
     },
-    { title: "Year offered", dataIndex: "yearOffered", key: "yearOffered" },
+    { title: "School Year", dataIndex: "yearOffered", key: "yearOffered" },
     {
       title: "Start Date",
       dataIndex: "startDate",
@@ -67,18 +67,17 @@ const Offerings = () => {
       },
     },
     {
-      title: "Enrollment Capacity",
+      title: "Enrollees",
       dataIndex: "enrollmentCapacity",
-      key: "enrollmentCapacity",
     },
     {
-      title: "Review Cost",
+      title: "Review Fee",
       dataIndex: "reviewCost",
       key: "reviewCost",
       render: (value) => formatAmount(value),
     },
     {
-      title: "Budget Proposal",
+      title: "Total Collectibles",
       dataIndex: "budgetProposal",
       key: "budgetProposal",
       render: (value) => formatAmount(value),
