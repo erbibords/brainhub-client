@@ -4,34 +4,28 @@ import { Button, Row, Col, Card, Divider, Skeleton, Form } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import useMutation from '../../hooks/useMutation';
-import useCourse from '../../hooks/useCourse';
+import useSchools from '../../hooks/useSchools';
 import Swal from 'sweetalert2';
-import { COURSE_BASE_URL } from '../../constants';
+ 
 
-const ViewCourse = () => {
+const ViewSchool = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  if (!params?.courseId) {
-    navigate('/courses');
+  if (!params?.schoolId) {
+    navigate('/schools');
   }
 
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
 
-  const { data, error, isLoading } = useCourse(params.courseId);
+  const { data, error, isLoading } = useCourse(params.schoolId);
 
-  if (error) {
-    navigate('/courses');
-  }
+  const onFormSubmission = async (values) => {
+    setIsEditing(false);
+  };
 
-  const COURSE_ENTITY_URL = `${COURSE_BASE_URL}/${params.courseId}`;
-  const { mutate: updateCourse, loading: updateStudentLoading } = useMutation(
-    COURSE_ENTITY_URL,
-    'PUT',
-    COURSE_ENTITY_URL
-  );
-
+  
   useEffect(() => {
     if (data) {
       form.setFieldsValue({
@@ -40,39 +34,12 @@ const ViewCourse = () => {
     }
   }, [data]);
 
-  const onFormFailed = (errorInfo) => {
-    Swal.fire({
-      icon: 'error',
-      title: 'Student Information Update Error',
-      text: JSON.stringify(errorInfo),
-    });
-  };
-
-  const onFormSubmission = async (values) => {
-    try {
-      const res = await updateCourse(values);
-      if (res) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Course information updated!',
-          timer: 2000,
-        });
-        setIsEditing(false);
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Course Information Update Error',
-        text: 'There might be some error in your entries. Please double check and try again!',
-      });
-    }
-  };
-
+   
   return (
     <div>
       <Button
         type="text"
-        onClick={() => navigate('/courses')}
+        onClick={() => navigate('/school-list')}
         icon={<ArrowLeftOutlined />}
         className="mb-6"
       />
@@ -87,13 +54,13 @@ const ViewCourse = () => {
             <Card>
               <Form
                 form={form}
-                name="update_student"
+                name="update_school"
                 onFinish={onFormSubmission}
                 onFinishFailed={onFormFailed}
               >
                 <Row gutter={[16, 16]}>
                   <Col xs={24} sm={24} md={16} lg={18}>
-                    <h1 className="text-2xl mb-[2vh]">{data.name}</h1>
+                    <h1 className="text-2xl mb-[2vh]">UI</h1>
                   </Col>
                   <Col xs={24} sm={24} md={8} lg={6}>
                     <div style={{ textAlign: 'right', marginBottom: '20px' }}>
@@ -108,8 +75,7 @@ const ViewCourse = () => {
                             size="large"
                             style={{ marginRight: '10px' }}
                             className="mr-[10px]"
-                            loading={updateStudentLoading}
-                            disabled={updateStudentLoading}
+                      
                             onClick={() => setIsEditing(false)}
                           >
                             Cancel
@@ -119,8 +85,7 @@ const ViewCourse = () => {
                             size="large"
                             type="primary"
                             className="w-auto bg-primary text-white"
-                            loading={updateStudentLoading}
-                            disabled={updateStudentLoading}
+                 
                             htmlType="submit"
                           >
                             Save
@@ -131,8 +96,7 @@ const ViewCourse = () => {
                           type="primary"
                           size="large"
                           className="w-auto bg-primary text-white"
-                          disabled={!data && isLoading}
-                          onClick={() => setIsEditing(true)}
+               
                         >
                           Edit
                         </Button>
@@ -150,14 +114,14 @@ const ViewCourse = () => {
                         rules={[
                           {
                             required: true,
-                            message: 'Please input course name',
+                            message: 'Please input school name',
                           },
                         ]}
                       >
                         <CustomInput />
                       </Form.Item>
                     ) : (
-                      data.name
+                        "UI"
                     )}
                   </p>
                   <Divider />
@@ -169,14 +133,14 @@ const ViewCourse = () => {
                         rules={[
                           {
                             required: true,
-                            message: 'Please input course description',
+                            message: 'Please input school description',
                           },
                         ]}
                       >
                         <CustomInput />
                       </Form.Item>
                     ) : (
-                      data.description
+                       "testased"
                     )}
                   </p>
                 </div>
@@ -189,4 +153,4 @@ const ViewCourse = () => {
   );
 };
 
-export default ViewCourse;
+export default ViewSchool;
