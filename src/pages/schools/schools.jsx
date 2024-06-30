@@ -1,16 +1,12 @@
-import React, { useCallback, useState, useMemo, useEffect } from 'react';
-import { Input, Table, Space, Row, Col, Button, Modal, Form } from 'antd';
+import React, {useState} from 'react';
+import {Table, Space, Row, Col, Button} from 'antd';
 import CustomInput from '../../components/Input/Input';
 import AddSchoolModal from '../../components/AddSchoolModal/AddSchoolModal';
-import useMutation from '../../hooks/useMutation';
-import Swal from 'sweetalert2';
 import CustomButton from '../../components/Button/Button';
-import { useNavigate } from 'react-router-dom';
-
-const { TextArea } = Input;
+  
 
 const SchoolList = () => {
-    const navigate = useNavigate();
+     
     const [isModalVisible, setIsModalVisible] = useState(false);
 
     const showModal = () => {
@@ -35,10 +31,10 @@ const SchoolList = () => {
             key: 'action',
             render: (text, record) => (
                 <Space size="middle">
-                <CustomButton type = "edit" onClick={() => navigate(`${record.id}`)}>
+                <CustomButton type = "edit">
                   Edit
                 </CustomButton>
-                <CustomButton type = "delete" onClick={() => navigate(`${record.id}`)}>
+                <CustomButton type = "delete">
                   Delete
                 </CustomButton>
               </Space>
@@ -68,7 +64,7 @@ const SchoolList = () => {
           />
         </Col>
         <Col span={24}>
-            <Table dataSource={data} columns={columns} />
+            <Table dataSource={data} columns={columns} pagination={false} />
         </Col>
       </Row>
 

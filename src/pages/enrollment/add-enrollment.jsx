@@ -3,12 +3,12 @@ import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
 import { useCourse } from "../../contexts/courses";
 import { useStudentContext } from "../../contexts/students";
-import { Select, Input, Form, Divider, Radio, AutoComplete } from "antd";
+import { Select, Input, Form, Radio, AutoComplete } from "antd";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
 import { useOfferingsContext } from "../../contexts/offerings";
 import useMutation from "../../hooks/useMutation";
-import { DEFAULT_BRANCH_ID } from "../../constants";
+import { SEMESTER, DEFAULT_BRANCH_ID } from "../../constants";
 
 function generateFourDigitRandomNumber() {
   return Math.floor(1000 + Math.random() * 9000);
@@ -28,6 +28,7 @@ const options = [
   },
 ];
 
+ 
 const Enrollment = () => {
   const {
     data: schools,
@@ -278,20 +279,23 @@ const Enrollment = () => {
 
           <Form.Item label="Semester" name="semester">
             <Select
-              className="w-full mb=[2vh]"
-              size="large"
-              defaultValue="1st"
-              onChange={(value) => {
-                setOfferingsSearchParams({
-                  ...offeringsSearchParams,
-                  semester: value,
-                });
-              }}
-            >
-              <Option value="FIRST_SEMESTER">1st</Option>
-              <Option value="SECOND_SEMESTER">2nd</Option>
-              <Option value="SUMMER">Summer</Option>
-            </Select>
+                className="w-full mb-[2vh]"
+                size="large"
+                defaultValue="FIRST_SEMESTER"
+                onChange={(value) => {
+                  setOfferingsSearchParams({
+                    ...offeringsSearchParams,
+                    semester: value,
+                  });
+                }}
+              >
+                {SEMESTER.map(option => (
+                  <Option key={option.value} value={option.value}>
+                    {option.label.charAt(0).toUpperCase() + option.label.slice(1).toLowerCase()}
+                  </Option>
+                ))}
+              </Select>
+            
           </Form.Item>
 
           <Form.Item label="Course" name="course_name">

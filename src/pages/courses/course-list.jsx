@@ -193,6 +193,7 @@ const CourseList = () => {
           <Table
             dataSource={courses && courses.data && filteredData}
             columns={columns}
+            pagination={false}
             loading={coursesLoading || addCourseLoading || deleteCourseLoading}
           />
         </Col>

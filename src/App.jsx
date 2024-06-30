@@ -21,6 +21,7 @@ import RevieweesAccounting from "./pages/prints/reviewees-accounting";
 import ReviewProgramAccounting from "./pages/prints/review-program-accounting"; 
 import ReviewProgram from "./pages/program/review-program";
 import Schools from "./pages/schools/schools";
+import ViewOfferings from "./pages/offerings/view-offerings";
  
 
 const App = () => {
@@ -36,18 +37,20 @@ const App = () => {
           <Route path="/offerings" element={<Offerings />} />
           <Route path="/offerings/add" element={<AddOfferings />} />
           <Route path="/offerings/edit/:offeringId" element={<EditOfferings />} />
+          <Route path="/offerings/:offeringId" element={<ViewOfferings />} />
           <Route path="/payments/list" element={<PaymentsList />} />
           <Route path="/payments/add" element={<AddPayment />} />
           <Route path="/payments/:id" element={<ViewPayment />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:courseId" element={<ViewCourse />} />
-          <Route path="/view-enrollment/:enrollmentId" element={<ViewEnrollment />} />
+          <Route path="/enrollments/:enrollmentId" element={<ViewEnrollment />} />
           <Route path="/prints/enrollment/:enrollmentId" element={<PrintEnrollment />} />
           <Route path="/prints/reviewees-payment/:revieweesId" element={<RevieweesPayments />} />
           <Route path="/prints/reviewees-accounting/:revieweesId" element={<RevieweesAccounting />} />
           <Route path="/prints/review-program-accounting/:revieweesId" element={<ReviewProgramAccounting />} />
           <Route path="/review-program" element={<ReviewProgram />} />
           <Route path="/schools" element={<Schools />} />
+          
         
       
         </Routes>

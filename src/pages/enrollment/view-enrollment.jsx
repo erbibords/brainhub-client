@@ -1,21 +1,29 @@
 import React, { useEffect } from "react";
-import { Form, Input, Radio, Typography } from "antd";
+import { Form, Input, Typography, Button } from "antd";
+import { useNavigate } from 'react-router-dom';
+import {
+  ArrowLeftOutlined,
+  } from "@ant-design/icons";
  
-const { TextArea } = Input;
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const ViewEnrollmentForm = () => {
- 
-//   useEffect(() => {
-//     window.print();
-//   }, []);
-
+  const navigate = useNavigate();
+  
   return (
     
 
 
     <div>
-        <Title level={4} className="text-left">View Enrollment</Title><br/>
+
+      <Button
+        type="text"
+        onClick={() => navigate('/enrollments')}
+        icon={<ArrowLeftOutlined />}
+        className="mb-6"
+      />
+
+      <Title level={4} className="text-left">View Enrollment</Title><br/>
        <Form name="viewEnrollmentForm" layout="vertical" className="mt-[10px]">
        
       

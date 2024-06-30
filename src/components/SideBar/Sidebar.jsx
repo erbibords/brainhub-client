@@ -73,11 +73,16 @@ const Sidebar = () => {
         <Menu.Item key="enrollment" icon={<LaptopOutlined />}>
           <Link to="/enrollments">Enrollments</Link>
         </Menu.Item>
-        <Menu.Item key="program" icon={<FlagOutlined />}>
-          <Link to="/review-program">Review Program</Link>
+
+        <Menu.Item key="payments_list" icon={<DollarCircleOutlined />}>
+          <Link to="/payments/list">Payments</Link>
         </Menu.Item>
+       
         <Menu.Item key="offerings" icon={<NotificationOutlined />}>
           <Link to="/offerings">Offerings</Link>
+        </Menu.Item>
+        <Menu.Item key="program" icon={<FlagOutlined />}>
+          <Link to="/review-program">Review Program</Link>
         </Menu.Item>
         <Menu.Item key="schools" icon={<BookOutlined />}>
           <Link to="/schools">Schools</Link>
@@ -89,9 +94,7 @@ const Sidebar = () => {
       
         
        
-        <Menu.Item key="payments_list" icon={<DollarCircleOutlined />}>
-          <Link to="/payments/list">Payments</Link>
-        </Menu.Item>
+       
         {/* <Menu.Item key="addPayment" icon={<PlusOutlined />}>
           <Link to="/payments/add">Add Payment</Link>
         </Menu.Item> */}

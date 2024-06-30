@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import CustomInput from '../../components/Input/Input';
 import CustomButton from '../../components/Button/Button';
 import { Table, Space, Row, Col, Button, Select } from 'antd';
 import { useNavigate } from 'react-router';

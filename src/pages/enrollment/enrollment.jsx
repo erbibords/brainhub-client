@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Table, Space, Row, Col, Button, Select, DatePicker } from "antd";
+import { Table, Row, Col, Select, DatePicker, Space  } from "antd";
 import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
 import { useEnrollmentsContext } from "../../contexts/enrollments";
@@ -8,7 +8,8 @@ import { DateTime } from "luxon";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { getCourseById, getSchoolById } from "../../utils/mappings";
 import CustomButton from "../../components/Button/Button";
-
+import { formatSemester, formatTakerType } from "../../utils/formatting";
+import { SEMESTER } from "../../constants";
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -31,8 +32,8 @@ const Enrollment = () => {
   const [selectedSemester, setSelectedSemester] = useState(undefined);
   const [selectedYear, setSelectedYear] = useState(undefined);
 
-  const handleViewEnrollment = (studentId) => {
-    alert("debugging...");
+  const handleViewEnrollment = () => {
+    alert("debugging view... ./pages/enrollment/view-enrollment");
   };
 
   const columns = useMemo(
@@ -51,17 +52,21 @@ const Enrollment = () => {
         dataIndex: "student",
         render: (data) => {
           if (!data || schoolsLoading || schoolsError) return null;
-          const school = getSchoolById(schools.data, data.schoolId);
+          const school = getSchoolById(schools?.data, data.schoolId);
           return school ? school.name : null;
         },
       },
-      { title: "Student Status", dataIndex: "takerType", key: "takerType" },
+      {
+        title: "Student Status",
+        dataIndex: "takerType",
+        render: (data) => formatTakerType(data),
+      },
       {
         title: "Course",
         dataIndex: "courseOffering",
         render: (data) => {
           if (!data || getCoursesLoading || getCoursesError) return null;
-          const course = getCourseById(courses.data, data.course.id);
+          const course = getCourseById(courses?.data, data.course.id);
           return course ? course.name : null;
         },
       },
@@ -69,7 +74,7 @@ const Enrollment = () => {
         title: "Semester",
         dataIndex: "courseOffering",
         render: (course) => {
-          return course.semester;
+          return formatSemester(course.semester);
         },
       },
       {
@@ -100,11 +105,10 @@ const Enrollment = () => {
       },
     ],
     [
-      courses.data,
+      courses,
       getCoursesLoading,
       getCoursesError,
-      handleViewEnrollment,
-      schools.data,
+      schools,
       schoolsError,
       schoolsLoading,
     ]
@@ -202,9 +206,11 @@ const Enrollment = () => {
                 className="w-full"
                 onChange={(value) => setSelectedSemester(value)}
               >
-                <Option value="FIRST_SEMESTER">1st</Option>
-                <Option value="SECOND_SEMESTER">2nd</Option>
-                <Option value="SUMMER">Summer</Option>
+                {SEMESTER.map((sem) => (
+                  <Option value={sem.value} key={sem.value}>
+                    {sem.label}
+                  </Option>
+                ))}
               </Select>
             </Col>
 
@@ -233,14 +239,14 @@ const Enrollment = () => {
           </Row>
         </Col>
         <Col span={24}>
-          {!getEnrollmentsError && enrollments ? (
+          {getEnrollmentsError ? (
+            <GenericErrorDisplay />
+          ) : (
             <Table
-              dataSource={enrollments.data}
+              dataSource={enrollments?.data}
               columns={columns}
               loading={getEnrollmentsLoading}
             />
-          ) : (
-            <GenericErrorDisplay />
           )}
         </Col>
       </Row>

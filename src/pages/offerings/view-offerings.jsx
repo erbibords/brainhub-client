@@ -9,6 +9,7 @@ import {
   Skeleton,
   Form,
   DatePicker,
+  Table,
 } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -105,11 +106,24 @@ const ViewOffering = () => {
     }
   };
 
+
+  const studentListData = [
+    { key: '1', name: 'Louie Doooao', school: "Ui", year: "2024", semester: "1st", enrollmentDate: "2024-06-30"},
+    { key: '2', name: 'Johnny Papa', school: "San ag", year: "2024", semester: "2nd", enrollmentDate: "2024-06-29" },
+  ];
+  const columns = [
+    { title: 'Name', dataIndex: 'name', key: 'name' },
+    { title: 'School', dataIndex: 'school', key: 'school' },
+    { title: 'Year', dataIndex: 'year', key: 'year' },
+    { title: 'Semester', dataIndex: 'semester', key: 'semester' },
+    { title: 'Enrollment Date', dataIndex: 'enrollmentDate', key: 'enrollmentDate' },
+  ];
+
   return (
     <div>
       <Button
         type="text"
-        onClick={() => navigate('/courses')}
+        onClick={() => navigate('/offerings')}
         icon={<ArrowLeftOutlined />}
         className="mb-6"
       />
@@ -313,6 +327,18 @@ const ViewOffering = () => {
                   <Divider />
                 </div>
               </Form>
+
+
+              <Row gutter={[16, 16]}>
+                <Col span={24}>
+                  <Table
+                      dataSource={studentListData}
+                      columns={columns}
+                      title={() => <h2  className="text-2xl">Enrolled Student List</h2>}
+                    />
+                </Col>
+              </Row>
+
             </Card>
           )}
         </Col>

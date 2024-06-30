@@ -1,112 +1,69 @@
-import React, { useState } from "react";
-import axios from "axios"; // Import Axios
-import Sidebar from "../../components/SideBar/Sidebar";
-import { Layout, Input, Table, Space, Row, Col, Button, Modal, Form } from "antd";
-import { EditOutlined, DeleteOutlined, SaveOutlined } from '@ant-design/icons';
+import React, { useState, useCallback, useMemo } from "react";
+import { Table, Space, Row, Col, Button, Modal, Form } from "antd";
 import CustomInput from "../../components/Input/Input";
 import AddProgramModal from "../../components/AddProgramModal/AddProgramModal";
-
-const { Content } = Layout;
-const { TextArea } = Input;
+import { REVIEW_PROGRAM_BASE_URL } from "../../constants";
+import useMutation from "../../hooks/useMutation";
+import Swal from "sweetalert2";
+import { useProgramContext } from "../../contexts/programs.jsx";
+import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 
 const ReviewProgram = () => {
-  const [searchProgram, setSearchProgram] = useState('');
+  const [searchProgram, setSearchProgram] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [reviewProgramData, setReviewProgram] = useState([
-    { key: '1', reviewProgram: 'Insentive Program', description: "WVSU" },
-    { key: '2', reviewProgram: 'Sensitive Program', description: "UI" },
-  ]);
-  const [editingKey, setEditingKey] = useState('');
+  const [reviewProgramData, setReviewProgram] = useState();
   const [form] = Form.useForm();
+  const { programs, getProgramsLoading, getProgramsError } =
+    useProgramContext();
+
+  const { mutate: addProgram, loading: addProgramLoading } = useMutation(
+    REVIEW_PROGRAM_BASE_URL,
+    "POST",
+    "programs"
+  );
 
   const columns = [
     {
-      title: 'Program',
-      dataIndex: 'reviewProgram',
-      key: 'reviewProgram',
-      render: (text, record) => (
-        editingKey === record.id ? (
-          <Input
-            value={record.reviewProgram}
-            onChange={e => handleFieldChange(e, record.id, 'reviewProgram')}
-          />
-        ) : text
-      )
+      title: "Program",
+      dataIndex: "name",
     },
     {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
-      render: (text, record) => (
-        editingKey === record.id ? (
-          <TextArea
-            value={record.description}
-            onChange={e => handleFieldChange(e, record.id, 'description')}
-          />
-        ) : text
-      )
+      title: "Description",
+      dataIndex: "description",
     },
     {
-      title: 'Action',
-      key: 'action',
-      render: (text, record) => (
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
         <Space size="middle">
-          {
-            editingKey === record.id ? (
-              <>
-                <Button type="primary" className="w-auto bg-primary text-white" onClick={() => saveProgram(record.id)}>
-                  Save
-                </Button>
+          <Button
+            type="success"
+            className="w-auto bg-success text-white"
+            onClick={() => editProgram(record.id)}
+          >
+            Edit
+          </Button>
 
-                <Button onClick={() => cancelEditing()}>
-                  Cancel
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button type="success" className="w-auto bg-success text-white" onClick={() => editProgram(record.id)}>
-                  Update
-                </Button>
-
-                <Button type="secondary" className="w-auto bg-secondary text-white" onClick={() => confirmDeleteProgram(record.id, record.reviewProgram)}>
-                  Delete
-                </Button>
-              </>
-            )
-          }
+          <Button
+            type="secondary"
+            className="w-auto bg-secondary text-white"
+            onClick={() =>
+              confirmDeleteProgram(record.id, record.reviewProgram)
+            }
+          >
+            Delete
+          </Button>
         </Space>
       ),
     },
   ];
 
-  const handleFieldChange = (e, key, field) => {
-    const newData = [...reviewProgramData];
-    const index = newData.findIndex(item => key === item.id);
-    if (index > -1) {
-      const item = newData[index];
-      newData.splice(index, 1, { ...item, [field]: e.target.value });
-      setReviewProgram(newData);
-    }
-  };
-
-  const editProgram = (key) => {
-    setEditingKey(key);
-  };
-
-  const cancelEditing = () => {
-    setEditingKey('');
-  };
-
-  const saveProgram = (key) => {
-    
-  };
-
   const confirmDeleteProgram = (programId, name) => {
     Modal.confirm({
-      title: 'Are you sure you want to delete this program?',
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
+      title: "Are you sure you want to delete this program?",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
       onOk() {
         handleDeleteProgram(programId, name);
       },
@@ -114,11 +71,7 @@ const ReviewProgram = () => {
   };
 
   const handleDeleteProgram = (programId, name) => {
-    console.log('delete');
-  };
-
-  const searchByProgram = (value) => {
-    setSearchProgram(value);
+    console.log("Program deleted");
   };
 
   const showModal = () => {
@@ -130,35 +83,90 @@ const ReviewProgram = () => {
     form.resetFields();
   };
 
-  const handleSaveProgram = (values) => {
-    console.log(values);
-  };
-
-  const filteredData = reviewProgramData.filter(program =>
-    program.reviewProgram.toLowerCase().includes(searchProgram.toLowerCase())
+  const handleAddProgram = useCallback(
+    async (values) => {
+      try {
+        const res = await addProgram(values);
+        if (res) {
+          form.resetFields();
+          setIsModalVisible(false);
+          Swal.fire({
+            icon: "success",
+            title: "Review Program Added",
+            timer: 2000,
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Something went wrong",
+          text: "It looks like there might be an encoding issue or a conflict with your entries. Please review and try again.",
+        });
+      }
+    },
+    [addProgram]
   );
+
+  const filteredData = useMemo(() => {
+    if (getProgramsError) return [];
+    if (!programs) return [];
+    if (!searchProgram) return programs?.data;
+    return programs?.data?.filter((program) =>
+      program.name.toLowerCase().includes(searchProgram.toLowerCase())
+    );
+  }, [searchProgram, programs, getProgramsError]);
 
   return (
     <div>
-      <h1 className="text-2xl">Review Program</h1>
-      <div className="text-right">
-        <Button type="primary" onClick={showModal} className="w-auto bg-primary text-white">Add Program</Button>
-      </div>
+      <h1 className="text-2xl mb-[5vh]">Review Program</h1>
+    
       <Row gutter={[16, 16]}>
         <Col span={8}>
-          <CustomInput type="text" placeholder="Search by Program..." onChange={(e) => searchByProgram(e.target.value)} />
+        <span>Program:</span>
+          <CustomInput
+            type="text"
+            
+            onChange={(e) => {
+              setSearchProgram(e.target.value);
+            }}
+          />
         </Col>
+
+        <Col span={16}>
+
+          <div className="text-right">
+            <Button
+              type="primary"
+              onClick={showModal}
+              className="w-auto bg-primary text-white float-right mt-[3vh]"
+              size="large"
+            >
+              Add Program
+            </Button>
+          </div>
+        </Col>
+
+     
         <Col span={24}>
-          <Table dataSource={filteredData} columns={columns} />
+          {getProgramsError ? (
+            <GenericErrorDisplay className="mt-10" />
+          ) : (
+            <Table
+              dataSource={filteredData}
+              columns={columns}
+              loading={getProgramsLoading}
+            />
+          )}
         </Col>
       </Row>
 
       <AddProgramModal
-            isVisible={isModalVisible}
-            handleCancel={handleCancel}
-            handleSave={handleSaveProgram}
-            form={form}
-        />
+        isVisible={isModalVisible}
+        handleCancel={handleCancel}
+        handleSave={handleAddProgram}
+        form={form}
+        buttonLoading={addProgramLoading}
+      />
     </div>
   );
 };
