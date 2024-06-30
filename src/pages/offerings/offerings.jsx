@@ -137,7 +137,7 @@ const Offerings = () => {
         </Col>
 
         <Col span={4}>
-          <p>Year Offered: </p>
+          <p>School Year: </p>
           <Select className="h-[40px] w-full">
             {YEAR.map((y) => (
               <Option value={y} key={y}>

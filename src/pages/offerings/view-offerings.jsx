@@ -236,7 +236,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Year Offered:</strong>{' '}
+                    <strong>School Year:</strong>{' '}
                     {isEditing ? (
                       <Form.Item name="yearOffered">
                         <Select
