@@ -23,20 +23,23 @@ const SchoolList = () => {
 
 
     const data = [
-        { key: '1', school: 'San Agustin',  description: 'lorem ipsum dole'},
-        { key: '2', school: 'UI Phinma University', description: 'Dolorem Solome'},
+        { key: '1', school: 'San Agustin'},
+        { key: '2', school: 'UI Phinma University'},
        
       ];
      const columns = [
         { title: 'School', dataIndex: 'school', key: 'school' },
-        { title: 'Description', dataIndex: 'description', key: 'description' },
+        
         {
             title: 'Action',
             key: 'action',
             render: (text, record) => (
                 <Space size="middle">
-                <CustomButton onClick={() => navigate(`${record.id}`)}>
-                  View
+                <CustomButton type = "edit" onClick={() => navigate(`${record.id}`)}>
+                  Edit
+                </CustomButton>
+                <CustomButton type = "delete" onClick={() => navigate(`${record.id}`)}>
+                  Delete
                 </CustomButton>
               </Space>
             ),
