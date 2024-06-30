@@ -52,7 +52,7 @@ const Offerings = () => {
         return formatSemester(value);
       },
     },
-    { title: 'Year offered', dataIndex: 'yearOffered', key: 'yearOffered' },
+    { title: 'School Year', dataIndex: 'yearOffered', key: 'yearOffered' },
     {
       title: 'Start Date',
       dataIndex: 'startDate',

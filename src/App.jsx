@@ -21,7 +21,7 @@ import RevieweesAccounting from "./pages/prints/reviewees-accounting";
 import ReviewProgramAccounting from "./pages/prints/review-program-accounting"; 
 import ReviewProgram from "./pages/program/review-program";
 import Schools from "./pages/schools/schools";
-import ViewSchool from "./pages/schools/view-schools";
+ 
 
 const App = () => {
   return (
@@ -48,7 +48,7 @@ const App = () => {
           <Route path="/prints/review-program-accounting/:revieweesId" element={<ReviewProgramAccounting />} />
           <Route path="/review-program" element={<ReviewProgram />} />
           <Route path="/schools" element={<Schools />} />
-          <Route path="/schools/:schoolId" element={<ViewSchool />} />
+        
       
         </Routes>
       </Layout>
