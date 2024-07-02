@@ -28,7 +28,6 @@ const options = [
   },
 ];
 
- 
 const Enrollment = () => {
   const {
     data: schools,
@@ -279,23 +278,23 @@ const Enrollment = () => {
 
           <Form.Item label="Semester" name="semester">
             <Select
-                className="w-full mb-[2vh]"
-                size="large"
-                defaultValue="FIRST_SEMESTER"
-                onChange={(value) => {
-                  setOfferingsSearchParams({
-                    ...offeringsSearchParams,
-                    semester: value,
-                  });
-                }}
-              >
-                {SEMESTER.map(option => (
-                  <Option key={option.value} value={option.value}>
-                    {option.label.charAt(0).toUpperCase() + option.label.slice(1).toLowerCase()}
-                  </Option>
-                ))}
-              </Select>
-            
+              className="w-full mb-[2vh]"
+              size="large"
+              defaultValue="FIRST_SEMESTER"
+              onChange={(value) => {
+                setOfferingsSearchParams({
+                  ...offeringsSearchParams,
+                  semester: value,
+                });
+              }}
+            >
+              {SEMESTER.map((option) => (
+                <Option key={option.value} value={option.value}>
+                  {option.label.charAt(0).toUpperCase() +
+                    option.label.slice(1).toLowerCase()}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
 
           <Form.Item label="Course" name="course_name">
