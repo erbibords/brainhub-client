@@ -138,6 +138,20 @@ const ReviewProgram = () => {
             }}
           />
         </Col>
+
+        <Col span={16}>
+          <div className="text-right">
+            <Button
+              type="primary"
+              onClick={showModal}
+              className="w-auto bg-primary text-white float-right mt-[3vh]"
+              size="large"
+            >
+              Add Program
+            </Button>
+          </div>
+        </Col>
+
         <Col span={24}>
           {getProgramsError ? (
             <GenericErrorDisplay className="mt-10" />

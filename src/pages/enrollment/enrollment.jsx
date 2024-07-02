@@ -32,9 +32,9 @@ const Enrollment = () => {
   const [selectedSemester, setSelectedSemester] = useState(undefined);
   const [selectedYear, setSelectedYear] = useState(undefined);
 
-  // const handleViewEnrollment = (studentId) => {
-  //   alert("debugging...");
-  // };
+  const handleViewEnrollment = () => {
+    alert("debugging view... ./pages/enrollment/view-enrollment");
+  };
 
   const columns = useMemo(
     () => [
@@ -108,7 +108,6 @@ const Enrollment = () => {
       courses,
       getCoursesLoading,
       getCoursesError,
-      // handleViewEnrollment,
       schools,
       schoolsError,
       schoolsLoading,

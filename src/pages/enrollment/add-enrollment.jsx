@@ -3,7 +3,7 @@ import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
 import { useCourse } from "../../contexts/courses";
 import { useStudentContext } from "../../contexts/students";
-import { Select, Input, Form, Divider, Radio, AutoComplete } from "antd";
+import { Select, Input, Form, Radio, AutoComplete } from "antd";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
 import { useOfferingsContext } from "../../contexts/offerings";

@@ -22,6 +22,7 @@ import RevieweesAccounting from "./pages/prints/reviewees-accounting";
 import ReviewProgramAccounting from "./pages/prints/review-program-accounting";
 import ReviewProgram from "./pages/program/review-program";
 import Schools from "./pages/schools/schools";
+import ViewOfferings from "./pages/offerings/view-offerings";
 
 const App = () => {
   return (
@@ -40,13 +41,14 @@ const App = () => {
             path="/offerings/edit/:offeringId"
             element={<EditOfferings />}
           />
+          <Route path="/offerings/:offeringId" element={<ViewOfferings />} />
           <Route path="/payments/list" element={<PaymentsList />} />
           <Route path="/payments/add/:studentId" element={<AddPayment />} />
           <Route path="/payments/:id" element={<ViewPayment />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:courseId" element={<ViewCourse />} />
           <Route
-            path="/view-enrollment/:enrollmentId"
+            path="/enrollments/:enrollmentId"
             element={<ViewEnrollment />}
           />
           <Route
