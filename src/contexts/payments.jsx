@@ -16,8 +16,6 @@ export const PaymentsProvider = ({ children }) => {
 
   const { data, isLoading, error } = usePayments(params);
 
-  console.log(params);
-
   const values = useMemo(() => {
     return {
       payments: data,

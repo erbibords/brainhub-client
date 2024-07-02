@@ -21,6 +21,7 @@ import RevieweesPayments from "./pages/prints/reviewees-payments";
 import RevieweesAccounting from "./pages/prints/reviewees-accounting";
 import ReviewProgramAccounting from "./pages/prints/review-program-accounting";
 import ReviewProgram from "./pages/program/review-program";
+import Schools from "./pages/schools/schools";
 
 const App = () => {
   return (
@@ -65,6 +66,7 @@ const App = () => {
             element={<ReviewProgramAccounting />}
           />
           <Route path="/review-program" element={<ReviewProgram />} />
+          <Route path="/schools" element={<Schools />} />
         </Routes>
       </Layout>
     </Router>

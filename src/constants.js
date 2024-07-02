@@ -7,6 +7,8 @@ export const STUDENT_BASE_URL = `branches/${DEFAULT_BRANCH_ID}/students`;
 export const OFFERING_BASE_URL = `branches/${DEFAULT_BRANCH_ID}/offerings`;
 export const REVIEW_PROGRAM_BASE_URL = `branches/${DEFAULT_BRANCH_ID}/review-programs`;
 export const PAYMENTS_BASE_URL = `branches/${DEFAULT_BRANCH_ID}/payments`;
+export const SCHOOLS_BASE_URL = `branches/${DEFAULT_BRANCH_ID}/schools`;
+
 
 
 

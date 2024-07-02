@@ -43,7 +43,10 @@ const Sidebar = () => {
     }else if (pathname.startsWith("/review-program")) {
       selectedKey = ["program"];
     }
-
+    else if (pathname.startsWith("/schools")) {
+      selectedKey = ["schools"];
+    }
+    
     return { selectedKey, openKeys };
   };
 
@@ -70,16 +73,22 @@ const Sidebar = () => {
         <Menu.Item key="enrollment" icon={<LaptopOutlined />}>
           <Link to="/enrollments">Enrollments</Link>
         </Menu.Item>
-        <Menu.Item key="courses" icon={<BookOutlined />}>
-          <Link to="/courses">Courses</Link>
-        </Menu.Item>
         <Menu.Item key="program" icon={<FlagOutlined />}>
           <Link to="/review-program">Review Program</Link>
         </Menu.Item>
-        
         <Menu.Item key="offerings" icon={<NotificationOutlined />}>
           <Link to="/offerings">Offerings</Link>
         </Menu.Item>
+        <Menu.Item key="schools" icon={<BookOutlined />}>
+          <Link to="/schools">Schools</Link>
+        </Menu.Item>
+
+        <Menu.Item key="courses" icon={<BookOutlined />}>
+          <Link to="/courses">Courses</Link>
+        </Menu.Item>
+      
+        
+       
         <Menu.Item key="payments_list" icon={<DollarCircleOutlined />}>
           <Link to="/payments/list">Payments</Link>
         </Menu.Item>

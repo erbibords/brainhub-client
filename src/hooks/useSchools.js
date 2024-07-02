@@ -1,10 +1,9 @@
 import useSWR from 'swr';
-import { DEFAULT_BRANCH_ID } from '../constants';
+import { SCHOOLS_BASE_URL } from '../constants';
+import fetcher from '../utils/fetcher';
 
 function useSchools() {
-  const { data, error } = useSWR(`branches/${DEFAULT_BRANCH_ID}/schools`);
-  const isLoading = !data && !error;
-
+  const { data, error, isLoading } = useSWR('schools', () => fetcher(SCHOOLS_BASE_URL));
   return {
     data,
     error,

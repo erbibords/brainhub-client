@@ -93,7 +93,7 @@ const EditOfferings = () => {
         </Form.Item>
 
         <Form.Item
-          label="Year Offered"
+          label="School Year"
           name="yearOffered"
           rules={[{ required: true, message: "Please select year!" }]}
         >

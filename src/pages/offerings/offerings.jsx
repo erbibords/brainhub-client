@@ -21,6 +21,8 @@ const Offerings = () => {
     setParams,
   } = useOfferingsContext();
 
+  console.log(offerings);
+
   useEffect(() => {
     setParams({
       pageNo: 1,
