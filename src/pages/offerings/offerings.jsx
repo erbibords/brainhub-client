@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react';
-import CustomButton from '../../components/Button/Button';
-import { Table, Space, Row, Col, Button, Select } from 'antd';
-import { useNavigate } from 'react-router';
-import { useOfferingsContext } from '../../contexts/offerings';
-import { useCourse } from '../../contexts/courses';
+import React, { useEffect } from "react";
+import CustomButton from "../../components/Button/Button";
+import { Table, Space, Row, Col, Button, Select } from "antd";
+import { useNavigate } from "react-router";
+import { useOfferingsContext } from "../../contexts/offerings";
+import { useCourse } from "../../contexts/courses";
 
-import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
-import { DateTime } from 'luxon';
-import { formatSemester, formatAmount } from '../../utils/formatting';
-import { REVIEW_PROGRAM, SEMESTER, YEAR } from '../../constants';
+import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
+import { DateTime } from "luxon";
+import { formatSemester, formatAmount } from "../../utils/formatting";
+import { REVIEW_PROGRAM, SEMESTER, YEAR } from "../../constants";
 const { Option } = Select;
 
 const Offerings = () => {
@@ -32,63 +32,63 @@ const Offerings = () => {
 
   const columns = [
     {
-      title: 'Course',
-      dataIndex: 'course',
-      key: 'course',
+      title: "Course",
+      dataIndex: "course",
+      key: "course",
       render: (_, record) => <p>{record?.course?.name}</p>,
     },
     {
-      title: 'Review Program',
-      dataIndex: 'program',
-      key: 'program',
+      title: "Review Program",
+      dataIndex: "program",
+      key: "program",
     },
 
     {
-      title: 'Semester Offered',
-      dataIndex: 'semester',
-      key: 'semester',
+      title: "Semester Offered",
+      dataIndex: "semester",
+      key: "semester",
       render: (value) => {
         return formatSemester(value);
       },
     },
-    { title: 'School Year', dataIndex: 'yearOffered', key: 'yearOffered' },
+    { title: "School Year", dataIndex: "yearOffered", key: "yearOffered" },
     {
-      title: 'Start Date',
-      dataIndex: 'startDate',
-      key: 'startDate',
+      title: "Start Date",
+      dataIndex: "startDate",
+      key: "startDate",
       render: (value) => {
-        return DateTime.fromISO(value).toFormat('MMM dd, yyyy');
+        return DateTime.fromISO(value).toFormat("MMM dd, yyyy");
       },
     },
     {
-      title: 'Payment Deadline',
-      dataIndex: 'paymentDeadline',
-      key: 'paymentDeadline',
+      title: "Payment Deadline",
+      dataIndex: "paymentDeadline",
+      key: "paymentDeadline",
       render: (value) => {
-        return DateTime.fromISO(value).toFormat('MMM dd, yyyy');
+        return DateTime.fromISO(value).toFormat("MMM dd, yyyy");
       },
     },
     {
-      title: 'Enrollment Capacity',
-      dataIndex: 'enrollmentCapacity',
-      key: 'enrollmentCapacity',
+      title: "Enrollment Capacity",
+      dataIndex: "enrollmentCapacity",
+      key: "enrollmentCapacity",
     },
     {
-      title: 'Review Cost',
-      dataIndex: 'reviewCost',
-      key: 'reviewCost',
+      title: "Review Cost",
+      dataIndex: "reviewCost",
+      key: "reviewCost",
       render: (value) => formatAmount(value),
     },
     {
-      title: 'Budget Proposal',
-      dataIndex: 'budgetProposal',
-      key: 'budgetProposal',
+      title: "Budget Proposal",
+      dataIndex: "budgetProposal",
+      key: "budgetProposal",
       render: (value) => formatAmount(value),
     },
 
     {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       render: (value, record) => (
         <Space size="small">
           <CustomButton

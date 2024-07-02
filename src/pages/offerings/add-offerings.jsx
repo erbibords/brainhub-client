@@ -133,18 +133,18 @@ const AddOfferings = () => {
           name="semester"
           rules={[{ required: true, message: "Please select semester!" }]}
         >
-          
           <Select
-              className="h-[40px] w-full mb-[10px]"
-              size="large"
-              defaultValue="FIRST_SEMESTER"
-            >
-              {SEMESTER.map(option => (
-                <Option key={option.value} value={option.value}>
-                  {option.label.charAt(0).toUpperCase() + option.label.slice(1).toLowerCase()}
-                </Option>
-              ))}
-            </Select>
+            className="h-[40px] w-full mb-[10px]"
+            size="large"
+            defaultValue="FIRST_SEMESTER"
+          >
+            {SEMESTER.map((option) => (
+              <Option key={option.value} value={option.value}>
+                {option.label.charAt(0).toUpperCase() +
+                  option.label.slice(1).toLowerCase()}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <Form.Item

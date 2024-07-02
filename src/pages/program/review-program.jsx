@@ -119,13 +119,12 @@ const ReviewProgram = () => {
   return (
     <div>
       <h1 className="text-2xl mb-[5vh]">Review Program</h1>
-    
+
       <Row gutter={[16, 16]}>
         <Col span={8}>
-        <span>Program:</span>
+          <span>Program:</span>
           <CustomInput
             type="text"
-            
             onChange={(e) => {
               setSearchProgram(e.target.value);
             }}
@@ -133,7 +132,6 @@ const ReviewProgram = () => {
         </Col>
 
         <Col span={16}>
-
           <div className="text-right">
             <Button
               type="primary"
@@ -146,7 +144,6 @@ const ReviewProgram = () => {
           </div>
         </Col>
 
-     
         <Col span={24}>
           {getProgramsError ? (
             <GenericErrorDisplay className="mt-10" />

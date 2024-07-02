@@ -29,7 +29,12 @@ const CustomModal = ({ isVisible, handleCancel, handleSave, form }) => {
         <Form.Item
           label="Name"
           name="reviewPRogram"
-          rules={[{ required: true, message: "Please input the Review Program Name!" }]}
+          rules={[
+            {
+              required: true,
+              message: "Please input the Review Program Name!",
+            },
+          ]}
         >
           <CustomInput type="text" name="name" />
         </Form.Item>

@@ -33,7 +33,6 @@ const SchoolModal = ({ isVisible, handleCancel, handleSave, form }) => {
         >
           <CustomInput type="text" name="name" />
         </Form.Item>
-       
       </Form>
     </Modal>
   );

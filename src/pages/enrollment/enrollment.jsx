@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Table, Row, Col, Select, DatePicker, Space  } from "antd";
+import { Table, Row, Col, Select, DatePicker, Space } from "antd";
 import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
 import { useEnrollmentsContext } from "../../contexts/enrollments";
