@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import CustomInput from "../../components/Input/Input";
-import CustomButton from "../../components/Button/Button";
-import { Layout, Select, Form, Image, DatePicker } from "antd";
+import { Layout, Select, Button, Form, Image, DatePicker } from "antd";
 const { Content } = Layout;
 const { Option } = Select;
 
@@ -157,14 +156,14 @@ const AddNewPayment = () => {
 
             <div className="text-right mb-[20px]">
               <Form.Item>
-                <CustomButton
+                <Button
                   type="primary"
                   htmlType="submit"
                   size="large"
                   className="w-auto bg-primary text-white"
                 >
                   Save
-                </CustomButton>
+                </Button>
               </Form.Item>
             </div>
           </div>

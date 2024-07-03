@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Typography, Row, Col, Table, Form, Input } from "antd";
+import CustomInput from "../../components/Input/Input";
 
 const { Title, Text } = Typography;
 
@@ -68,8 +69,8 @@ const Receipt = () => {
               </Text>
             </Col>
             <Col span={12}>
-              <Input
-                className="border-t-0 border-x-0 border-b-2 float-right bg-transparent"
+              <CustomInput
+                className="border-t-0 border-x-0 border-b-0float-right bg-transparent"
                 value="20000"
                 readOnly
               />
@@ -78,7 +79,7 @@ const Receipt = () => {
         </Form.Item>
 
         <Form.Item className="mt-2 flex justify-end">
-          <Input
+          <CustomInput
             className="border-t-0 border-x-0 border-b-2 float-right bg-transparent"
             readOnly
           />

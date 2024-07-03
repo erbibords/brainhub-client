@@ -184,17 +184,11 @@ const StudentProfile = () => {
                   </h1>
                 </Col>
                 <Col xs={24} sm={24} md={8} lg={6}>
-                  <div style={{ textAlign: "right", marginBottom: "20px" }}>
+                  <div className="text-right mb-5">
                     {isEditing ? (
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                        }}
-                      >
+                      <div className="flex justify-end">
                         <CustomButton
                           size="large"
-                          style={{ marginRight: "10px" }}
                           className="mr-[10px]"
                           loading={updateStudentLoading}
                           disabled={updateStudentLoading}
@@ -357,7 +351,7 @@ const StudentProfile = () => {
                   )}
                 </p>
                 <Divider />
-                <div style={{ marginTop: "15px", marginBottom: "20px" }}>
+                <div className="mt-[15px] mb-[20px]">
                   <small>
                     <i className="mb-[2vh]">
                       Person to be notified in case of emergency:

@@ -47,7 +47,7 @@ const CourseList = () => {
       key: "name",
       render: (text, record) =>
         editingKey === record.key ? (
-          <Input
+          <CustomInput
             value={record.course_name}
             onChange={(e) => handleFieldChange(e, record.key, "name")}
           />

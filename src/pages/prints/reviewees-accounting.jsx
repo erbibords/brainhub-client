@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { Form, Input, Typography, Row, Col, Table } from "antd";
+import { Form, Typography, Row, Col, Table } from "antd";
+import CustomInput from "../../components/Input/Input";
 
 const { Title, Text } = Typography;
 
@@ -39,7 +40,7 @@ const RevieweesAccounting = () => {
                 label="Enrollment Date"
                 className="mb-4 inline-block w-auto"
               >
-                <Input
+                <CustomInput
                   className="border-t-0 border-x-0 border-b-2 bg-transparent"
                   readOnly
                 />
@@ -50,7 +51,7 @@ const RevieweesAccounting = () => {
                 label="Assisted by"
                 className="mb-4 inline-block w-auto"
               >
-                <Input
+                <CustomInput
                   className="border-t-0 border-x-0 border-b-2 bg-transparent"
                   readOnly
                 />
@@ -63,7 +64,7 @@ const RevieweesAccounting = () => {
                 label="Review Fee"
                 className="mb-4 inline-block w-auto"
               >
-                <Input
+                <CustomInput
                   className="border-t-0 border-x-0 border-b-2 bg-transparent"
                   readOnly
                 />
