@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Typography, Row, Col, Table, Form, Input } from "antd";
+import { Typography, Row, Col, Table, Form } from "antd";
 import CustomInput from "../../components/Input/Input";
 
 const { Title, Text } = Typography;

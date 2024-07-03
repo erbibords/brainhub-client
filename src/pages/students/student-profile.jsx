@@ -316,7 +316,15 @@ const StudentProfile = () => {
                 <p>
                   <strong>Address:</strong>{" "}
                   {isEditing ? (
-                    <Form.Item name="address">
+                    <Form.Item
+                      name="address"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please inpu your Address",
+                        },
+                      ]}
+                    >
                       <CustomInput
                         name="address"
                         value={tempData.address}
@@ -361,7 +369,15 @@ const StudentProfile = () => {
                 <p>
                   <strong>Contact Name:</strong>{" "}
                   {isEditing ? (
-                    <Form.Item name="emergencyContactName">
+                    <Form.Item
+                      name="emergencyContactName"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input your emergency contact name!",
+                        },
+                      ]}
+                    >
                       <CustomInput
                         name="emergencyContactName"
                         value={tempData.emergencyContact.name}
@@ -376,7 +392,16 @@ const StudentProfile = () => {
                 <p>
                   <strong>Relationship:</strong>{" "}
                   {isEditing ? (
-                    <Form.Item name="emergencyContactRelationShip">
+                    <Form.Item
+                      name="emergencyContactRelationShip"
+                      rules={[
+                        {
+                          required: true,
+                          message:
+                            "Please input your relation on your emergency contact!",
+                        },
+                      ]}
+                    >
                       <CustomInput
                         name="emergencyContactRelationShip"
                         value={tempData.emergencyContact.relationship}
@@ -391,7 +416,16 @@ const StudentProfile = () => {
                 <p>
                   <strong>Emergency Address:</strong>{" "}
                   {isEditing ? (
-                    <Form.Item name="emergencyContactAddress">
+                    <Form.Item
+                      name="emergencyContactAddress"
+                      rules={[
+                        {
+                          required: true,
+                          message:
+                            "Please input your emergency contact address!",
+                        },
+                      ]}
+                    >
                       <CustomInput
                         name="emergencyContactAddress"
                         value={tempData.emergencyContact.address}
@@ -406,7 +440,15 @@ const StudentProfile = () => {
                 <p>
                   <strong>Emergency Contact No.:</strong>{" "}
                   {isEditing ? (
-                    <Form.Item name="emergencyContactContactNumber">
+                    <Form.Item
+                      name="emergencyContactContactNumber"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input your emergency contact no!",
+                        },
+                      ]}
+                    >
                       <CustomInput
                         name="emergencyContactContactNumber"
                         value={tempData.emergencyContact.contactNumber}

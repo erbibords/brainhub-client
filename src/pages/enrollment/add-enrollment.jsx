@@ -562,7 +562,6 @@ const Enrollment = () => {
                     name="emergencyAddress"
                     placeholder=""
                     rows={4}
-                    className="mb-[2vh]"
                     size="large"
                   />
                 </Form.Item>
