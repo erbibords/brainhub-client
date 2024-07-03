@@ -184,7 +184,7 @@ const Enrollment = () => {
               </Select>
             </Col>
             <Col span={6}>
-              <p>School</p>
+              <p>School:</p>
               <Select
                 className="w-full"
                 oading={schoolsLoading}

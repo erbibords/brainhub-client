@@ -23,6 +23,8 @@ import ReviewProgram from "./pages/program/review-program";
 import Schools from "./pages/schools/schools";
 import ViewOfferings from "./pages/offerings/view-offerings";
 import Receipt from "./pages/prints/receipt-accounting";
+import RevieweesPopulation from "./pages/prints/reviewees-population";
+import PaymentPrintList from "./pages/prints/payment-print-list";
 
 const App = () => {
   return (
@@ -67,6 +69,15 @@ const App = () => {
             element={<ReviewProgramAccounting />}
           />
           <Route path="/prints/receipt-accounting/:Id" element={<Receipt />} />
+          <Route
+            path="/prints/reviewees-population/:Id"
+            element={<RevieweesPopulation />}
+          />
+          <Route
+            path="/prints/payment-list/:Id"
+            element={<PaymentPrintList />}
+          />
+
           <Route path="/review-program" element={<ReviewProgram />} />
           <Route path="/schools" element={<Schools />} />
         </Routes>

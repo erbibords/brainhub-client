@@ -34,8 +34,6 @@ const Receipt = () => {
             INTEGRATED EDUCATIONAL CORPORATION (ILOILO)
           </Title>
           <Text className="text-center d-block">NV-TIN 000-995-152-00000</Text>
-
-          <Text className="text-center d-block">OFFICIAL RECEIPT</Text>
         </div>
         <Row className="mb-[10px]">
           <Col span={12}>
