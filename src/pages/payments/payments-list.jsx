@@ -122,7 +122,7 @@ const PaymentsList = () => {
             <Col span={3}>
               <p>Year</p>
               <Select className="w-full">
-                <Option value="2024">2024</Option>
+                <Option value="2024">202</Option>
                 <Option value="2025">2025</Option>
                 <Option value="2026">2026</Option>
                 <Option value="2027">2027</Option>
