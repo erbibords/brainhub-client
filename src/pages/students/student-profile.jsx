@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import CustomInput from "../../components/Input/Input";
-import { Button, Row, Col, Card, Divider, Skeleton, Form, Table } from "antd";
+import CustomButton from "../../components/Button/Button";
+import { Row, Col, Card, Divider, Skeleton, Form, Table } from "antd";
 import useProfile from "../../hooks/useStudentProfile";
 import { useParams, useNavigate } from "react-router-dom";
 import useMutation from "../../hooks/useMutation";
@@ -191,7 +192,7 @@ const StudentProfile = () => {
                           justifyContent: "flex-end",
                         }}
                       >
-                        <Button
+                        <CustomButton
                           size="large"
                           style={{ marginRight: "10px" }}
                           className="mr-[10px]"
@@ -200,9 +201,9 @@ const StudentProfile = () => {
                           onClick={handleCancel}
                         >
                           Cancel
-                        </Button>
+                        </CustomButton>
 
-                        <Button
+                        <CustomButton
                           size="large"
                           type="primary"
                           className="w-auto bg-primary text-white"
@@ -213,10 +214,10 @@ const StudentProfile = () => {
                           }}
                         >
                           Save
-                        </Button>
+                        </CustomButton>
                       </div>
                     ) : (
-                      <Button
+                      <CustomButton
                         type="primary"
                         size="large"
                         className="w-auto bg-primary text-white"
@@ -226,7 +227,7 @@ const StudentProfile = () => {
                         }}
                       >
                         Edit
-                      </Button>
+                      </CustomButton>
                     )}
                   </div>
                 </Col>

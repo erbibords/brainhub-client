@@ -1,19 +1,19 @@
-import React, { useCallback, useState, useMemo, useEffect } from 'react';
-import { Input, Table, Space, Row, Col, Button, Modal, Form } from 'antd';
-import CustomInput from '../../components/Input/Input';
-import AddCourseModal from '../../components/AddCourseModal/AddCourseModal';
-import useMutation from '../../hooks/useMutation';
-import { COURSE_BASE_URL } from '../../constants';
-import { useCourse } from '../../contexts/courses';
-import Swal from 'sweetalert2';
-import CustomButton from '../../components/Button/Button';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useState, useMemo, useEffect } from "react";
+import { Input, Table, Space, Row, Col, Form } from "antd";
+import CustomInput from "../../components/Input/Input";
+import AddCourseModal from "../../components/AddCourseModal/AddCourseModal";
+import useMutation from "../../hooks/useMutation";
+import { COURSE_BASE_URL } from "../../constants";
+import { useCourse } from "../../contexts/courses";
+import Swal from "sweetalert2";
+import CustomButton from "../../components/Button/Button";
+import { useNavigate } from "react-router-dom";
 
 const { TextArea } = Input;
 
 const CourseList = () => {
   const navigate = useNavigate();
-  const [searchCourse, setSearchCourse] = useState('');
+  const [searchCourse, setSearchCourse] = useState("");
   const { courses, coursesLoading, coursesError } = useCourse();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(undefined);
@@ -21,7 +21,7 @@ const CourseList = () => {
     mutate: addCourse,
     loading: addCourseLoading,
     error: addCourseError,
-  } = useMutation(COURSE_BASE_URL, 'POST', COURSE_BASE_URL);
+  } = useMutation(COURSE_BASE_URL, "POST", COURSE_BASE_URL);
 
   const {
     mutate: deleteCourse,
@@ -29,11 +29,11 @@ const CourseList = () => {
     error: deleteCourseError,
   } = useMutation(
     `${COURSE_BASE_URL}/${selectedCourse?.id}`,
-    'DELETE',
+    "DELETE",
     COURSE_BASE_URL
   );
 
-  const [editingKey, setEditingKey] = useState('');
+  const [editingKey, setEditingKey] = useState("");
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -42,36 +42,36 @@ const CourseList = () => {
 
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
       render: (text, record) =>
         editingKey === record.key ? (
           <Input
             value={record.course_name}
-            onChange={(e) => handleFieldChange(e, record.key, 'name')}
+            onChange={(e) => handleFieldChange(e, record.key, "name")}
           />
         ) : (
           text
         ),
     },
     {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
       render: (text, record) =>
         editingKey === record.id ? (
           <TextArea
             value={record.description}
-            onChange={(e) => handleFieldChange(e, record.id, 'description')}
+            onChange={(e) => handleFieldChange(e, record.id, "description")}
           />
         ) : (
           text
         ),
     },
     {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       render: (text, record) => (
         <Space size="middle">
           <CustomButton onClick={() => navigate(`${record.id}`)}>
@@ -97,13 +97,13 @@ const CourseList = () => {
   };
 
   const cancelEditing = () => {
-    setEditingKey('');
+    setEditingKey("");
   };
 
   const handleDeleteCourse = useCallback(() => {
     console.log(selectedCourse);
     if (!selectedCourse) {
-      alert('SELECTED COURSE NOT FOUND');
+      alert("SELECTED COURSE NOT FOUND");
       return;
     }
     // try {
@@ -144,16 +144,16 @@ const CourseList = () => {
           form.resetFields();
           setIsModalVisible(false);
           Swal.fire({
-            icon: 'success',
-            title: 'Course Added',
+            icon: "success",
+            title: "Course Added",
             timer: 2000,
           });
         }
       } catch (error) {
         Swal.fire({
-          icon: 'error',
-          title: 'Something went wrong',
-          text: 'It looks like there might be an encoding issue or a conflict with your entries. Please review and try again.',
+          icon: "error",
+          title: "Something went wrong",
+          text: "It looks like there might be an encoding issue or a conflict with your entries. Please review and try again.",
         });
       }
     },
@@ -173,13 +173,13 @@ const CourseList = () => {
     <div>
       <h1 className="text-2xl">Course List</h1>
       <div className="text-right">
-        <Button
+        <CustomButton
           type="primary"
           onClick={showModal}
           className="w-auto bg-primary text-white"
         >
           Add Course
-        </Button>
+        </CustomButton>
       </div>
       <Row gutter={[16, 16]}>
         <Col span={8}>

@@ -3,7 +3,7 @@ import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
 import useSchools from "../../hooks/useSchools";
 import { useCourse } from "../../contexts/courses";
-import { Table, Row, Col, Button, Select, DatePicker } from "antd";
+import { Table, Row, Col, Select, DatePicker } from "antd";
 import { SEMESTER } from "../../constants";
 import { usePaymentsContext } from "../../contexts/payments";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
@@ -141,13 +141,13 @@ const PaymentsList = () => {
             </Col>
 
             <Col span={12}>
-              <Button
+              <CustomButton
                 type="primary"
                 className="w-auto bg-success text-white mt-[25px] float-right"
                 size="large"
               >
                 Print List
-              </Button>
+              </CustomButton>
             </Col>
           </Row>
         </Col>

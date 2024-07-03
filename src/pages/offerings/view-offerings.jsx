@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Button,
   Select,
   Row,
   Col,
@@ -22,6 +21,7 @@ import useOffering from "../../hooks/useOffering";
 import { formatSemester } from "../../utils/formatting";
 import { REVIEW_PROGRAM, SEMESTER, YEAR } from "../../constants";
 import CustomInput from "../../components/Input/Input";
+import CustomButton from "../../components/Button/Button";
 
 const ViewOffering = () => {
   const navigate = useNavigate();
@@ -138,7 +138,7 @@ const ViewOffering = () => {
 
   return (
     <div>
-      <Button
+      <CustomButton
         type="text"
         onClick={() => navigate("/offerings")}
         icon={<ArrowLeftOutlined />}
@@ -177,7 +177,7 @@ const ViewOffering = () => {
                             justifyContent: "flex-end",
                           }}
                         >
-                          <Button
+                          <CustomButton
                             size="large"
                             style={{ marginRight: "10px" }}
                             className="mr-[10px]"
@@ -186,9 +186,9 @@ const ViewOffering = () => {
                             onClick={() => setIsEditing(false)}
                           >
                             Cancel
-                          </Button>
+                          </CustomButton>
 
-                          <Button
+                          <CustomButton
                             size="large"
                             type="primary"
                             className="w-auto bg-primary text-white"
@@ -197,10 +197,10 @@ const ViewOffering = () => {
                             htmlType="submit"
                           >
                             Save
-                          </Button>
+                          </CustomButton>
                         </div>
                       ) : (
-                        <Button
+                        <CustomButton
                           type="primary"
                           size="large"
                           className="w-auto bg-primary text-white"
@@ -208,7 +208,7 @@ const ViewOffering = () => {
                           onClick={() => setIsEditing(true)}
                         >
                           Edit
-                        </Button>
+                        </CustomButton>
                       )}
                     </div>
                   </Col>

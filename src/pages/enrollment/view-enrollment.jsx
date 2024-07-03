@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
-import { Form, Input, Typography, Button } from "antd";
+import { Form, Input, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
+import CustomButton from "../../components/Button/Button";
 
 const { Title } = Typography;
 
@@ -10,7 +11,7 @@ const ViewEnrollmentForm = () => {
 
   return (
     <div>
-      <Button
+      <CustomButton
         type="text"
         onClick={() => navigate("/enrollments")}
         icon={<ArrowLeftOutlined />}

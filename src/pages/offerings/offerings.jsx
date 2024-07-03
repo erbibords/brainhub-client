@@ -163,7 +163,7 @@ const Offerings = () => {
         </Col>
 
         <Col span={24}>
-          <Button
+          <CustomButton
             className="w-auto bg-primary text-white float-right mt-[3vh]"
             size="large"
             onClick={() => {
@@ -171,7 +171,7 @@ const Offerings = () => {
             }}
           >
             Add Offerings
-          </Button>
+          </CustomButton>
         </Col>
         <Col span={24}>
           {getOfferingsError ? (

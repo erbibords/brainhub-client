@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table, Space, Row, Col, Button } from "antd";
+import { Table, Space, Row, Col } from "antd";
 import CustomInput from "../../components/Input/Input";
 import AddSchoolModal from "../../components/AddSchoolModal/AddSchoolModal";
 import CustomButton from "../../components/Button/Button";
@@ -38,13 +38,13 @@ const SchoolList = () => {
     <div>
       <h1 className="text-2xl">Schools</h1>
       <div className="text-right">
-        <Button
+        <CustomButton
           type="primary"
           onClick={showModal}
           className="w-auto bg-primary text-white"
         >
           Add School
-        </Button>
+        </CustomButton>
       </div>
       <Row gutter={[16, 16]}>
         <Col span={8}>

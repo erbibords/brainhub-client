@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from "react";
-import { Table, Space, Row, Col, Button, Modal, Form } from "antd";
+import { Table, Space, Row, Col, Modal, Form } from "antd";
 import CustomInput from "../../components/Input/Input";
+import CustomButton from "../../components/Button/Button";
 import AddProgramModal from "../../components/AddProgramModal/AddProgramModal";
 import { REVIEW_PROGRAM_BASE_URL } from "../../constants";
 import useMutation from "../../hooks/useMutation";
@@ -36,15 +37,15 @@ const ReviewProgram = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button
+          <CustomButton
             type="success"
             className="w-auto bg-success text-white"
             onClick={() => editProgram(record.id)}
           >
             Edit
-          </Button>
+          </CustomButton>
 
-          <Button
+          <CustomButton
             type="secondary"
             className="w-auto bg-secondary text-white"
             onClick={() =>
@@ -52,7 +53,7 @@ const ReviewProgram = () => {
             }
           >
             Delete
-          </Button>
+          </CustomButton>
         </Space>
       ),
     },
@@ -133,14 +134,14 @@ const ReviewProgram = () => {
 
         <Col span={16}>
           <div className="text-right">
-            <Button
+            <CustomButton
               type="primary"
               onClick={showModal}
               className="w-auto bg-primary text-white float-right mt-[3vh]"
               size="large"
             >
               Add Program
-            </Button>
+            </CustomButton>
           </div>
         </Col>
 

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import CustomInput from "../../components/Input/Input";
-import { Select, Table, Space, Row, Col, Button } from "antd";
+import { Select, Table, Space, Row, Col } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useStudentContext } from "../../contexts/students";
 import useSchools from "../../hooks/useSchools";
@@ -111,14 +111,14 @@ const StudentsList = () => {
           </Select>
         </Col>
         <Col span={4} className="flex items-end mb-1">
-          <Button
+          <CustomButton
             className="w-auto bg-primary text-white mr-2"
             size="large"
             onClick={handleFilter}
           >
             Filter
-          </Button>
-          <Button
+          </CustomButton>
+          <CustomButton
             className="w-auto text-primary"
             size="large"
             onClick={() => {
@@ -131,7 +131,7 @@ const StudentsList = () => {
             }}
           >
             Clear
-          </Button>
+          </CustomButton>
         </Col>
 
         <Col span={24}>
