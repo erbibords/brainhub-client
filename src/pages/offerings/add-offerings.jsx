@@ -9,6 +9,7 @@ import useMutation from "../../hooks/useMutation";
 import { DEFAULT_BRANCH_ID, SEMESTER } from "../../constants";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useProgramContext } from "../../contexts/programs";
 const { Option } = Select;
 
 const AddOfferings = () => {
@@ -20,6 +21,9 @@ const AddOfferings = () => {
     "POST",
     "offerings"
   );
+  const { programs, getProgramsLoading, getProgramsError } =
+    useProgramContext();
+
   if (getCoursesError) {
     return <GenericErrorDisplay />;
   }
@@ -41,6 +45,7 @@ const AddOfferings = () => {
       paymentDeadline: formattedPaymentDeadline,
       startDate: formattedStartDate,
       yearOffered: parseInt(values.yearOffered),
+      enrollmentCapacity: 0,
     };
 
     delete updatedValues.courseId;
@@ -117,15 +122,21 @@ const AddOfferings = () => {
 
         <Form.Item
           label="Review Program"
-          name="program"
+          name="reviewProgramId"
           rules={[{ required: true, message: "Please select review program!" }]}
         >
           <Select
-            defaultValue="INTENSIVE"
-            className="h-[40px] w-full mb-[10px]"
+            className="h-[40px] w"
+            name="reviewProgramId"
+            disabled={getProgramsError || getProgramsLoading}
+            loading={getProgramsLoading}
           >
-            <Option value="INTENSIVE">Intensive</Option>
-            <Option value="ENHANCEMENT">Enhancement-Intensive</Option>
+            {programs &&
+              programs?.data?.map((program) => (
+                <Option value={program.id} key={program.id}>
+                  {program.name}
+                </Option>
+              ))}
           </Select>
         </Form.Item>
 
@@ -182,25 +193,9 @@ const AddOfferings = () => {
         </Form.Item>
 
         <Form.Item
-          label="Capacity"
-          name="enrollmentCapacity"
-          rules={[{ required: true, message: "Please input capacity!" }]}
-        >
-          <CustomInput type="number" className="w-full" />
-        </Form.Item>
-
-        <Form.Item
-          label="Review Cost"
+          label="Review Fee"
           name="reviewCost"
           rules={[{ required: true, message: "Please input review cost!" }]}
-        >
-          <CustomInput type="text" className="w-full h-[40px]" />
-        </Form.Item>
-
-        <Form.Item
-          label="Budget Proposal"
-          name="budgetProposal"
-          rules={[{ required: true, message: "Please input budget proposal!" }]}
         >
           <CustomInput type="text" className="w-full h-[40px]" />
         </Form.Item>

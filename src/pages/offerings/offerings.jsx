@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import CustomButton from "../../components/Button/Button";
 import { Table, Space, Row, Col, Button, Select, Form } from "antd";
 import { useNavigate } from "react-router";
@@ -7,7 +7,9 @@ import { useCourse } from "../../contexts/courses";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { DateTime } from "luxon";
 import { formatSemester, formatAmount } from "../../utils/formatting";
-import { REVIEW_PROGRAM, SEMESTER, YEAR } from "../../constants";
+import { SEMESTER, YEAR } from "../../constants";
+import { useProgramContext } from "../../contexts/programs";
+import { cleanParams } from "../../utils/formatting";
 const { Option } = Select;
 
 const Offerings = () => {
@@ -20,6 +22,10 @@ const Offerings = () => {
     getOfferingsError,
     setParams,
   } = useOfferingsContext();
+  const { programs, getProgramsLoading, getProgramsError } =
+    useProgramContext();
+
+  console.log(getOfferingsLoading);
 
   useEffect(() => {
     setParams({
@@ -98,102 +104,113 @@ const Offerings = () => {
     },
   ];
 
-  const onSearch = (values) => {
-    console.log("Form values on search:", values); // Log form values for debugging
-    // Apply filtering logic here using setParams or any other method
-  };
+  const onSearch = useCallback((values) => {
+    const params = cleanParams(values);
+    setParams(params);
+  }, []);
+
+  const handleClear = useCallback(() => {
+    form.resetFields();
+    setParams({
+      pageNo: 1,
+      pageSize: 25,
+    });
+  }, [form]);
+
   return (
     <div>
       <h1 className="text-2xl mb-[2vh]">Offerings</h1>
-      <Form
-        form={form}
-        className="w-full"
-        onFinish={onSearch}
-        initialValues={{
-          course: "",
-          program: "",
-          year: "",
-          semester: "FIRST_SEMESTER",
-        }}
-      >
-        <Row gutter={[12, 12]}>
-          <Col span={5}>
-            <Form.Item name="course">
-              <p>Course: </p>
-              <Select
-                className="h-[40px] w-full"
-                disabled={getCoursesLoading || getCoursesError}
-                loading={getCoursesLoading}
-              >
-                {courses?.data?.map((course) => (
-                  <Option value={course.id} key={course.id}>
-                    {course.name}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-            {getCoursesError && (
-              <label className="text-secondary">Unable to fetch courses.</label>
-            )}
-          </Col>
+      <Row>
+        <Form
+          form={form}
+          className="w-full flex gap-[12px]"
+          onFinish={onSearch}
+        >
+          <Form.Item
+            name="courseId"
+            label="Course: "
+            layout="vertical"
+            className="w-[15vw] h-[70px]"
+          >
+            <Select
+              className="h-[40px] w"
+              disabled={getCoursesLoading || getCoursesError}
+              loading={getCoursesLoading}
+              name="courseId"
+            >
+              {courses?.data?.map((course) => (
+                <Option value={course.id} key={course.id}>
+                  {course.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
 
-          <Col span={5}>
-            <Form.Item name="program">
-              <p>Program: </p>
-              <Select className="h-[40px] w-full">
-                {REVIEW_PROGRAM.map((program) => (
-                  <Option value={program.value} key={program.value}>
-                    {program.label}
+          <Form.Item
+            name="reviewProgramId"
+            label="Program :"
+            layout="vertical"
+            className="w-[15vw]"
+          >
+            <Select
+              className="h-[40px] w"
+              name="reviewProgramId"
+              disabled={getProgramsError || getProgramsLoading}
+              loading={getProgramsLoading}
+            >
+              {programs &&
+                programs?.data?.map((program) => (
+                  <Option value={program.id} key={program.id}>
+                    {program.name}
                   </Option>
                 ))}
-              </Select>
-            </Form.Item>
-          </Col>
+            </Select>
+          </Form.Item>
 
-          <Col span={4}>
-            <Form.Item name="year">
-              <p>Year Offered: </p>
-              <Select className="h-[40px] w-full">
-                {YEAR.map((y) => (
-                  <Option value={y} key={y}>
-                    {y}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={4}>
-            <Form.Item name="semester">
-              <p>Semester Offered: </p>
-              <Select
-                className="h-[40px] w-full"
-                onChange={(val) => console.log(val)}
-              >
-                {SEMESTER.map((sem) => (
-                  <Option value={sem.value} key={sem.value}>
-                    {sem.label}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={6} className="flex items-center">
+          <Form.Item
+            name="yearOffered"
+            label="Year : "
+            layout="vertical"
+            className="w-[15vw]"
+          >
+            <Select className="h-[40px] w" name="yearOffered">
+              {YEAR.map((y) => (
+                <Option value={y} key={y}>
+                  {y}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="semester"
+            layout="vertical"
+            className="w-[15vw]"
+            label="Semester: "
+          >
+            <Select className="h-[40px] w" name="semester">
+              {SEMESTER.map((sem) => (
+                <Option value={sem.value} key={sem.value}>
+                  {sem.label}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item className="flex items-end" label="">
             <CustomButton type="primary" className="mr-2" htmlType="submit">
               Filter
             </CustomButton>
             <CustomButton
               type="primary"
               htmlType="button"
-              onClick={() => {
-                form.resetFields();
-                console.log(form.getFieldsValue());
-              }}
+              onClick={handleClear}
             >
               Clear
             </CustomButton>
-          </Col>
-        </Row>
-      </Form>
+          </Form.Item>
+        </Form>
+      </Row>
       <Row gutter={[12, 24]}>
         <Col span={24}>
           <Button

@@ -9,6 +9,7 @@ import useMutation from "../../hooks/useMutation";
 import { DEFAULT_BRANCH_ID, SEMESTER } from "../../constants";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useProgramContext } from "../../contexts/programs";
 const { Option } = Select;
 
 const EditOfferings = () => {
@@ -20,6 +21,9 @@ const EditOfferings = () => {
     "POST",
     "offerings"
   );
+  const { programs, getProgramsLoading, getProgramsError } =
+    useProgramContext();
+
   if (getCoursesError) {
     return <GenericErrorDisplay />;
   }

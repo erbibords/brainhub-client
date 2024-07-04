@@ -52,7 +52,7 @@ const App = () => {
             element={<ViewEnrollment />}
           />
           <Route
-            path="/prints/enrollment/:enrollmentId"
+            path="/prints/enrollment/:studentId/:enrollmentId"
             element={<PrintEnrollment />}
           />
           <Route

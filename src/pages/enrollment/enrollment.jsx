@@ -36,6 +36,8 @@ const Enrollment = () => {
     alert("debugging view... ./pages/enrollment/view-enrollment");
   };
 
+  console.log(enrollments);
+
   const columns = useMemo(
     () => [
       {
@@ -86,6 +88,11 @@ const Enrollment = () => {
           const formattedDate = date.toFormat("MMM dd, yyyy");
           return <label>{formattedDate}</label>;
         },
+      },
+      {
+        title: "Processed By",
+        dataIndex: "processedBy",
+        key: "processedBy",
       },
       // {
       //   title: "Action",

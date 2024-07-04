@@ -1,16 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CustomInput from "../../components/Input/Input";
-import {
-  Button,
-  Row,
-  Col,
-  Card,
-  Divider,
-  Skeleton,
-  Form,
-  Table,
-  Select,
-} from "antd";
+import { Button, Row, Col, Card, Divider, Skeleton, Form, Select } from "antd";
 import useProfile from "../../hooks/useStudentProfile";
 import useSchools from "../../hooks/useSchools";
 import { useParams, useNavigate } from "react-router-dom";
@@ -18,6 +8,8 @@ import useMutation from "../../hooks/useMutation";
 import Swal from "sweetalert2";
 import { STUDENT_BASE_URL } from "../../constants";
 import { ArrowLeftOutlined } from "@ant-design/icons";
+import { StudentEnrollments } from "./student-enrollments";
+import { PaymentHistory } from "./payment-history";
 
 const StudentProfile = () => {
   const navigate = useNavigate();
@@ -80,44 +72,6 @@ const StudentProfile = () => {
       });
     }
   };
-
-  const historyData = [
-    {
-      key: "1",
-      paymentAmount: "1500",
-      paymentMethod: "Bank",
-      courseOffering: "offering 1",
-      attachment: "",
-      paymentDate: "2024-06-30",
-    },
-    {
-      key: "2",
-      paymentAmount: "2000",
-      paymentMethod: "Gcash",
-      courseOffering: "offering 2",
-      attachment: "",
-      paymentDate: "2024-06-29",
-    },
-  ];
-  const columns = [
-    {
-      title: "Payment Amount",
-      dataIndex: "paymentAmount",
-      key: "paymentAmount",
-    },
-    {
-      title: "Payment Method",
-      dataIndex: "paymentMethod",
-      key: "paymentMethod",
-    },
-    {
-      title: "Course Offering",
-      dataIndex: "courseOffering",
-      key: "courseOffering",
-    },
-    { title: "Attachment", dataIndex: "attachment", key: "attachment" },
-    { title: "Payment Date", dataIndex: "paymentDate", key: "paymentDate" },
-  ];
 
   console.log(data);
 
@@ -348,32 +302,14 @@ const StudentProfile = () => {
                   </p>
                 </div>
               </Form>
-
-              <Divider />
-
-              <Row gutter={[16, 16]}>
-                <Col span={24}>
-                  <Table
-                    dataSource={historyData}
-                    columns={columns}
-                    title={() => <h2 className="text-2xl">Payments History</h2>}
-                  />
-                </Col>
-              </Row>
-
-              <Row gutter={[16, 16]}>
-                <Col span={24}>
-                  <Table
-                    dataSource={historyData}
-                    columns={columns}
-                    title={() => <h2 className="text-2xl">Enrollments</h2>}
-                  />
-                </Col>
-              </Row>
             </Card>
           )}
         </Col>
       </Row>
+      <Divider />
+      <StudentEnrollments enrollments={data?.enrollments} />
+      <Divider />
+      <PaymentHistory payments={data?.payments} />
     </div>
   );
 };

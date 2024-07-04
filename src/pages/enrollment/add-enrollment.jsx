@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
 import { useOfferingsContext } from "../../contexts/offerings";
 import useMutation from "../../hooks/useMutation";
-import { DEFAULT_BRANCH_ID } from "../../constants";
+import { DEFAULT_BRANCH_ID, PROCESSED_BY } from "../../constants";
 function generateFourDigitRandomNumber() {
   return Math.floor(1000 + Math.random() * 9000);
 }
@@ -46,6 +46,7 @@ const Enrollment = () => {
   const [studentToEnrollRadioValue, setstudentToEnrollRadioValue] =
     useState("existing");
   const [selectedOfferingId, setSelectedOfferingId] = useState(undefined);
+  const [selectedProcessedBy, setSelectedProcessedBy] = useState(undefined);
   const [selectedExistingStudentId, setSelectedStudentId] = useState(undefined);
   const [takerType, setTakerType] = useState("FIRST_TAKER");
 
@@ -107,6 +108,60 @@ const Enrollment = () => {
     );
   }, [studentSearchText, students]);
 
+  const enrollStudent = useCallback(
+    async (data) => {
+      if (!data) return;
+
+      if (!data.studentId) {
+        Swal.fire({
+          icon: "warning",
+          title: "Please add student to enroll!",
+          timer: 2500,
+        });
+
+        return;
+      }
+
+      if (!data.takerType) {
+        Swal.fire({
+          icon: "warning",
+          title: "Please add taker type!",
+          timer: 2500,
+        });
+        return;
+      }
+
+      if (!data.processedby) {
+        Swal.fire({
+          icon: "warning",
+          title: "Please select processed by.",
+          timer: 2500,
+        });
+        return;
+      }
+
+      try {
+        const enrollmentRes = await addEnrollment(data);
+        if (enrollmentRes) {
+          Swal.fire({
+            icon: "success",
+            title: "Enrollment successful!",
+            text: "Redirecting to enrollment form printing...",
+            timer: 2500,
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Enrollment failed!",
+          text: "This may be due to inputs. Please try again later!",
+          timer: 2500,
+        });
+      }
+    },
+    [addEnrollment]
+  );
+
   const enrollNewStudent = useCallback(
     async (values) => {
       try {
@@ -117,6 +172,7 @@ const Enrollment = () => {
             takerType: "FIRST_TAKER",
             status: "",
             studentId,
+            processedby: selectedProcessedBy,
           };
           await enrollStudent(enrollmentData);
         }
@@ -131,6 +187,41 @@ const Enrollment = () => {
     },
     [addStudent, addEnrollment]
   );
+
+  const enrollExistingStudent = useCallback(async () => {
+    if (!selectedOfferingId) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please select course offering!",
+        timer: 2000,
+      });
+      return;
+    }
+
+    if (!selectedProcessedBy) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please select processed by.",
+        timer: 2500,
+      });
+      return;
+    }
+
+    const data = {
+      takerType,
+      studentId: selectedExistingStudentId,
+      status: "",
+      processedby: selectedProcessedBy,
+    };
+
+    await enrollStudent(data);
+  }, [
+    enrollStudent,
+    selectedOfferingId,
+    takerType,
+    selectedExistingStudentId,
+    selectedProcessedBy,
+  ]);
 
   const onFinish = useCallback(
     async (values) => {
@@ -165,70 +256,6 @@ const Enrollment = () => {
     },
     [addStudent, setSelectedOfferingId, addEnrollment, enrollNewStudent]
   );
-
-  const enrollStudent = useCallback(
-    async (data) => {
-      if (!data) return;
-
-      if (!data.studentId) {
-        Swal.fire({
-          icon: "warning",
-          title: "Please add student to enroll!",
-          timer: 2500,
-        });
-
-        return;
-      }
-
-      if (!data.takerType) {
-        Swal.fire({
-          icon: "warning",
-          title: "Please add taker type!",
-          timer: 2500,
-        });
-        return;
-      }
-
-      try {
-        const enrollmentRes = await addEnrollment(data);
-        if (enrollmentRes) {
-          Swal.fire({
-            icon: "success",
-            title: "Enrollment successful!",
-            text: "Redirecting to enrollment form printing...",
-            timer: 2500,
-          });
-        }
-      } catch (error) {
-        Swal.fire({
-          icon: "error",
-          title: "Enrollment failed!",
-          text: "This may be due to inputs. Please try again later!",
-          timer: 2500,
-        });
-      }
-    },
-    [addEnrollment]
-  );
-
-  const enrollExistingStudent = useCallback(async () => {
-    if (!selectedOfferingId) {
-      Swal.fire({
-        icon: "warning",
-        title: "Please select course offering!",
-        timer: 2000,
-      });
-      return;
-    }
-
-    const data = {
-      takerType,
-      studentId: selectedExistingStudentId,
-      status: "",
-    };
-
-    await enrollStudent(data);
-  }, [enrollStudent, selectedOfferingId, takerType, selectedExistingStudentId]);
 
   return (
     <div className="w-full">
@@ -305,6 +332,24 @@ const Enrollment = () => {
               Error loading offerings. please try again later!{" "}
             </label>
           )}
+        </Form.Item>
+
+        <Form.Item
+          label="Processed by:"
+          name="processedBy"
+          layout="vertical"
+          className="w-1/2 mb-[2vh]"
+        >
+          <Select
+            size="large"
+            onChange={(value) => setSelectedProcessedBy(value)}
+          >
+            {PROCESSED_BY.map((processedby) => (
+              <Option value={processedby} key={processedby}>
+                {processedby}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <div className="mb-[2vh]">

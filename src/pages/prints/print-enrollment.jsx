@@ -1,39 +1,60 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Form, Input, Typography } from "antd";
-
+import { useParams } from "react-router-dom";
+import useProfile from "../../hooks/useStudentProfile";
+import { useNavigate } from "react-router-dom";
+import { formatTakerType } from "../../utils/formatting";
 const { Title, Text } = Typography;
 
 const PrintEnrollmentForm = () => {
+  const navigate = useNavigate();
+  const params = useParams();
+
+  if (!params?.studentId) {
+    navigate("/add-enrollment");
+  }
+
+  if (!params?.enrollmentId) {
+    navigate("/add-enrollment");
+  }
+
+  const { data, error, isLoading } = useProfile(params?.studentId);
+
+  const getEnrollment = useMemo(() => {
+    return data?.enrollments?.filter(
+      (enrollment) => enrollment?.id === params?.enrollmentId
+    )[0];
+  }, [data, params]);
+
   return (
     <div className="bg-white max-w-xl mx-auto">
       <div className="text-center  mb-5">
         <div className="text-2xl font-bold">BRAIN HUB REVIEW SPECIALIST</div>
       </div>
-
       <Title level={4} className="text-center">
         ENROLLMENT FORM
       </Title>
       <Form name="printEnrollmentForm" layout="vertical" className="space-y-4">
         <Text className="block text-center mb-4">
-          (Intensive Review Program)
+          ({getEnrollment?.courseOffering?.reviewProgram?.name})
         </Text>
 
         <Form.Item label="NAME:" className="mb-4">
           <Input.Group compact>
             <Input
-              value="Louie"
+              value={data?.firstName}
               style={{ width: "33%" }}
               className="border-t-0 border-x-0 border-b-2 bg-transparent"
               readOnly
             />
             <Input
-              value="Marte"
+              value={data?.middleName}
               style={{ width: "33%" }}
               className="border-t-0 border-x-0 border-b-2 bg-transparent"
               readOnly
             />
             <Input
-              value="Doromal"
+              value={data?.lastName}
               style={{ width: "33%" }}
               className="border-t-0 border-x-0 border-b-2 bg-transparent"
               readOnly
@@ -43,7 +64,7 @@ const PrintEnrollmentForm = () => {
 
         <Form.Item label="COURSE" className="mb-4">
           <Input
-            value="Bachelor of Science in Information Technology"
+            value={getEnrollment?.courseOffering?.course?.name}
             className="border-t-0 border-x-0 border-b-2 bg-transparent"
             readOnly
           />
@@ -51,7 +72,7 @@ const PrintEnrollmentForm = () => {
 
         <Form.Item label="SCHOOL:" className="mb-4">
           <Input
-            value="University of Iloilo"
+            value={data?.school?.name}
             className="border-t-0 border-x-0 border-b-2 bg-transparent"
             readOnly
           />
@@ -59,7 +80,7 @@ const PrintEnrollmentForm = () => {
 
         <Form.Item label="Address:" className="mb-4">
           <Input
-            value="Unhan Patyo"
+            value={data?.address}
             className="border-t-0 border-x-0 border-b-2 bg-transparent"
             readOnly
           />
@@ -67,7 +88,7 @@ const PrintEnrollmentForm = () => {
 
         <Form.Item label="CONTACT NUMBER:" className="mb-4">
           <Input
-            value="0909032131232"
+            value={data?.contactNumber}
             className="border-t-0 border-x-0 border-b-2 bg-transparent"
             readOnly
           />
@@ -75,7 +96,7 @@ const PrintEnrollmentForm = () => {
 
         <Form.Item label="Taker Type:" className="mb-4">
           <Input
-            value="1st"
+            value={formatTakerType(getEnrollment?.takerType)}
             className="border-t-0 border-x-0 border-b-2 bg-transparent"
             readOnly
           />
@@ -87,28 +108,28 @@ const PrintEnrollmentForm = () => {
           </Text>
           <Form.Item label="NAME:" className="mb-4">
             <Input
-              value="Lourds D Marte"
+              value={data?.emergencyContact?.name}
               className="border-t-0 border-x-0 border-b-2 bg-transparent"
               readOnly
             />
           </Form.Item>
           <Form.Item label="RELATIONSHIP:" className="mb-4">
             <Input
-              value="Mother"
+              value={data?.emergencyContact?.relationship}
               className="border-t-0 border-x-0 border-b-2 bg-transparent"
               readOnly
             />
           </Form.Item>
           <Form.Item label="ADDRESS:" className="mb-4">
             <Input
-              value="Unhan Plaza"
+              value={data?.emergencyContact?.address}
               className="border-t-0 border-x-0 border-b-2 bg-transparent"
               readOnly
             />
           </Form.Item>
           <Form.Item label="CONTACT NO:" className="mb-4">
             <Input
-              value="090932132132"
+              value={data?.emergencyContact?.contactNumber}
               className="border-t-0 border-x-0 border-b-2 bg-transparent"
               readOnly
             />
@@ -144,7 +165,8 @@ const PrintEnrollmentForm = () => {
 
         <Form.Item className="mt-2 flex justify-end">
           <Input
-            className="border-t-0 border-x-0 border-b-2 float-right bg-transparent"
+            value={data?.fullName}
+            className="border-t-0 border-x-0 border-b-2 float-right bg-transparent text-center"
             readOnly
           />
           <p>Signature over Printed Name</p>
