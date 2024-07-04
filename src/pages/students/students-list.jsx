@@ -15,13 +15,13 @@ const StudentsList = () => {
   const { data: schools, loading: schoolsLoading } = useSchools();
   const [searchParams, setSearchParams] = useState({
     studentName: undefined,
-    school: undefined,
+    schoolId: undefined,
   });
   const { students, studentDataLoading, getStudentError, setParams } =
     useStudentContext();
 
   const handleFilter = useCallback(() => {
-    console.log(searchParams);
+    console.log(cleanParams(searchParams));
     setParams(cleanParams(searchParams));
   }, [setParams, searchParams]);
 
@@ -35,7 +35,6 @@ const StudentsList = () => {
       title: "Action",
       key: "action",
       render: (_, record) => {
-        console.log(record);
         return (
           <Space size="small">
             <CustomButton
@@ -100,17 +99,16 @@ const StudentsList = () => {
                 disabled={schoolsLoading}
                 size="large"
                 onChange={(value, t) => {
-                  console.log(t);
                   setSearchParams({
                     ...searchParams,
-                    school: value,
+                    schoolId: value,
                   });
                 }}
                 className="custom-select"
               >
                 {schools &&
                   schools?.data?.map((school) => (
-                    <Option value={school.name} key={school.id}>
+                    <Option value={school.id} key={school.id}>
                       {school.name}
                     </Option>
                   ))}
@@ -135,6 +133,10 @@ const StudentsList = () => {
                 setParams({
                   pageNo: 1,
                   pageSize: 25,
+                });
+                setSearchParams({
+                  studentName: undefined,
+                  schoolId: undefined,
                 });
               }}
             >

@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from "react";
 import CustomInput from "../../components/Input/Input";
-import { Button, Row, Col, Card, Divider, Skeleton, Form, Table } from "antd";
+import {
+  Button,
+  Row,
+  Col,
+  Card,
+  Divider,
+  Skeleton,
+  Form,
+  Table,
+  Select,
+} from "antd";
 import useProfile from "../../hooks/useStudentProfile";
 import useSchools from "../../hooks/useSchools";
 import { useParams, useNavigate } from "react-router-dom";
 import useMutation from "../../hooks/useMutation";
 import Swal from "sweetalert2";
 import { STUDENT_BASE_URL } from "../../constants";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const StudentProfile = () => {
   const navigate = useNavigate();
@@ -107,6 +118,8 @@ const StudentProfile = () => {
     { title: "Attachment", dataIndex: "attachment", key: "attachment" },
     { title: "Payment Date", dataIndex: "paymentDate", key: "paymentDate" },
   ];
+
+  console.log(data);
 
   return (
     <div>
@@ -344,6 +357,16 @@ const StudentProfile = () => {
                     dataSource={historyData}
                     columns={columns}
                     title={() => <h2 className="text-2xl">Payments History</h2>}
+                  />
+                </Col>
+              </Row>
+
+              <Row gutter={[16, 16]}>
+                <Col span={24}>
+                  <Table
+                    dataSource={historyData}
+                    columns={columns}
+                    title={() => <h2 className="text-2xl">Enrollments</h2>}
                   />
                 </Col>
               </Row>

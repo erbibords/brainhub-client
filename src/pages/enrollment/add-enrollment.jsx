@@ -8,8 +8,7 @@ import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
 import { useOfferingsContext } from "../../contexts/offerings";
 import useMutation from "../../hooks/useMutation";
-import { DEFAULT_BRANCH_ID, SEMESTER } from "../../constants";
-import { useProgramContext } from "../../contexts/programs";
+import { DEFAULT_BRANCH_ID } from "../../constants";
 function generateFourDigitRandomNumber() {
   return Math.floor(1000 + Math.random() * 9000);
 }
@@ -35,15 +34,11 @@ const Enrollment = () => {
     error: schoolsError,
   } = useSchools();
   const { courses, getCoursesLoading, getCoursesError } = useCourse();
-  const { programs, getProgramsLoading, getProgramsError } =
-    useProgramContext();
 
   const [offeringsSearchParams, setOfferingsSearchParams] = useState({
     pageNo: 1,
     pageSize: 25,
     yearOffered: new Date().getFullYear(),
-    semester: "FIRST_SEMESTER",
-    reviewProgramId: undefined,
   });
   const [studentSearchText, setStudentSearchText] = useState();
   const { students, studentDataLoading, getStudentError, addStudent } =
@@ -73,7 +68,6 @@ const Enrollment = () => {
 
   useEffect(() => {
     if (offeringsSearchParams) {
-      console.log(offeringsSearchParams);
       setOfferingsSearchParamsInContext(offeringsSearchParams);
     }
   }, [offeringsSearchParams]);
@@ -236,34 +230,11 @@ const Enrollment = () => {
     await enrollStudent(data);
   }, [enrollStudent, selectedOfferingId, takerType, selectedExistingStudentId]);
 
-  console.log(programs);
   return (
     <div className="w-full">
       <div>
         <Form layout="vertical" className="w-1/2">
           <h1 className="text-2xl mb-[2vh]">Enroll Student</h1>
-          <Form.Item label="Review Program" name="review_program">
-            <Select
-              className="w-full mb=[2vh]"
-              size="large"
-              loading={getProgramsLoading}
-              disabled={getProgramsLoading || getProgramsError}
-              defaultValue="INTENSIVE"
-              onChange={(value) =>
-                setOfferingsSearchParams({
-                  ...offeringsSearchParams,
-                  reviewProgramId: value,
-                })
-              }
-            >
-              {programs &&
-                programs?.data?.map((program) => (
-                  <Option value={program?.id} key={program.id}>
-                    {program.name}
-                  </Option>
-                ))}
-            </Select>
-          </Form.Item>
 
           <Form.Item label="Year" name="year">
             <Select
@@ -285,26 +256,6 @@ const Enrollment = () => {
                   </Option>
                 );
               })}
-            </Select>
-          </Form.Item>
-
-          <Form.Item label="Semester" name="semester">
-            <Select
-              className="w-full mb=[2vh]"
-              size="large"
-              defaultValue="1st"
-              onChange={(value) => {
-                setOfferingsSearchParams({
-                  ...offeringsSearchParams,
-                  semester: value,
-                });
-              }}
-            >
-              {SEMESTER.map((sem) => (
-                <Option value={sem.value} key={sem.value}>
-                  {sem.label}
-                </Option>
-              ))}
             </Select>
           </Form.Item>
 

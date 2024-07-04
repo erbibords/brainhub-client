@@ -1,12 +1,28 @@
 import React, { useState, useCallback, useEffect } from "react";
 import CustomInput from "../../components/Input/Input";
-import { Layout, Select, Button, Form, Image, DatePicker } from "antd";
+import { useParams } from "react-router-dom";
+import { Layout, Select, Form, Image, DatePicker } from "antd";
+import useProfile from "../../hooks/useStudentProfile";
+import CustomButton from "../../components/Button/Button";
+import { PROCESSED_BY } from "../../constants";
 const { Content } = Layout;
 const { Option } = Select;
 
 const AddNewPayment = () => {
+  const params = useParams();
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [imagePreview, setImagePreview] = useState(null);
+  if (!params?.studentId) {
+    navigate("/students");
+  }
+
+  const {
+    data: student,
+    error: studentError,
+    isLoading: studentLoading,
+  } = useProfile(params?.studentId);
+
+  console.log(params.studentId, student, studentError, studentLoading);
 
   useEffect(() => {
     const handleResize = () => {
@@ -54,18 +70,19 @@ const AddNewPayment = () => {
       >
         <div>
           <h1 className="text-2xl mb-[2vh]">Add Payments</h1>
-          <span>Student Name: </span>
-          <CustomInput value="Louie" className="mb-[2vh]" disabled />
+          <p>Student Name: </p>
+          <h1 className="text-2xl mb-7">
+            {student?.firstName} {student?.middleName} {student?.lastName}
+          </h1>
 
           <Form.Item
-            label="Course Offering:"
+            className="mb-[32px]"
+            label="Offering:"
             name="courseId"
-            rules={[
-              { required: true, message: "Please input your Course Offering" },
-            ]}
+            rules={[{ required: true, message: "Please select offering" }]}
           >
             <Select
-              className="w-full mb-[2vh]"
+              className="w-full"
               size="large"
               placeholder="Course Offering"
             >
@@ -78,81 +95,90 @@ const AddNewPayment = () => {
           </Form.Item>
 
           <Form.Item
+            className="mb-[32px]"
             label="Amount:"
             name="amount"
-            rules={[{ required: true, message: "Please input Amount" }]}
+            rules={[{ required: true, message: "Please input payment amount" }]}
           >
             <CustomInput
-              type="text"
+              type="number"
               placeholder="Payment"
-              className="mb-[2vh]"
+              className=" w-full"
             />
           </Form.Item>
 
           <Form.Item
+            className="mb-[32px]"
             label="Payment Method:"
             name="paymentMethod"
             rules={[
-              { required: true, message: "Please select a Payment Method" },
+              { required: true, message: "Please select a payment method." },
             ]}
           >
-            <Select className="w-full mb-[2vh]" size="large">
-              <Option value="GCASH">Gcash</Option>
+            <Select className="w-full" size="large">
               <Option value="BANK_TRANSFER">Bank Transfer</Option>
               <Option value="CASH">Cash</Option>
+              <Option value="GCASH">Gcash</Option>
             </Select>
           </Form.Item>
 
-          <Form.Item label="Reference:" name="reference">
-            <CustomInput type="text" className="mb-[2vh]" />
+          <Form.Item className="mb-[32px]" label="Reference:" name="reference">
+            <CustomInput size="large" type="text" className="" />
           </Form.Item>
 
-          <Form.Item label="Attachment:" name="attachment">
-            <input
-              type="file"
-              onChange={handleFileChange}
-              className="mb-[2vh]"
-            />
+          <Form.Item
+            className="mb-[32px]"
+            label="Attachment:"
+            name="attachment"
+          >
+            <input type="file" onChange={handleFileChange} />
             {imagePreview && (
               <div style={{ marginTop: "10px" }}>
                 <Image
-                  width={200}
                   src={imagePreview}
                   alt="Selected"
-                  style={{ maxHeight: "300px", objectFit: "contain" }}
+                  className="max-h-[300px] w-[200px] object-contain"
                 />
               </div>
             )}
           </Form.Item>
 
           <Form.Item
+            className="mb-[32px]"
             label="Payment Date:"
             name="paymentDate"
             rules={[
-              { required: true, message: "Please select a Payment Date" },
+              { required: true, message: "Please select a payment date." },
             ]}
           >
-            <DatePicker className="mb-[2vh]" style={{ width: "100%" }} />
+            <DatePicker className="w-full" size="large" />
           </Form.Item>
 
           <Form.Item
+            className="mb-[32px]"
             label="Processed By:"
             name="reference"
-            rules={[{ required: true, message: "Please input proccessed by" }]}
+            rules={[{ required: true, message: "Please select processed by." }]}
           >
-            <CustomInput type="text" className="mb-[2vh]" />
+            <Select className="w-full" size="large">
+              {PROCESSED_BY.map((processedBy) => (
+                <Option key={processedBy} value={processedBy}>
+                  {processedBy}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
 
-          <div className="text-right mb-[20px]">
+          <div className="text-center mb-[20px]">
             <Form.Item>
-              <Button
+              <CustomButton
                 type="primary"
                 htmlType="submit"
                 size="large"
                 className="w-auto bg-primary text-white"
               >
-                Save
-              </Button>
+                Submit
+              </CustomButton>
             </Form.Item>
           </div>
         </div>

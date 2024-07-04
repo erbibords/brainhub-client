@@ -21,8 +21,6 @@ const Offerings = () => {
     setParams,
   } = useOfferingsContext();
 
-  console.log(offerings);
-
   useEffect(() => {
     setParams({
       pageNo: 1,
@@ -74,8 +72,7 @@ const Offerings = () => {
     },
     {
       title: "Review Fee",
-      dataIndex: "reviewCost",
-      key: "reviewCost",
+      dataIndex: "reviewFee",
       render: (value) => formatAmount(value),
     },
     {
