@@ -1,20 +1,20 @@
-import React, { useState } from "react";
-import CustomInput from "../../components/Input/Input";
-import CustomButton from "../../components/Button/Button";
-import useSchools from "../../hooks/useSchools";
-import { useCourse } from "../../contexts/courses";
-import { Table, Row, Col, Button, Select, DatePicker } from "antd";
-import { SEMESTER } from "../../constants";
-import { usePaymentsContext } from "../../contexts/payments";
-import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
-import { getFullName } from "../../utils/mappings";
+import React, { useState } from 'react';
+import CustomInput from '../../components/Input/Input';
+import CustomButton from '../../components/Button/Button';
+import useSchools from '../../hooks/useSchools';
+import { useCourse } from '../../contexts/courses';
+import { Table, Row, Col, Button, Select, DatePicker } from 'antd';
+import { SEMESTER } from '../../constants';
+import { usePaymentsContext } from '../../contexts/payments';
+import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
+import { getCourseOfferingName } from '../../utils/mappings';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const PaymentsList = () => {
-  const [searchValue, setSearchValue] = useState("");
-  const [selectedSemester, setSelectedSemester] = useState("");
+  const [searchValue, setSearchValue] = useState('');
+  const [selectedSemester, setSelectedSemester] = useState('');
   const { payments, getPaymentsLoading, getPaymentsError } =
     usePaymentsContext();
 
@@ -27,30 +27,39 @@ const PaymentsList = () => {
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: ["firstName"],
-      render: (_, record) => getFullName(record),
+      title: 'Name',
+      render: (_, record) => record.enrollment.student.fullName,
     },
-    { title: "Reference", dataIndex: "referenceNo" },
+    { title: 'Reference', dataIndex: 'referenceNo' },
 
-    { title: "Payment Amount", dataIndex: "amountPaid" },
+    { title: 'Payment Amount', dataIndex: 'amountPaid' },
     {
-      title: "Payment Method",
-      dataIndex: "paymentMethod",
-      key: "paymentMethod",
+      title: 'Payment Method',
+      dataIndex: 'paymentMethod',
+      key: 'paymentMethod',
     },
-    { title: "Payment Date", dataIndex: "createdAt" },
-    { title: "Attachment", dataIndex: "attachment" },
-    { title: "Offering", dataIndex: "offering" },
-    { title: "Processed by", dataIndex: "processedBy" },
+    { title: 'Payment Date', dataIndex: 'paidAt' },
+    {
+      title: 'Attachment',
+      dataIndex: 'attachment',
+      render: (_, record) =>
+        record.attachments?.length ? record.attachments[0] : '',
+    },
+    {
+      title: 'Offering',
+      dataIndex: 'offering',
+      render: (_, record) =>
+        getCourseOfferingName(record.enrollment.courseOffering),
+    },
+    { title: 'Processed by', dataIndex: 'processedBy' },
   ];
 
   const searchPaymentList = () => {
-    console.log("Search value:", searchValue);
-    console.log("Selected semester:", selectedSemester);
-    console.log("Selected year:", selectedYear);
-    console.log("Date From:", dateFrom ? dateFrom.format("YYYY-MM-DD") : null);
-    console.log("Date To:", dateTo ? dateTo.format("YYYY-MM-DD") : null);
+    console.log('Search value:', searchValue);
+    console.log('Selected semester:', selectedSemester);
+    console.log('Selected year:', selectedYear);
+    console.log('Date From:', dateFrom ? dateFrom.format('YYYY-MM-DD') : null);
+    console.log('Date To:', dateTo ? dateTo.format('YYYY-MM-DD') : null);
   };
 
   return (

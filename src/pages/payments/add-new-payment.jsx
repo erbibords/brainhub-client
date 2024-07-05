@@ -1,73 +1,135 @@
-import React, { useState, useCallback, useEffect } from "react";
-import CustomInput from "../../components/Input/Input";
-import { useParams } from "react-router-dom";
-import { Layout, Select, Form, Image, DatePicker } from "antd";
-import useProfile from "../../hooks/useStudentProfile";
-import CustomButton from "../../components/Button/Button";
-import { PROCESSED_BY } from "../../constants";
+import React, { useState, useCallback, useEffect } from 'react';
+import CustomInput from '../../components/Input/Input';
+import { useParams } from 'react-router-dom';
+import { Layout, Select, Form, Image, DatePicker, Upload } from 'antd';
+import useProfile from '../../hooks/useStudentProfile';
+import CustomButton from '../../components/Button/Button';
+import { DateTime } from 'luxon';
+import useMutation from '../../hooks/useMutation';
+import { getCourseOfferingName } from '../../utils/mappings';
+import { ENROLLMENT_BASE_URL } from '../../constants';
+import { UploadOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 const { Content } = Layout;
 const { Option } = Select;
 
 const AddNewPayment = () => {
+  const navigate = useNavigate();
   const params = useParams();
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [imagePreview, setImagePreview] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+
   if (!params?.studentId) {
-    navigate("/students");
+    navigate('/students');
   }
 
-  const {
-    data: student,
-    error: studentError,
-    isLoading: studentLoading,
-  } = useProfile(params?.studentId);
+  const { mutate: updatedPayment, loading: updateStudentLoading } = useMutation(
+    '',
+    'POST',
+    'payments',
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
 
-  console.log(params.studentId, student, studentError, studentLoading);
+  console.log('selectedFile', selectedFile);
+
+  const { data: student } = useProfile(params?.studentId);
 
   useEffect(() => {
     const handleResize = () => {
       setScreenWidth(window.innerWidth);
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
-  const course_offering = [
-    { key: "1", name: "Information Technology" },
-    { key: "2", name: "Business Administration" },
-    { key: "3", name: "Marine Engineering" },
-  ];
+  const courseOfferings = student?.enrollments
+    ? student?.enrollments.map((enrollment) => ({
+        key: enrollment.id,
+        name: getCourseOfferingName(enrollment.courseOffering),
+      }))
+    : [];
 
-  const onFinish = useCallback(async (values) => {
-    console.log("Received values of form: ", values);
-    // Handle form submission
-  }, []);
+  const onFinish = async (values) => {
+    const {
+      enrollmentId,
+      amountPaid,
+      paymentMethod,
+      processedBy,
+      reference,
+      paidAt,
+    } = values;
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setImagePreview(null);
+    const isoPaidAt = DateTime.fromJSDate(paidAt.toDate()).toISO({
+      includeOffset: false,
+    });
+
+    const paymentFormData = new FormData();
+    paymentFormData.append('amountPaid', amountPaid);
+    paymentFormData.append('paymentMethod', paymentMethod.toUpperCase());
+    paymentFormData.append('processedBy', processedBy);
+    paymentFormData.append('referenceNo', reference);
+    paymentFormData.append('paidAt', isoPaidAt);
+
+    if (selectedFile) {
+      paymentFormData.append('file', selectedFile);
+    }
+
+    try {
+      const res = await updatedPayment(
+        paymentFormData,
+        `${ENROLLMENT_BASE_URL}/${enrollmentId}/payments`
+      );
+      if (res) {
+        navigate('/payments/list');
+        Swal.fire({
+          icon: 'success',
+          title: 'Payments successfully added!',
+          timer: 2000,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: 'error',
+        title:
+          'Something went wrong on adding payments, Please try again later!',
+        timer: 2000,
+      });
     }
   };
 
+  const handlePreview = async (file) => {
+    const preview = await getBase64(file);
+    setImagePreview(preview);
+  };
+
+  const getBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
+  const handleFileChange = (info) => {
+    const file = info.file.originFileObj || info.fileList[0].originFileObj;
+    setSelectedFile(file);
+    handlePreview(file);
+  };
+
   return (
-    <Content style={{ paddingRight: screenWidth <= 1024 ? 0 : "45%" }}>
-      <Form
-        name="payments"
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        layout="vertical"
-      >
+    <Content style={{ paddingRight: screenWidth <= 1024 ? 0 : '45%' }}>
+      <Form name="payments" onFinish={onFinish} layout="vertical">
         <div>
           <h1 className="text-2xl mb-[2vh]">Add Payments</h1>
           <p>Student Name: </p>
@@ -78,16 +140,16 @@ const AddNewPayment = () => {
           <Form.Item
             className="mb-[32px]"
             label="Offering:"
-            name="courseId"
-            rules={[{ required: true, message: "Please select offering" }]}
+            name="enrollmentId"
+            rules={[{ required: true, message: 'Please select offering' }]}
           >
             <Select
               className="w-full"
               size="large"
               placeholder="Course Offering"
             >
-              {course_offering.map((course) => (
-                <Option key={course.key} value={course.name}>
+              {courseOfferings.map((course) => (
+                <Option key={course.key} value={course.key}>
                   {course.name}
                 </Option>
               ))}
@@ -97,8 +159,8 @@ const AddNewPayment = () => {
           <Form.Item
             className="mb-[32px]"
             label="Amount:"
-            name="amount"
-            rules={[{ required: true, message: "Please input payment amount" }]}
+            name="amountPaid"
+            rules={[{ required: true, message: 'Please input payment amount' }]}
           >
             <CustomInput
               type="number"
@@ -112,7 +174,7 @@ const AddNewPayment = () => {
             label="Payment Method:"
             name="paymentMethod"
             rules={[
-              { required: true, message: "Please select a payment method." },
+              { required: true, message: 'Please select a payment method.' },
             ]}
           >
             <Select className="w-full" size="large">
@@ -129,11 +191,25 @@ const AddNewPayment = () => {
           <Form.Item
             className="mb-[32px]"
             label="Attachment:"
-            name="attachment"
+            valuePropName="file"
+            extra="Select a file to upload"
           >
-            <input type="file" onChange={handleFileChange} />
+            <Upload
+              accept="image/png, image/jpeg"
+              maxCount={1}
+              listType="picture-card"
+              beforeUpload={() => false}
+              onChange={handleFileChange}
+              showUploadList={false}
+            >
+              <div>
+                <UploadOutlined />
+                <div style={{ marginTop: 8 }}>Upload</div>
+              </div>
+            </Upload>
+
             {imagePreview && (
-              <div style={{ marginTop: "10px" }}>
+              <div style={{ marginTop: '10px' }}>
                 <Image
                   src={imagePreview}
                   alt="Selected"
@@ -146,9 +222,9 @@ const AddNewPayment = () => {
           <Form.Item
             className="mb-[32px]"
             label="Payment Date:"
-            name="paymentDate"
+            name="paidAt"
             rules={[
-              { required: true, message: "Please select a payment date." },
+              { required: true, message: 'Please select a payment date.' },
             ]}
           >
             <DatePicker className="w-full" size="large" />
@@ -157,16 +233,9 @@ const AddNewPayment = () => {
           <Form.Item
             className="mb-[32px]"
             label="Processed By:"
-            name="reference"
-            rules={[{ required: true, message: "Please select processed by." }]}
+            name="processedBy"
           >
-            <Select className="w-full" size="large">
-              {PROCESSED_BY.map((processedBy) => (
-                <Option key={processedBy} value={processedBy}>
-                  {processedBy}
-                </Option>
-              ))}
-            </Select>
+            <CustomInput size="large" type="text" className="" />
           </Form.Item>
 
           <div className="text-center mb-[20px]">
