@@ -29,7 +29,7 @@ const ViewOffering = () => {
   console.log("parameters", params);
 
   if (!params?.offeringId) {
-    navigate("/courses");
+    navigate("/offerings");
   }
 
   const [form] = Form.useForm();
@@ -48,7 +48,7 @@ const ViewOffering = () => {
       title: "Error viewing course offering. Please try again later",
       timer: 2000,
     });
-    navigate("/courses");
+    navigate("/offerings");
   }
 
   console.log("courses", courses);

@@ -15,7 +15,6 @@ import Offerings from "./pages/offerings/offerings";
 import AddOfferings from "./pages/offerings/add-offerings";
 import EditOfferings from "./pages/offerings/edit-offerings";
 import ViewEnrollment from "./pages/enrollment/view-enrollment";
-import ViewOffering from "./pages/offerings/view-offering";
 import PrintEnrollment from "./pages/prints/print-enrollment";
 import RevieweesPayments from "./pages/prints/reviewees-payments";
 import RevieweesAccounting from "./pages/prints/reviewees-accounting";
@@ -38,7 +37,6 @@ const App = () => {
           <Route path="/students" element={<Students />} />
           <Route path="/students/:studentId" element={<StudentProfile />} />
           <Route path="/offerings" element={<Offerings />} />
-          <Route path="offerings/:offeringId" element={<ViewOffering />} />
           <Route path="/offerings/add" element={<AddOfferings />} />
           <Route
             path="/offerings/edit/:offeringId"
@@ -55,7 +53,7 @@ const App = () => {
             element={<ViewEnrollment />}
           />
           <Route
-            path="/prints/enrollment/:studentId/:enrollmentId"
+            path="/prints/enrollment/:enrollmentId"
             element={<PrintEnrollment />}
           />
           <Route

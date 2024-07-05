@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
-import { Table, Row, Col, Select, DatePicker } from "antd";
+import { Table, Row, Col, Select, DatePicker, Space } from "antd";
+import { useNavigate } from "react-router-dom";
 import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
 import { useEnrollmentsContext } from "../../contexts/enrollments";
@@ -95,22 +96,22 @@ const Enrollment = () => {
         dataIndex: "processedBy",
         key: "processedBy",
       },
-      // {
-      //   title: "Action",
-      //   key: "action",
-      //   render: (text, record) => (
-      //     <Space size="middle">
-      //       <CustomButton
-      //         type="primary"
-      //         onClick={() => handleViewEnrollment(record.id)}
-      //         title="View"
-      //         className="w-auto bg-primary text-white"
-      //       >
-      //         View
-      //       </CustomButton>
-      //     </Space>
-      //   ),
-      // },
+      {
+        title: "Action",
+        key: "action",
+        render: (text, record) => (
+          <Space size="middle">
+            <CustomButton
+              type="primary"
+              onClick={() => handleViewEnrollment(record.id)}
+              title="View"
+              className="w-auto bg-primary text-white"
+            >
+              View
+            </CustomButton>
+          </Space>
+        ),
+      },
     ],
     [
       courses,

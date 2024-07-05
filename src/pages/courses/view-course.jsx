@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CustomInput from "../../components/Input/Input";
+import CustomButton from "../../components/Button/Button";
 import { Button, Row, Col, Card, Divider, Skeleton, Form } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useParams, useNavigate } from "react-router-dom";
