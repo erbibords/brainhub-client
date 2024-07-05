@@ -1,16 +1,16 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import CustomInput from '../../components/Input/Input';
-import { useParams } from 'react-router-dom';
-import { Layout, Select, Form, Image, DatePicker, Upload } from 'antd';
-import useProfile from '../../hooks/useStudentProfile';
-import CustomButton from '../../components/Button/Button';
-import { DateTime } from 'luxon';
-import useMutation from '../../hooks/useMutation';
-import { getCourseOfferingName } from '../../utils/mappings';
-import { ENROLLMENT_BASE_URL } from '../../constants';
-import { UploadOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
+import React, { useState, useEffect } from "react";
+import CustomInput from "../../components/Input/Input";
+import { useParams } from "react-router-dom";
+import { Layout, Select, Form, Image, DatePicker, Upload } from "antd";
+import useProfile from "../../hooks/useStudentProfile";
+import CustomButton from "../../components/Button/Button";
+import { DateTime } from "luxon";
+import useMutation from "../../hooks/useMutation";
+import { getCourseOfferingName } from "../../utils/mappings";
+import { ENROLLMENT_BASE_URL, PROCESSED_BY } from "../../constants";
+import { UploadOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 const { Content } = Layout;
 const { Option } = Select;
 
@@ -22,21 +22,19 @@ const AddNewPayment = () => {
   const [selectedFile, setSelectedFile] = useState(null);
 
   if (!params?.studentId) {
-    navigate('/students');
+    navigate("/students");
   }
 
   const { mutate: updatedPayment, loading: updateStudentLoading } = useMutation(
-    '',
-    'POST',
-    'payments',
+    "",
+    "POST",
+    "payments",
     {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     }
   );
-
-  console.log('selectedFile', selectedFile);
 
   const { data: student } = useProfile(params?.studentId);
 
@@ -45,10 +43,10 @@ const AddNewPayment = () => {
       setScreenWidth(window.innerWidth);
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -74,14 +72,14 @@ const AddNewPayment = () => {
     });
 
     const paymentFormData = new FormData();
-    paymentFormData.append('amountPaid', amountPaid);
-    paymentFormData.append('paymentMethod', paymentMethod.toUpperCase());
-    paymentFormData.append('processedBy', processedBy);
-    paymentFormData.append('referenceNo', reference);
-    paymentFormData.append('paidAt', isoPaidAt);
+    paymentFormData.append("amountPaid", amountPaid);
+    paymentFormData.append("paymentMethod", paymentMethod.toUpperCase());
+    paymentFormData.append("processedBy", processedBy);
+    paymentFormData.append("referenceNo", reference);
+    paymentFormData.append("paidAt", isoPaidAt);
 
     if (selectedFile) {
-      paymentFormData.append('file', selectedFile);
+      paymentFormData.append("file", selectedFile);
     }
 
     try {
@@ -90,19 +88,19 @@ const AddNewPayment = () => {
         `${ENROLLMENT_BASE_URL}/${enrollmentId}/payments`
       );
       if (res) {
-        navigate('/payments/list');
+        navigate("/payments/list");
         Swal.fire({
-          icon: 'success',
-          title: 'Payments successfully added!',
+          icon: "success",
+          title: "Payments successfully added!",
           timer: 2000,
         });
       }
     } catch (error) {
       console.error(error);
       Swal.fire({
-        icon: 'error',
+        icon: "error",
         title:
-          'Something went wrong on adding payments, Please try again later!',
+          "Something went wrong on adding payments, Please try again later!",
         timer: 2000,
       });
     }
@@ -128,7 +126,7 @@ const AddNewPayment = () => {
   };
 
   return (
-    <Content style={{ paddingRight: screenWidth <= 1024 ? 0 : '45%' }}>
+    <Content style={{ paddingRight: screenWidth <= 1024 ? 0 : "45%" }}>
       <Form name="payments" onFinish={onFinish} layout="vertical">
         <div>
           <h1 className="text-2xl mb-[2vh]">Add Payments</h1>
@@ -141,7 +139,7 @@ const AddNewPayment = () => {
             className="mb-[32px]"
             label="Offering:"
             name="enrollmentId"
-            rules={[{ required: true, message: 'Please select offering' }]}
+            rules={[{ required: true, message: "Please select offering" }]}
           >
             <Select
               className="w-full"
@@ -160,7 +158,7 @@ const AddNewPayment = () => {
             className="mb-[32px]"
             label="Amount:"
             name="amountPaid"
-            rules={[{ required: true, message: 'Please input payment amount' }]}
+            rules={[{ required: true, message: "Please input payment amount" }]}
           >
             <CustomInput
               type="number"
@@ -174,7 +172,7 @@ const AddNewPayment = () => {
             label="Payment Method:"
             name="paymentMethod"
             rules={[
-              { required: true, message: 'Please select a payment method.' },
+              { required: true, message: "Please select a payment method." },
             ]}
           >
             <Select className="w-full" size="large">
@@ -209,7 +207,7 @@ const AddNewPayment = () => {
             </Upload>
 
             {imagePreview && (
-              <div style={{ marginTop: '10px' }}>
+              <div style={{ marginTop: "10px" }}>
                 <Image
                   src={imagePreview}
                   alt="Selected"
@@ -224,7 +222,7 @@ const AddNewPayment = () => {
             label="Payment Date:"
             name="paidAt"
             rules={[
-              { required: true, message: 'Please select a payment date.' },
+              { required: true, message: "Please select a payment date." },
             ]}
           >
             <DatePicker className="w-full" size="large" />
@@ -235,7 +233,13 @@ const AddNewPayment = () => {
             label="Processed By:"
             name="processedBy"
           >
-            <CustomInput size="large" type="text" className="" />
+            <Select className="w-full" size="large" name="processedBy">
+              {PROCESSED_BY?.map((processedBy) => (
+                <Option value={processedBy} key={processedBy}>
+                  {processedBy}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
 
           <div className="text-center mb-[20px]">

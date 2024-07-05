@@ -1,32 +1,14 @@
 import React, { useMemo } from "react";
-import { Row, Table, Col } from "antd";
+import { Row, Table, Col, Image } from "antd";
 import {
   formatAmount,
   formatDate,
   getCourseOfferingName,
 } from "../../utils/formatting";
-import useAttachmentData from "../../hooks/usePaymentAttachment";
-import fetcher from "../../utils/fetcher";
-import useSWR from "swr";
-import { PAYMENTS_BASE_URL } from "../../constants";
+import { MEDIA_BASE_URL } from "../../constants";
 
 export const PaymentHistory = ({ payments }) => {
   if (!payments) return null;
-
-  //   const paymentWithAttachment = useMemo(() => {
-  //     return payments.map((payment) => {
-  //       const { data } = useAttachmentData(payment.attachments);
-
-  //       console.log(data);
-
-  //       return data;
-
-  //       //   return {
-  //       //     ...payment,
-  //       //     attachment: attachmentData.join(", "), // Join multiple attachments with a comma if needed
-  //       //   };
-  //     });
-  //   }, [payments]);
 
   const columns = [
     { title: "Reference", dataIndex: "referenceNo", key: "referenceNo" },
@@ -49,21 +31,31 @@ export const PaymentHistory = ({ payments }) => {
     },
     {
       title: "Attachment",
-      dataIndex: "attachments",
-      key: "attachments",
-      render: (data) => {
-        return data?.map((attachment) => {
-          return attachment;
-          const { data, error } = useSWR(
-            attachment ? `${PAYMENTS_BASE_URL}/uploads/${attachment}` : null,
-            fetcher
-          );
-          const isLoading = !data && !error;
-          console.log(data);
-        });
+      dataIndex: "attachment",
+      render: (_, record) => {
+        return record?.attachments?.length ? (
+          <Image
+            width={100}
+            height={100}
+            src={`${MEDIA_BASE_URL}/${record?.attachments[0]}`}
+            alt={record?.attachments[0]}
+            preview={{
+              className: "custom-image-preview",
+              mask: <div>Click to preview</div>,
+              maskClassName: "custom-mask",
+            }}
+          />
+        ) : (
+          ""
+        );
       },
     },
-    { title: "Offering", dataIndex: "offering", key: "offering" },
+    {
+      title: "Offering",
+      dataIndex: "offering",
+      render: (_, record) =>
+        getCourseOfferingName(record?.enrollment?.courseOffering),
+    },
     { title: "Processed by", dataIndex: "processedBy", key: "processedBy" },
   ];
 

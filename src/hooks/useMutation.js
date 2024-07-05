@@ -11,7 +11,6 @@ const useMutation = (
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  console.log('mutating url', url);
 
   const executeMutation = useCallback(
     async (data, optionalUrl) => {

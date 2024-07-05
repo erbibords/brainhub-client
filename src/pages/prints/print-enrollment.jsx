@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import useProfile from "../../hooks/useStudentProfile";
 import { useNavigate } from "react-router-dom";
 import { formatTakerType } from "../../utils/formatting";
+import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
+import CustomButton from "../../components/Button/Button";
 const { Title, Text } = Typography;
 
 const PrintEnrollmentForm = () => {
@@ -18,13 +20,22 @@ const PrintEnrollmentForm = () => {
     navigate("/add-enrollment");
   }
 
-  const { data, error, isLoading } = useProfile(params?.studentId);
+  const { data, error } = useProfile(params?.studentId);
 
   const getEnrollment = useMemo(() => {
     return data?.enrollments?.filter(
       (enrollment) => enrollment?.id === params?.enrollmentId
     )[0];
   }, [data, params]);
+
+  if (error) {
+    return (
+      <div className="flex flex-col gap-4">
+        <GenericErrorDisplay />
+        <CustomButton>Proceed to Receipt Printing</CustomButton>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white max-w-xl mx-auto">
@@ -163,13 +174,15 @@ const PrintEnrollmentForm = () => {
           </p>
         </div>
 
-        <Form.Item className="mt-2 flex justify-end">
-          <Input
-            value={data?.fullName}
-            className="border-t-0 border-x-0 border-b-2 float-right bg-transparent text-center"
-            readOnly
-          />
-          <p>Signature over Printed Name</p>
+        <Form.Item className="mt-2 flex justify-end ">
+          <div className="w-[250px]">
+            <Input
+              value={data?.fullName}
+              className="border-t-0 border-x-0 border-b-2 bg-transparent text-center text-xs"
+              readOnly
+            />
+            <p className="text-center">Signature over Printed Name</p>
+          </div>
         </Form.Item>
       </Form>
     </div>

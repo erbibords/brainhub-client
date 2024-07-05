@@ -9,6 +9,8 @@ export const REVIEW_PROGRAM_BASE_URL = `branches/${DEFAULT_BRANCH_ID}/review-pro
 export const PAYMENTS_BASE_URL = `branches/${DEFAULT_BRANCH_ID}/payments`;
 export const SCHOOLS_BASE_URL = `branches/${DEFAULT_BRANCH_ID}/schools`;
 export const ENROLLMENT_BASE_URL = `branches/${DEFAULT_BRANCH_ID}/enrollments`;
+export const MEDIA_BASE_URL = `${BASE_URL}branches/${DEFAULT_BRANCH_ID}/payments/uploads`;
+
 
 export const YEAR = [2024, 2025, 2026, 2027, 2028, 2029, 2030];
 export const SEMESTER = [

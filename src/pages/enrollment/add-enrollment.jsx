@@ -9,6 +9,7 @@ import CustomButton from "../../components/Button/Button";
 import { useOfferingsContext } from "../../contexts/offerings";
 import useMutation from "../../hooks/useMutation";
 import { DEFAULT_BRANCH_ID, PROCESSED_BY } from "../../constants";
+import { useNavigate } from "react-router-dom";
 function generateFourDigitRandomNumber() {
   return Math.floor(1000 + Math.random() * 9000);
 }
@@ -28,6 +29,7 @@ const options = [
 ];
 
 const Enrollment = () => {
+  const navigate = useNavigate();
   const {
     data: schools,
     loading: schoolsLoading,
@@ -143,6 +145,9 @@ const Enrollment = () => {
       try {
         const enrollmentRes = await addEnrollment(data);
         if (enrollmentRes) {
+          const enrollmentId = enrollmentRes?.id;
+          const studentId = data?.studentId;
+          navigate(`/prints/enrollment/${studentId}/${enrollmentId}`);
           Swal.fire({
             icon: "success",
             title: "Enrollment successful!",
