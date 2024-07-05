@@ -10,6 +10,8 @@ import { getCourseById, getSchoolById } from "../../utils/mappings";
 import CustomButton from "../../components/Button/Button";
 import { formatSemester, formatTakerType } from "../../utils/formatting";
 import { SEMESTER } from "../../constants";
+import { useNavigate } from "react-router-dom";
+
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 

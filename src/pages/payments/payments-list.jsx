@@ -3,16 +3,17 @@ import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
 import useSchools from "../../hooks/useSchools";
 import { useCourse } from "../../contexts/courses";
-import { Table, Row, Col, Button, Select, DatePicker, Image } from "antd";
+import { Table, Row, Col, Space, Select, DatePicker, Image } from "antd";
 import { SEMESTER, MEDIA_BASE_URL } from "../../constants";
 import { usePaymentsContext } from "../../contexts/payments";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { getCourseOfferingName } from "../../utils/mappings";
-
+import { useNavigate } from "react-router-dom";
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const PaymentsList = () => {
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("");
   const { payments, getPaymentsLoading, getPaymentsError } =
@@ -67,6 +68,19 @@ const PaymentsList = () => {
         getCourseOfferingName(record.enrollment.courseOffering),
     },
     { title: "Processed by", dataIndex: "processedBy" },
+    {
+      title: "Action",
+      key: "action",
+      render: (text, record) => (
+        <Space size="middle">
+          <CustomButton
+            onClick={() => navigate(`/prints/receipt/${record?.id}`)}
+          >
+            Print Receipt
+          </CustomButton>
+        </Space>
+      ),
+    },
   ];
 
   const searchPaymentList = () => {

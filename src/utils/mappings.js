@@ -19,3 +19,8 @@ export const getCourseOfferingName = (courseOffering) => {
     courseOffering?.reviewProgram?.name ?? ''
   }-${courseOffering?.yearOffered ?? ''}-${courseOffering?.semester ?? ''}`;
 };
+
+export const getPaymentById = (payments, id) => {
+  if (!payments || !id) return null;
+  return payments?.find((payment) => payment.id === id);
+}

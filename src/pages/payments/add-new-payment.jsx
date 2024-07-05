@@ -88,7 +88,7 @@ const AddNewPayment = () => {
         `${ENROLLMENT_BASE_URL}/${enrollmentId}/payments`
       );
       if (res) {
-        navigate("/payments/list");
+        navigate(`/prints/receipt/${res.id}`);
         Swal.fire({
           icon: "success",
           title: "Payments successfully added!",

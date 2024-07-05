@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import { Form, Input, Typography } from "antd";
 import { useParams } from "react-router-dom";
 import useProfile from "../../hooks/useStudentProfile";
@@ -48,7 +48,7 @@ const PrintEnrollmentForm = () => {
 
   return (
     <div className="bg-white max-w-xl mx-auto">
-      <div>
+      <div ref={contentToPrint} className="p-4">
         <div className="text-center  mb-5">
           <div className="text-2xl font-bold">BRAIN HUB REVIEW SPECIALIST</div>
         </div>
@@ -199,6 +199,27 @@ const PrintEnrollmentForm = () => {
             </div>
           </Form.Item>
         </Form>
+      </div>
+      <div className="mb-5 mt-5 w-full flex gap-2 justify-end">
+        <CustomButton
+          type="primary"
+          size="large"
+          onClick={() => {
+            handlePrint(null, () => contentToPrint.current);
+          }}
+        >
+          Print RF
+        </CustomButton>
+
+        <CustomButton
+          type="edit"
+          size="large"
+          onClick={() => {
+            navigate(`/payments/add/${params?.studentId}`);
+          }}
+        >
+          Proceed to Payment
+        </CustomButton>
       </div>
     </div>
   );

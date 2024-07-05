@@ -12,6 +12,8 @@ export const formatSemester = (semester) => {
     } else if(semester === 'SECOND_SEMESTER') {
         return '2ND'
     } 
+
+    return semester;
 }
 
 export const formatTakerType = (takerType) => {

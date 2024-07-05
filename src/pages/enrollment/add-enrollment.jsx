@@ -10,6 +10,7 @@ import { useOfferingsContext } from "../../contexts/offerings";
 import useMutation from "../../hooks/useMutation";
 import { DEFAULT_BRANCH_ID, PROCESSED_BY } from "../../constants";
 import { useNavigate } from "react-router-dom";
+import { getCourseOfferingName } from "../../utils/mappings";
 function generateFourDigitRandomNumber() {
   return Math.floor(1000 + Math.random() * 9000);
 }
@@ -331,11 +332,13 @@ const Enrollment = () => {
             onChange={(value) => setSelectedOfferingId(value)}
           >
             {offerings &&
-              offerings?.data?.map((offering) => (
-                <Option key={offering?.id} value={offering?.id}>
-                  {`${offering?.course?.name}-${offering?.program}-${offering?.yearOffered}-${offering?.semester}`}
-                </Option>
-              ))}
+              offerings?.data?.map((offering) => {
+                return (
+                  <Option key={offering?.id} value={offering?.id}>
+                    {getCourseOfferingName(offering)}
+                  </Option>
+                );
+              })}
           </Select>
 
           {getOfferingsError && (

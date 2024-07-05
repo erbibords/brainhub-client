@@ -145,11 +145,13 @@ const AddOfferings = () => {
           name="semester"
           rules={[{ required: true, message: "Please select semester!" }]}
         >
-          {SEMESTER.map((sem) => (
-            <Option value={sem.value} key={sem.value}>
-              {sem.label}
-            </Option>
-          ))}
+          <Select name="semester" className="h-[40px] w">
+            {SEMESTER.map((sem) => (
+              <Option value={sem.value} key={sem.value}>
+                {sem.label}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <Form.Item
