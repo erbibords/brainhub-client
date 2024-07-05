@@ -84,13 +84,13 @@ const SchoolList = () => {
     <div>
       <h1 className="text-2xl">Schools</h1>
       <div className="text-right">
-        <Button
+        <CustomButton
           type="primary"
           onClick={showModal}
           className="w-auto bg-primary text-white"
         >
           Add School
-        </Button>
+        </CustomButton>
       </div>
       <Row gutter={[16, 16]}>
         <Col span={8}>

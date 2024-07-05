@@ -83,9 +83,12 @@ const PaymentsList = () => {
       <Row gutter={[16, 16]}>
         <Col span={24}>
           <Row gutter={[16, 16]}>
-            <Col span={4}>
-              <p>Date From/Date To:</p>
-              <RangePicker className="h-[50px]" />
+            <Col span={6}>
+              <p>Date From - Date To:</p>
+              <RangePicker
+                placeholder={["Date From", "Date To"]}
+                className="h-[50px] w-full"
+              />
             </Col>
 
             <Col span={4}>
@@ -113,7 +116,7 @@ const PaymentsList = () => {
                   ))}
               </Select>
             </Col>
-            <Col span={8}>
+            <Col span={6}>
               <p>School:</p>
               <Select
                 className="w-full"
@@ -126,7 +129,7 @@ const PaymentsList = () => {
                   ))}
               </Select>
             </Col>
-            <Col span={4}>
+            <Col span={3}>
               <p>Semester:</p>
               <Select
                 onChange={(value) => setSelectedSemester(value)}
@@ -140,7 +143,7 @@ const PaymentsList = () => {
               </Select>
             </Col>
 
-            <Col span={4}>
+            <Col span={3}>
               <p>Year</p>
               <Select className="w-full">
                 <Option value="2024">2024</Option>
@@ -154,7 +157,7 @@ const PaymentsList = () => {
               </Select>
             </Col>
 
-            <Col span={4} className="flex items-end mb-1">
+            <Col span={3} className="flex items-end mb-1">
               <CustomButton
                 type="primary"
                 size="large"
@@ -164,14 +167,14 @@ const PaymentsList = () => {
               </CustomButton>
             </Col>
 
-            <Col span={12}>
-              <Button
+            <Col span={15}>
+              <CustomButton
                 type="primary"
                 className="w-auto bg-success text-white mt-[25px] float-right"
                 size="large"
               >
                 Print List
-              </Button>
+              </CustomButton>
             </Col>
           </Row>
         </Col>

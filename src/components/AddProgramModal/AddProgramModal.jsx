@@ -1,6 +1,7 @@
 import React from "react";
-import { Modal, Button, Form, Input } from "antd";
+import { Modal, Form, Input } from "antd";
 import CustomInput from "../Input/Input";
+import CustomButton from "../Button/Button";
 
 const { TextArea } = Input;
 
@@ -17,10 +18,10 @@ const CustomModal = ({
       visible={isVisible}
       onCancel={handleCancel}
       footer={[
-        <Button key="cancel" onClick={handleCancel}>
+        <CustomButton key="cancel" onClick={handleCancel}>
           Cancel
-        </Button>,
-        <Button
+        </CustomButton>,
+        <CustomButton
           key="submit"
           type="primary"
           loading={buttonLoading}
@@ -28,7 +29,7 @@ const CustomModal = ({
           onClick={() => form.submit()}
         >
           Save
-        </Button>,
+        </CustomButton>,
       ]}
       width={700}
     >

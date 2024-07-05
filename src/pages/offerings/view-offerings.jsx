@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
-  Button,
   Select,
   Row,
   Col,
@@ -10,27 +9,28 @@ import {
   Form,
   DatePicker,
   Table,
-} from 'antd';
-import { ArrowLeftOutlined } from '@ant-design/icons';
-import { useParams, useNavigate } from 'react-router-dom';
-import { DateTime } from 'luxon';
-import useMutation from '../../hooks/useMutation';
-import { useCourse } from '../../contexts/courses';
-import Swal from 'sweetalert2';
-import { OFFERING_BASE_URL } from '../../constants';
-import useOffering from '../../hooks/useOffering';
-import { formatSemester } from '../../utils/formatting';
-import { REVIEW_PROGRAM, SEMESTER, YEAR } from '../../constants';
-import CustomInput from '../../components/Input/Input';
+} from "antd";
+import { ArrowLeftOutlined } from "@ant-design/icons";
+import { useParams, useNavigate } from "react-router-dom";
+import { DateTime } from "luxon";
+import useMutation from "../../hooks/useMutation";
+import { useCourse } from "../../contexts/courses";
+import Swal from "sweetalert2";
+import { OFFERING_BASE_URL } from "../../constants";
+import useOffering from "../../hooks/useOffering";
+import { formatSemester } from "../../utils/formatting";
+import { REVIEW_PROGRAM, SEMESTER, YEAR } from "../../constants";
+import CustomInput from "../../components/Input/Input";
+import CustomButton from "../../components/Button/Button";
 
 const ViewOffering = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  console.log('parameters', params);
+  console.log("parameters", params);
 
   if (!params?.offeringId) {
-    navigate('/courses');
+    navigate("/courses");
   }
 
   const [form] = Form.useForm();
@@ -45,20 +45,20 @@ const ViewOffering = () => {
 
   if (coursesError || offeringError) {
     Swal.fire({
-      icon: 'Error',
-      title: 'Error viewing course offering. Please try again later',
+      icon: "Error",
+      title: "Error viewing course offering. Please try again later",
       timer: 2000,
     });
-    navigate('/courses');
+    navigate("/courses");
   }
 
-  console.log('courses', courses);
-  console.log('offering', offering);
+  console.log("courses", courses);
+  console.log("offering", offering);
 
   const OFFERING_ENTITY_URL = `${OFFERING_BASE_URL}/${params.offeringId}`;
   const { mutate: updateOffering, loading: updateStudentLoading } = useMutation(
     OFFERING_ENTITY_URL,
-    'PUT',
+    "PUT",
     OFFERING_ENTITY_URL
   );
 
@@ -73,8 +73,8 @@ const ViewOffering = () => {
 
   const onFormFailed = (errorInfo) => {
     Swal.fire({
-      icon: 'error',
-      title: 'Student Information Update Error',
+      icon: "error",
+      title: "Student Information Update Error",
       text: JSON.stringify(errorInfo),
     });
   };
@@ -91,39 +91,56 @@ const ViewOffering = () => {
       });
       if (res) {
         Swal.fire({
-          icon: 'success',
-          title: 'Course information updated!',
+          icon: "success",
+          title: "Course information updated!",
           timer: 2000,
         });
         setIsEditing(false);
       }
     } catch (error) {
       Swal.fire({
-        icon: 'error',
-        title: 'Course Information Update Error',
-        text: 'There might be some error in your entries. Please double check and try again!',
+        icon: "error",
+        title: "Course Information Update Error",
+        text: "There might be some error in your entries. Please double check and try again!",
       });
     }
   };
 
-
   const studentListData = [
-    { key: '1', name: 'Louie Doooao', school: "Ui", year: "2024", semester: "1st", enrollmentDate: "2024-06-30"},
-    { key: '2', name: 'Johnny Papa', school: "San ag", year: "2024", semester: "2nd", enrollmentDate: "2024-06-29" },
+    {
+      key: "1",
+      name: "Louie Doooao",
+      school: "Ui",
+      year: "2024",
+      semester: "1st",
+      enrollmentDate: "2024-06-30",
+    },
+    {
+      key: "2",
+      name: "Johnny Papa",
+      school: "San ag",
+      year: "2024",
+      semester: "2nd",
+      enrollmentDate: "2024-06-29",
+    },
   ];
   const columns = [
-    { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'School', dataIndex: 'school', key: 'school' },
-    { title: 'Year', dataIndex: 'year', key: 'year' },
-    { title: 'Semester', dataIndex: 'semester', key: 'semester' },
-    { title: 'Enrollment Date', dataIndex: 'enrollmentDate', key: 'enrollmentDate' },
+    { title: "Name", dataIndex: "name", key: "name" },
+    { title: "School", dataIndex: "school", key: "school" },
+    { title: "Year", dataIndex: "year", key: "year" },
+    { title: "Semester", dataIndex: "semester", key: "semester" },
+    {
+      title: "Enrollment Date",
+      dataIndex: "enrollmentDate",
+      key: "enrollmentDate",
+    },
   ];
 
   return (
     <div>
-      <Button
+      <CustomButton
         type="text"
-        onClick={() => navigate('/offerings')}
+        onClick={() => navigate("/offerings")}
         icon={<ArrowLeftOutlined />}
         className="mb-6"
       />
@@ -145,33 +162,27 @@ const ViewOffering = () => {
                 <Row gutter={[16, 16]}>
                   <Col xs={24} sm={24} md={16} lg={18}>
                     <h1 className="text-2xl mb-[2vh]">
-                      {offering.course.name}:{' '}
+                      {offering.course.name}:{" "}
                       {formatSemester(offering.semester)}
-                      {' semester of '}
+                      {" semester of "}
                       {offering.yearOffered}
                     </h1>
                   </Col>
                   <Col xs={24} sm={24} md={8} lg={6}>
-                    <div style={{ textAlign: 'right', marginBottom: '20px' }}>
+                    <div className="text-right mb-5">
                       {isEditing ? (
-                        <div
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'flex-end',
-                          }}
-                        >
-                          <Button
+                        <div className="flex justify-end">
+                          <CustomButton
                             size="large"
-                            style={{ marginRight: '10px' }}
                             className="mr-[10px]"
                             loading={updateStudentLoading}
                             disabled={updateStudentLoading}
                             onClick={() => setIsEditing(false)}
                           >
                             Cancel
-                          </Button>
+                          </CustomButton>
 
-                          <Button
+                          <CustomButton
                             size="large"
                             type="primary"
                             className="w-auto bg-primary text-white"
@@ -180,10 +191,10 @@ const ViewOffering = () => {
                             htmlType="submit"
                           >
                             Save
-                          </Button>
+                          </CustomButton>
                         </div>
                       ) : (
-                        <Button
+                        <CustomButton
                           type="primary"
                           size="large"
                           className="w-auto bg-primary text-white"
@@ -191,7 +202,7 @@ const ViewOffering = () => {
                           onClick={() => setIsEditing(true)}
                         >
                           Edit
-                        </Button>
+                        </CustomButton>
                       )}
                     </div>
                   </Col>
@@ -199,9 +210,9 @@ const ViewOffering = () => {
                 <Divider />
                 <div layout="vertical" className="w-1/2">
                   <p>
-                    <strong>Course:</strong>{' '}
+                    <strong>Course:</strong>{" "}
                     {isEditing ? (
-                      <Form.Item name={['course', 'id']}>
+                      <Form.Item name={["course", "id"]}>
                         <Select
                           options={courses.data.map((course) => ({
                             value: course.id,
@@ -216,7 +227,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Review program:</strong>{' '}
+                    <strong>Review program:</strong>{" "}
                     {isEditing ? (
                       <Form.Item name="program">
                         <Select
@@ -233,7 +244,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Semester Offered:</strong>{' '}
+                    <strong>Semester Offered:</strong>{" "}
                     {isEditing ? (
                       <Form.Item name="semester">
                         <Select
@@ -250,7 +261,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>School Year:</strong>{' '}
+                    <strong>School Year:</strong>{" "}
                     {isEditing ? (
                       <Form.Item name="yearOffered">
                         <Select
@@ -267,7 +278,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Start date:</strong>{' '}
+                    <strong>Start date:</strong>{" "}
                     {isEditing ? (
                       <Form.Item>
                         <DatePicker className="w-full" size="large" />
@@ -279,7 +290,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Payment Deadline:</strong>{' '}
+                    <strong>Payment Deadline:</strong>{" "}
                     {isEditing ? (
                       <Form.Item>
                         <DatePicker className="w-full" size="large" />
@@ -291,7 +302,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Capacity:</strong>{' '}
+                    <strong>Capacity:</strong>{" "}
                     {isEditing ? (
                       <Form.Item name="enrollmentCapacity">
                         <CustomInput />
@@ -303,7 +314,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Review cost:</strong>{' '}
+                    <strong>Review cost:</strong>{" "}
                     {isEditing ? (
                       <Form.Item name="reviewCost">
                         <CustomInput />
@@ -315,7 +326,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Budget proposal:</strong>{' '}
+                    <strong>Budget proposal:</strong>{" "}
                     {isEditing ? (
                       <Form.Item name="budgetProposal">
                         <CustomInput />
@@ -328,17 +339,17 @@ const ViewOffering = () => {
                 </div>
               </Form>
 
-
               <Row gutter={[16, 16]}>
                 <Col span={24}>
                   <Table
-                      dataSource={studentListData}
-                      columns={columns}
-                      title={() => <h2  className="text-2xl">Enrolled Student List</h2>}
-                    />
+                    dataSource={studentListData}
+                    columns={columns}
+                    title={() => (
+                      <h2 className="text-2xl">Enrolled Student List</h2>
+                    )}
+                  />
                 </Col>
               </Row>
-
             </Card>
           )}
         </Col>

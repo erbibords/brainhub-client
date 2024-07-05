@@ -62,6 +62,10 @@ const StudentsList = () => {
     navigate(`/students/${studentId}`);
   };
 
+  const studentAddPayment = (studentId) => {
+    navigate(`/payments/add/${studentId}`);
+  };
+
   const filteredData = useMemo(() => {
     if (studentDataLoading || getStudentError) return;
     return students.data.map((student) => {

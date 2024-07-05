@@ -14,6 +14,7 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const Enrollment = () => {
+  const navigate = useNavigate();
   const {
     data: schools,
     loading: schoolsLoading,
@@ -32,8 +33,8 @@ const Enrollment = () => {
   const [selectedSemester, setSelectedSemester] = useState(undefined);
   const [selectedYear, setSelectedYear] = useState(undefined);
 
-  const handleViewEnrollment = () => {
-    alert("debugging view... ./pages/enrollment/view-enrollment");
+  const handleViewEnrollment = (studentId) => {
+    navigate(`/enrollments/${studentId}`);
   };
 
   console.log(enrollments);
@@ -191,7 +192,7 @@ const Enrollment = () => {
               </Select>
             </Col>
             <Col span={6}>
-              <p>School</p>
+              <p>School:</p>
               <Select
                 className="w-full"
                 oading={schoolsLoading}

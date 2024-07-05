@@ -47,7 +47,7 @@ const CourseList = () => {
       key: "name",
       render: (text, record) =>
         editingKey === record.key ? (
-          <Input
+          <CustomInput
             value={record.course_name}
             onChange={(e) => handleFieldChange(e, record.key, "name")}
           />
@@ -173,13 +173,13 @@ const CourseList = () => {
     <div>
       <h1 className="text-2xl">Course List</h1>
       <div className="text-right">
-        <Button
+        <CustomButton
           type="primary"
           onClick={showModal}
           className="w-auto bg-primary text-white"
         >
           Add Course
-        </Button>
+        </CustomButton>
       </div>
       <Row gutter={[16, 16]}>
         <Col span={8}>

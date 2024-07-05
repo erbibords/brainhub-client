@@ -70,7 +70,7 @@ const ViewCourse = () => {
 
   return (
     <div>
-      <Button
+      <CustomButton
         type="text"
         onClick={() => navigate("/courses")}
         icon={<ArrowLeftOutlined />}
@@ -104,7 +104,7 @@ const ViewCourse = () => {
                             justifyContent: "flex-end",
                           }}
                         >
-                          <Button
+                          <CustomButton
                             size="large"
                             style={{ marginRight: "10px" }}
                             className="mr-[10px]"
@@ -113,9 +113,9 @@ const ViewCourse = () => {
                             onClick={() => setIsEditing(false)}
                           >
                             Cancel
-                          </Button>
+                          </CustomButton>
 
-                          <Button
+                          <CustomButton
                             size="large"
                             type="primary"
                             className="w-auto bg-primary text-white"
@@ -124,10 +124,10 @@ const ViewCourse = () => {
                             htmlType="submit"
                           >
                             Save
-                          </Button>
+                          </CustomButton>
                         </div>
                       ) : (
-                        <Button
+                        <CustomButton
                           type="primary"
                           size="large"
                           className="w-auto bg-primary text-white"
@@ -135,7 +135,7 @@ const ViewCourse = () => {
                           onClick={() => setIsEditing(true)}
                         >
                           Edit
-                        </Button>
+                        </CustomButton>
                       )}
                     </div>
                   </Col>
