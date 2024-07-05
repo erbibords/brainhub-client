@@ -107,6 +107,7 @@ const SchoolList = () => {
             <Table
               dataSource={filteredData}
               columns={columns}
+              pagination={false}
               isLoading={isLoading}
             />
           )}

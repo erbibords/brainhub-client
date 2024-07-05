@@ -152,6 +152,7 @@ const ReviewProgram = () => {
             <Table
               dataSource={filteredData}
               columns={columns}
+              pagination={false}
               loading={getProgramsLoading}
             />
           )}
