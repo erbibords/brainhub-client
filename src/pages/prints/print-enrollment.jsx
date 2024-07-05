@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Form, Typography } from "antd";
 import CustomButton from "../../components/Button/Button";
 import CustomInput from "../../components/Input/Input";
 import { useNavigate } from "react-router-dom";
-import ReactToPrint from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 
 const { Title, Text } = Typography;
 
@@ -27,7 +27,7 @@ const PrintEnrollmentForm = () => {
   };
 
   return (
-    <div className="bg-white mx-auto w-70mm p-4">
+    <div className="bg-white max-w-xl mx-auto">
       <div ref={contentToPrint}>
         <div className="text-center  mb-5">
           <div className="text-2xl font-bold">BRAIN HUB REVIEW SPECIALIST</div>
