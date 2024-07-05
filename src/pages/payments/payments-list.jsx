@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
+import { useNavigate } from "react-router";
 import useSchools from "../../hooks/useSchools";
 import { useCourse } from "../../contexts/courses";
 import { Table, Row, Col, Button, Select, DatePicker, Image } from "antd";
@@ -13,6 +14,7 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const PaymentsList = () => {
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("");
   const { payments, getPaymentsLoading, getPaymentsError } =
@@ -172,6 +174,7 @@ const PaymentsList = () => {
                 type="primary"
                 className="w-auto bg-success text-white mt-[25px] float-right"
                 size="large"
+                onClick={() => navigate(`/prints/payment-list/:paymentListID`)}
               >
                 Print List
               </CustomButton>

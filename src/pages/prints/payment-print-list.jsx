@@ -1,6 +1,8 @@
 import React, { useRef } from "react";
 import ReactToPrint from "react-to-print";
+import { useNavigate } from "react-router-dom";
 import { Typography, Table } from "antd";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button"; // Assuming you have this component
 
@@ -78,9 +80,16 @@ class PaymentPrintList extends React.Component {
 
 const PrintComponent = () => {
   const componentRef = useRef();
+  const navigate = useNavigate();
 
   return (
     <div>
+      <CustomButton
+        type="text"
+        onClick={() => navigate("/payments/list")}
+        icon={<ArrowLeftOutlined />}
+        className="mb-6"
+      />
       <PaymentPrintList ref={componentRef} />
       <div className="text-right mb-5 w-fullflex justify-center">
         <ReactToPrint
