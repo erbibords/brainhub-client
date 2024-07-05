@@ -7,6 +7,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import useMutation from "../../hooks/useMutation";
 import { DEFAULT_BRANCH_ID } from "../../constants";
 import Swal from "sweetalert2";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const StudentProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -169,6 +170,13 @@ const StudentProfile = () => {
 
   return (
     <div>
+      <CustomButton
+        type="text"
+        onClick={() => navigate("/students")}
+        icon={<ArrowLeftOutlined />}
+        className="mb-6"
+      />
+
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={24} md={36} lg={36}>
           {isLoading ? (
