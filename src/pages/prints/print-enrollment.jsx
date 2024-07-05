@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { formatTakerType } from "../../utils/formatting";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import CustomButton from "../../components/Button/Button";
+import { useReactToPrint } from "react-to-print";
 const { Title, Text } = Typography;
 
 const PrintEnrollmentForm = () => {
@@ -36,6 +37,14 @@ const PrintEnrollmentForm = () => {
       </div>
     );
   }
+
+  const contentToPrint = useRef(null);
+  const handlePrint = useReactToPrint({
+    documentTitle: "Print This Document",
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => console.log("after printing..."),
+    removeAfterPrint: true,
+  });
 
   return (
     <div className="bg-white max-w-xl mx-auto">
