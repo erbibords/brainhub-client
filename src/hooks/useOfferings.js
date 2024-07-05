@@ -17,6 +17,8 @@ function useOfferings(params = {}) {
     if (yearOffered) queryParams.append('yearOffered', yearOffered);
     if (semester) queryParams.append('semester', semester);
     if (courseId) queryParams.append('courseId', courseId);
+    queryParams.append('includeEnrollment', true);
+
   
   
     if (queryParams.toString()) {

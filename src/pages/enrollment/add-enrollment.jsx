@@ -131,7 +131,7 @@ const Enrollment = () => {
         return;
       }
 
-      if (!data.processedby) {
+      if (!data.processedBy) {
         Swal.fire({
           icon: "warning",
           title: "Please select processed by.",
@@ -159,7 +159,7 @@ const Enrollment = () => {
         });
       }
     },
-    [addEnrollment]
+    [addEnrollment, selectedProcessedBy]
   );
 
   const enrollNewStudent = useCallback(
@@ -172,7 +172,7 @@ const Enrollment = () => {
             takerType: "FIRST_TAKER",
             status: "",
             studentId,
-            processedby: selectedProcessedBy,
+            processedBy: selectedProcessedBy,
           };
           await enrollStudent(enrollmentData);
         }
@@ -185,7 +185,7 @@ const Enrollment = () => {
         });
       }
     },
-    [addStudent, addEnrollment]
+    [addStudent, addEnrollment, selectedProcessedBy]
   );
 
   const enrollExistingStudent = useCallback(async () => {
@@ -211,7 +211,7 @@ const Enrollment = () => {
       takerType,
       studentId: selectedExistingStudentId,
       status: "",
-      processedby: selectedProcessedBy,
+      processedBy: selectedProcessedBy,
     };
 
     await enrollStudent(data);
@@ -254,7 +254,13 @@ const Enrollment = () => {
 
       await enrollNewStudent(addStudentValue);
     },
-    [addStudent, setSelectedOfferingId, addEnrollment, enrollNewStudent]
+    [
+      addStudent,
+      setSelectedOfferingId,
+      addEnrollment,
+      enrollNewStudent,
+      selectedProcessedBy,
+    ]
   );
 
   return (

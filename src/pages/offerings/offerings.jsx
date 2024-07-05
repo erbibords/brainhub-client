@@ -25,7 +25,7 @@ const Offerings = () => {
   const { programs, getProgramsLoading, getProgramsError } =
     useProgramContext();
 
-  console.log(getOfferingsLoading);
+  console.log(offerings);
 
   useEffect(() => {
     setParams({
