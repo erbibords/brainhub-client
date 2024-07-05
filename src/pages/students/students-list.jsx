@@ -35,7 +35,14 @@ const StudentsList = () => {
       key: "action",
       render: (text, record) => (
         <Space size="small">
-          <CustomButton type="edit">Add Payment</CustomButton>
+          <CustomButton
+            onClick={() => {
+              studentAddPayment(record.id);
+            }}
+            type="edit"
+          >
+            Add Payment
+          </CustomButton>
           <CustomButton
             onClick={() => {
               handleViewStudent(record.id);
@@ -50,6 +57,10 @@ const StudentsList = () => {
 
   const handleViewStudent = (studentId) => {
     navigate(`/students/${studentId}`);
+  };
+
+  const studentAddPayment = (studentId) => {
+    navigate(`/payments/add/${studentId}`);
   };
 
   const filteredData = useMemo(() => {

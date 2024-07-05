@@ -1,12 +1,30 @@
 import React, { useState, useCallback, useEffect } from "react";
 import CustomInput from "../../components/Input/Input";
-import { Layout, Select, Button, Form, Image, DatePicker } from "antd";
+import { useParams, useNavigate } from "react-router-dom";
+import { Layout, Select, Form, Image, DatePicker } from "antd";
+import useProfile from "../../hooks/useStudentProfile";
+import CustomButton from "../../components/Button/Button";
+import { PROCESSED_BY } from "../../constants";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 const { Content } = Layout;
 const { Option } = Select;
 
 const AddNewPayment = () => {
+  const params = useParams();
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [imagePreview, setImagePreview] = useState(null);
+  const navigate = useNavigate();
+  if (!params?.studentId) {
+    navigate("/students");
+  }
+
+  const {
+    data: student,
+    error: studentError,
+    isLoading: studentLoading,
+  } = useProfile(params?.studentId);
+
+  console.log(params.studentId, student, studentError, studentLoading);
 
   useEffect(() => {
     const handleResize = () => {
@@ -45,131 +63,135 @@ const AddNewPayment = () => {
   };
 
   return (
-    <div className="w-full">
-      <div>
-        <Form
-          name="payments"
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          layout="vertical"
-          className="w-1/2"
-        >
-          <div>
-            <h1 className="text-2xl mb-[2vh]">Add Payments</h1>
-            <span>Student Name: </span>
+    <Content style={{ paddingRight: screenWidth <= 1024 ? 0 : "45%" }}>
+      <CustomButton
+        type="text"
+        onClick={() => navigate("/students")}
+        icon={<ArrowLeftOutlined />}
+        className="mb-6"
+      />
+      <Form
+        name="payments"
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        layout="vertical"
+      >
+        <div>
+          <h1 className="text-2xl mb-[2vh]">Add Payments</h1>
+          <p>Student Name: </p>
+          <h1 className="text-2xl mb-7">
+            {student?.firstName} {student?.middleName} {student?.lastName}
+          </h1>
 
-            <CustomInput value="Louie" className="h-[50px] mb-[2vh]" disabled />
-
-            <Form.Item
-              label="Course Offering:"
-              name="courseId"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your Course Offering",
-                },
-              ]}
+          <Form.Item
+            className="mb-[32px]"
+            label="Offering:"
+            name="courseId"
+            rules={[{ required: true, message: "Please select offering" }]}
+          >
+            <Select
+              className="w-full"
+              size="large"
+              placeholder="Course Offering"
             >
-              <Select
-                className="w-full mb-[2vh]"
+              {course_offering.map((course) => (
+                <Option key={course.key} value={course.name}>
+                  {course.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            className="mb-[32px]"
+            label="Amount:"
+            name="amount"
+            rules={[{ required: true, message: "Please input payment amount" }]}
+          >
+            <CustomInput
+              type="number"
+              placeholder="Payment"
+              className=" w-full"
+            />
+          </Form.Item>
+
+          <Form.Item
+            className="mb-[32px]"
+            label="Payment Method:"
+            name="paymentMethod"
+            rules={[
+              { required: true, message: "Please select a payment method." },
+            ]}
+          >
+            <Select className="w-full" size="large">
+              <Option value="BANK_TRANSFER">Bank Transfer</Option>
+              <Option value="CASH">Cash</Option>
+              <Option value="GCASH">Gcash</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item className="mb-[32px]" label="Reference:" name="reference">
+            <CustomInput size="large" type="text" className="" />
+          </Form.Item>
+
+          <Form.Item
+            className="mb-[32px]"
+            label="Attachment:"
+            name="attachment"
+          >
+            <input type="file" onChange={handleFileChange} />
+            {imagePreview && (
+              <div style={{ marginTop: "10px" }}>
+                <Image
+                  src={imagePreview}
+                  alt="Selected"
+                  className="max-h-[300px] w-[200px] object-contain"
+                />
+              </div>
+            )}
+          </Form.Item>
+
+          <Form.Item
+            className="mb-[32px]"
+            label="Payment Date:"
+            name="paymentDate"
+            rules={[
+              { required: true, message: "Please select a payment date." },
+            ]}
+          >
+            <DatePicker className="w-full" size="large" />
+          </Form.Item>
+
+          <Form.Item
+            className="mb-[32px]"
+            label="Processed By:"
+            name="reference"
+            rules={[{ required: true, message: "Please select processed by." }]}
+          >
+            <Select className="w-full" size="large">
+              {PROCESSED_BY.map((processedBy) => (
+                <Option key={processedBy} value={processedBy}>
+                  {processedBy}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <div className="text-center mb-[20px]">
+            <Form.Item>
+              <CustomButton
+                type="primary"
+                htmlType="submit"
                 size="large"
-                placeholder="Course Offering"
+                className="w-auto bg-primary text-white"
               >
-                {course_offering.map((course) => (
-                  <Option key={course.key} value={course.name}>
-                    {course.name}
-                  </Option>
-                ))}
-              </Select>
+                Submit
+              </CustomButton>
             </Form.Item>
-
-            <Form.Item
-              label="Amount:"
-              name="amount"
-              rules={[{ required: true, message: "Please input Amount" }]}
-            >
-              <CustomInput
-                type="text"
-                placeholder="Payment"
-                className="h-[50px] mb-[2vh]"
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Payment Method:"
-              name="paymentMethod"
-              rules={[
-                { required: true, message: "Please select a Payment Method" },
-              ]}
-            >
-              <Select className="w-full mb-[2vh]" size="large">
-                <Option value="GCASH">Gcash</Option>
-                <Option value="BANK_TRANSFER">Bank Transfer</Option>
-                <Option value="CASH">Cash</Option>
-              </Select>
-            </Form.Item>
-
-            <Form.Item label="Reference:" name="reference">
-              <CustomInput type="text" className="h-[50px] mb-[2vh]" />
-            </Form.Item>
-
-            <Form.Item label="Attachment:" name="attachment">
-              <input
-                type="file"
-                onChange={handleFileChange}
-                className="mb-[2vh]"
-              />
-              {imagePreview && (
-                <div style={{ marginTop: "10px" }}>
-                  <Image
-                    width={200}
-                    src={imagePreview}
-                    alt="Selected"
-                    style={{ maxHeight: "300px", objectFit: "contain" }}
-                  />
-                </div>
-              )}
-            </Form.Item>
-
-            <Form.Item
-              label="Payment Date:"
-              name="paymentDate"
-              rules={[
-                { required: true, message: "Please select a Payment Date" },
-              ]}
-            >
-              <DatePicker
-                className="h-[50px] mb-[2vh]"
-                style={{ width: "100%" }}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Processed By:"
-              name="reference"
-              rules={[
-                { required: true, message: "Please input proccessed by" },
-              ]}
-            >
-              <CustomInput type="text" className="h-[50px] mb-[2vh]" />
-            </Form.Item>
-
-            <div className="text-right mb-[20px]">
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  size="large"
-                  className="w-auto bg-primary text-white"
-                >
-                  Save
-                </Button>
-              </Form.Item>
-            </div>
           </div>
-        </Form>
-      </div>
-    </div>
+        </div>
+      </Form>
+    </Content>
   );
 };
 

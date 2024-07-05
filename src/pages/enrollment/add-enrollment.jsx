@@ -8,8 +8,7 @@ import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
 import { useOfferingsContext } from "../../contexts/offerings";
 import useMutation from "../../hooks/useMutation";
-import { SEMESTER, DEFAULT_BRANCH_ID } from "../../constants";
-
+import { DEFAULT_BRANCH_ID, PROCESSED_BY } from "../../constants";
 function generateFourDigitRandomNumber() {
   return Math.floor(1000 + Math.random() * 9000);
 }
@@ -35,12 +34,11 @@ const Enrollment = () => {
     error: schoolsError,
   } = useSchools();
   const { courses, getCoursesLoading, getCoursesError } = useCourse();
+
   const [offeringsSearchParams, setOfferingsSearchParams] = useState({
     pageNo: 1,
     pageSize: 25,
     yearOffered: new Date().getFullYear(),
-    semester: "FIRST_SEMESTER",
-    program: "INTENSIVE",
   });
   const [studentSearchText, setStudentSearchText] = useState();
   const { students, studentDataLoading, getStudentError, addStudent } =
@@ -48,6 +46,7 @@ const Enrollment = () => {
   const [studentToEnrollRadioValue, setstudentToEnrollRadioValue] =
     useState("existing");
   const [selectedOfferingId, setSelectedOfferingId] = useState(undefined);
+  const [selectedProcessedBy, setSelectedProcessedBy] = useState(undefined);
   const [selectedExistingStudentId, setSelectedStudentId] = useState(undefined);
   const [takerType, setTakerType] = useState("FIRST_TAKER");
 
@@ -57,7 +56,8 @@ const Enrollment = () => {
 
   const { mutate: addEnrollment, loading: addEnrollmentLoading } = useMutation(
     `/branches/${DEFAULT_BRANCH_ID}/offerings/${selectedOfferingId}/enrollments`,
-    "PUT"
+    "PUT",
+    "enrollments"
   );
 
   const {
@@ -108,6 +108,60 @@ const Enrollment = () => {
     );
   }, [studentSearchText, students]);
 
+  const enrollStudent = useCallback(
+    async (data) => {
+      if (!data) return;
+
+      if (!data.studentId) {
+        Swal.fire({
+          icon: "warning",
+          title: "Please add student to enroll!",
+          timer: 2500,
+        });
+
+        return;
+      }
+
+      if (!data.takerType) {
+        Swal.fire({
+          icon: "warning",
+          title: "Please add taker type!",
+          timer: 2500,
+        });
+        return;
+      }
+
+      if (!data.processedby) {
+        Swal.fire({
+          icon: "warning",
+          title: "Please select processed by.",
+          timer: 2500,
+        });
+        return;
+      }
+
+      try {
+        const enrollmentRes = await addEnrollment(data);
+        if (enrollmentRes) {
+          Swal.fire({
+            icon: "success",
+            title: "Enrollment successful!",
+            text: "Redirecting to enrollment form printing...",
+            timer: 2500,
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Enrollment failed!",
+          text: "This may be due to inputs. Please try again later!",
+          timer: 2500,
+        });
+      }
+    },
+    [addEnrollment]
+  );
+
   const enrollNewStudent = useCallback(
     async (values) => {
       try {
@@ -118,6 +172,7 @@ const Enrollment = () => {
             takerType: "FIRST_TAKER",
             status: "",
             studentId,
+            processedby: selectedProcessedBy,
           };
           await enrollStudent(enrollmentData);
         }
@@ -132,6 +187,41 @@ const Enrollment = () => {
     },
     [addStudent, addEnrollment]
   );
+
+  const enrollExistingStudent = useCallback(async () => {
+    if (!selectedOfferingId) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please select course offering!",
+        timer: 2000,
+      });
+      return;
+    }
+
+    if (!selectedProcessedBy) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please select processed by.",
+        timer: 2500,
+      });
+      return;
+    }
+
+    const data = {
+      takerType,
+      studentId: selectedExistingStudentId,
+      status: "",
+      processedby: selectedProcessedBy,
+    };
+
+    await enrollStudent(data);
+  }, [
+    enrollStudent,
+    selectedOfferingId,
+    takerType,
+    selectedExistingStudentId,
+    selectedProcessedBy,
+  ]);
 
   const onFinish = useCallback(
     async (values) => {
@@ -167,91 +257,11 @@ const Enrollment = () => {
     [addStudent, setSelectedOfferingId, addEnrollment, enrollNewStudent]
   );
 
-  const enrollStudent = useCallback(
-    async (data) => {
-      if (!data) return;
-
-      if (!data.studentId) {
-        Swal.fire({
-          icon: "warning",
-          title: "Please add student to enroll!",
-          timer: 2500,
-        });
-
-        return;
-      }
-
-      if (!data.takerType) {
-        Swal.fire({
-          icon: "warning",
-          title: "Please add taker type!",
-          timer: 2500,
-        });
-        return;
-      }
-
-      try {
-        const enrollmentRes = await addEnrollment(data);
-        if (enrollmentRes) {
-          Swal.fire({
-            icon: "success",
-            title: "Enrollment successful!",
-            text: "Redirecting to enrollment form printing...",
-            timer: 2500,
-          });
-        }
-      } catch (error) {
-        Swal.fire({
-          icon: "error",
-          title: "Enrollment failed!",
-          text: "This may be due to inputs. Please try again later!",
-          timer: 2500,
-        });
-      }
-    },
-    [addEnrollment]
-  );
-
-  const enrollExistingStudent = useCallback(async () => {
-    if (!selectedOfferingId) {
-      Swal.fire({
-        icon: "warning",
-        title: "Please select course offering!",
-        timer: 2000,
-      });
-      return;
-    }
-
-    const data = {
-      takerType,
-      studentId: selectedExistingStudentId,
-      status: "",
-    };
-
-    await enrollStudent(data);
-  }, [enrollStudent, selectedOfferingId, takerType, selectedExistingStudentId]);
-
   return (
     <div className="w-full">
       <div>
         <Form layout="vertical" className="w-1/2">
           <h1 className="text-2xl mb-[2vh]">Enroll Student</h1>
-          <Form.Item label="Review Program" name="review_program">
-            <Select
-              className="w-full mb=[2vh]"
-              size="large"
-              defaultValue="INTENSIVE"
-              onChange={(value) =>
-                setOfferingsSearchParams({
-                  ...offeringsSearchParams,
-                  program: value,
-                })
-              }
-            >
-              <Option value="INTENSIVE">Intensive</Option>
-              <Option value="ENHANCEMENT">Enhancement-Intensive</Option>
-            </Select>
-          </Form.Item>
 
           <Form.Item label="Year" name="year">
             <Select
@@ -273,27 +283,6 @@ const Enrollment = () => {
                   </Option>
                 );
               })}
-            </Select>
-          </Form.Item>
-
-          <Form.Item label="Semester" name="semester">
-            <Select
-              className="w-full mb-[2vh]"
-              size="large"
-              defaultValue="FIRST_SEMESTER"
-              onChange={(value) => {
-                setOfferingsSearchParams({
-                  ...offeringsSearchParams,
-                  semester: value,
-                });
-              }}
-            >
-              {SEMESTER.map((option) => (
-                <Option key={option.value} value={option.value}>
-                  {option.label.charAt(0).toUpperCase() +
-                    option.label.slice(1).toLowerCase()}
-                </Option>
-              ))}
             </Select>
           </Form.Item>
 
@@ -343,6 +332,24 @@ const Enrollment = () => {
               Error loading offerings. please try again later!{" "}
             </label>
           )}
+        </Form.Item>
+
+        <Form.Item
+          label="Processed by:"
+          name="processedBy"
+          layout="vertical"
+          className="w-1/2 mb-[2vh]"
+        >
+          <Select
+            size="large"
+            onChange={(value) => setSelectedProcessedBy(value)}
+          >
+            {PROCESSED_BY.map((processedby) => (
+              <Option value={processedby} key={processedby}>
+                {processedby}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <div className="mb-[2vh]">
@@ -503,7 +510,6 @@ const Enrollment = () => {
                 ]}
               >
                 <CustomInput
-                  type="number"
                   name="contactNumber"
                   className="w-full mb-[2vh] py-[5px]"
                 />
@@ -562,6 +568,7 @@ const Enrollment = () => {
                     name="emergencyAddress"
                     placeholder=""
                     rows={4}
+                    className="mb-[2vh]"
                     size="large"
                   />
                 </Form.Item>
@@ -577,7 +584,6 @@ const Enrollment = () => {
                   ]}
                 >
                   <CustomInput
-                    type="number"
                     name="emergencyContactNumber"
                     size="large"
                     className="w-full mb-[2vh] py-[5px]"

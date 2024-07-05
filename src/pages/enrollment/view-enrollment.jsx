@@ -1,15 +1,18 @@
 import React, { useEffect } from "react";
-import { Form, Typography } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Form, Input, Typography, Button } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import CustomButton from "../../components/Button/Button";
 import CustomInput from "../../components/Input/Input";
-
+import { useNavigate } from "react-router-dom";
 const { Title } = Typography;
 
 const ViewEnrollmentForm = () => {
   const navigate = useNavigate();
 
+  const printEnrollmentStudent = () => {
+    // navigate("/prints/enrollment/:enrollmentId");
+    window.open("/prints/enrollment/:enrollmentId", "_blank");
+  };
   return (
     <div>
       <CustomButton
@@ -92,6 +95,16 @@ const ViewEnrollmentForm = () => {
           />
         </Form.Item>
       </Form>
+
+      <div className="mb-5 w-full flex justify-end">
+        <CustomButton
+          type="primary"
+          size="large"
+          onClick={printEnrollmentStudent}
+        >
+          Print
+        </CustomButton>
+      </div>
     </div>
   );
 };

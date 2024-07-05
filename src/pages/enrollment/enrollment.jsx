@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { Table, Row, Col, Select, DatePicker, Space } from "antd";
+import { useNavigate } from "react-router-dom";
 import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
 import { useEnrollmentsContext } from "../../contexts/enrollments";
@@ -14,6 +15,7 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const Enrollment = () => {
+  const navigate = useNavigate();
   const {
     data: schools,
     loading: schoolsLoading,
@@ -32,8 +34,8 @@ const Enrollment = () => {
   const [selectedSemester, setSelectedSemester] = useState(undefined);
   const [selectedYear, setSelectedYear] = useState(undefined);
 
-  const handleViewEnrollment = () => {
-    alert("debugging view... ./pages/enrollment/view-enrollment");
+  const handleViewEnrollment = (studentId) => {
+    navigate(`/enrollments/${studentId}`);
   };
 
   const columns = useMemo(

@@ -11,7 +11,7 @@ const PrintEnrollmentForm = () => {
   }, []);
 
   return (
-    <div className="bg-white max-w-xl mx-auto">
+    <div className="bg-white mx-auto w-70mm p-4">
       <div className="text-center  mb-5">
         <div className="text-2xl font-bold">BRAIN HUB REVIEW SPECIALIST</div>
       </div>
