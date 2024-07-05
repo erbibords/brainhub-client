@@ -76,7 +76,7 @@ const PaymentsList = () => {
           <CustomButton
             onClick={() => navigate(`/prints/receipt/${record?.id}`)}
           >
-            Print Receipt
+            Print
           </CustomButton>
         </Space>
       ),
