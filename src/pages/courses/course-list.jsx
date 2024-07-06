@@ -73,6 +73,10 @@ const CourseList = () => {
           <CustomButton onClick={() => navigate(`${record.id}`)}>
             View
           </CustomButton>
+
+          <CustomButton type="delete" onClick={() => navigate(`${record.id}`)}>
+            Delete
+          </CustomButton>
         </Space>
       ),
     },
