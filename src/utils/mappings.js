@@ -15,6 +15,7 @@ export const getFullName = (studentData) => {
 };
 
 export const getCourseOfferingName = (courseOffering) => {
+  if(!courseOffering) return ''
   return `${courseOffering?.course?.name ?? ""}-${
     courseOffering?.reviewProgram?.name ?? ""
   }-${courseOffering?.yearOffered ?? ""}-${courseOffering?.semester ?? ""}`;
@@ -23,6 +24,11 @@ export const getCourseOfferingName = (courseOffering) => {
 export const getPaymentById = (payments, id) => {
   if (!payments || !id) return null;
   return payments?.find((payment) => payment.id === id);
+}
+
+export const getDataById = (data, id) => {
+  if (!data || !id) return null;
+  return data?.find((d) => d.id === id);
 }
 
 export const getLatestData = (data) => data.reduce((latest, current) => {

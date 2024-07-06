@@ -78,7 +78,14 @@ const PaymentsList = () => {
       title: "Name",
       render: (_, record) => record.enrollment.student.fullName,
     },
-    { title: "Reference", dataIndex: "referenceNo" },
+    {
+      title: "Reference",
+      dataIndex: "referenceNo",
+      render: (data) => {
+        if (data === "undefined" || undefined || null) return "";
+        return data;
+      },
+    },
 
     { title: "Payment Amount", dataIndex: "amountPaid" },
     {
@@ -303,9 +310,7 @@ const PaymentsList = () => {
                   type="primary"
                   className="w-auto bg-success text-white mt-[25px] float-right"
                   size="large"
-                  onClick={() =>
-                    navigate(`/prints/payment-list/:paymentListID`)
-                  }
+                  onClick={() => navigate(`/prints/payments`)}
                 >
                   Print List
                 </CustomButton>

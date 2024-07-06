@@ -73,10 +73,7 @@ const App = () => {
             path="/prints/reviewees-population/:Id"
             element={<RevieweesPopulation />}
           />
-          <Route
-            path="/prints/payment-list/:Id"
-            element={<PaymentPrintList />}
-          />
+          <Route path="/prints/payments" element={<PaymentPrintList />} />
 
           <Route path="/review-program" element={<ReviewProgram />} />
           <Route path="/schools" element={<Schools />} />

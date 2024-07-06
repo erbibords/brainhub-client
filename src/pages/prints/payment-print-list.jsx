@@ -3,19 +3,42 @@ import ReactToPrint from "react-to-print";
 import { useNavigate } from "react-router-dom";
 import { Typography, Table } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import CustomInput from "../../components/Input/Input";
-import CustomButton from "../../components/Button/Button"; // Assuming you have this component
-
+import CustomButton from "../../components/Button/Button";
+import { usePaymentsContext } from "../../contexts/payments";
+import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
+import {
+  getCourseOfferingName,
+  formatDate,
+  formatAmount,
+} from "../../utils/formatting";
 const { Title } = Typography;
 
 const columns = [
-  { title: "Name", dataIndex: "name", key: "name", width: 300 },
-  { title: "Reference", dataIndex: "reference", key: "reference", width: 100 },
+  {
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
+    width: 300,
+    render: (_, record) => {
+      return record?.enrollment?.student?.fullName;
+    },
+  },
+  {
+    title: "Reference",
+    dataIndex: "referenceNo",
+    key: "referenceNo",
+    width: 100,
+    render: (data) => {
+      if (data === "undefined" || undefined || null) return "";
+      return data;
+    },
+  },
   {
     title: "Payment Amount",
-    dataIndex: "paymentAmount",
-    key: "paymentAmount",
+    dataIndex: "amountPaid",
+    key: "amountPaid",
     width: 100,
+    render: (data) => formatAmount(data) ?? "",
   },
   {
     title: "Payment Method",
@@ -25,62 +48,36 @@ const columns = [
   },
   {
     title: "Payment Date",
-    dataIndex: "paymentDate",
-    key: "paymentDate",
+    dataIndex: "paidAt",
+    key: "paidAt",
     width: 100,
+    render: (data) => formatDate(data) ?? "",
   },
   {
     title: "Offering",
     dataIndex: "offering",
     key: "offering",
     width: 100,
+    render: (_, record) =>
+      getCourseOfferingName(record?.enrollment?.courseOffering) ?? "",
   },
   {
     title: "Proccessed By",
-    dataIndex: "proccessedBy",
-    key: "proccessedBy",
+    dataIndex: "processedBy",
+    key: "processedBy",
     width: 200,
   },
 ];
 
-const dataSource = [
-  {
-    key: "1",
-    name: "Louie Doromal",
-    paymentAmount: "3000",
-    paymentMethod: "GCASH",
-    paymentDate: "2024-06-20",
-    offering: "SSS",
-    proccessedBy: "Rey G",
-  },
-];
-
-class PaymentPrintList extends React.Component {
-  render() {
-    return (
-      <div>
-        <div className="mx-auto p-5 font-sans">
-          <div className="text-center mb-5">
-            <Title level={3} className="text-center text-2xl font-bold">
-              PAYMENT LIST
-            </Title>
-          </div>
-
-          <Table
-            dataSource={dataSource}
-            columns={columns}
-            pagination={false}
-            bordered
-          />
-        </div>
-      </div>
-    );
-  }
-}
-
 const PrintComponent = () => {
   const componentRef = useRef();
   const navigate = useNavigate();
+
+  const {
+    payments: data,
+    getPaymentsLoading: isLoading,
+    getPaymentsError: error,
+  } = usePaymentsContext();
 
   return (
     <div>
@@ -90,7 +87,27 @@ const PrintComponent = () => {
         icon={<ArrowLeftOutlined />}
         className="mb-6"
       />
-      <PaymentPrintList ref={componentRef} />
+      <div ref={componentRef}>
+        <div className="mx-auto p-5 font-sans">
+          <div className="text-center mb-5">
+            <Title level={3} className="text-center text-2xl font-bold">
+              PAYMENT LIST
+            </Title>
+          </div>
+
+          {error ? (
+            <GenericErrorDisplay />
+          ) : (
+            <Table
+              loading={isLoading}
+              dataSource={data?.data}
+              columns={columns}
+              pagination={false}
+              bordered
+            />
+          )}
+        </div>
+      </div>
       <div className="text-right mb-5 w-fullflex justify-center">
         <ReactToPrint
           trigger={() => (

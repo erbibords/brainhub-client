@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   Select,
   Row,
@@ -18,11 +18,12 @@ import { useCourse } from "../../contexts/courses";
 import Swal from "sweetalert2";
 import { OFFERING_BASE_URL } from "../../constants";
 import useOffering from "../../hooks/useOffering";
-import { formatSemester } from "../../utils/formatting";
+import { formatDate, formatSemester } from "../../utils/formatting";
 import { REVIEW_PROGRAM, SEMESTER, YEAR } from "../../constants";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
-
+import { useOfferingsContext } from "../../contexts/offerings";
+import { getDataById } from "../../utils/mappings";
 const ViewOffering = () => {
   const navigate = useNavigate();
   const params = useParams();
@@ -33,6 +34,11 @@ const ViewOffering = () => {
 
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
+  const {
+    data: offerings,
+    getOfferingsLoading,
+    getOfferingsError,
+  } = useOfferingsContext();
 
   const { courses, coursesLoading, coursesError } = useCourse();
   const {
@@ -54,7 +60,7 @@ const ViewOffering = () => {
   const { mutate: updateOffering, loading: updateStudentLoading } = useMutation(
     OFFERING_ENTITY_URL,
     "PUT",
-    OFFERING_ENTITY_URL
+    "offerings"
   );
 
   useEffect(() => {
@@ -100,24 +106,22 @@ const ViewOffering = () => {
     }
   };
 
-  const studentListData = [
-    {
-      key: "1",
-      name: "Louie Doooao",
-      school: "Ui",
-      year: "2024",
-      semester: "1st",
-      enrollmentDate: "2024-06-30",
-    },
-    {
-      key: "2",
-      name: "Johnny Papa",
-      school: "San ag",
-      year: "2024",
-      semester: "2nd",
-      enrollmentDate: "2024-06-29",
-    },
-  ];
+  const studentListData = useMemo(() => {
+    const offering = getDataById(offerings?.data, params?.offeringId);
+    console.log(offering);
+    const enrollments = offering?.enrollments;
+    return enrollments?.map((enroll) => {
+      return {
+        key: enroll?.id,
+        name: enroll?.studentId,
+        school: "UI",
+        year: "2024",
+        semester: "1st",
+        enrollmentDate: formatDate(enroll?.createdAt),
+      };
+    });
+  }, [offerings, params, getDataById]);
+
   const columns = [
     { title: "Name", dataIndex: "name", key: "name" },
     { title: "School", dataIndex: "school", key: "school" },

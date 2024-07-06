@@ -3,25 +3,16 @@ import { Typography, Row, Col, Table, Form } from "antd";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
 import { useParams, useNavigate } from "react-router-dom";
-import { getPaymentById, getCourseOfferingName } from "../../utils/mappings";
+import { getPaymentById } from "../../utils/mappings";
 import { usePaymentsContext } from "../../contexts/payments";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
-import { formatDate, formatAmount } from "../../utils/formatting";
+import {
+  formatDate,
+  formatAmount,
+  getCourseOfferingName,
+} from "../../utils/formatting";
 import { useReactToPrint } from "react-to-print";
 const { Title, Text } = Typography;
-
-const columns = [
-  {
-    title: "Particulars",
-    dataIndex: "particulars",
-    key: "particulars",
-    render: (data) => (
-      <CustomInput className="border-0 text-xs" value={data ?? ""} />
-    ),
-  },
-  { title: "Qty.", dataIndex: "qty", key: "qty" },
-  { title: "Amount", dataIndex: "amount", key: "amount" },
-];
 
 const Receipt = () => {
   const navigate = useNavigate();
@@ -56,7 +47,31 @@ const Receipt = () => {
         amount: formatAmount(paymentDetails?.amountPaid) ?? 0,
       },
     ];
-  }, [paymentDetails]);
+  }, [paymentDetails, getCourseOfferingName, formatAmount]);
+
+  const columns = useMemo(() => {
+    return [
+      {
+        title: "Particulars",
+        dataIndex: "particulars",
+        key: "particulars",
+        render: (data) => {
+          return (
+            <CustomInput
+              className="border-0 text-xs"
+              value={
+                getCourseOfferingName(
+                  paymentDetails?.enrollment?.courseOffering
+                ) ?? ""
+              }
+            />
+          );
+        },
+      },
+      { title: "Qty.", dataIndex: "qty", key: "qty" },
+      { title: "Amount", dataIndex: "amount", key: "amount" },
+    ];
+  }, [paymentDetails, dataSource]);
 
   const contentToPrint = useRef(null);
   const handlePrint = useReactToPrint({
@@ -78,22 +93,28 @@ const Receipt = () => {
           </div>
           <Row className="mb-[10px]">
             <Col span={24} className="flex items-center">
-              <Text>ORIGINAL:</Text>
-              <CustomInput className="border-0 max-w-[35vw]" />
+              <Text className="mr-2 whitespace-nowrap">ORIGINAL:</Text>
+              <CustomInput className="border-0 flex-grow" />
             </Col>
           </Row>
           <Row className="mb-[10px]">
-            <Col span={12}>
-              <Text>Received from: REVIEW CENTER</Text>
+            <Col span={16} className="flex items-center">
+              <Text className="mr-2 whitespace-nowrap">Received From:</Text>
+              <CustomInput
+                className="border-0 flex-grow"
+                defaultValue="REVIEW CENTER"
+              />
             </Col>
-            <Col span={12} className="text-right">
+            <Col span={8} className="text-right">
               <Text>Date: {formatDate(paymentDetails?.paidAt) ?? ""}</Text>
             </Col>
           </Row>
           <Row className="mb-[10px]">
             <Col span={24} className="flex items-center">
-              <Text>Business Name/Style:</Text>
-              <CustomInput className="border-0 max-w-[35vw]" />
+              <Text className="mr-2 whitespace-nowrap">
+                Business Name/Style:
+              </Text>
+              <CustomInput className="border-0 flex-grow" />
             </Col>
           </Row>
           <Table
@@ -106,12 +127,12 @@ const Receipt = () => {
             <Row className="mb-[10px]">
               <Col span={12}>
                 <Text className="float-right mt-[10px] mr-[10px]">
-                  Total Amount
+                  Total Amount:
                 </Text>
               </Col>
               <Col span={12}>
                 <CustomInput
-                  className="border-t-0 border-x-0 border-b-0float-right bg-transparent"
+                  className="border-t-0 border-x-0 border-b-0float-right bg-transparent font-bold max-w-[140px] text-right"
                   value={formatAmount(paymentDetails?.amountPaid ?? 0)}
                   readOnly
                 />
