@@ -5,11 +5,13 @@ import CustomButton from "../../components/Button/Button";
 import AddProgramModal from "../../components/AddProgramModal/AddProgramModal";
 import { REVIEW_PROGRAM_BASE_URL } from "../../constants";
 import useMutation from "../../hooks/useMutation";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useProgramContext } from "../../contexts/programs";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 
 const ReviewProgram = () => {
+  const navigate = useNavigate();
   const [searchProgram, setSearchProgram] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -36,12 +38,8 @@ const ReviewProgram = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <CustomButton
-            type="success"
-            className="w-auto bg-success text-white"
-            onClick={() => editProgram(record.id)}
-          >
-            Edit
+          <CustomButton onClick={() => navigate("/review-program/:programId")}>
+            View
           </CustomButton>
 
           <CustomButton

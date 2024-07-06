@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import useSchools from "../../hooks/useSchools";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { SCHOOLS_BASE_URL } from "../../constants";
+
 const SchoolList = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
@@ -60,8 +61,8 @@ const SchoolList = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <CustomButton type="edit" onClick={() => navigate(`${record.id}`)}>
-            Edit
+          <CustomButton onClick={() => navigate("/schools/:schoolId")}>
+            View
           </CustomButton>
           <CustomButton type="delete" onClick={() => navigate(`${record.id}`)}>
             Delete

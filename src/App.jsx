@@ -25,6 +25,8 @@ import ViewOfferings from "./pages/offerings/view-offerings";
 import Receipt from "./pages/prints/receipt-accounting";
 import RevieweesPopulation from "./pages/prints/reviewees-population";
 import PaymentPrintList from "./pages/prints/payment-print-list";
+import ViewReviewPogram from "./pages/program/view-review-program";
+import ViewSchools from "./pages/schools/view-schools";
 
 const App = () => {
   return (
@@ -48,6 +50,13 @@ const App = () => {
           <Route path="/payments/:id" element={<ViewPayment />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:courseId" element={<ViewCourse />} />
+          <Route
+            path="/review-program/:programId"
+            element={<ViewReviewPogram />}
+          />
+
+          <Route path="/schools/:schoolId" element={<ViewSchools />} />
+
           <Route
             path="/enrollments/:enrollmentId"
             element={<ViewEnrollment />}
@@ -77,7 +86,6 @@ const App = () => {
             path="/prints/payment-list/:Id"
             element={<PaymentPrintList />}
           />
-
           <Route path="/review-program" element={<ReviewProgram />} />
           <Route path="/schools" element={<Schools />} />
         </Routes>
