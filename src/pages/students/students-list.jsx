@@ -6,7 +6,8 @@ import { useStudentContext } from "../../contexts/students";
 import useSchools from "../../hooks/useSchools";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import CustomButton from "../../components/Button/Button";
-import { cleanParams } from "../../utils/formatting";
+import { cleanParams, formatTakerType } from "../../utils/formatting";
+import { getLatestData } from "../../utils/mappings";
 const { Option } = Select;
 
 const StudentsList = () => {
@@ -21,14 +22,22 @@ const StudentsList = () => {
     useStudentContext();
 
   const handleFilter = useCallback(() => {
-    console.log(cleanParams(searchParams));
     setParams(cleanParams(searchParams));
   }, [setParams, searchParams]);
 
   const columns = [
     { title: "Name", dataIndex: "name", key: "name" },
     { title: "School", dataIndex: "school", key: "school" },
-    { title: "Student Status", dataIndex: "status", key: "status" },
+    {
+      title: "Student Status",
+      dataIndex: "status",
+      key: "status",
+      render: (_, record) => {
+        return (
+          formatTakerType(getLatestData(record?.enrollments)?.takerType) ?? ""
+        );
+      },
+    },
     { title: "Contact No.", dataIndex: "contactNumber", key: "contact" },
     { title: "Address.", dataIndex: "address", key: "address" },
     {

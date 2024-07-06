@@ -24,3 +24,7 @@ export const getPaymentById = (payments, id) => {
   if (!payments || !id) return null;
   return payments?.find((payment) => payment.id === id);
 }
+
+export const getLatestData = (data) => data.reduce((latest, current) => {
+  return new Date(current.createdAt) > new Date(latest.createdAt) ? current : latest;
+}, data[0]);
