@@ -6,7 +6,7 @@ import { useCourse } from "../../contexts/courses";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { DateTime } from "luxon";
 import useMutation from "../../hooks/useMutation";
-import { DEFAULT_BRANCH_ID, SEMESTER } from "../../constants";
+import { DEFAULT_BRANCH_ID, SEMESTER, YEAR } from "../../constants";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useProgramContext } from "../../contexts/programs";
@@ -171,15 +171,11 @@ const AddOfferings = () => {
             defaultValue="2024"
             className="h-[40px] w-full"
           >
-            <Option value={2023}>2023</Option>
-            <Option value={2024}>2024</Option>
-            <Option value={2025}>2025</Option>
-            <Option value={2026}>2026</Option>
-            <Option value={2027}>2027</Option>
-            <Option value={2028}>2028</Option>
-            <Option value={2029}>2029</Option>
-            <Option value={2030}>2030</Option>
-            <Option value={2031}>2031</Option>
+            {YEAR.map((y) => (
+              <Option value={y} key={y}>
+                {y}
+              </Option>
+            ))}
           </Select>
         </Form.Item>
 

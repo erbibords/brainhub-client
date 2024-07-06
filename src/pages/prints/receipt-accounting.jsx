@@ -41,13 +41,15 @@ const Receipt = () => {
       {
         key: "1",
         particulars:
-          getCourseOfferingName(paymentDetails?.enrollment?.courseOffering) ??
+          `${paymentDetails?.enrollment?.courseOffering?.reviewProgram?.name}-${paymentDetails?.enrollment?.courseOffering?.yearOffered}` ??
           "",
         qty: "1",
         amount: formatAmount(paymentDetails?.amountPaid) ?? 0,
       },
     ];
-  }, [paymentDetails, getCourseOfferingName, formatAmount]);
+  }, [paymentDetails, formatAmount]);
+
+  console.log(paymentDetails);
 
   const columns = useMemo(() => {
     return [
@@ -55,14 +57,13 @@ const Receipt = () => {
         title: "Particulars",
         dataIndex: "particulars",
         key: "particulars",
-        render: (data) => {
+        render: (_) => {
           return (
             <CustomInput
               className="border-0 text-xs"
               value={
-                getCourseOfferingName(
-                  paymentDetails?.enrollment?.courseOffering
-                ) ?? ""
+                `${paymentDetails?.enrollment?.courseOffering?.reviewProgram?.name}-${paymentDetails?.enrollment?.courseOffering?.yearOffered}` ??
+                ""
               }
             />
           );
@@ -101,8 +102,8 @@ const Receipt = () => {
             <Col span={16} className="flex items-center">
               <Text className="mr-2 whitespace-nowrap">Received From:</Text>
               <CustomInput
-                className="border-0 flex-grow"
-                defaultValue="REVIEW CENTER"
+                className="border-0 flex-grow text-sm"
+                value={paymentDetails?.enrollment?.student?.fullName}
               />
             </Col>
             <Col span={8} className="text-right">
