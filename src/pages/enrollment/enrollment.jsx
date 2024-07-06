@@ -63,6 +63,14 @@ const Enrollment = () => {
         ),
       },
       {
+        title: "Contact #",
+        dataIndex: "student",
+        render: (student) => {
+          console.log(student);
+          return <label>{student?.contactNumber}</label>;
+        },
+      },
+      {
         title: "School",
         dataIndex: "student",
         render: (data) => {

@@ -20,7 +20,7 @@ import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErr
 import { getCourseOfferingName } from "../../utils/mappings";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
-import { cleanParams } from "../../utils/formatting";
+import { cleanParams, formatAmount, formatDate } from "../../utils/formatting";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -87,13 +87,21 @@ const PaymentsList = () => {
       },
     },
 
-    { title: "Payment Amount", dataIndex: "amountPaid" },
+    {
+      title: "Payment Amount",
+      dataIndex: "amountPaid",
+      render: (data) => formatAmount(data ?? 0),
+    },
     {
       title: "Payment Method",
       dataIndex: "paymentMethod",
       key: "paymentMethod",
     },
-    { title: "Payment Date", dataIndex: "paidAt" },
+    {
+      title: "Payment Date",
+      dataIndex: "paidAt",
+      render: (data) => formatDate(data) ?? data,
+    },
     {
       title: "Attachment",
       dataIndex: "attachment",
