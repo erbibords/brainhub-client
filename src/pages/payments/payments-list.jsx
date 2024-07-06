@@ -14,7 +14,7 @@ import {
   Form,
   Button,
 } from "antd";
-import { SEMESTER, MEDIA_BASE_URL } from "../../constants";
+import { SEMESTER, MEDIA_BASE_URL, YEAR } from "../../constants";
 import { usePaymentsContext } from "../../contexts/payments";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { getCourseOfferingName } from "../../utils/mappings";
@@ -258,14 +258,11 @@ const PaymentsList = () => {
                       })
                     }
                   >
-                    <Option value="2024">2024</Option>
-                    <Option value="2025">2025</Option>
-                    <Option value="2026">2026</Option>
-                    <Option value="2027">2027</Option>
-                    <Option value="2028">2028</Option>
-                    <Option value="2029">2029</Option>
-                    <Option value="2030">2030</Option>
-                    <Option value="2031">2031</Option>
+                    {YEAR?.map((year) => (
+                      <Option value={year} key={year}>
+                        {year}
+                      </Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </Col>

@@ -9,7 +9,7 @@ import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErr
 import { getCourseById, getSchoolById } from "../../utils/mappings";
 import CustomButton from "../../components/Button/Button";
 import { formatSemester, formatTakerType } from "../../utils/formatting";
-import { SEMESTER } from "../../constants";
+import { SEMESTER, YEAR } from "../../constants";
 import { useNavigate } from "react-router-dom";
 import { cleanParams } from "../../utils/formatting";
 
@@ -270,14 +270,11 @@ const Enrollment = () => {
                       })
                     }
                   >
-                    <Option value="2024">2024</Option>
-                    <Option value="2025">2025</Option>
-                    <Option value="2026">2026</Option>
-                    <Option value="2027">2027</Option>
-                    <Option value="2028">2028</Option>
-                    <Option value="2029">2029</Option>
-                    <Option value="2030">2030</Option>
-                    <Option value="2031">2031</Option>
+                    {YEAR?.map((year) => (
+                      <Option value={year} key={year}>
+                        {year}
+                      </Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </Col>

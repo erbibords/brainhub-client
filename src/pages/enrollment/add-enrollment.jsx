@@ -247,9 +247,6 @@ const Enrollment = () => {
         schoolId: values?.schoolId,
         address: values?.address,
         age: 0,
-        email: `${
-          values?.firstName
-        }${generateFourDigitRandomNumber()}@brainhub.com`,
         emergencyContact: {
           name: values?.emergencyContactName,
           relationship: values?.emergencyContactRelationship,
