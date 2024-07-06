@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from "react";
-import { Table, Space, Row, Col, Modal, Form } from "antd";
+import { Table, Space, Row, Col, Modal, Form, Button } from "antd";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
 import AddProgramModal from "../../components/AddProgramModal/AddProgramModal";
@@ -12,7 +12,6 @@ import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErr
 const ReviewProgram = () => {
   const [searchProgram, setSearchProgram] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [reviewProgramData, setReviewProgram] = useState();
   const [form] = Form.useForm();
   const { programs, getProgramsLoading, getProgramsError } =
     useProgramContext();

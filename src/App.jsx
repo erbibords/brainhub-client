@@ -68,7 +68,7 @@ const App = () => {
             path="/prints/review-program-accounting/:Id"
             element={<ReviewProgramAccounting />}
           />
-          <Route path="/prints/receipt-accounting/:Id" element={<Receipt />} />
+          <Route path="/prints/receipt/:paymentId" element={<Receipt />} />
           <Route
             path="/prints/reviewees-population/:Id"
             element={<RevieweesPopulation />}

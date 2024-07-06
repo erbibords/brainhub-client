@@ -43,8 +43,9 @@ const Offerings = () => {
     },
     {
       title: "Review Program",
-      dataIndex: "program",
-      key: "program",
+      dataIndex: "reviewProgram",
+      key: "reviewProgram",
+      render: (data) => data?.name,
     },
 
     {
@@ -52,6 +53,7 @@ const Offerings = () => {
       dataIndex: "semester",
       key: "semester",
       render: (value) => {
+        console.log(value);
         return formatSemester(value);
       },
     },

@@ -1,13 +1,16 @@
-import React, { useMemo } from "react";
-import { Row, Table, Col, Image } from "antd";
+import React from "react";
+import CustomButton from "../../components/Button/Button";
+import { Row, Table, Col, Image, Space } from "antd";
 import {
   formatAmount,
   formatDate,
   getCourseOfferingName,
 } from "../../utils/formatting";
+import { useNavigate } from "react-router-dom";
 import { MEDIA_BASE_URL } from "../../constants";
 
 export const PaymentHistory = ({ payments }) => {
+  const navigate = useNavigate();
   if (!payments) return null;
 
   const columns = [
@@ -57,6 +60,19 @@ export const PaymentHistory = ({ payments }) => {
         getCourseOfferingName(record?.enrollment?.courseOffering),
     },
     { title: "Processed by", dataIndex: "processedBy", key: "processedBy" },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Space size="middle">
+          <CustomButton
+            onClick={() => navigate(`/prints/receipt/${record?.id}`)}
+          >
+            Print
+          </CustomButton>
+        </Space>
+      ),
+    },
   ];
 
   return (
