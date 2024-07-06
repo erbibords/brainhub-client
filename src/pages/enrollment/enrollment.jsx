@@ -1,21 +1,23 @@
-import React, { useState, useMemo } from "react";
-import { Table, Row, Col, Select, DatePicker } from "antd";
-import CustomInput from "../../components/Input/Input";
-import useSchools from "../../hooks/useSchools";
-import { useEnrollmentsContext } from "../../contexts/enrollments";
-import { useCourse } from "../../contexts/courses";
-import { DateTime } from "luxon";
-import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
-import { getCourseById, getSchoolById } from "../../utils/mappings";
-import CustomButton from "../../components/Button/Button";
-import { formatSemester, formatTakerType } from "../../utils/formatting";
-import { SEMESTER } from "../../constants";
-import { useNavigate } from "react-router-dom";
+import React, { useCallback, useState, useMemo } from 'react';
+import { Table, Row, Col, Select, DatePicker, Form, Button } from 'antd';
+import CustomInput from '../../components/Input/Input';
+import useSchools from '../../hooks/useSchools';
+import { useEnrollmentsContext } from '../../contexts/enrollments';
+import { useCourse } from '../../contexts/courses';
+import { DateTime } from 'luxon';
+import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
+import { getCourseById, getSchoolById } from '../../utils/mappings';
+import CustomButton from '../../components/Button/Button';
+import { formatSemester, formatTakerType } from '../../utils/formatting';
+import { SEMESTER } from '../../constants';
+import { useNavigate } from 'react-router-dom';
+import { cleanParams } from '../../utils/formatting';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const Enrollment = () => {
+  const [form] = Form.useForm();
   const navigate = useNavigate();
   const {
     data: schools,
@@ -23,17 +25,27 @@ const Enrollment = () => {
     error: schoolsError,
   } = useSchools();
   const { courses, getCoursesLoading, getCoursesError } = useCourse();
-  const { enrollments, getEnrollmentsLoading, getEnrollmentsError } =
+  const { enrollments, getEnrollmentsLoading, getEnrollmentsError, setParams } =
     useEnrollmentsContext();
+
+  const [searchParams, setSearchParams] = useState({
+    startDate: undefined,
+    endDate: undefined,
+    studentName: undefined,
+    courseId: undefined,
+    schoolId: undefined,
+    semester: undefined,
+    yearOffered: undefined,
+  });
+
+  const handleFilter = useCallback(() => {
+    setParams(cleanParams(searchParams));
+  }, [setParams, searchParams]);
+
   const [dateRange, setDateRange] = useState({
     from: null,
     to: null,
   });
-  const [studentNameFilter, setStudentNameFilter] = useState("");
-  const [selectedCourseId, setSelectedCourseId] = useState(undefined);
-  const [selectedSchoolId, setSelectedSchoolId] = useState(undefined);
-  const [selectedSemester, setSelectedSemester] = useState(undefined);
-  const [selectedYear, setSelectedYear] = useState(undefined);
 
   const handleViewEnrollment = (studentId) => {
     navigate(`/enrollments/${studentId}`);
@@ -44,8 +56,8 @@ const Enrollment = () => {
   const columns = useMemo(
     () => [
       {
-        title: "Name",
-        dataIndex: "student",
+        title: 'Name',
+        dataIndex: 'student',
         render: (student) => (
           <label>
             {student.firstName} {student.middleName} {student.lastName}
@@ -53,8 +65,8 @@ const Enrollment = () => {
         ),
       },
       {
-        title: "School",
-        dataIndex: "student",
+        title: 'School',
+        dataIndex: 'student',
         render: (data) => {
           if (!data || schoolsLoading || schoolsError) return null;
           const school = getSchoolById(schools?.data, data.schoolId);
@@ -62,40 +74,46 @@ const Enrollment = () => {
         },
       },
       {
-        title: "Student Status",
-        dataIndex: "takerType",
+        title: 'Student Status',
+        dataIndex: 'takerType',
         render: (data) => formatTakerType(data),
       },
       {
-        title: "Course",
-        dataIndex: "courseOffering",
+        title: 'Course',
+        dataIndex: 'courseOffering',
         render: (data) => {
+          console.log({
+            enrollment: data,
+            getCoursesLoading,
+            getCoursesError,
+            courses,
+          });
           if (!data || getCoursesLoading || getCoursesError) return null;
-          const course = getCourseById(courses?.data, data.course.id);
+          const course = getCourseById(courses?.data, data?.courseId);
           return course ? course.name : null;
         },
       },
       {
-        title: "Semester",
-        dataIndex: "courseOffering",
+        title: 'Semester',
+        dataIndex: 'courseOffering',
         render: (course) => {
           return formatSemester(course.semester);
         },
       },
       {
-        title: "Enrollment Date",
-        dataIndex: "createdAt",
-        key: "createdAt",
+        title: 'Enrollment Date',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
         render: (val) => {
           const date = DateTime.fromISO(val);
-          const formattedDate = date.toFormat("MMM dd, yyyy");
+          const formattedDate = date.toFormat('MMM dd, yyyy');
           return <label>{formattedDate}</label>;
         },
       },
       {
-        title: "Processed By",
-        dataIndex: "processedBy",
-        key: "processedBy",
+        title: 'Processed By',
+        dataIndex: 'processedBy',
+        key: 'processedBy',
       },
       // {
       //   title: "Action",
@@ -124,18 +142,7 @@ const Enrollment = () => {
     ]
   );
 
-  const searchEnrollment = () => {
-    console.log(
-      dateRange,
-      studentNameFilter,
-      selectedCourseId,
-      selectedSchoolId,
-      selectedSemester,
-      selectedYear
-    );
-  };
-
-  const handleDateRangeChange = (dates, dateStrings) => {
+  const handleDateRangeChange = (dates) => {
     if (dates) {
       const [startDate, endDate] = dates;
       const formatedStartDate = DateTime.fromJSDate(startDate.toDate()).toISO({
@@ -145,9 +152,10 @@ const Enrollment = () => {
         includeOffset: false,
       });
 
-      setDateRange({
-        from: formatedStartDate,
-        to: formattedEndDate,
+      setSearchParams({
+        ...searchParams,
+        startDate: formatedStartDate,
+        endDate: formattedEndDate,
       });
       console.log(formatedStartDate, formattedEndDate);
     } else {
@@ -158,108 +166,168 @@ const Enrollment = () => {
   return (
     <div>
       <h1 className="text-2xl mb-[2vh]">Enrollments</h1>
-      <Row gutter={[16, 16]}>
-        <Col span={24}>
-          <Row gutter={[16, 16]}>
-            <Col span={6}>
-              <p>Date From - Date To:</p>
-              <RangePicker
-                placeholder={["Date From", "Date To"]}
-                className="h-[50px] w-full"
-                onChange={handleDateRangeChange}
-              />
-            </Col>
-            <Col span={6}>
-              <p>Student Name:</p>
-              <CustomInput
-                value={studentNameFilter}
-                onChange={(e) => setStudentNameFilter(e.target.value)}
-                size="large"
-              />
-            </Col>
-            <Col span={6}>
-              <p>Course:</p>
-              <Select
-                className="w-full"
-                loading={getCoursesLoading}
-                disabled={getCoursesLoading || getCoursesError}
-                onChange={(value) => setSelectedCourseId(value)}
-              >
-                {courses &&
-                  courses?.data?.map((course) => (
-                    <Option value={course.id} key={course.id}>
-                      {course.name}
-                    </Option>
-                  ))}
-              </Select>
-            </Col>
-            <Col span={6}>
-              <p>School:</p>
-              <Select
-                className="w-full"
-                oading={schoolsLoading}
-                disabled={schoolsLoading || schoolsError}
-                onChange={(value) => setSelectedSchoolId(value)}
-              >
-                {schools &&
-                  schools?.data?.map((school) => (
-                    <Option value={school.id} key={school.id}>
-                      {" "}
-                      {school.name}
-                    </Option>
-                  ))}
-              </Select>
-            </Col>
-            <Col span={3}>
-              <p>Semester</p>
-              <Select
-                className="w-full"
-                onChange={(value) => setSelectedSemester(value)}
-              >
-                {SEMESTER.map((sem) => (
-                  <Option value={sem.value} key={sem.value}>
-                    {sem.label}
-                  </Option>
-                ))}
-              </Select>
-            </Col>
+      <Form form={form}>
+        <Row gutter={[16, 16]}>
+          <Col span={24}>
+            <Row gutter={[16, 16]}>
+              <Col span={6}>
+                <Form.Item name="dateRange">
+                  <p>Date From - Date To:</p>
+                  <RangePicker
+                    placeholder={['Date From', 'Date To']}
+                    className="h-[50px] w-full"
+                    onChange={handleDateRangeChange}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item name="studentName">
+                  <p>Student Name:</p>
+                  <CustomInput
+                    onChange={(e) =>
+                      setSearchParams({
+                        ...searchParams,
+                        studentName: e.target.value,
+                      })
+                    }
+                    size="large"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item name="courseId">
+                  <p>Course:</p>
+                  <Select
+                    className="w-full"
+                    loading={getCoursesLoading}
+                    disabled={getCoursesLoading || getCoursesError}
+                    onChange={(e) => {
+                      setSearchParams({
+                        ...searchParams,
+                        courseId: e,
+                      });
+                    }}
+                  >
+                    {courses &&
+                      courses?.data?.map((course) => (
+                        <Option value={course.id} key={course.id}>
+                          {course.name}
+                        </Option>
+                      ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item name="schoolId">
+                  <p>School:</p>
+                  <Select
+                    className="w-full"
+                    oading={schoolsLoading}
+                    disabled={schoolsLoading || schoolsError}
+                    onChange={(e) =>
+                      setSearchParams({
+                        ...searchParams,
+                        schoolId: e,
+                      })
+                    }
+                  >
+                    {schools &&
+                      schools?.data?.map((school) => (
+                        <Option value={school.id} key={school.id}>
+                          {school.name}
+                        </Option>
+                      ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={3}>
+                <Form.Item name="semester">
+                  <p>Semester</p>
+                  <Select
+                    className="w-full"
+                    onChange={(e) =>
+                      setSearchParams({
+                        ...searchParams,
+                        semester: e,
+                      })
+                    }
+                  >
+                    {SEMESTER.map((sem) => (
+                      <Option value={sem.value} key={sem.value}>
+                        {sem.label}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
 
-            <Col span={3}>
-              <p>Year</p>
-              <Select
-                className="w-full"
-                onChange={(value) => setSelectedYear(value)}
-              >
-                <Option value="2024">2024</Option>
-                <Option value="2025">2025</Option>
-                <Option value="2026">2026</Option>
-                <Option value="2027">2027</Option>
-                <Option value="2028">2028</Option>
-                <Option value="2029">2029</Option>
-                <Option value="2030">2030</Option>
-                <Option value="2031">2031</Option>
-              </Select>
-            </Col>
+              <Col span={3}>
+                <Form.Item name="yearOffered">
+                  <p>Year</p>
+                  <Select
+                    className="w-full"
+                    onChange={(e) =>
+                      setSearchParams({
+                        ...searchParams,
+                        yearOffered: e,
+                      })
+                    }
+                  >
+                    <Option value="2024">2024</Option>
+                    <Option value="2025">2025</Option>
+                    <Option value="2026">2026</Option>
+                    <Option value="2027">2027</Option>
+                    <Option value="2028">2028</Option>
+                    <Option value="2029">2029</Option>
+                    <Option value="2030">2030</Option>
+                    <Option value="2031">2031</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
 
-            <Col span={3} className="flex items-end mb-1">
-              <CustomButton size="large" onClick={searchEnrollment}>
-                Search
-              </CustomButton>
-            </Col>
-          </Row>
-        </Col>
-        <Col span={24}>
-          {getEnrollmentsError ? (
-            <GenericErrorDisplay />
-          ) : (
-            <Table
-              dataSource={enrollments?.data}
-              columns={columns}
-              loading={getEnrollmentsLoading}
-            />
-          )}
-        </Col>
-      </Row>
+              <Col span={3} className="flex items-center items-end mb-1">
+                <CustomButton size="large" onClick={handleFilter}>
+                  Filter
+                </CustomButton>
+                <Button
+                  className="w-auto text-primary ms-2"
+                  size="large"
+                  htmlType="button"
+                  onClick={() => {
+                    form.resetFields();
+                    setParams({
+                      pageNo: 1,
+                      pageSize: 25,
+                    });
+                    setSearchParams({
+                      startDate: undefined,
+                      endDate: undefined,
+                      studentName: undefined,
+                      courseId: undefined,
+                      schoolId: undefined,
+                      semester: undefined,
+                      yearOffered: undefined,
+                    });
+                  }}
+                >
+                  Clear
+                </Button>
+              </Col>
+            </Row>
+          </Col>
+          <Col span={24}>
+            {getEnrollmentsError ? (
+              <GenericErrorDisplay />
+            ) : (
+              <Table
+                dataSource={enrollments?.data}
+                columns={columns}
+                loading={getEnrollmentsLoading}
+              />
+            )}
+          </Col>
+        </Row>
+      </Form>
     </div>
   );
 };
