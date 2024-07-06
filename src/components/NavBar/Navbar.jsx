@@ -4,7 +4,7 @@ import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 import { removeToken } from "../../utils/token";
-import logo from "../../assets/images/bhub-logo.png"; // Adjust the path as necessary
+import logo from "../../assets/images/bhub-logo.png";
 
 const Navbar = ({ currentRoute }) => {
   const navigate = useNavigate();

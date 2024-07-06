@@ -346,6 +346,15 @@ const Enrollment = () => {
         </Form.Item>
 
         <Form.Item
+          label="Review Fee"
+          name="reviewFee"
+          layout="vertical"
+          className="w-1/2 mb-[2vh]"
+        >
+          <CustomInput type="text" />
+        </Form.Item>
+
+        <Form.Item
           label="Processed by:"
           name="processedBy"
           layout="vertical"
