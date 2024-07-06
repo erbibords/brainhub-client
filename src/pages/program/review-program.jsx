@@ -119,15 +119,7 @@ const ReviewProgram = () => {
   return (
     <div>
       <h1 className="text-2xl">Review Program</h1>
-      <div className="text-right">
-        <Button
-          type="primary"
-          onClick={showModal}
-          className="w-auto bg-primary text-white"
-        >
-          Add Program
-        </Button>
-      </div>
+      <div className="text-right"></div>
       <Row gutter={[16, 16]}>
         <Col span={8}>
           <CustomInput
@@ -159,6 +151,7 @@ const ReviewProgram = () => {
             <Table
               dataSource={filteredData}
               columns={columns}
+              pagination={false}
               loading={getProgramsLoading}
             />
           )}

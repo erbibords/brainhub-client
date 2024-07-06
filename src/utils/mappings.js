@@ -9,15 +9,15 @@ export const getCourseById = (courses, id) => {
 };
 
 export const getFullName = (studentData) => {
-  if (!studentData) return '';
+  if (!studentData) return "";
   const { firstName, middleName, lastName } = studentData;
   return `${firstName} ${middleName} ${lastName}`;
 };
 
 export const getCourseOfferingName = (courseOffering) => {
-  return `${courseOffering?.course?.name ?? ''}-${
-    courseOffering?.reviewProgram?.name ?? ''
-  }-${courseOffering?.yearOffered ?? ''}-${courseOffering?.semester ?? ''}`;
+  return `${courseOffering?.course?.name ?? ""}-${
+    courseOffering?.reviewProgram?.name ?? ""
+  }-${courseOffering?.yearOffered ?? ""}-${courseOffering?.semester ?? ""}`;
 };
 
 export const getPaymentById = (payments, id) => {

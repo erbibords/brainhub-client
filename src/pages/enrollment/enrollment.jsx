@@ -1,17 +1,17 @@
-import React, { useCallback, useState, useMemo } from 'react';
-import { Table, Row, Col, Select, DatePicker, Form, Button } from 'antd';
-import CustomInput from '../../components/Input/Input';
-import useSchools from '../../hooks/useSchools';
-import { useEnrollmentsContext } from '../../contexts/enrollments';
-import { useCourse } from '../../contexts/courses';
-import { DateTime } from 'luxon';
-import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
-import { getCourseById, getSchoolById } from '../../utils/mappings';
-import CustomButton from '../../components/Button/Button';
-import { formatSemester, formatTakerType } from '../../utils/formatting';
-import { SEMESTER } from '../../constants';
-import { useNavigate } from 'react-router-dom';
-import { cleanParams } from '../../utils/formatting';
+import React, { useCallback, useState, useMemo } from "react";
+import { Table, Row, Col, Select, DatePicker, Form, Button } from "antd";
+import CustomInput from "../../components/Input/Input";
+import useSchools from "../../hooks/useSchools";
+import { useEnrollmentsContext } from "../../contexts/enrollments";
+import { useCourse } from "../../contexts/courses";
+import { DateTime } from "luxon";
+import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
+import { getCourseById, getSchoolById } from "../../utils/mappings";
+import CustomButton from "../../components/Button/Button";
+import { formatSemester, formatTakerType } from "../../utils/formatting";
+import { SEMESTER } from "../../constants";
+import { useNavigate } from "react-router-dom";
+import { cleanParams } from "../../utils/formatting";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -56,8 +56,8 @@ const Enrollment = () => {
   const columns = useMemo(
     () => [
       {
-        title: 'Name',
-        dataIndex: 'student',
+        title: "Name",
+        dataIndex: "student",
         render: (student) => (
           <label>
             {student.firstName} {student.middleName} {student.lastName}
@@ -65,8 +65,8 @@ const Enrollment = () => {
         ),
       },
       {
-        title: 'School',
-        dataIndex: 'student',
+        title: "School",
+        dataIndex: "student",
         render: (data) => {
           if (!data || schoolsLoading || schoolsError) return null;
           const school = getSchoolById(schools?.data, data.schoolId);
@@ -74,13 +74,13 @@ const Enrollment = () => {
         },
       },
       {
-        title: 'Student Status',
-        dataIndex: 'takerType',
+        title: "Student Status",
+        dataIndex: "takerType",
         render: (data) => formatTakerType(data),
       },
       {
-        title: 'Course',
-        dataIndex: 'courseOffering',
+        title: "Course",
+        dataIndex: "courseOffering",
         render: (data) => {
           console.log({
             enrollment: data,
@@ -94,26 +94,26 @@ const Enrollment = () => {
         },
       },
       {
-        title: 'Semester',
-        dataIndex: 'courseOffering',
+        title: "Semester",
+        dataIndex: "courseOffering",
         render: (course) => {
           return formatSemester(course.semester);
         },
       },
       {
-        title: 'Enrollment Date',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
+        title: "Enrollment Date",
+        dataIndex: "createdAt",
+        key: "createdAt",
         render: (val) => {
           const date = DateTime.fromISO(val);
-          const formattedDate = date.toFormat('MMM dd, yyyy');
+          const formattedDate = date.toFormat("MMM dd, yyyy");
           return <label>{formattedDate}</label>;
         },
       },
       {
-        title: 'Processed By',
-        dataIndex: 'processedBy',
-        key: 'processedBy',
+        title: "Processed By",
+        dataIndex: "processedBy",
+        key: "processedBy",
       },
       // {
       //   title: "Action",
@@ -174,7 +174,7 @@ const Enrollment = () => {
                 <Form.Item name="dateRange">
                   <p>Date From - Date To:</p>
                   <RangePicker
-                    placeholder={['Date From', 'Date To']}
+                    placeholder={["Date From", "Date To"]}
                     className="h-[50px] w-full"
                     onChange={handleDateRangeChange}
                   />

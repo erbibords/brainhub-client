@@ -4,6 +4,7 @@ import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 import { removeToken } from "../../utils/token";
+import logo from "../../assets/images/bhub-logo.png"; // Adjust the path as necessary
 
 const Navbar = ({ currentRoute }) => {
   const navigate = useNavigate();
@@ -30,7 +31,14 @@ const Navbar = ({ currentRoute }) => {
   return (
     <nav className="bg-secondary px-4 py-2">
       <div className="flex justify-between items-center mx-auto">
-        <div className="text-white text-2xl font-bold">Brain Hub</div>
+        <div className="flex items-center">
+          <img
+            src={logo}
+            alt="Brain Hub Logo"
+            className="h-8 w-8 rounded-full mr-2"
+          />
+          <div className="text-white text-2xl font-bold">Brain Hub</div>
+        </div>
         {isAuthenticated && (
           <div className="flex items-center">
             <Button

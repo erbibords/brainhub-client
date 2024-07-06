@@ -1,8 +1,8 @@
-import React, { useState, useCallback } from 'react';
-import CustomInput from '../../components/Input/Input';
-import CustomButton from '../../components/Button/Button';
-import useSchools from '../../hooks/useSchools';
-import { useCourse } from '../../contexts/courses';
+import React, { useState, useCallback } from "react";
+import CustomInput from "../../components/Input/Input";
+import CustomButton from "../../components/Button/Button";
+import useSchools from "../../hooks/useSchools";
+import { useCourse } from "../../contexts/courses";
 import {
   Table,
   Row,
@@ -13,14 +13,14 @@ import {
   Image,
   Form,
   Button,
-} from 'antd';
-import { SEMESTER, MEDIA_BASE_URL } from '../../constants';
-import { usePaymentsContext } from '../../contexts/payments';
-import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
-import { getCourseOfferingName } from '../../utils/mappings';
-import { useNavigate } from 'react-router-dom';
-import { DateTime } from 'luxon';
-import { cleanParams } from '../../utils/formatting';
+} from "antd";
+import { SEMESTER, MEDIA_BASE_URL } from "../../constants";
+import { usePaymentsContext } from "../../contexts/payments";
+import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
+import { getCourseOfferingName } from "../../utils/mappings";
+import { useNavigate } from "react-router-dom";
+import { DateTime } from "luxon";
+import { cleanParams } from "../../utils/formatting";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -50,7 +50,7 @@ const PaymentsList = () => {
   });
 
   const handleFilter = useCallback(() => {
-    console.log('we changing bois', searchParams);
+    console.log("we changing bois", searchParams);
     setParams(cleanParams(searchParams));
   }, [setParams, searchParams]);
 
@@ -77,21 +77,21 @@ const PaymentsList = () => {
 
   const columns = [
     {
-      title: 'Name',
+      title: "Name",
       render: (_, record) => record.enrollment.student.fullName,
     },
-    { title: 'Reference', dataIndex: 'referenceNo' },
+    { title: "Reference", dataIndex: "referenceNo" },
 
-    { title: 'Payment Amount', dataIndex: 'amountPaid' },
+    { title: "Payment Amount", dataIndex: "amountPaid" },
     {
-      title: 'Payment Method',
-      dataIndex: 'paymentMethod',
-      key: 'paymentMethod',
+      title: "Payment Method",
+      dataIndex: "paymentMethod",
+      key: "paymentMethod",
     },
-    { title: 'Payment Date', dataIndex: 'paidAt' },
+    { title: "Payment Date", dataIndex: "paidAt" },
     {
-      title: 'Attachment',
-      dataIndex: 'attachment',
+      title: "Attachment",
+      dataIndex: "attachment",
       render: (_, record) => {
         return record?.attachments?.length ? (
           <Image
@@ -100,26 +100,26 @@ const PaymentsList = () => {
             src={`${MEDIA_BASE_URL}/${record?.attachments[0]}`}
             alt={record?.attachments[0]}
             preview={{
-              className: 'custom-image-preview',
+              className: "custom-image-preview",
               mask: <div>Click to preview</div>,
-              maskClassName: 'custom-mask',
+              maskClassName: "custom-mask",
             }}
           />
         ) : (
-          ''
+          ""
         );
       },
     },
     {
-      title: 'Offering',
-      dataIndex: 'offering',
+      title: "Offering",
+      dataIndex: "offering",
       render: (_, record) =>
         getCourseOfferingName(record.enrollment.courseOffering),
     },
-    { title: 'Processed by', dataIndex: 'processedBy' },
+    { title: "Processed by", dataIndex: "processedBy" },
     {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       render: (text, record) => (
         <Space size="middle">
           <CustomButton
@@ -143,7 +143,7 @@ const PaymentsList = () => {
                 <Form.Item name="dateRange">
                   <p>Date From - Date To:</p>
                   <RangePicker
-                    placeholder={['Date From', 'Date To']}
+                    placeholder={["Date From", "Date To"]}
                     className="h-[50px] w-full"
                     onChange={handleDateRangeChange}
                   />
@@ -305,6 +305,9 @@ const PaymentsList = () => {
                   type="primary"
                   className="w-auto bg-success text-white mt-[25px] float-right"
                   size="large"
+                  onClick={() =>
+                    navigate(`/prints/payment-list/:paymentListID`)
+                  }
                 >
                   Print List
                 </CustomButton>

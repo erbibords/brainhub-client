@@ -10,6 +10,7 @@ import { DEFAULT_BRANCH_ID, SEMESTER } from "../../constants";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useProgramContext } from "../../contexts/programs";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 const { Option } = Select;
 
 const AddOfferings = () => {
@@ -86,6 +87,12 @@ const AddOfferings = () => {
 
   return (
     <div className="w-1/2">
+      <CustomButton
+        type="text"
+        onClick={() => navigate("/offerings")}
+        icon={<ArrowLeftOutlined />}
+        className="mb-6"
+      />
       <h1 className="text-2xl mb-[2vh]">Add Offerings</h1>
       <Form
         onFinish={onFinish}

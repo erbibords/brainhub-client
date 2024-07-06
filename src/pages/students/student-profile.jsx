@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CustomInput from "../../components/Input/Input";
+import CustomButton from "../../components/Button/Button";
 import { Button, Row, Col, Card, Divider, Skeleton, Form, Select } from "antd";
 import useProfile from "../../hooks/useStudentProfile";
 import useSchools from "../../hooks/useSchools";
@@ -77,7 +78,7 @@ const StudentProfile = () => {
 
   return (
     <div>
-      <Button
+      <CustomButton
         type="text"
         onClick={() => navigate("/students")}
         icon={<ArrowLeftOutlined />}
