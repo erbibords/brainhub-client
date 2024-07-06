@@ -3,8 +3,7 @@ import ReactToPrint from "react-to-print";
 import { useNavigate } from "react-router-dom";
 import { Typography, Table } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import CustomInput from "../../components/Input/Input";
-import CustomButton from "../../components/Button/Button"; // Assuming you have this component
+import CustomButton from "../../components/Button/Button";
 
 const { Title } = Typography;
 
