@@ -114,7 +114,7 @@ const ReviewProgram = () => {
 
   return (
     <div>
-      <h1 className="text-2xl">Review Program</h1>
+      <h1 className="text-2xl mb-[6vh]">Review Program</h1>
       <div className="text-right"></div>
       <Row gutter={[16, 16]}>
         <Col span={8}>
