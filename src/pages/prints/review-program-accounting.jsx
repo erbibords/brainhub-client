@@ -255,7 +255,7 @@ const PrintProjectionForm = () => {
             handlePrint(null, () => contentToPrint.current);
           }}
         >
-          Print RF
+          Print
         </CustomButton>
       </div>
     </div>
