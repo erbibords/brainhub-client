@@ -64,8 +64,6 @@ const Receipt = () => {
     documentTitle: "Receipt",
   });
 
-  console.log(paymentDetails);
-
   return (
     <div className="max-w-xl mx-auto p-5 font-sans">
       <div ref={contentToPrint} className="p-4">

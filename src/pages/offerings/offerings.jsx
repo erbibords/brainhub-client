@@ -25,8 +25,6 @@ const Offerings = () => {
   const { programs, getProgramsLoading, getProgramsError } =
     useProgramContext();
 
-  console.log(offerings);
-
   useEffect(() => {
     setParams({
       pageNo: 1,
@@ -53,7 +51,6 @@ const Offerings = () => {
       dataIndex: "semester",
       key: "semester",
       render: (value) => {
-        console.log(value);
         return formatSemester(value);
       },
     },

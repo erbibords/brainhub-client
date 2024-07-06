@@ -74,8 +74,6 @@ const StudentProfile = () => {
     }
   };
 
-  console.log(data);
-
   return (
     <div>
       <CustomButton

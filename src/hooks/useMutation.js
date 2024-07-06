@@ -20,11 +20,6 @@ const useMutation = (
         let response;
         switch (method) {
           case 'POST':
-            console.log('submitting', {
-              url: optionalUrl ?? url,
-              data: JSON.stringify(data),
-              config,
-            });
             response = await axiosInstance.post(
               optionalUrl ?? url,
               data,

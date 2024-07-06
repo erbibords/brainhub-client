@@ -26,8 +26,6 @@ const ViewOffering = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  console.log("parameters", params);
-
   if (!params?.offeringId) {
     navigate("/offerings");
   }
@@ -50,9 +48,6 @@ const ViewOffering = () => {
     });
     navigate("/offerings");
   }
-
-  console.log("courses", courses);
-  console.log("offering", offering);
 
   const OFFERING_ENTITY_URL = `${OFFERING_BASE_URL}/${params.offeringId}`;
   const { mutate: updateOffering, loading: updateStudentLoading } = useMutation(
@@ -79,7 +74,6 @@ const ViewOffering = () => {
   };
 
   const onFormSubmission = async (values) => {
-    console.log(values);
     const { course, ...body } = values;
     try {
       const res = await updateOffering({

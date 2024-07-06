@@ -5,6 +5,7 @@ import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useAuth } from "../../contexts/auth";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+
 const Login = () => {
   const navigate = useNavigate();
   const { isAuthenticated, login, isLoading } = useAuth();
@@ -17,8 +18,6 @@ const Login = () => {
 
   const onFinish = useCallback(
     async (values) => {
-      console.log("Received values of form: ", values);
-
       const shouldLogin = await login(values.email, values.password);
 
       if (shouldLogin) {

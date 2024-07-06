@@ -70,9 +70,7 @@ const ReviewProgram = () => {
     });
   };
 
-  const handleDeleteProgram = (programId, name) => {
-    console.log("Program deleted");
-  };
+  const handleDeleteProgram = (programId, name) => {};
 
   const showModal = () => {
     setIsModalVisible(true);

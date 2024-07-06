@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useMemo } from "react";
-import { Table, Row, Col, Select, DatePicker, Form, Button } from "antd";
+import { Table, Row, Col, Select, DatePicker, Form, Button, Space } from "antd";
 import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
 import { useEnrollmentsContext } from "../../contexts/enrollments";
@@ -51,8 +51,6 @@ const Enrollment = () => {
     navigate(`/enrollments/${studentId}`);
   };
 
-  console.log(enrollments);
-
   const columns = useMemo(
     () => [
       {
@@ -82,12 +80,6 @@ const Enrollment = () => {
         title: "Course",
         dataIndex: "courseOffering",
         render: (data) => {
-          console.log({
-            enrollment: data,
-            getCoursesLoading,
-            getCoursesError,
-            courses,
-          });
           if (!data || getCoursesLoading || getCoursesError) return null;
           const course = getCourseById(courses?.data, data?.courseId);
           return course ? course.name : null;
@@ -115,22 +107,28 @@ const Enrollment = () => {
         dataIndex: "processedBy",
         key: "processedBy",
       },
-      // {
-      //   title: "Action",
-      //   key: "action",
-      //   render: (text, record) => (
-      //     <Space size="middle">
-      //       <CustomButton
-      //         type="primary"
-      //         onClick={() => handleViewEnrollment(record.id)}
-      //         title="View"
-      //         className="w-auto bg-primary text-white"
-      //       >
-      //         View
-      //       </CustomButton>
-      //     </Space>
-      //   ),
-      // },
+      {
+        title: "Action",
+        key: "action",
+        render: (_, record) => {
+          return (
+            <Space size="middle">
+              <CustomButton
+                type="primary"
+                onClick={() =>
+                  navigate(
+                    `/prints/enrollment/${record?.student?.id}/${record?.id}`
+                  )
+                }
+                title="View"
+                className="w-auto bg-primary text-white"
+              >
+                Print RF
+              </CustomButton>
+            </Space>
+          );
+        },
+      },
     ],
     [
       courses,
@@ -157,7 +155,6 @@ const Enrollment = () => {
         startDate: formatedStartDate,
         endDate: formattedEndDate,
       });
-      console.log(formatedStartDate, formattedEndDate);
     } else {
       setDateRange({ start: null, end: null });
     }

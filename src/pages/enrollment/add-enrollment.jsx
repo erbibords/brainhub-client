@@ -241,7 +241,7 @@ const Enrollment = () => {
       }
       const addStudentValue = {
         lastName: values?.lastName,
-        middleName: values?.lastName,
+        middleName: values?.middleName,
         firstName: values?.firstName,
         contactNumber: values?.contactNumber,
         schoolId: values?.schoolId,
@@ -392,7 +392,7 @@ const Enrollment = () => {
                   disabled={studentDataLoading || getStudentError}
                   className="w-full"
                   placeholder="Select student"
-                  onSelect={(value, option) => {
+                  onSelect={(_, option) => {
                     setSelectedStudentId(option.id);
                   }}
                   onSearch={(value) => {

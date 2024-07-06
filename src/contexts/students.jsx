@@ -43,17 +43,6 @@ export const StudentProvider = ({ children }) => {
       emergencyContact,
     }) => {
       try {
-        console.log({
-          firstName,
-          lastName,
-          middleName,
-          schoolId,
-          address,
-          age,
-          contactNumber,
-          email,
-          emergencyContact,
-        });
         const res = await axiosInstance.post(
           `branches/${DEFAULT_BRANCH_ID}/students`,
           {

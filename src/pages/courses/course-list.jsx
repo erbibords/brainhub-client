@@ -36,10 +36,6 @@ const CourseList = () => {
   const [editingKey, setEditingKey] = useState("");
   const [form] = Form.useForm();
 
-  useEffect(() => {
-    console.log(selectedCourse);
-  }, [selectedCourse]);
-
   const columns = [
     {
       title: "Name",
@@ -101,9 +97,7 @@ const CourseList = () => {
   };
 
   const handleDeleteCourse = useCallback(() => {
-    console.log(selectedCourse);
     if (!selectedCourse) {
-      alert("SELECTED COURSE NOT FOUND");
       return;
     }
     // try {

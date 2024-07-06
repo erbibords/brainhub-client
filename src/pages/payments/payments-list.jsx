@@ -50,7 +50,6 @@ const PaymentsList = () => {
   });
 
   const handleFilter = useCallback(() => {
-    console.log("we changing bois", searchParams);
     setParams(cleanParams(searchParams));
   }, [setParams, searchParams]);
 
@@ -69,7 +68,6 @@ const PaymentsList = () => {
         startDate: formatedStartDate,
         endDate: formattedEndDate,
       });
-      console.log(formatedStartDate, formattedEndDate);
     } else {
       setDateRange({ start: null, end: null });
     }

@@ -20,8 +20,6 @@ export const OfferingsProvider = ({ children }) => {
     error: getOfferingsError,
   } = useOfferings(params);
 
-  console.log(params);
-
   const values = useMemo(() => {
     return {
       data,
