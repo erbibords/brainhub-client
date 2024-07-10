@@ -45,7 +45,7 @@ const AddOfferings = () => {
       ...values,
       paymentDeadline: formattedPaymentDeadline,
       startDate: formattedStartDate,
-      yearOffered: parseInt(values.yearOffered),
+      yearOffered: values.yearOffered,
       enrollmentCapacity: 0,
     };
 
@@ -56,6 +56,7 @@ const AddOfferings = () => {
 
   const handleAddOffering = useCallback(
     async (values) => {
+      console.log(values);
       if (!selectedCourseId) {
         Swal.fire({
           icon: "warning",
@@ -100,7 +101,7 @@ const AddOfferings = () => {
         initialValues={{
           program: "INTENSIVE",
           semester: "FIRST_SEMESTER",
-          yearOffered: 2024,
+          yearOffered: "2024-2025",
         }}
       >
         <Form.Item
@@ -166,13 +167,9 @@ const AddOfferings = () => {
           name="yearOffered"
           rules={[{ required: true, message: "Please select year!" }]}
         >
-          <Select
-            placeholder="Year"
-            defaultValue="2024"
-            className="h-[40px] w-full"
-          >
+          <Select placeholder="Year" className="h-[40px] w-full">
             {YEAR.map((y) => (
-              <Option value={y} key={y}>
+              <Option value={y?.toString()} key={y}>
                 {y}
               </Option>
             ))}
