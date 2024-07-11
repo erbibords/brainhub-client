@@ -1,7 +1,9 @@
 import React from "react";
-import { Modal, Form, Input } from "antd";
+import { Modal, Form, Input, Select } from "antd";
 import CustomInput from "../Input/Input";
 import CustomButton from "../Button/Button";
+import { useCourse } from "../../contexts/courses";
+import useSchools from "../../hooks/useSchools";
 
 const { TextArea } = Input;
 
@@ -12,6 +14,13 @@ const CustomModal = ({
   form,
   buttonLoading,
 }) => {
+  const { courses, getCoursesLoading, getCoursesError } = useCourse();
+  const {
+    data: schools,
+    error: schoolsError,
+    isLoading: schoolsLoading,
+  } = useSchools();
+
   return (
     <Modal
       title={<div className="mb-6 text-lg">Add New Program</div>}
@@ -35,7 +44,7 @@ const CustomModal = ({
     >
       <Form form={form} layout="vertical" onFinish={handleSave}>
         <Form.Item
-          label="Name"
+          label="Program"
           name="name"
           rules={[
             {
@@ -45,6 +54,43 @@ const CustomModal = ({
           ]}
         >
           <CustomInput type="text" name="name" />
+        </Form.Item>
+        <Form.Item
+          label="Course"
+          name="courseId"
+          rules={[{ required: true, message: "Please select course." }]}
+        >
+          <Select
+            name="courseId"
+            className="w-full"
+            loading={courses}
+            disabled={getCoursesLoading || getCoursesError}
+          >
+            {courses &&
+              courses?.data?.map((course) => (
+                <Option key={course.id} value={course.id}>
+                  {course.name}
+                </Option>
+              ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="School"
+          name="schoolId"
+          rules={[{ required: true, message: "Please select school." }]}
+        >
+          <Select
+            className="w-full"
+            loading={schoolsLoading}
+            disabled={schoolsLoading || schoolsError}
+          >
+            {schools &&
+              schools?.data?.map((school) => (
+                <Option key={school.id} value={school.id}>
+                  {school.name}
+                </Option>
+              ))}
+          </Select>
         </Form.Item>
         <Form.Item
           label="Description"

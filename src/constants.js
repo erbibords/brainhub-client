@@ -11,8 +11,9 @@ export const SCHOOLS_BASE_URL = `branches/${DEFAULT_BRANCH_ID}/schools`;
 export const ENROLLMENT_BASE_URL = `branches/${DEFAULT_BRANCH_ID}/enrollments`;
 export const MEDIA_BASE_URL = `${BASE_URL}branches/${DEFAULT_BRANCH_ID}/payments/uploads`;
 
+export const YEAR = ['2024-2025', '2025-2026', '2026-2027', '2027-2028', '2028-2029', '2029-2030', '2030-2031'];
+export const YEAR_LEVELS = ['1st Year', '2nd Year', '3rd Year', '4th Year', '5th Year', '6th Year'];
 
-export const YEAR = [2024, 2025, 2026, 2027, 2028, 2029, 2030];
 export const SEMESTER = [
   {
     label: "1st",
@@ -87,4 +88,4 @@ export const REVIEW_PROGRAM = [
   },
 ];
 
-export const PROCESSED_BY = ['John', 'Jane'];
+export const PROCESSED_BY = ['Ma. Nelly Wendam', 'Christine Della Torre', "Ellaine May Entreguena"];

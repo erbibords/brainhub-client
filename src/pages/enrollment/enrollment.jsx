@@ -8,8 +8,12 @@ import { DateTime } from "luxon";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { getCourseById, getSchoolById } from "../../utils/mappings";
 import CustomButton from "../../components/Button/Button";
-import { formatSemester, formatTakerType } from "../../utils/formatting";
-import { SEMESTER } from "../../constants";
+import {
+  formatAmount,
+  formatSemester,
+  formatTakerType,
+} from "../../utils/formatting";
+import { SEMESTER, YEAR } from "../../constants";
 import { useNavigate } from "react-router-dom";
 import { cleanParams } from "../../utils/formatting";
 
@@ -55,42 +59,50 @@ const Enrollment = () => {
     () => [
       {
         title: "Name",
-        dataIndex: "student",
-        render: (student) => (
-          <label>
-            {student.firstName} {student.middleName} {student.lastName}
-          </label>
-        ),
+        dataIndex: ["student", "fullName"],
+        render: (data) => <label className="p-1">{data}</label>,
       },
       {
-        title: "School",
+        title: "Contact #",
         dataIndex: "student",
-        render: (data) => {
-          if (!data || schoolsLoading || schoolsError) return null;
-          const school = getSchoolById(schools?.data, data.schoolId);
-          return school ? school.name : null;
+        render: (student) => {
+          return <label>{student?.contactNumber}</label>;
         },
       },
-      {
-        title: "Student Status",
-        dataIndex: "takerType",
-        render: (data) => formatTakerType(data),
-      },
-      {
-        title: "Course",
-        dataIndex: "courseOffering",
-        render: (data) => {
-          if (!data || getCoursesLoading || getCoursesError) return null;
-          const course = getCourseById(courses?.data, data?.courseId);
-          return course ? course.name : null;
-        },
-      },
+      // {
+      //   title: "School",
+      //   dataIndex: "student",
+      //   render: (data) => {
+      //     if (!data || schoolsLoading || schoolsError) return null;
+      //     const school = getSchoolById(schools?.data, data.schoolId);
+      //     return school ? school.name : null;
+      //   },
+      // },
+      // {
+      //   title: "Student Status",
+      //   dataIndex: "takerType",
+      //   render: (data) => formatTakerType(data),
+      // },
+      // {
+      //   title: "Course",
+      //   dataIndex: "courseOffering",
+      //   render: (data) => {
+      //     if (!data || getCoursesLoading || getCoursesError) return null;
+      //     const course = getCourseById(courses?.data, data?.courseId);
+      //     return course ? course.name : null;
+      //   },
+      // },
       {
         title: "Semester",
         dataIndex: "courseOffering",
         render: (course) => {
           return formatSemester(course.semester);
         },
+      },
+      {
+        title: "Year Level",
+        dataIndex: "yearLevel",
+        key: "yearLevel",
       },
       {
         title: "Enrollment Date",
@@ -101,6 +113,23 @@ const Enrollment = () => {
           const formattedDate = date.toFormat("MMM dd, yyyy");
           return <label>{formattedDate}</label>;
         },
+      },
+      {
+        title: "Review Fee",
+        dataIndex: "reviewFee",
+        key: "reviewFee",
+        render: (data) => formatAmount(data ?? 0),
+      },
+      {
+        title: "Discount Amount",
+        dataIndex: "discountAmount",
+        key: "discountAmount",
+        render: (data) => formatAmount(data ?? 0),
+      },
+      {
+        title: "Remarks",
+        dataIndex: "remarks",
+        key: "remarks",
       },
       {
         title: "Processed By",
@@ -158,6 +187,34 @@ const Enrollment = () => {
     } else {
       setDateRange({ start: null, end: null });
     }
+  };
+
+  const expandedRowRender = (record) => {
+    const schoolId = record?.student?.schoolId;
+    const courseId = record?.courseOffering?.courseId;
+
+    console.log(record, courseId, courses);
+    const school = getSchoolById(schools?.data, schoolId ?? null) ?? null;
+    const course = getCourseById(courses?.data, courseId ?? null) ?? null;
+
+    return (
+      <div className="flex">
+        <p className="p-1 font-bold">
+          <span className="font-normal mr-[6px]"> School: </span>
+          {school?.name}
+        </p>
+
+        <p className="p-1 font-bold">
+          <span className="font-normal mr-[6px]"> Course: </span>
+          {course?.name}
+        </p>
+
+        <p className="p-1 font-bold">
+          <span className="font-normal mr-[6px]">Taker Type: </span>
+          {formatTakerType(record?.takerType)}
+        </p>
+      </div>
+    );
   };
 
   return (
@@ -270,14 +327,11 @@ const Enrollment = () => {
                       })
                     }
                   >
-                    <Option value="2024">2024</Option>
-                    <Option value="2025">2025</Option>
-                    <Option value="2026">2026</Option>
-                    <Option value="2027">2027</Option>
-                    <Option value="2028">2028</Option>
-                    <Option value="2029">2029</Option>
-                    <Option value="2030">2030</Option>
-                    <Option value="2031">2031</Option>
+                    {YEAR?.map((year) => (
+                      <Option value={year} key={year}>
+                        {year}
+                      </Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </Col>
@@ -317,9 +371,14 @@ const Enrollment = () => {
               <GenericErrorDisplay />
             ) : (
               <Table
+                size="small"
                 dataSource={enrollments?.data}
                 columns={columns}
                 loading={getEnrollmentsLoading}
+                expandable={{
+                  expandedRowRender,
+                  rowExpandable: (record) => !!record.student, // Optional: conditionally expand rows if the student object exists
+                }}
               />
             )}
           </Col>

@@ -57,7 +57,7 @@ const PrintEnrollmentForm = () => {
           </div>
         </div>
         <Title level={4} className="text-center">
-          ENROLLMENT FORM
+          REGISTRATION FORM
         </Title>
         <Form
           name="printEnrollmentForm"

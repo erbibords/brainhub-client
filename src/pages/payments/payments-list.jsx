@@ -14,13 +14,13 @@ import {
   Form,
   Button,
 } from "antd";
-import { SEMESTER, MEDIA_BASE_URL } from "../../constants";
+import { SEMESTER, MEDIA_BASE_URL, YEAR } from "../../constants";
 import { usePaymentsContext } from "../../contexts/payments";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { getCourseOfferingName } from "../../utils/mappings";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
-import { cleanParams } from "../../utils/formatting";
+import { cleanParams, formatAmount, formatDate } from "../../utils/formatting";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -87,13 +87,21 @@ const PaymentsList = () => {
       },
     },
 
-    { title: "Payment Amount", dataIndex: "amountPaid" },
+    {
+      title: "Payment Amount",
+      dataIndex: "amountPaid",
+      render: (data) => formatAmount(data ?? 0),
+    },
     {
       title: "Payment Method",
       dataIndex: "paymentMethod",
       key: "paymentMethod",
     },
-    { title: "Payment Date", dataIndex: "paidAt" },
+    {
+      title: "Payment Date",
+      dataIndex: "paidAt",
+      render: (data) => formatDate(data) ?? data,
+    },
     {
       title: "Attachment",
       dataIndex: "attachment",
@@ -258,14 +266,11 @@ const PaymentsList = () => {
                       })
                     }
                   >
-                    <Option value="2024">2024</Option>
-                    <Option value="2025">2025</Option>
-                    <Option value="2026">2026</Option>
-                    <Option value="2027">2027</Option>
-                    <Option value="2028">2028</Option>
-                    <Option value="2029">2029</Option>
-                    <Option value="2030">2030</Option>
-                    <Option value="2031">2031</Option>
+                    {YEAR?.map((year) => (
+                      <Option value={year} key={year}>
+                        {year}
+                      </Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </Col>
