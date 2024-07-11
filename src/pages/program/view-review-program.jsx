@@ -121,6 +121,46 @@ const ViewReviewProgram = () => {
                     "This is test Desc"
                   )}
                 </p>
+
+                <Divider />
+                <p>
+                  <strong>Course:</strong>{" "}
+                  {isEditing ? (
+                    <Form.Item
+                      name="course"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input course",
+                        },
+                      ]}
+                    >
+                      <CustomInput />
+                    </Form.Item>
+                  ) : (
+                    "This is test Course"
+                  )}
+                </p>
+
+                <Divider />
+                <p>
+                  <strong>School:</strong>{" "}
+                  {isEditing ? (
+                    <Form.Item
+                      name="school"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input school",
+                        },
+                      ]}
+                    >
+                      <CustomInput />
+                    </Form.Item>
+                  ) : (
+                    "This is test School"
+                  )}
+                </p>
               </div>
             </Form>
           </Card>
