@@ -5,6 +5,7 @@ import CustomButton from "../../components/Button/Button";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPaymentById } from "../../utils/mappings";
 import { usePaymentsContext } from "../../contexts/payments";
+import logo from "../../assets/images/brainhub-logo2.png";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import {
   formatDate,
@@ -81,41 +82,61 @@ const Receipt = () => {
   });
 
   return (
-    <div className="max-w-xl mx-auto p-5 font-sans">
-      <div ref={contentToPrint} className="p-4">
-        <Form name="printReciept" layout="vertical" className="space-y-4">
-          <div className="text-center mb-5">
-            <Title level={4} className="text-center">
-              INTEGRATED EDUCATIONAL CORPORATION (ILOILO)
-            </Title>
-            <Text className="text-center d-block">
+    <div className="max-w-md mx-auto p-4 font-sans text-xs">
+      <div ref={contentToPrint}>
+        <Form name="printReciept" layout="vertical" className="space-y-2">
+          <div className="text-center mb-1">
+            <div className="flex items-center justify-center">
+              <img
+                src={logo}
+                alt="Brain Hub Logo"
+                className="h-15 w-full mr-1"
+              />
+            </div>
+            <Row className="mb-1">
+              <Col span={16} className="flex items-center">
+                <Text className="mr-1 whitespace-nowrap text-xs">
+                  INVOICE OFFICIAL RECEIPT
+                </Text>
+              </Col>
+              <Col span={8} className="text-right">
+                <Text className="mr-1 whitespace-nowrap text-xs">
+                  No: 48445
+                </Text>
+              </Col>
+            </Row>
+            <Text className="text-center d-block text-xs">
               NV-TIN 000-995-152-00000
             </Text>
           </div>
-          <Row className="mb-[10px]">
+          <Row className="mb-1">
             <Col span={24} className="flex items-center">
-              <Text className="mr-2 whitespace-nowrap">ORIGINAL:</Text>
-              <CustomInput className="border-0 flex-grow" />
+              <Text className="mr-1 whitespace-nowrap text-xs">ORIGINAL:</Text>
+              <CustomInput className="border-0 flex-grow text-xs" />
             </Col>
           </Row>
-          <Row className="mb-[10px]">
+          <Row className="mb-1">
             <Col span={16} className="flex items-center">
-              <Text className="mr-2 whitespace-nowrap">Received From:</Text>
+              <Text className="mr-1 whitespace-nowrap text-xs">
+                Received From:
+              </Text>
               <CustomInput
-                className="border-0 flex-grow text-sm"
+                className="border-0 flex-grow text-xs"
                 value={paymentDetails?.enrollment?.student?.fullName}
               />
             </Col>
             <Col span={8} className="text-right">
-              <Text>Date: {formatDate(paymentDetails?.paidAt) ?? ""}</Text>
+              <Text className="text-xs">
+                Date: {formatDate(paymentDetails?.paidAt) ?? ""}
+              </Text>
             </Col>
           </Row>
-          <Row className="mb-[10px]">
+          <Row className="mb-1">
             <Col span={24} className="flex items-center">
-              <Text className="mr-2 whitespace-nowrap">
+              <Text className="mr-1 whitespace-nowrap text-xs">
                 Business Name/Style:
               </Text>
-              <CustomInput className="border-0 flex-grow" />
+              <CustomInput className="border-0 flex-grow text-xs" />
             </Col>
           </Row>
           <Table
@@ -123,17 +144,18 @@ const Receipt = () => {
             columns={columns}
             pagination={false}
             bordered
+            size="small"
           />
-          <Form.Item className="mt-2 flex justify-end">
-            <Row className="mb-[10px]">
+          <Form.Item className="mt-1 flex justify-end">
+            <Row className="mb-1">
               <Col span={12}>
-                <Text className="float-right mt-[10px] mr-[10px]">
+                <Text className="float-right mt-1 mr-1 text-xs">
                   Total Amount:
                 </Text>
               </Col>
               <Col span={12}>
                 <CustomInput
-                  className="border-t-0 border-x-0 border-b-0float-right bg-transparent font-bold max-w-[140px] text-right"
+                  className="border-t-0 border-x-0 border-b-0 float-right bg-transparent font-bold max-w-[100px] text-right text-xs"
                   value={formatAmount(paymentDetails?.amountPaid ?? 0)}
                   readOnly
                 />
@@ -141,17 +163,17 @@ const Receipt = () => {
             </Row>
           </Form.Item>
 
-          <Form.Item className="mt-2 flex justify-end">
+          <Form.Item className="mt-1 flex justify-end">
             <CustomInput
-              className="border-t-0 border-x-0 border-b-2 float-right bg-transparent"
+              className="border-t-0 border-x-0 border-b-2 float-right bg-transparent text-xs"
               readOnly
             />
-            <p className="text-center">Authorized Signature</p>
+            <p className="text-center text-xs">Authorized Signature</p>
           </Form.Item>
         </Form>
       </div>
 
-      <div className="flex gap-4 justify-center mt-5">
+      <div className="flex gap-2 justify-center mt-2">
         <CustomButton
           type="delete"
           onClick={() => {
