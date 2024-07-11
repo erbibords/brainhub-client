@@ -81,166 +81,21 @@ const EditEnrollment = () => {
           icon={<ArrowLeftOutlined />}
           className="mb-6"
         />
-        <Form name="enrollment" layout="vertical" className="w-1/2">
-          <h1 className="text-2xl mb-[2vh]">Edit Student Enrollment</h1>
-          <>
-            <Form.Item
-              label="First Name"
-              name="firstName"
-              rules={[
-                { required: true, message: "Please input your First Name" },
-              ]}
-            >
-              <CustomInput type="text" name="firstName" />
-            </Form.Item>
 
-            <Form.Item
-              label="Middle Name"
-              name="middleName"
-              rules={[
-                { required: true, message: "Please input your Middle Name" },
-              ]}
-            >
-              <CustomInput type="text" name="middleName" />
-            </Form.Item>
-
-            <Form.Item
-              label="Last Name"
-              name="lastName"
-              rules={[
-                { required: true, message: "Please input your Last Name" },
-              ]}
-            >
-              <CustomInput type="text" name="lastName" />
-            </Form.Item>
-
-            <Form.Item
-              label="School"
-              name="schoolId"
-              rules={[{ required: true, message: "Please input your School" }]}
-            >
-              <Select
-                className="w-full"
-                loading={schoolsLoading}
-                disabled={schoolsLoading || schoolsError}
-              >
-                {schools &&
-                  schools?.data?.map((school) => (
-                    <Option key={school.id} value={school.id}>
-                      {school.name}
-                    </Option>
-                  ))}
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              label="Address"
-              name="address"
-              rules={[
-                { required: true, message: "Please input your address!" },
-              ]}
-            >
-              <TextArea
-                type="text"
-                name="address"
-                placeholder=""
-                rows={4}
-                className="mb-[2vh]"
-                size="large"
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Contact No."
-              name="contactNumber"
-              rules={[
-                { required: true, message: "Please input your Contact No." },
-              ]}
-            >
-              <CustomInput
-                name="contactNumber"
-                className="w-full mb-[2vh] py-[5px]"
-              />
-            </Form.Item>
-
-            <hr />
-            <br />
-            <div className="inline flex-row mb-[2vh]">
-              <div className="mb-[2vh]">
-                <small>
-                  <i className="mb-[2vh]">
-                    Person to be notified in case of emergency:
-                  </i>
-                </small>
-              </div>
-
-              <Form.Item
-                label="Emergency Contact Name"
-                name="emergencyContactName"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your emergency contact name!",
-                  },
-                ]}
-              >
-                <CustomInput type="text" name="emergencyName" />
-              </Form.Item>
-
-              <Form.Item
-                label="Relationship"
-                name="emergencyContactRelationship"
-                rules={[
-                  {
-                    required: true,
-                    message:
-                      "Please input your relation on your emergency contact!",
-                  },
-                ]}
-              >
-                <CustomInput type="text" name="emergencyRelationship" />
-              </Form.Item>
-
-              <Form.Item
-                label="Emergency Address"
-                name="emergencyContactAddress"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your emergency contact address!",
-                  },
-                ]}
-              >
-                <TextArea
-                  type="text"
-                  name="emergencyAddress"
-                  placeholder=""
-                  rows={4}
-                  className="mb-[2vh]"
-                  size="large"
-                />
-              </Form.Item>
-
-              <Form.Item
-                label="Emergency Contact No."
-                name="emergencyContactNumber"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your emergency contact no.",
-                  },
-                ]}
-              >
-                <CustomInput
-                  name="emergencyContactNumber"
-                  size="large"
-                  className="w-full mb-[2vh] py-[5px]"
-                />
-              </Form.Item>
-            </div>
-          </>
-        </Form>
         <Form layout="vertical" className="w-1/2">
+          <h1 className="text-2xl mb-[2vh]">Edit Student Enrollment</h1>
+          <Form.Item
+            label="Student name"
+            layout="vertical"
+            className="w-full mb-[2vh]"
+          >
+            <CustomInput
+              type="text"
+              name="remarks"
+              value="Louie Test"
+              disabled
+            />
+          </Form.Item>
           <Form.Item label="Year" name="year">
             <Select
               className="w-full mb=[2vh]"
