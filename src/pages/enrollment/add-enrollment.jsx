@@ -8,12 +8,16 @@ import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
 import { useOfferingsContext } from "../../contexts/offerings";
 import useMutation from "../../hooks/useMutation";
-import { DEFAULT_BRANCH_ID, PROCESSED_BY } from "../../constants";
+import useOffering from "../../hooks/useOffering";
+
+import {
+  DEFAULT_BRANCH_ID,
+  PROCESSED_BY,
+  YEAR,
+  YEAR_LEVELS,
+} from "../../constants";
 import { useNavigate } from "react-router-dom";
 import { getCourseOfferingName } from "../../utils/mappings";
-function generateFourDigitRandomNumber() {
-  return Math.floor(1000 + Math.random() * 9000);
-}
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -37,7 +41,6 @@ const Enrollment = () => {
     error: schoolsError,
   } = useSchools();
   const { courses, getCoursesLoading, getCoursesError } = useCourse();
-
   const [offeringsSearchParams, setOfferingsSearchParams] = useState({
     pageNo: 1,
     pageSize: 25,
@@ -52,6 +55,25 @@ const Enrollment = () => {
   const [selectedProcessedBy, setSelectedProcessedBy] = useState(undefined);
   const [selectedExistingStudentId, setSelectedStudentId] = useState(undefined);
   const [takerType, setTakerType] = useState("FIRST_TAKER");
+  const [additionalEnrollmentData, setAdditionalEnrollmentData] = useState({
+    yearLevel: undefined,
+    reviewFee: undefined,
+    discountAmount: undefined,
+    remarks: undefined,
+  });
+
+  const { data: selectedOffering } = useOffering(selectedOfferingId ?? null);
+
+  useEffect(() => {
+    if (selectedOffering) {
+      setAdditionalEnrollmentData({
+        ...additionalEnrollmentData,
+        reviewFee: selectedOffering?.reviewFee ?? undefined,
+      });
+    }
+  }, [selectedOffering, selectedOfferingId]);
+
+  console.log(additionalEnrollmentData);
 
   const getRadioStudent = ({ target: { value } }) => {
     setstudentToEnrollRadioValue(value);
@@ -143,6 +165,24 @@ const Enrollment = () => {
         return;
       }
 
+      if (!data.yearLevel) {
+        Swal.fire({
+          icon: "warning",
+          title: "Please select year level.",
+          timer: 2500,
+        });
+        return;
+      }
+
+      if (!data.reviewFee) {
+        Swal.fire({
+          icon: "warning",
+          title: "Please add review fee.",
+          timer: 2500,
+        });
+        return;
+      }
+
       try {
         const enrollmentRes = await addEnrollment(data);
         if (enrollmentRes) {
@@ -165,7 +205,7 @@ const Enrollment = () => {
         });
       }
     },
-    [addEnrollment, selectedProcessedBy]
+    [addEnrollment, selectedProcessedBy, additionalEnrollmentData]
   );
 
   const enrollNewStudent = useCallback(
@@ -179,6 +219,10 @@ const Enrollment = () => {
             status: "",
             studentId,
             processedBy: selectedProcessedBy,
+            discountAmount: additionalEnrollmentData?.discountAmount,
+            reviewFee: additionalEnrollmentData?.reviewFee,
+            yearLevel: additionalEnrollmentData?.yearLevel,
+            remarks: additionalEnrollmentData?.remarks,
           };
           await enrollStudent(enrollmentData);
         }
@@ -191,7 +235,7 @@ const Enrollment = () => {
         });
       }
     },
-    [addStudent, addEnrollment, selectedProcessedBy]
+    [addStudent, addEnrollment, selectedProcessedBy, additionalEnrollmentData]
   );
 
   const enrollExistingStudent = useCallback(async () => {
@@ -218,6 +262,10 @@ const Enrollment = () => {
       studentId: selectedExistingStudentId,
       status: "",
       processedBy: selectedProcessedBy,
+      discountAmount: additionalEnrollmentData?.discountAmount,
+      reviewFee: additionalEnrollmentData?.reviewFee,
+      yearLevel: additionalEnrollmentData?.yearLevel,
+      remarks: additionalEnrollmentData?.remarks,
     };
 
     await enrollStudent(data);
@@ -227,6 +275,7 @@ const Enrollment = () => {
     takerType,
     selectedExistingStudentId,
     selectedProcessedBy,
+    additionalEnrollmentData,
   ]);
 
   const onFinish = useCallback(
@@ -276,7 +325,6 @@ const Enrollment = () => {
             <Select
               className="w-full mb=[2vh]"
               size="large"
-              defaultValue="2024"
               onChange={(value) =>
                 setOfferingsSearchParams({
                   ...offeringsSearchParams,
@@ -284,14 +332,11 @@ const Enrollment = () => {
                 })
               }
             >
-              {[...Array(8)].map((_, index) => {
-                const year = 2024 + index;
-                return (
-                  <Option key={year} value={year}>
-                    {year}
-                  </Option>
-                );
-              })}
+              {YEAR?.map((year) => (
+                <Option value={year} key={year}>
+                  {year}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
 
@@ -346,14 +391,79 @@ const Enrollment = () => {
         </Form.Item>
 
         <Form.Item
-          label="Review Fee"
-          name="reviewFee"
+          label="Year Level"
+          name="yearLevel"
           layout="vertical"
           className="w-1/2 mb-[2vh]"
         >
-          <CustomInput type="text" />
+          <Select
+            size="large"
+            name="yearLevel"
+            onChange={(data) =>
+              setAdditionalEnrollmentData({
+                ...additionalEnrollmentData,
+                yearLevel: data,
+              })
+            }
+          >
+            {YEAR_LEVELS?.map((year) => (
+              <Option value={year} key={year}>
+                {year}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
 
+        <div className="flex flex-col">
+          <label className="text-sm">Review Fee</label>
+          <CustomInput
+            className="w-1/2 mb-[2vh] px-[12px] py-[10px]"
+            type="text"
+            value={additionalEnrollmentData?.reviewFee}
+            onChange={(e) =>
+              setAdditionalEnrollmentData({
+                ...additionalEnrollmentData,
+                reviewFee: e.target.value,
+              })
+            }
+          />
+        </div>
+
+        <Form.Item
+          label="Discount Amount"
+          name="discountAmount"
+          layout="vertical"
+          className="w-1/2 mb-[2vh]"
+        >
+          <CustomInput
+            type="text"
+            name="discount"
+            onChange={(e) =>
+              setAdditionalEnrollmentData({
+                ...additionalEnrollmentData,
+                discountAmount: e.target.value,
+              })
+            }
+          />
+        </Form.Item>
+
+        <Form.Item
+          label="Remarks"
+          name="remarks"
+          layout="vertical"
+          className="w-1/2 mb-[2vh]"
+        >
+          <CustomInput
+            type="text"
+            name="remarks"
+            onChange={(e) =>
+              setAdditionalEnrollmentData({
+                ...additionalEnrollmentData,
+                remarks: e.target.value,
+              })
+            }
+          />
+        </Form.Item>
         <Form.Item
           label="Processed by:"
           name="processedBy"

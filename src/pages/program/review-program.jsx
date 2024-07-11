@@ -15,6 +15,7 @@ const ReviewProgram = () => {
   const [searchProgram, setSearchProgram] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
+
   const { programs, getProgramsLoading, getProgramsError } =
     useProgramContext();
 
@@ -32,6 +33,16 @@ const ReviewProgram = () => {
     {
       title: "Description",
       dataIndex: "description",
+    },
+    {
+      title: "Course",
+      dataIndex: "course",
+      render: (data) => data?.name,
+    },
+    {
+      title: "School",
+      dataIndex: "school",
+      render: (data) => data?.name,
     },
     {
       title: "Action",
