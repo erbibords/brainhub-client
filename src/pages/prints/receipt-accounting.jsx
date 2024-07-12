@@ -82,7 +82,7 @@ const Receipt = () => {
   });
 
   return (
-    <div className="max-w-md mx-auto p-4 font-sans text-xs">
+    <div className="max-w-md mx-auto font-sans text-xs">
       <div ref={contentToPrint}>
         <Form name="printReciept" layout="vertical" className="space-y-2">
           <div className="text-center mb-1">
@@ -93,6 +93,9 @@ const Receipt = () => {
                 className="h-15 w-full mr-1"
               />
             </div>
+            <Text className="text-center d-block text-xs">
+              Iloilo Doctor's College West Timawa Molo 5000 Iloilo City
+            </Text>
             <Row className="mb-1">
               <Col span={16} className="flex items-center">
                 <Text className="mr-1 whitespace-nowrap text-xs">
