@@ -83,7 +83,7 @@ const Receipt = () => {
 
   return (
     <div className="max-w-md mx-auto font-sans text-xs">
-      <div ref={contentToPrint}>
+      <div ref={contentToPrint} className="scale-100">
         <Form name="printReciept" layout="vertical" className="space-y-2">
           <div className="text-center mb-1">
             <div className="flex items-center justify-center">
@@ -112,29 +112,27 @@ const Receipt = () => {
               NV-TIN 000-995-152-00000
             </Text>
           </div>
+
           <Row className="mb-1">
             <Col span={24} className="flex items-center">
               <Text className="mr-1 whitespace-nowrap text-xs">ORIGINAL:</Text>
               <CustomInput className="border-0 flex-grow text-xs" />
             </Col>
-          </Row>
-          <Row className="mb-1">
-            <Col span={16} className="flex items-center">
-              <Text className="mr-1 whitespace-nowrap text-xs">
-                Received From:
-              </Text>
-              <CustomInput
-                className="border-0 flex-grow text-xs"
-                value={paymentDetails?.enrollment?.student?.fullName}
-              />
-            </Col>
-            <Col span={8} className="text-right">
+            <Col span={24}>
               <Text className="text-xs">
                 Date: {formatDate(paymentDetails?.paidAt) ?? ""}
               </Text>
             </Col>
-          </Row>
-          <Row className="mb-1">
+            <Col span={24} className="flex items-center">
+              <Text className="mr-1 whitespace-nowrap text-xs">
+                Received From:
+              </Text>
+              <CustomInput
+                className="border-0 flex-grow text-xs w-full"
+                value={paymentDetails?.enrollment?.student?.fullName}
+              />
+            </Col>
+
             <Col span={24} className="flex items-center">
               <Text className="mr-1 whitespace-nowrap text-xs">
                 Business Name/Style:
@@ -142,6 +140,7 @@ const Receipt = () => {
               <CustomInput className="border-0 flex-grow text-xs" />
             </Col>
           </Row>
+
           <Table
             dataSource={dataSource}
             columns={columns}
