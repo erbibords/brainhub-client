@@ -3,7 +3,7 @@ import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
 import { useCourse } from "../../contexts/courses";
 import { useStudentContext } from "../../contexts/students";
-import { Select, Input, Form, Radio, AutoComplete } from "antd";
+import { Select, Input, Form, Radio, AutoComplete, Checkbox } from "antd";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
 import { useOfferingsContext } from "../../contexts/offerings";
@@ -242,6 +242,14 @@ const EditEnrollment = () => {
               })
             }
           />
+        </Form.Item>
+
+        <Form.Item
+          name="backOutStudent"
+          layout="vertical"
+          className="w-1/2 mb-[2vh]"
+        >
+          <Checkbox>Backout Student</Checkbox>
         </Form.Item>
 
         <Form.Item className="flex justify-center w-1/2">

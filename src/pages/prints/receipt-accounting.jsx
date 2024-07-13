@@ -79,7 +79,7 @@ const Receipt = () => {
   });
 
   return (
-    <div className="max-w-md mx-auto font-sans text-xs">
+    <div className="max-w-md mx-auto font-sans text-sm">
       <div ref={contentToPrint} className="scale-100">
         <Form name="printReciept" layout="vertical" className="space-y-2">
           <div className="text-center mb-1">
@@ -90,7 +90,7 @@ const Receipt = () => {
                 className="h-15 w-full mr-1"
               />
             </div>
-            <Text className="text-center d-block text-xs">
+            <Text className="text-center d-block text-sm">
               <p className="!mb-0">ALVIN D. ANDRADE - Prop</p>
               <p className="!mb-0">
                 Iloilo Doctor's College West Timawa Molo 5000 Iloilo City
@@ -99,12 +99,12 @@ const Receipt = () => {
             </Text>
             <Row className="mb-1">
               <Col span={16} className="flex items-center">
-                <Text className="mr-1 whitespace-nowrap text-xs">
+                <Text className="mr-1 whitespace-nowrap text-sm">
                   INVOICE OFFICIAL RECEIPT
                 </Text>
               </Col>
               <Col span={8} className="text-right">
-                <Text className="mr-1 whitespace-nowrap text-xs">
+                <Text className="mr-1 whitespace-nowrap text-sm">
                   No: {paymentDetails?.referenceNo}
                 </Text>
               </Col>
@@ -113,19 +113,19 @@ const Receipt = () => {
 
           <Row className="mb-1">
             <Col span={24} className="flex items-center">
-              <Text className="mr-1 whitespace-nowrap text-xs">ORIGINAL:</Text>
-              <CustomInput className="border-0 flex-grow text-xs" />
+              <Text className="mr-1 whitespace-nowrap text-sm">ORIGINAL:</Text>
+              <CustomInput className="border-0 flex-grow text-sm" />
             </Col>
             <Col span={24}>
-              <Text className="text-xs">
+              <Text className="text-sm">
                 Date: {formatDate(paymentDetails?.paidAt) ?? ""}
               </Text>
             </Col>
             <Col span={24} className="flex items-center mt-1">
-              <Text className="mr-1 whitespace-nowrap text-xs">
+              <Text className="mr-1 whitespace-nowrap text-sm">
                 Received From:
               </Text>
-              <Text className="mr-1 whitespace-nowrap text-xs font-bold max-w-[100px]">
+              <Text className="mr-1 whitespace-nowrap text-sm font-bold max-w-[100px]">
                 {paymentDetails?.enrollment?.student?.fullName
                   ?.toString()
                   .toUpperCase()}
@@ -133,10 +133,10 @@ const Receipt = () => {
             </Col>
 
             <Col span={24} className="flex items-center mt-1">
-              <Text className="mr-1 whitespace-nowrap text-xs">
+              <Text className="mr-1 whitespace-nowrap text-sm">
                 Mode of payment:
               </Text>
-              <Text className="mr-1 whitespace-nowrap text-xs font-bold max-w-[100px]">
+              <Text className="mr-1 whitespace-nowrap text-sm font-bold max-w-[100px]">
                 {paymentDetails?.paymentMethod}
               </Text>
             </Col>
@@ -152,12 +152,12 @@ const Receipt = () => {
           <Form.Item className="mt-1 flex justify-end">
             <Row className="mb-1">
               <Col span={12}>
-                <Text className="float-right mt-1 mr-1 text-xs w-[100px]">
+                <Text className="float-right mt-1 mr-1 text-sm w-[100px]">
                   Total Amount:
                 </Text>
               </Col>
               <Col span={12}>
-                <Text className="float-right mt-1 mr-1 text-xs font-bold max-w-[100px] text-sm">
+                <Text className="float-right mt-1 mr-1 text-sm font-bold max-w-[100px] text-sm">
                   {formatAmount(paymentDetails?.amountPaid ?? 0)}
                 </Text>
               </Col>
@@ -165,9 +165,9 @@ const Receipt = () => {
           </Form.Item>
 
           <Form.Item className="mt-1 flex justify-end">
-            <p> {paymentDetails?.processedBy} </p>
+            <p className="mt-5"> {paymentDetails?.processedBy} </p>
             <hr />
-            <p className="text-center text-xs">Authorized Signature</p>
+            <p className="text-center text-sm">Authorized Signature</p>
           </Form.Item>
         </Form>
       </div>
