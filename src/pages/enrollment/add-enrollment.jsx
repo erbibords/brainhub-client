@@ -222,7 +222,7 @@ const Enrollment = () => {
             discountAmount: additionalEnrollmentData?.discountAmount,
             reviewFee: (
               parseFloat(additionalEnrollmentData?.reviewFee) -
-                parseFloat(additionalEnrollmentData?.discountAmount) ?? 0
+                parseFloat(additionalEnrollmentData?.discountAmount ?? 0) ?? 0
             ).toString(),
             yearLevel: additionalEnrollmentData?.yearLevel,
             remarks: additionalEnrollmentData?.remarks,
@@ -268,7 +268,7 @@ const Enrollment = () => {
       discountAmount: additionalEnrollmentData?.discountAmount,
       reviewFee: (
         parseFloat(additionalEnrollmentData?.reviewFee) -
-          parseFloat(additionalEnrollmentData?.discountAmount) ?? 0
+          parseFloat(additionalEnrollmentData?.discountAmount ?? 0) ?? 0
       ).toString(),
       yearLevel: additionalEnrollmentData?.yearLevel,
       remarks: additionalEnrollmentData?.remarks,

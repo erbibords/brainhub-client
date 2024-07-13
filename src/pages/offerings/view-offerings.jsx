@@ -114,6 +114,7 @@ const ViewOffering = () => {
     }
   };
 
+  console.log(offering?.enrollments);
   const columns = [
     { title: "Name", dataIndex: ["student", "fullName"], key: "name" },
     {
@@ -121,7 +122,6 @@ const ViewOffering = () => {
       dataIndex: ["student", "schoolId"],
       key: "school",
       render: (data) => {
-        console.log(data);
         const school = getSchoolById(schools?.data, data);
         return school?.name ?? "";
       },
@@ -173,7 +173,7 @@ const ViewOffering = () => {
     if (!offering?.enrollments) return [];
 
     const data = offering?.enrollments?.filter(
-      (record) => record.totalAmountPaid >= searchAmount
+      (record) => record.remainingBalance >= searchAmount
     );
     setEnrollments(data);
   }, [searchAmount, offering?.enrollments, setEnrollments]);
@@ -408,7 +408,9 @@ const ViewOffering = () => {
                     dataSource={enrollments && enrollments}
                     columns={columns}
                     title={() => (
-                      <h2 className="text-2xl">Enrolled Student List</h2>
+                      <h2 className="text-2xl">
+                        Enrolled Student List ({enrollments?.length})
+                      </h2>
                     )}
                   />
                 </Col>
