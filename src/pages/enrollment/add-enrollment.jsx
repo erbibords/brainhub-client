@@ -222,7 +222,7 @@ const Enrollment = () => {
             discountAmount: additionalEnrollmentData?.discountAmount,
             reviewFee: (
               parseFloat(additionalEnrollmentData?.reviewFee) -
-                parseFloat(additionalEnrollmentData?.discountAmount) ?? 0
+                parseFloat(additionalEnrollmentData?.discountAmount ?? 0) ?? 0
             ).toString(),
             yearLevel: additionalEnrollmentData?.yearLevel,
             remarks: additionalEnrollmentData?.remarks,
@@ -268,7 +268,7 @@ const Enrollment = () => {
       discountAmount: additionalEnrollmentData?.discountAmount,
       reviewFee: (
         parseFloat(additionalEnrollmentData?.reviewFee) -
-          parseFloat(additionalEnrollmentData?.discountAmount) ?? 0
+          parseFloat(additionalEnrollmentData?.discountAmount ?? 0) ?? 0
       ).toString(),
       yearLevel: additionalEnrollmentData?.yearLevel,
       remarks: additionalEnrollmentData?.remarks,
@@ -665,12 +665,12 @@ const Enrollment = () => {
                 <Form.Item
                   label="Emergency Contact Name"
                   name="emergencyContactName"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your emergency contact name!",
-                    },
-                  ]}
+                  // rules={[
+                  //   {
+                  //     required: true,
+                  //     message: "Please input your emergency contact name!",
+                  //   },
+                  // ]}
                 >
                   <CustomInput type="text" name="emergencyName" />
                 </Form.Item>
@@ -678,13 +678,13 @@ const Enrollment = () => {
                 <Form.Item
                   label="Relationship"
                   name="emergencyContactRelationship"
-                  rules={[
-                    {
-                      required: true,
-                      message:
-                        "Please input your relation on your emergency contact!",
-                    },
-                  ]}
+                  // rules={[
+                  //   {
+                  //     required: true,
+                  //     message:
+                  //       "Please input your relation on your emergency contact!",
+                  //   },
+                  // ]}
                 >
                   <CustomInput type="text" name="emergencyRelationship" />
                 </Form.Item>
@@ -692,12 +692,12 @@ const Enrollment = () => {
                 <Form.Item
                   label="Emergency Address"
                   name="emergencyContactAddress"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your emergency contact address!",
-                    },
-                  ]}
+                  // rules={[
+                  //   {
+                  //     required: true,
+                  //     message: "Please input your emergency contact address!",
+                  //   },
+                  // ]}
                 >
                   <TextArea
                     type="text"
@@ -712,12 +712,12 @@ const Enrollment = () => {
                 <Form.Item
                   label="Emergency Contact No."
                   name="emergencyContactNumber"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your emergency contact no.",
-                    },
-                  ]}
+                  // rules={[
+                  //   {
+                  //     required: true,
+                  //     message: "Please input your emergency contact no.",
+                  //   },
+                  // ]}
                 >
                   <CustomInput
                     name="emergencyContactNumber"

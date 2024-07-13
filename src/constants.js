@@ -1,4 +1,4 @@
-export const DEFAULT_BRANCH_ID = '5fc8fbbb-c0b0-410e-a571-ccf1129b523d';
+export const DEFAULT_BRANCH_ID = '5fc8fbbb-c0b0-410e-a571-ccf1129b523b';
 
 export const BASE_URL = 'https://brainhub-sandbox-api.onrender.com/v1/';
 
@@ -112,8 +112,8 @@ export const REVIEW_PROGRAM = [
 
 export const PROCESSED_BY = [
   'Ma. Nelly Wendam',
-  'Christine Della Torre',
-  'Ellaine May Entreguena',
+  'Christine Dela Torre',
+  'Elaine Mae Entreguena',
 ];
 
 export const PAYMENT_METHODS = [
