@@ -98,7 +98,10 @@ const EditEnrollment = () => {
 
     try {
       const enrollmentRes = await updatedEnrollment(
-        data,
+        {
+          ...values,
+          studentId: data.studentId,
+        },
         `/branches/${DEFAULT_BRANCH_ID}/offerings/${values.courseOffering.id}/enrollments`
       );
       if (enrollmentRes) {
