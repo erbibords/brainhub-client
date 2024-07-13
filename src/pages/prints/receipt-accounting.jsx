@@ -5,7 +5,7 @@ import CustomButton from "../../components/Button/Button";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPaymentById } from "../../utils/mappings";
 import { usePaymentsContext } from "../../contexts/payments";
-import logo from "../../assets/images/brainhub-logo2.png";
+import logo from "../../assets/images/brainhub-logo-new.png";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import {
   formatDate,
