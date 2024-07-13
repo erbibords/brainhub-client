@@ -58,6 +58,8 @@ const PaymentsList = () => {
     setParams({});
   }, []);
 
+  console.log(payments?.data);
+
   const handleFilter = useCallback(() => {
     setParams(cleanParams(searchParams));
   }, [setParams, searchParams]);
@@ -343,7 +345,7 @@ const PaymentsList = () => {
                 </Button>
               </Col>
 
-              <Col span={15}>
+              <Col span={24}>
                 <CustomButton
                   type="primary"
                   className="w-auto bg-success text-white mt-[25px] float-right"

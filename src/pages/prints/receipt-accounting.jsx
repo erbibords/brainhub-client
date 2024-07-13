@@ -168,8 +168,9 @@ const Receipt = () => {
 
           <Form.Item className="mt-1 flex justify-end">
             <CustomInput
-              className="border-t-0 border-x-0 border-b-2 float-right bg-transparent text-xs"
+              className="border-t-0 border-x-0 border-b-2 float-right bg-transparent text-xs text-center"
               readOnly
+              value={paymentDetails?.processedBy}
             />
             <p className="text-center text-xs">Authorized Signature</p>
           </Form.Item>
