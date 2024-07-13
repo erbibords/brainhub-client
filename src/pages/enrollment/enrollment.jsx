@@ -69,29 +69,6 @@ const Enrollment = () => {
           return <label>{student?.contactNumber}</label>;
         },
       },
-      // {
-      //   title: "School",
-      //   dataIndex: "student",
-      //   render: (data) => {
-      //     if (!data || schoolsLoading || schoolsError) return null;
-      //     const school = getSchoolById(schools?.data, data.schoolId);
-      //     return school ? school.name : null;
-      //   },
-      // },
-      // {
-      //   title: "Student Status",
-      //   dataIndex: "takerType",
-      //   render: (data) => formatTakerType(data),
-      // },
-      // {
-      //   title: "Course",
-      //   dataIndex: "courseOffering",
-      //   render: (data) => {
-      //     if (!data || getCoursesLoading || getCoursesError) return null;
-      //     const course = getCourseById(courses?.data, data?.courseId);
-      //     return course ? course.name : null;
-      //   },
-      // },
       {
         title: "Semester",
         dataIndex: "courseOffering",
@@ -193,7 +170,6 @@ const Enrollment = () => {
     const schoolId = record?.student?.schoolId;
     const courseId = record?.courseOffering?.courseId;
 
-    console.log(record, courseId, courses);
     const school = getSchoolById(schools?.data, schoolId ?? null) ?? null;
     const course = getCourseById(courses?.data, courseId ?? null) ?? null;
 

@@ -220,7 +220,10 @@ const Enrollment = () => {
             studentId,
             processedBy: selectedProcessedBy,
             discountAmount: additionalEnrollmentData?.discountAmount,
-            reviewFee: additionalEnrollmentData?.reviewFee,
+            reviewFee: (
+              parseFloat(additionalEnrollmentData?.reviewFee) -
+                parseFloat(additionalEnrollmentData?.discountAmount) ?? 0
+            ).toString(),
             yearLevel: additionalEnrollmentData?.yearLevel,
             remarks: additionalEnrollmentData?.remarks,
           };
@@ -263,7 +266,10 @@ const Enrollment = () => {
       status: "",
       processedBy: selectedProcessedBy,
       discountAmount: additionalEnrollmentData?.discountAmount,
-      reviewFee: additionalEnrollmentData?.reviewFee,
+      reviewFee: (
+        parseFloat(additionalEnrollmentData?.reviewFee) -
+          parseFloat(additionalEnrollmentData?.discountAmount) ?? 0
+      ).toString(),
       yearLevel: additionalEnrollmentData?.yearLevel,
       remarks: additionalEnrollmentData?.remarks,
     };

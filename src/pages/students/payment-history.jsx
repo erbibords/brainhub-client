@@ -14,7 +14,12 @@ export const PaymentHistory = ({ payments }) => {
   if (!payments) return null;
 
   const columns = [
-    { title: "Reference", dataIndex: "referenceNo", key: "referenceNo" },
+    {
+      title: "Reference",
+      dataIndex: "referenceNo",
+      key: "referenceNo",
+      render: (data) => (data ? data : ""),
+    },
     {
       title: "Payment Amount",
       dataIndex: "amountPaid",

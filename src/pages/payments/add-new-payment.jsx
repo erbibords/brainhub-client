@@ -11,16 +11,22 @@ import { ENROLLMENT_BASE_URL, PROCESSED_BY } from "../../constants";
 import { UploadOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import useCashReference from "../../hooks/useCashReference";
+
 const { Content } = Layout;
 const { Option } = Select;
 
 const AddNewPayment = () => {
+  const [form] = Form.useForm();
   const navigate = useNavigate();
   const params = useParams();
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [imagePreview, setImagePreview] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
+  const { data: cashReference, error: cashReferenceError } = useCashReference();
 
+  console.log(cashReference);
   if (!params?.studentId) {
     navigate("/students");
   }
@@ -50,6 +56,15 @@ const AddNewPayment = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (selectedPaymentMethod && selectedPaymentMethod === "CASH") {
+      console.log(selectedPaymentMethod);
+      form.setFieldsValue({ reference: cashReference?.referenceNo ?? null });
+    } else {
+      form.setFieldsValue({ reference: null });
+    }
+  }, [selectedPaymentMethod]);
+
   const courseOfferings = student?.enrollments
     ? student?.enrollments.map((enrollment) => ({
         key: enrollment.id,
@@ -66,6 +81,15 @@ const AddNewPayment = () => {
       reference,
       paidAt,
     } = values;
+
+    if ((selectedPaymentMethod !== "CASH" && !reference) || reference === "") {
+      Swal.fire({
+        icon: "warning",
+        title: "Please add reference no.",
+        timer: 2000,
+      });
+      return;
+    }
 
     const isoPaidAt = DateTime.fromJSDate(paidAt.toDate()).toISO({
       includeOffset: false,
@@ -127,7 +151,7 @@ const AddNewPayment = () => {
 
   return (
     <Content style={{ paddingRight: screenWidth <= 1024 ? 0 : "45%" }}>
-      <Form name="payments" onFinish={onFinish} layout="vertical">
+      <Form name="payments" onFinish={onFinish} layout="vertical" form={form}>
         <div>
           <CustomButton
             type="text"
@@ -181,7 +205,12 @@ const AddNewPayment = () => {
               { required: true, message: "Please select a payment method." },
             ]}
           >
-            <Select className="w-full" size="large">
+            <Select
+              className="w-full"
+              size="large"
+              onChange={(value) => setSelectedPaymentMethod(value)}
+              name="paymentMethod"
+            >
               <Option value="BANK">Bank Transfer</Option>
               <Option value="CASH">Cash</Option>
               <Option value="GCASH">Gcash</Option>
@@ -189,7 +218,12 @@ const AddNewPayment = () => {
           </Form.Item>
 
           <Form.Item className="mb-[32px]" label="Reference:" name="reference">
-            <CustomInput size="large" type="text" className="" />
+            <CustomInput
+              size="large"
+              type="text"
+              className=""
+              disabled={selectedPaymentMethod === "CASH"}
+            />
           </Form.Item>
 
           <Form.Item
