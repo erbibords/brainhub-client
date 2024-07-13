@@ -53,7 +53,7 @@ const ReviewProgram = () => {
             View
           </CustomButton>
 
-          <CustomButton
+          {/* <CustomButton
             type="secondary"
             className="w-auto bg-secondary text-white"
             onClick={() =>
@@ -61,7 +61,7 @@ const ReviewProgram = () => {
             }
           >
             Delete
-          </CustomButton>
+          </CustomButton> */}
         </Space>
       ),
     },

@@ -189,8 +189,12 @@ const EditEnrollment = () => {
           </Select>
         </Form.Item>
 
-        <div className="flex flex-col">
-          <label className="text-sm">Review Fee</label>
+        <Form.Item
+          label="Review Fee"
+          name="reviewFee"
+          layout="vertical"
+          className="w-1/2 mb-[2vh]"
+        >
           <CustomInput
             className="w-1/2 mb-[2vh] px-[12px] py-[10px]"
             type="text"
@@ -202,7 +206,7 @@ const EditEnrollment = () => {
               })
             }
           />
-        </div>
+        </Form.Item>
 
         <Form.Item
           label="Discount Amount"
