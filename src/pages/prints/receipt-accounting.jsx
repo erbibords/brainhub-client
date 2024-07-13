@@ -135,7 +135,7 @@ const Receipt = () => {
 
             <Col span={24} className="flex items-center">
               <Text className="mr-1 whitespace-nowrap text-xs">
-                Mode or payment:
+                Mode of payment:
               </Text>
               <CustomInput className="border-0 flex-grow text-xs" />
             </Col>
