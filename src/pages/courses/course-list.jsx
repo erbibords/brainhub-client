@@ -74,9 +74,9 @@ const CourseList = () => {
             View
           </CustomButton>
 
-          <CustomButton type="delete" onClick={() => navigate(`${record.id}`)}>
+          {/* <CustomButton type="delete">
             Delete
-          </CustomButton>
+          </CustomButton> */}
         </Space>
       ),
     },

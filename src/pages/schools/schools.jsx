@@ -64,9 +64,9 @@ const SchoolList = () => {
           <CustomButton onClick={() => navigate("/schools/:schoolId")}>
             View
           </CustomButton>
-          <CustomButton type="delete" onClick={() => navigate(`${record.id}`)}>
+          {/* <CustomButton type="delete" onClick={() => navigate(`${record.id}`)}>
             Delete
-          </CustomButton>
+          </CustomButton> */}
         </Space>
       ),
     },

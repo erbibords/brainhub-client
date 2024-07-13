@@ -27,6 +27,12 @@ export const PaymentHistory = ({ payments }) => {
       render: (data) => formatAmount(data),
     },
     {
+      title: "Balance after payment",
+      dataIndex: "balance",
+      key: "balance",
+      render: (data) => formatAmount(data ?? 0),
+    },
+    {
       title: "Payment Method",
       dataIndex: "paymentMethod",
       key: "paymentMethod",
@@ -41,7 +47,7 @@ export const PaymentHistory = ({ payments }) => {
       title: "Attachment",
       dataIndex: "attachment",
       render: (_, record) => {
-        return record?.attachments?.length ? (
+        return record?.attachments?.length && record?.attachments[0] !== "" ? (
           <Image
             width={100}
             height={100}

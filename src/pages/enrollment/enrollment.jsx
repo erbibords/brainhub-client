@@ -32,6 +32,8 @@ const Enrollment = () => {
   const { enrollments, getEnrollmentsLoading, getEnrollmentsError, setParams } =
     useEnrollmentsContext();
 
+  console.log(enrollments);
+
   const [searchParams, setSearchParams] = useState({
     startDate: undefined,
     endDate: undefined,
@@ -130,6 +132,17 @@ const Enrollment = () => {
                 className="w-auto bg-primary text-white"
               >
                 Print RF
+              </CustomButton>
+
+              <CustomButton
+                type="edit"
+                onClick={() =>
+                  navigate(`/enrollments/edit-enrollment/:enrollmentId`)
+                }
+                title="edit"
+                className="w-auto bg-success text-white"
+              >
+                Edit
               </CustomButton>
             </Space>
           );

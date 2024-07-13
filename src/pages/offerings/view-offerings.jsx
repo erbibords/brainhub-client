@@ -355,6 +355,15 @@ const ViewOffering = () => {
               </Form>
 
               <Row gutter={[16, 16]}>
+                <Col span={12}>
+                  <div className="flex flex-col gap-[6px]">
+                    <label> Amount paid:</label>
+                    <div className="flex gap-[6px]">
+                      <CustomInput type="number" className="w-full" />
+                      <CustomButton> Search</CustomButton>
+                    </div>
+                  </div>
+                </Col>
                 <Col span={24}>
                   <Table
                     dataSource={offering?.enrollments}
