@@ -15,6 +15,7 @@ function usePayments(params = {}) {
     schoolId = undefined,
     semester = undefined,
     yearOffered,
+    paymentMethod = undefined
   } = params;
 
   let url = PAYMENTS_BASE_URL;
@@ -31,6 +32,8 @@ function usePayments(params = {}) {
   if (semester) queryParams.append('semester', semester);
   if (referenceNo) queryParams.append('referenceNo', referenceNo);
   if (yearOffered) queryParams.append('yearOffered', yearOffered);
+  if (paymentMethod) queryParams.append('paymentMethod', paymentMethod);
+
 
   if (queryParams.toString()) {
     url += `?${queryParams.toString()}`;

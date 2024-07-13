@@ -7,7 +7,11 @@ import CustomButton from "../../components/Button/Button";
 import { DateTime } from "luxon";
 import useMutation from "../../hooks/useMutation";
 import { getCourseOfferingName } from "../../utils/mappings";
-import { ENROLLMENT_BASE_URL, PROCESSED_BY } from "../../constants";
+import {
+  ENROLLMENT_BASE_URL,
+  PAYMENT_METHODS,
+  PROCESSED_BY,
+} from "../../constants";
 import { UploadOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -211,9 +215,11 @@ const AddNewPayment = () => {
               onChange={(value) => setSelectedPaymentMethod(value)}
               name="paymentMethod"
             >
-              <Option value="BANK">Bank Transfer</Option>
-              <Option value="CASH">Cash</Option>
-              <Option value="GCASH">Gcash</Option>
+              {PAYMENT_METHODS.map((pm) => (
+                <Option value={pm.value} key={pm.value}>
+                  {pm.name}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
 

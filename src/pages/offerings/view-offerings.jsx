@@ -18,15 +18,21 @@ import { useCourse } from "../../contexts/courses";
 import Swal from "sweetalert2";
 import { OFFERING_BASE_URL } from "../../constants";
 import useOffering from "../../hooks/useOffering";
-import { formatDate, formatSemester } from "../../utils/formatting";
+import {
+  formatAmount,
+  formatDate,
+  formatSemester,
+} from "../../utils/formatting";
 import { REVIEW_PROGRAM, SEMESTER, YEAR } from "../../constants";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
-import { useOfferingsContext } from "../../contexts/offerings";
-import { getDataById } from "../../utils/mappings";
+import { getSchoolById } from "../../utils/mappings";
+import useSchools from "../../hooks/useSchools";
+
 const ViewOffering = () => {
   const navigate = useNavigate();
   const params = useParams();
+  const { data: schools } = useSchools();
 
   if (!params?.offeringId) {
     navigate("/offerings");
@@ -34,13 +40,8 @@ const ViewOffering = () => {
 
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
-  const {
-    data: offerings,
-    getOfferingsLoading,
-    getOfferingsError,
-  } = useOfferingsContext();
 
-  const { courses, coursesLoading, coursesError } = useCourse();
+  const { courses, coursesError } = useCourse();
   const {
     data: offering,
     isLoading,
@@ -106,33 +107,49 @@ const ViewOffering = () => {
     }
   };
 
-  const studentListData = useMemo(() => {
-    const offering = getDataById(offerings?.data, params?.offeringId);
-    console.log(offering);
-    const enrollments = offering?.enrollments;
-    return enrollments?.map((enroll) => {
-      return {
-        key: enroll?.id,
-        name: enroll?.studentId,
-        school: "UI",
-        year: "2024",
-        semester: "1st",
-        enrollmentDate: formatDate(enroll?.createdAt),
-      };
-    });
-  }, [offerings, params, getDataById]);
-
   const columns = [
-    { title: "Name", dataIndex: "name", key: "name" },
-    { title: "School", dataIndex: "school", key: "school" },
-    { title: "Year", dataIndex: "year", key: "year" },
-    { title: "Semester", dataIndex: "semester", key: "semester" },
+    { title: "Name", dataIndex: ["student", "fullName"], key: "name" },
+    {
+      title: "School",
+      dataIndex: ["student", "schoolId"],
+      key: "school",
+      render: (data) => {
+        console.log(data);
+        const school = getSchoolById(schools?.data, data);
+        return school?.name ?? "";
+      },
+    },
+    {
+      title: "Review Fee",
+      dataIndex: "reviewFee",
+      key: "reviewFee",
+      render: (data) => formatAmount(data),
+    },
+    {
+      title: "Discount Amount",
+      dataIndex: "discountAmount",
+      key: "discountAmount",
+      render: (data) => formatAmount(data),
+    },
+    {
+      title: "Remarks",
+      dataIndex: "remarks",
+      key: "reviewFee",
+    },
     {
       title: "Enrollment Date",
-      dataIndex: "enrollmentDate",
-      key: "enrollmentDate",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (data) => formatDate(data),
+    },
+    {
+      title: "Processed By",
+      dataIndex: "processedBy",
+      key: "processedBy",
     },
   ];
+
+  console.log(offering);
 
   return (
     <div>
@@ -340,7 +357,7 @@ const ViewOffering = () => {
               <Row gutter={[16, 16]}>
                 <Col span={24}>
                   <Table
-                    dataSource={studentListData}
+                    dataSource={offering?.enrollments}
                     columns={columns}
                     title={() => (
                       <h2 className="text-2xl">Enrolled Student List</h2>

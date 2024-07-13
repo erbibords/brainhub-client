@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import CustomInput from "../../components/Input/Input";
 import { Select, Table, Space, Row, Col, Button, Form } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +24,10 @@ const StudentsList = () => {
   const handleFilter = useCallback(() => {
     setParams(cleanParams(searchParams));
   }, [setParams, searchParams]);
+
+  useEffect(() => {
+    setParams({});
+  }, []);
 
   const columns = [
     { title: "Name", dataIndex: "name", key: "name" },

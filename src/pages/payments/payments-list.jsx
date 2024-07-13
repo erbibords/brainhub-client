@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
 import useSchools from "../../hooks/useSchools";
@@ -14,7 +14,12 @@ import {
   Form,
   Button,
 } from "antd";
-import { SEMESTER, MEDIA_BASE_URL, YEAR } from "../../constants";
+import {
+  SEMESTER,
+  MEDIA_BASE_URL,
+  YEAR,
+  PAYMENT_METHODS,
+} from "../../constants";
 import { usePaymentsContext } from "../../contexts/payments";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { getCourseOfferingName } from "../../utils/mappings";
@@ -48,6 +53,10 @@ const PaymentsList = () => {
     semester: undefined,
     yearOffered: undefined,
   });
+
+  useEffect(() => {
+    setParams({});
+  }, []);
 
   const handleFilter = useCallback(() => {
     setParams(cleanParams(searchParams));
@@ -106,7 +115,8 @@ const PaymentsList = () => {
       title: "Attachment",
       dataIndex: "attachment",
       render: (_, record) => {
-        return record?.attachments?.length ? (
+        return record?.attachments?.length >= 1 &&
+          record?.attachments[0] !== "" ? (
           <Image
             width={100}
             height={100}
@@ -160,6 +170,29 @@ const PaymentsList = () => {
                     className="h-[50px] w-full"
                     onChange={handleDateRangeChange}
                   />
+                </Form.Item>
+              </Col>
+
+              <Col span={4}>
+                <Form.Item name="paymentMethod">
+                  <p> Payment Method</p>
+                  <Select
+                    className="w-full"
+                    size="large"
+                    onChange={(val) =>
+                      setSearchParams({
+                        ...searchParams,
+                        paymentMethod: val,
+                      })
+                    }
+                    name="paymentMethod"
+                  >
+                    {PAYMENT_METHODS.map((pm) => (
+                      <Option value={pm.value} key={pm.value}>
+                        {pm.name}
+                      </Option>
+                    ))}
+                  </Select>
                 </Form.Item>
               </Col>
 

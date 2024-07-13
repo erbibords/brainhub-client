@@ -89,3 +89,15 @@ export const REVIEW_PROGRAM = [
 ];
 
 export const PROCESSED_BY = ['Ma. Nelly Wendam', 'Christine Della Torre', "Ellaine May Entreguena"];
+
+export const PAYMENT_METHODS = [
+  {
+    name: 'Bank Transfer', value: "BANK",
+  }
+  ,  {
+    name: 'Cash', value: "CASH",
+  },  {
+    name: 'Gcash', value: "GCASH",
+  }
+]
+

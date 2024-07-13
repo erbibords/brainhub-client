@@ -74,6 +74,8 @@ const StudentProfile = () => {
     }
   };
 
+  console.log(data?.payments);
+
   return (
     <div>
       <CustomButton
