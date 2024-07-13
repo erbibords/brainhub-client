@@ -193,7 +193,7 @@ const EditEnrollment = () => {
           label="Review Fee"
           name="reviewFee"
           layout="vertical"
-          className="w-1/2 mb-[2vh]"
+          className="w-full mb-[2vh]"
         >
           <CustomInput
             className="w-1/2 mb-[2vh] px-[12px] py-[10px]"
