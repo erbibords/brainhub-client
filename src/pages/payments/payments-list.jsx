@@ -104,6 +104,12 @@ const PaymentsList = () => {
       render: (data) => formatAmount(data ?? 0),
     },
     {
+      title: "Balance after payment",
+      dataIndex: "balance",
+      key: "balance",
+      render: (data) => formatAmount(data ?? 0),
+    },
+    {
       title: "Payment Method",
       dataIndex: "paymentMethod",
       key: "paymentMethod",

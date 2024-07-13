@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import {
   Select,
   Row,
@@ -40,13 +40,20 @@ const ViewOffering = () => {
 
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
-
+  const [searchAmount, setSearchAmount] = useState();
+  const [enrollments, setEnrollments] = useState([]);
   const { courses, coursesError } = useCourse();
   const {
     data: offering,
     isLoading,
     error: offeringError,
   } = useOffering(params.offeringId);
+
+  useEffect(() => {
+    if (offering && offering?.enrollments?.length) {
+      setEnrollments(offering?.enrollments);
+    }
+  }, [offering]);
 
   if (coursesError || offeringError) {
     Swal.fire({
@@ -137,6 +144,18 @@ const ViewOffering = () => {
       key: "reviewFee",
     },
     {
+      title: "Total Amount Paid",
+      dataIndex: "totalAmountPaid",
+      key: "totalAmountPaid",
+      render: (data) => formatAmount(data),
+    },
+    {
+      title: "Remaining Balance",
+      dataIndex: "remainingBalance",
+      key: "remainingBalance",
+      render: (data) => formatAmount(data),
+    },
+    {
       title: "Enrollment Date",
       dataIndex: "createdAt",
       key: "createdAt",
@@ -149,7 +168,15 @@ const ViewOffering = () => {
     },
   ];
 
-  console.log(offering);
+  const filterEnrollment = useCallback(() => {
+    if (!searchAmount) return offering?.enrollments;
+    if (!offering?.enrollments) return [];
+
+    const data = offering?.enrollments?.filter(
+      (record) => record.totalAmountPaid >= searchAmount
+    );
+    setEnrollments(data);
+  }, [searchAmount, offering?.enrollments, setEnrollments]);
 
   return (
     <div>
@@ -359,14 +386,26 @@ const ViewOffering = () => {
                   <div className="flex flex-col gap-[6px]">
                     <label> Amount paid:</label>
                     <div className="flex gap-[6px]">
-                      <CustomInput type="number" className="w-full" />
-                      <CustomButton> Search</CustomButton>
+                      <CustomInput
+                        type="number"
+                        className="w-full"
+                        onChange={(val) => {
+                          setSearchAmount(val);
+                        }}
+                      />
+                      <CustomButton
+                        onClick={() => {
+                          filterEnrollment();
+                        }}
+                      >
+                        Search
+                      </CustomButton>
                     </div>
                   </div>
                 </Col>
                 <Col span={24}>
                   <Table
-                    dataSource={offering?.enrollments}
+                    dataSource={enrollments && enrollments}
                     columns={columns}
                     title={() => (
                       <h2 className="text-2xl">Enrolled Student List</h2>
