@@ -91,7 +91,9 @@ const Receipt = () => {
               />
             </div>
             <Text className="text-center d-block text-xs">
-              Iloilo Doctor's College West Timawa Molo 5000 Iloilo City
+              <p>ALVIN D. ANDRADE - Prop</p>
+              <p>Iloilo Doctor's College West Timawa Molo 5000 Iloilo City</p>
+              <p>NV-TIN 000-995-152-00000</p>
             </Text>
             <Row className="mb-1">
               <Col span={16} className="flex items-center">
@@ -105,9 +107,6 @@ const Receipt = () => {
                 </Text>
               </Col>
             </Row>
-            <Text className="text-center d-block text-xs">
-              NV-TIN 000-995-152-00000
-            </Text>
           </div>
 
           <Row className="mb-1">
