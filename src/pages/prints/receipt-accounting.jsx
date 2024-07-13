@@ -1,5 +1,5 @@
 import React, { useMemo, useRef } from "react";
-import { Typography, Row, Col, Table, Form } from "antd";
+import { Typography, Row, Col, Table, Form, Divider } from "antd";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
 import { useParams, useNavigate } from "react-router-dom";
@@ -60,13 +60,10 @@ const Receipt = () => {
         key: "particulars",
         render: (_) => {
           return (
-            <CustomInput
-              className="border-0 text-xs"
-              value={
-                `${paymentDetails?.enrollment?.courseOffering?.reviewProgram?.name}-${paymentDetails?.enrollment?.courseOffering?.yearOffered}` ??
-                ""
-              }
-            />
+            <label>
+              {`${paymentDetails?.enrollment?.courseOffering?.reviewProgram?.name}-${paymentDetails?.enrollment?.courseOffering?.yearOffered}` ??
+                ""}
+            </label>
           );
         },
       },
@@ -104,7 +101,7 @@ const Receipt = () => {
               </Col>
               <Col span={8} className="text-right">
                 <Text className="mr-1 whitespace-nowrap text-xs">
-                  No: 48445
+                  No: {paymentDetails?.referenceNo}
                 </Text>
               </Col>
             </Row>
@@ -128,7 +125,9 @@ const Receipt = () => {
                 Received From:
               </Text>
               <Text className="mr-1 whitespace-nowrap text-xs font-bold max-w-[100px]">
-                {paymentDetails?.enrollment?.student?.fullName}
+                {paymentDetails?.enrollment?.student?.fullName
+                  ?.toString()
+                  .toUpperCase()}
               </Text>
             </Col>
 
@@ -152,12 +151,12 @@ const Receipt = () => {
           <Form.Item className="mt-1 flex justify-end">
             <Row className="mb-1">
               <Col span={12}>
-                <Text className="float-right mt-1 mr-1 text-xs">
+                <Text className="float-right mt-1 mr-1 text-xs w-[100px]">
                   Total Amount:
                 </Text>
               </Col>
               <Col span={12}>
-                <Text className="float-right mt-1 mr-1 text-xs font-bold max-w-[100px]  text-xs">
+                <Text className="float-right mt-1 mr-1 text-xs font-bold max-w-[100px] text-sm">
                   {formatAmount(paymentDetails?.amountPaid ?? 0)}
                 </Text>
               </Col>
@@ -165,12 +164,8 @@ const Receipt = () => {
           </Form.Item>
 
           <Form.Item className="mt-1 flex justify-end">
-            <CustomInput
-              className="border-t-0 border-x-0 border-b-2 float-right bg-transparent text-xs text-center"
-              readOnly
-              value={paymentDetails?.processedBy}
-            />
-
+            <p> {paymentDetails?.processedBy} </p>
+            <hr />
             <p className="text-center text-xs">Authorized Signature</p>
           </Form.Item>
         </Form>
