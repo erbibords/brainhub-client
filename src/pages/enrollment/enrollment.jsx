@@ -131,6 +131,17 @@ const Enrollment = () => {
               >
                 Print RF
               </CustomButton>
+
+              <CustomButton
+                type="edit"
+                onClick={() =>
+                  navigate(`/enrollments/edit-enrollment/:enrollmentId`)
+                }
+                title="edit"
+                className="w-auto bg-success text-white"
+              >
+                Edit
+              </CustomButton>
             </Space>
           );
         },

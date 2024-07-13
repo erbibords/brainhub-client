@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Enrollment from "./pages/enrollment/enrollment";
 import AddEnrollment from "./pages/enrollment/add-enrollment";
+import EditEnrollment from "./pages/enrollment/edit-enrollment";
 import Login from "./pages/login/login-page";
 import Students from "./pages/students/students-list";
 import StudentProfile from "./pages/students/student-profile";
@@ -35,6 +36,11 @@ const App = () => {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/add-enrollment" element={<AddEnrollment />} />
+          <Route
+            path="/enrollments/edit-enrollment/:enrollmentId"
+            element={<EditEnrollment />}
+          />
+
           <Route path="/enrollments" element={<Enrollment />} />
           <Route path="/students" element={<Students />} />
           <Route path="/students/:studentId" element={<StudentProfile />} />
@@ -54,9 +60,7 @@ const App = () => {
             path="/review-program/:programId"
             element={<ViewReviewPogram />}
           />
-
           <Route path="/schools/:schoolId" element={<ViewSchools />} />
-
           <Route
             path="/enrollments/:enrollmentId"
             element={<ViewEnrollment />}
@@ -83,7 +87,6 @@ const App = () => {
             element={<RevieweesPopulation />}
           />
           <Route path="/prints/payments" element={<PaymentPrintList />} />
-
           <Route path="/review-program" element={<ReviewProgram />} />
           <Route path="/schools" element={<Schools />} />
         </Routes>

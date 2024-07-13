@@ -61,12 +61,6 @@ const columns = [
     render: (_, record) =>
       getCourseOfferingName(record?.enrollment?.courseOffering) ?? "",
   },
-  {
-    title: "Proccessed By",
-    dataIndex: "processedBy",
-    key: "processedBy",
-    width: 200,
-  },
 ];
 
 const PrintComponent = () => {
