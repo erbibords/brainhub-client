@@ -91,8 +91,10 @@ const Receipt = () => {
               />
             </div>
             <Text className="text-center d-block text-xs">
-              <p>ALVIN D. ANDRADE - Prop</p>
-              <p>Iloilo Doctor's College West Timawa Molo 5000 Iloilo City</p>
+              <p className="!mb-0">ALVIN D. ANDRADE - Prop</p>
+              <p className="!mb-0">
+                Iloilo Doctor's College West Timawa Molo 5000 Iloilo City
+              </p>
               <p>Non-Vat Reg. TIN: 310-118-125-00000</p>
             </Text>
             <Row className="mb-1">
