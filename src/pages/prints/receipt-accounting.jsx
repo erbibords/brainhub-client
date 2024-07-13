@@ -123,21 +123,22 @@ const Receipt = () => {
                 Date: {formatDate(paymentDetails?.paidAt) ?? ""}
               </Text>
             </Col>
-            <Col span={24} className="flex items-center">
+            <Col span={24} className="flex items-center mt-1">
               <Text className="mr-1 whitespace-nowrap text-xs">
                 Received From:
               </Text>
-              <CustomInput
-                className="border-0 flex-grow text-xs w-full"
-                value={paymentDetails?.enrollment?.student?.fullName}
-              />
+              <Text className="mr-1 whitespace-nowrap text-xs font-bold max-w-[100px]">
+                {paymentDetails?.enrollment?.student?.fullName}
+              </Text>
             </Col>
 
-            <Col span={24} className="flex items-center">
+            <Col span={24} className="flex items-center mt-1">
               <Text className="mr-1 whitespace-nowrap text-xs">
                 Mode of payment:
               </Text>
-              <CustomInput className="border-0 flex-grow text-xs" />
+              <Text className="mr-1 whitespace-nowrap text-xs font-bold max-w-[100px]">
+                {paymentDetails?.paymentMethod}
+              </Text>
             </Col>
           </Row>
 
@@ -156,11 +157,9 @@ const Receipt = () => {
                 </Text>
               </Col>
               <Col span={12}>
-                <CustomInput
-                  className="border-t-0 border-x-0 border-b-0 float-right bg-transparent font-bold max-w-[100px] text-right text-xs"
-                  value={formatAmount(paymentDetails?.amountPaid ?? 0)}
-                  readOnly
-                />
+                <Text className="float-right mt-1 mr-1 text-xs font-bold max-w-[100px]  text-xs">
+                  {formatAmount(paymentDetails?.amountPaid ?? 0)}
+                </Text>
               </Col>
             </Row>
           </Form.Item>
@@ -170,6 +169,7 @@ const Receipt = () => {
               className="border-t-0 border-x-0 border-b-2 float-right bg-transparent text-xs"
               readOnly
             />
+
             <p className="text-center text-xs">Authorized Signature</p>
           </Form.Item>
         </Form>
