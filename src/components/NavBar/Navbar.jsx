@@ -35,7 +35,7 @@ const Navbar = ({ currentRoute }) => {
           <img
             src={logo}
             alt="Brain Hub Logo"
-            className="h-8 w-8 rounded-full mr-2"
+            className="h-12 w-12 rounded-full mr-2"
           />
           <div className="text-white text-2xl font-bold">Brain Hub</div>
         </div>

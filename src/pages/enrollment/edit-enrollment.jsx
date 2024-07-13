@@ -1,13 +1,12 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
+import React, { useState } from "react";
 import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
 import { useCourse } from "../../contexts/courses";
 import { useStudentContext } from "../../contexts/students";
-import { Select, Input, Form, Radio, AutoComplete, Checkbox } from "antd";
+import { Select, Input, Form, Checkbox } from "antd";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
 import { useOfferingsContext } from "../../contexts/offerings";
-import useMutation from "../../hooks/useMutation";
 import useOffering from "../../hooks/useOffering";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 
@@ -22,17 +21,6 @@ import { getCourseOfferingName } from "../../utils/mappings";
 
 const { Option } = Select;
 const { TextArea } = Input;
-
-const options = [
-  {
-    label: "Existing",
-    value: "existing",
-  },
-  {
-    label: "New",
-    value: "new",
-  },
-];
 
 const EditEnrollment = () => {
   const navigate = useNavigate();
@@ -96,9 +84,19 @@ const EditEnrollment = () => {
               disabled
             />
           </Form.Item>
-          <Form.Item label="Year" name="year">
+          <Form.Item
+            label="Year"
+            name="year"
+            className="mb-[3vh]"
+            rules={[
+              {
+                required: true,
+                message: "Please select a year",
+              },
+            ]}
+          >
             <Select
-              className="w-full mb=[2vh]"
+              className="w-full "
               size="large"
               onChange={(value) =>
                 setOfferingsSearchParams({
@@ -115,7 +113,17 @@ const EditEnrollment = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item label="Course" name="course_name">
+          <Form.Item
+            label="Course"
+            name="course_name"
+            className="mb-[3vh]"
+            rules={[
+              {
+                required: true,
+                message: "Please select a course",
+              },
+            ]}
+          >
             <Select
               className="w-full"
               loading={getCoursesLoading}
@@ -135,128 +143,145 @@ const EditEnrollment = () => {
                 ))}
             </Select>
           </Form.Item>
-        </Form>
-
-        <Form.Item
-          label="Course Offering:"
-          name="courseId"
-          layout="vertical"
-          className="w-1/2 mb-[2vh]"
-        >
-          <Select
-            size="large"
-            disabled={getOfferingsLoading || getOfferingsError}
-            onChange={(value) => setSelectedOfferingId(value)}
+          <Form.Item
+            label="Course Offering:"
+            name="courseId"
+            layout="vertical"
+            className="w-full mb-[3vh]"
+            rules={[
+              {
+                required: true,
+                message: "Please select a course offering",
+              },
+            ]}
           >
-            {offerings &&
-              offerings?.data?.map((offering) => {
-                return (
-                  <Option key={offering?.id} value={offering?.id}>
-                    {getCourseOfferingName(offering)}
-                  </Option>
-                );
-              })}
-          </Select>
+            <Select
+              size="large"
+              disabled={getOfferingsLoading || getOfferingsError}
+              onChange={(value) => setSelectedOfferingId(value)}
+            >
+              {offerings &&
+                offerings?.data?.map((offering) => {
+                  return (
+                    <Option key={offering?.id} value={offering?.id}>
+                      {getCourseOfferingName(offering)}
+                    </Option>
+                  );
+                })}
+            </Select>
 
-          {getOfferingsError && (
-            <label className="text-secondary">
-              Error loading offerings. please try again later!{" "}
-            </label>
-          )}
-        </Form.Item>
+            {getOfferingsError && (
+              <label className="text-secondary">
+                Error loading offerings. please try again later!{" "}
+              </label>
+            )}
+          </Form.Item>
 
-        <Form.Item
-          label="Year Level"
-          name="yearLevel"
-          layout="vertical"
-          className="w-1/2 mb-[2vh]"
-        >
-          <Select
-            size="large"
+          <Form.Item
+            label="Year Level"
             name="yearLevel"
-            onChange={(data) =>
-              setAdditionalEnrollmentData({
-                ...additionalEnrollmentData,
-                yearLevel: data,
-              })
-            }
+            layout="vertical"
+            className="w-full mb-[3vh]"
+            rules={[
+              {
+                required: true,
+                message: "Please select a year level",
+              },
+            ]}
           >
-            {YEAR_LEVELS?.map((year) => (
-              <Option value={year} key={year}>
-                {year}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
+            <Select
+              size="large"
+              name="yearLevel"
+              onChange={(data) =>
+                setAdditionalEnrollmentData({
+                  ...additionalEnrollmentData,
+                  yearLevel: data,
+                })
+              }
+            >
+              {YEAR_LEVELS?.map((year) => (
+                <Option value={year} key={year}>
+                  {year}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
 
-        <Form.Item
-          label="Review Fee"
-          name="reviewFee"
-          layout="vertical"
-          className="w-full mb-[2vh]"
-        >
-          <CustomInput
-            className="w-1/2 mb-[2vh] px-[12px] py-[10px]"
-            type="text"
-            value={additionalEnrollmentData?.reviewFee}
-            onChange={(e) =>
-              setAdditionalEnrollmentData({
-                ...additionalEnrollmentData,
-                reviewFee: e.target.value,
-              })
-            }
-          />
-        </Form.Item>
+          <Form.Item
+            label="Review Fee"
+            name="reviewFee"
+            layout="vertical"
+            className="w-full mb-[2vh]"
+          >
+            <CustomInput
+              className="mb-[2vh] px-[12px] py-[10px]"
+              type="text"
+              value={additionalEnrollmentData?.reviewFee}
+              onChange={(e) =>
+                setAdditionalEnrollmentData({
+                  ...additionalEnrollmentData,
+                  reviewFee: e.target.value,
+                })
+              }
+            />
+          </Form.Item>
 
-        <Form.Item
-          label="Discount Amount"
-          name="discountAmount"
-          layout="vertical"
-          className="w-1/2 mb-[2vh]"
-        >
-          <CustomInput
-            type="text"
-            name="discount"
-            onChange={(e) =>
-              setAdditionalEnrollmentData({
-                ...additionalEnrollmentData,
-                discountAmount: e.target.value,
-              })
-            }
-          />
-        </Form.Item>
+          <Form.Item
+            label="Discount Amount"
+            name="discountAmount"
+            layout="vertical"
+            className="w-full mb-[3vh]"
+            rules={[
+              {
+                required: true,
+                message: "Please input discount amount",
+              },
+            ]}
+          >
+            <CustomInput
+              type="text"
+              name="discount"
+              onChange={(e) =>
+                setAdditionalEnrollmentData({
+                  ...additionalEnrollmentData,
+                  discountAmount: e.target.value,
+                })
+              }
+            />
+          </Form.Item>
 
-        <Form.Item
-          label="Remarks"
-          name="remarks"
-          layout="vertical"
-          className="w-1/2 mb-[2vh]"
-        >
-          <CustomInput
-            type="text"
+          <Form.Item
+            label="Remarks"
             name="remarks"
-            onChange={(e) =>
-              setAdditionalEnrollmentData({
-                ...additionalEnrollmentData,
-                remarks: e.target.value,
-              })
-            }
-          />
-        </Form.Item>
+            layout="vertical"
+            className="w-full mb-[2vh]"
+          >
+            <CustomInput
+              type="text"
+              name="remarks"
+              onChange={(e) =>
+                setAdditionalEnrollmentData({
+                  ...additionalEnrollmentData,
+                  remarks: e.target.value,
+                })
+              }
+            />
+          </Form.Item>
 
-        <Form.Item
-          name="backOutStudent"
-          layout="vertical"
-          className="w-1/2 mb-[2vh]"
-        >
-          <Checkbox>Backout Student</Checkbox>
-        </Form.Item>
+          <Form.Item
+            name="backOutStudent"
+            layout="vertical"
+            className="w-full mb-[2vh]"
+          >
+            <Checkbox>Backout Student</Checkbox>
+          </Form.Item>
 
-        <Form.Item className="flex justify-center w-1/2">
-          <CustomButton type="primary" htmlType="submit" size="large">
-            Update
-          </CustomButton>
-        </Form.Item>
+          <Form.Item className="flex justify-center w-full">
+            <CustomButton type="primary" htmlType="submit" size="large">
+              Update
+            </CustomButton>
+          </Form.Item>
+        </Form>
       </div>
     </div>
   );
