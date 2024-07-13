@@ -88,7 +88,7 @@ export const REVIEW_PROGRAM = [
   },
 ];
 
-export const PROCESSED_BY = ['Ma. Nelly Wendam', 'Christine Dela Torre', "Elaine May Entreguena"];
+export const PROCESSED_BY = ['Ma. Nelly Wendam', 'Christine Dela Torre', "Elaine Mae Entreguena"];
 
 export const PAYMENT_METHODS = [
   {
