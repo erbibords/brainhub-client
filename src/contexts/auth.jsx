@@ -4,11 +4,11 @@ import React, {
   useCallback,
   useState,
   useEffect,
-} from "react";
-import axiosInstance from "../utils/axiosInstance";
-import { setToken, getToken } from "../utils/token";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
+} from 'react';
+import axiosInstance from '../utils/axiosInstance';
+import { setToken, getToken, setBranch } from '../utils/token';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export const AuthContext = createContext();
 
@@ -19,10 +19,10 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (!getToken()) {
-      navigate("/login");
+      navigate('/login');
       Swal.fire({
-        icon: "warning",
-        title: "Your session has ended, please login again!",
+        icon: 'warning',
+        title: 'Your session has ended, please login again!',
         timer: 2000,
       });
     } else {
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
     async (email, password) => {
       setIsLoading(true);
       try {
-        const res = await axiosInstance.post("/login", {
+        const res = await axiosInstance.post('/login', {
           email,
           password,
         });
@@ -43,11 +43,13 @@ export const AuthProvider = ({ children }) => {
           setIsLoading(false);
           setIsAuthenticated(true);
           setToken(res.data.token);
+          setBranch(res.data?.branchId ?? '');
           return true;
         }
 
         return false;
       } catch (error) {
+        console.error(`Unable to process login`, { error });
         setIsLoading(false);
         setIsAuthenticated(false);
         return false;

@@ -1,35 +1,35 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
-import CustomInput from "../../components/Input/Input";
-import useSchools from "../../hooks/useSchools";
-import { useCourse } from "../../contexts/courses";
-import { useStudentContext } from "../../contexts/students";
-import { Select, Input, Form, Radio, AutoComplete } from "antd";
-import Swal from "sweetalert2";
-import CustomButton from "../../components/Button/Button";
-import { useOfferingsContext } from "../../contexts/offerings";
-import useMutation from "../../hooks/useMutation";
-import useOffering from "../../hooks/useOffering";
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import CustomInput from '../../components/Input/Input';
+import useSchools from '../../hooks/useSchools';
+import { useCourse } from '../../contexts/courses';
+import { useStudentContext } from '../../contexts/students';
+import { Select, Input, Form, Radio, AutoComplete } from 'antd';
+import Swal from 'sweetalert2';
+import CustomButton from '../../components/Button/Button';
+import { useOfferingsContext } from '../../contexts/offerings';
+import useMutation from '../../hooks/useMutation';
+import useOffering from '../../hooks/useOffering';
 
 import {
   DEFAULT_BRANCH_ID,
   PROCESSED_BY,
   YEAR,
   YEAR_LEVELS,
-} from "../../constants";
-import { useNavigate } from "react-router-dom";
-import { getCourseOfferingName } from "../../utils/mappings";
+} from '../../constants';
+import { useNavigate } from 'react-router-dom';
+import { getCourseOfferingName } from '../../utils/mappings';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
 const options = [
   {
-    label: "Existing",
-    value: "existing",
+    label: 'Existing',
+    value: 'existing',
   },
   {
-    label: "New",
-    value: "new",
+    label: 'New',
+    value: 'new',
   },
 ];
 
@@ -50,11 +50,11 @@ const Enrollment = () => {
   const { students, studentDataLoading, getStudentError, addStudent } =
     useStudentContext();
   const [studentToEnrollRadioValue, setstudentToEnrollRadioValue] =
-    useState("existing");
+    useState('existing');
   const [selectedOfferingId, setSelectedOfferingId] = useState(undefined);
   const [selectedProcessedBy, setSelectedProcessedBy] = useState(undefined);
   const [selectedExistingStudentId, setSelectedStudentId] = useState(undefined);
-  const [takerType, setTakerType] = useState("FIRST_TAKER");
+  const [takerType, setTakerType] = useState('FIRST_TAKER');
   const [additionalEnrollmentData, setAdditionalEnrollmentData] = useState({
     yearLevel: undefined,
     reviewFee: undefined,
@@ -80,9 +80,9 @@ const Enrollment = () => {
   };
 
   const { mutate: addEnrollment, loading: addEnrollmentLoading } = useMutation(
-    `/branches/${DEFAULT_BRANCH_ID}/offerings/${selectedOfferingId}/enrollments`,
-    "PUT",
-    "enrollments"
+    `/branches/${DEFAULT_BRANCH_ID()}/offerings/${selectedOfferingId}/enrollments`,
+    'PUT',
+    'enrollments'
   );
 
   const {
@@ -116,7 +116,7 @@ const Enrollment = () => {
   const filteredStudentOptions = useMemo(() => {
     if (
       !studentSearchText ||
-      studentSearchText === "" ||
+      studentSearchText === '' ||
       !students ||
       students.data < 1
     ) {
@@ -139,8 +139,8 @@ const Enrollment = () => {
 
       if (!data.studentId) {
         Swal.fire({
-          icon: "warning",
-          title: "Please add student to enroll!",
+          icon: 'warning',
+          title: 'Please add student to enroll!',
           timer: 2500,
         });
 
@@ -149,8 +149,8 @@ const Enrollment = () => {
 
       if (!data.takerType) {
         Swal.fire({
-          icon: "warning",
-          title: "Please add taker type!",
+          icon: 'warning',
+          title: 'Please add taker type!',
           timer: 2500,
         });
         return;
@@ -158,8 +158,8 @@ const Enrollment = () => {
 
       if (!data.processedBy) {
         Swal.fire({
-          icon: "warning",
-          title: "Please select processed by.",
+          icon: 'warning',
+          title: 'Please select processed by.',
           timer: 2500,
         });
         return;
@@ -167,8 +167,8 @@ const Enrollment = () => {
 
       if (!data.yearLevel) {
         Swal.fire({
-          icon: "warning",
-          title: "Please select year level.",
+          icon: 'warning',
+          title: 'Please select year level.',
           timer: 2500,
         });
         return;
@@ -176,8 +176,8 @@ const Enrollment = () => {
 
       if (!data.reviewFee) {
         Swal.fire({
-          icon: "warning",
-          title: "Please add review fee.",
+          icon: 'warning',
+          title: 'Please add review fee.',
           timer: 2500,
         });
         return;
@@ -190,17 +190,17 @@ const Enrollment = () => {
           const studentId = data?.studentId;
           navigate(`/prints/enrollment/${studentId}/${enrollmentId}`);
           Swal.fire({
-            icon: "success",
-            title: "Enrollment successful!",
-            text: "Redirecting to enrollment form printing...",
+            icon: 'success',
+            title: 'Enrollment successful!',
+            text: 'Redirecting to enrollment form printing...',
             timer: 2500,
           });
         }
       } catch (error) {
         Swal.fire({
-          icon: "error",
-          title: "Enrollment failed!",
-          text: "This may be due to inputs. Please try again later!",
+          icon: 'error',
+          title: 'Enrollment failed!',
+          text: 'This may be due to inputs. Please try again later!',
           timer: 2500,
         });
       }
@@ -215,8 +215,8 @@ const Enrollment = () => {
         if (res && res.id) {
           const studentId = res.id;
           const enrollmentData = {
-            takerType: "FIRST_TAKER",
-            status: "",
+            takerType: 'FIRST_TAKER',
+            status: '',
             studentId,
             processedBy: selectedProcessedBy,
             discountAmount: additionalEnrollmentData?.discountAmount,
@@ -231,9 +231,9 @@ const Enrollment = () => {
         }
       } catch (error) {
         Swal.fire({
-          icon: "error",
-          title: "Error adding student!",
-          text: "It may be due to inputs, Please double check and try again!",
+          icon: 'error',
+          title: 'Error adding student!',
+          text: 'It may be due to inputs, Please double check and try again!',
           timer: 2000,
         });
       }
@@ -244,8 +244,8 @@ const Enrollment = () => {
   const enrollExistingStudent = useCallback(async () => {
     if (!selectedOfferingId) {
       Swal.fire({
-        icon: "warning",
-        title: "Please select course offering!",
+        icon: 'warning',
+        title: 'Please select course offering!',
         timer: 2000,
       });
       return;
@@ -253,8 +253,8 @@ const Enrollment = () => {
 
     if (!selectedProcessedBy) {
       Swal.fire({
-        icon: "warning",
-        title: "Please select processed by.",
+        icon: 'warning',
+        title: 'Please select processed by.',
         timer: 2500,
       });
       return;
@@ -263,7 +263,7 @@ const Enrollment = () => {
     const data = {
       takerType,
       studentId: selectedExistingStudentId,
-      status: "",
+      status: '',
       processedBy: selectedProcessedBy,
       discountAmount: additionalEnrollmentData?.discountAmount,
       reviewFee: (
@@ -288,8 +288,8 @@ const Enrollment = () => {
     async (values) => {
       if (!selectedOfferingId) {
         Swal.fire({
-          icon: "warning",
-          title: "Please select course offering!",
+          icon: 'warning',
+          title: 'Please select course offering!',
           timer: 2000,
         });
         return;
@@ -391,7 +391,7 @@ const Enrollment = () => {
 
           {getOfferingsError && (
             <label className="text-secondary">
-              Error loading offerings. please try again later!{" "}
+              Error loading offerings. please try again later!{' '}
             </label>
           )}
         </Form.Item>
@@ -501,7 +501,7 @@ const Enrollment = () => {
             value={studentToEnrollRadioValue}
             optionType="button"
           />
-          {studentToEnrollRadioValue === "existing" && (
+          {studentToEnrollRadioValue === 'existing' && (
             <>
               <Form.Item
                 label="Student Name"
@@ -524,7 +524,7 @@ const Enrollment = () => {
                 />
                 {getStudentError && (
                   <label className="text-secondary">
-                    Error loading students. please try again later!{" "}
+                    Error loading students. please try again later!{' '}
                   </label>
                 )}
               </Form.Item>
@@ -547,7 +547,7 @@ const Enrollment = () => {
           )}
         </div>
 
-        {studentToEnrollRadioValue === "new" && (
+        {studentToEnrollRadioValue === 'new' && (
           <Form
             name="enrollment"
             onFinish={onFinish}
@@ -574,7 +574,7 @@ const Enrollment = () => {
                 label="First Name"
                 name="firstName"
                 rules={[
-                  { required: true, message: "Please input your First Name" },
+                  { required: true, message: 'Please input your First Name' },
                 ]}
               >
                 <CustomInput type="text" name="firstName" />
@@ -584,7 +584,7 @@ const Enrollment = () => {
                 label="Middle Name"
                 name="middleName"
                 rules={[
-                  { required: true, message: "Please input your Middle Name" },
+                  { required: true, message: 'Please input your Middle Name' },
                 ]}
               >
                 <CustomInput type="text" name="middleName" />
@@ -594,7 +594,7 @@ const Enrollment = () => {
                 label="Last Name"
                 name="lastName"
                 rules={[
-                  { required: true, message: "Please input your Last Name" },
+                  { required: true, message: 'Please input your Last Name' },
                 ]}
               >
                 <CustomInput type="text" name="lastName" />
@@ -604,7 +604,7 @@ const Enrollment = () => {
                 label="School"
                 name="schoolId"
                 rules={[
-                  { required: true, message: "Please input your School" },
+                  { required: true, message: 'Please input your School' },
                 ]}
               >
                 <Select
@@ -625,7 +625,7 @@ const Enrollment = () => {
                 label="Address"
                 name="address"
                 rules={[
-                  { required: true, message: "Please input your address!" },
+                  { required: true, message: 'Please input your address!' },
                 ]}
               >
                 <TextArea
@@ -642,7 +642,7 @@ const Enrollment = () => {
                 label="Contact No."
                 name="contactNumber"
                 rules={[
-                  { required: true, message: "Please input your Contact No." },
+                  { required: true, message: 'Please input your Contact No.' },
                 ]}
               >
                 <CustomInput
@@ -742,7 +742,7 @@ const Enrollment = () => {
         )}
 
         {/* Save button */}
-        {studentToEnrollRadioValue === "existing" && (
+        {studentToEnrollRadioValue === 'existing' && (
           <div className="text-right mb-5 w-1/2 flex justify-center">
             <CustomButton
               type="primary"

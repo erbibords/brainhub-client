@@ -1,7 +1,7 @@
 // src/components/SideBar/Sidebar.jsx
-import React from "react";
-import { Layout, Menu } from "antd";
-import { Link, useLocation } from "react-router-dom";
+import React from 'react';
+import { Layout, Menu } from 'antd';
+import { Link, useLocation } from 'react-router-dom';
 import {
   UserOutlined,
   LaptopOutlined,
@@ -10,13 +10,16 @@ import {
   PlusOutlined,
   FlagOutlined,
   NotificationOutlined,
-} from "@ant-design/icons";
-import { useMediaQuery } from "react-responsive";
+} from '@ant-design/icons';
+import { useMediaQuery } from 'react-responsive';
+import { getBranch } from '../../utils/token';
 
 const { Sider } = Layout;
 
 const Sidebar = () => {
-  const isMobile = useMediaQuery({ query: "(max-width: 768px) (background:white;)" });
+  const isMobile = useMediaQuery({
+    query: '(max-width: 768px) (background:white;)',
+  });
   const location = useLocation();
 
   const getMenuKeys = () => {
@@ -24,29 +27,28 @@ const Sidebar = () => {
     let selectedKey = [];
     let openKeys = [];
 
-    if (pathname.startsWith("/enrollment")) {
-      selectedKey = ["enrollment"];
-    } else if (pathname.startsWith("/students")) {
-      selectedKey = ["student_list"];
-    } else if (pathname.startsWith("/courses")) {
-      selectedKey = ["courses"];
-    } else if (pathname.startsWith("/payments/add")) {
-      selectedKey = ["addPayment"];
-      openKeys = ["addPayment"];
-    } else if (pathname.startsWith("/payments/list")) {
-      selectedKey = ["payments_list"];
-      openKeys = ["payments_list"];
-    }else if (pathname.startsWith("/offerings")) {
-      selectedKey = ["offerings"];
-    }else if (pathname.startsWith("/view-enrollment")) {
-      selectedKey = ["enrollment"];
-    }else if (pathname.startsWith("/review-program")) {
-      selectedKey = ["program"];
+    if (pathname.startsWith('/enrollment')) {
+      selectedKey = ['enrollment'];
+    } else if (pathname.startsWith('/students')) {
+      selectedKey = ['student_list'];
+    } else if (pathname.startsWith('/courses')) {
+      selectedKey = ['courses'];
+    } else if (pathname.startsWith('/payments/add')) {
+      selectedKey = ['addPayment'];
+      openKeys = ['addPayment'];
+    } else if (pathname.startsWith('/payments/list')) {
+      selectedKey = ['payments_list'];
+      openKeys = ['payments_list'];
+    } else if (pathname.startsWith('/offerings')) {
+      selectedKey = ['offerings'];
+    } else if (pathname.startsWith('/view-enrollment')) {
+      selectedKey = ['enrollment'];
+    } else if (pathname.startsWith('/review-program')) {
+      selectedKey = ['program'];
+    } else if (pathname.startsWith('/schools')) {
+      selectedKey = ['schools'];
     }
-    else if (pathname.startsWith("/schools")) {
-      selectedKey = ["schools"];
-    }
-    
+
     return { selectedKey, openKeys };
   };
 
@@ -77,7 +79,7 @@ const Sidebar = () => {
         <Menu.Item key="payments_list" icon={<DollarCircleOutlined />}>
           <Link to="/payments/list">Payments</Link>
         </Menu.Item>
-       
+
         <Menu.Item key="offerings" icon={<NotificationOutlined />}>
           <Link to="/offerings">Offerings</Link>
         </Menu.Item>
@@ -91,14 +93,17 @@ const Sidebar = () => {
         <Menu.Item key="courses" icon={<BookOutlined />}>
           <Link to="/courses">Courses</Link>
         </Menu.Item>
-      
-        
-       
-       
+
         {/* <Menu.Item key="addPayment" icon={<PlusOutlined />}>
           <Link to="/payments/add">Add Payment</Link>
         </Menu.Item> */}
       </Menu>
+
+      <div className="absolute bottom-0 w-full p-4 bg-white">
+        <div class="bg-gray-100 text-gray-300 text-xs font-semibold px-2 py-2 rounded-md">
+          <div>Version: v1.0.0-{getBranch().slice(-7)}</div>
+        </div>
+      </div>
     </Sider>
   );
 };

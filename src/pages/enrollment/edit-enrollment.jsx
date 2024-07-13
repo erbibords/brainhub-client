@@ -102,7 +102,9 @@ const EditEnrollment = () => {
           ...values,
           studentId: data.studentId,
         },
-        `/branches/${DEFAULT_BRANCH_ID}/offerings/${values.courseOffering.id}/enrollments`
+        `/branches/${DEFAULT_BRANCH_ID()}/offerings/${
+          values.courseOffering.id
+        }/enrollments`
       );
       if (enrollmentRes) {
         Swal.fire({

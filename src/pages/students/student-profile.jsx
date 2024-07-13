@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from "react";
-import CustomInput from "../../components/Input/Input";
-import CustomButton from "../../components/Button/Button";
-import { Button, Row, Col, Card, Divider, Skeleton, Form, Select } from "antd";
-import useProfile from "../../hooks/useStudentProfile";
-import useSchools from "../../hooks/useSchools";
-import { useParams, useNavigate } from "react-router-dom";
-import useMutation from "../../hooks/useMutation";
-import Swal from "sweetalert2";
-import { STUDENT_BASE_URL } from "../../constants";
-import { ArrowLeftOutlined } from "@ant-design/icons";
-import { StudentEnrollments } from "./student-enrollments";
-import { PaymentHistory } from "./payment-history";
+import React, { useEffect, useState } from 'react';
+import CustomInput from '../../components/Input/Input';
+import CustomButton from '../../components/Button/Button';
+import { Button, Row, Col, Card, Divider, Skeleton, Form, Select } from 'antd';
+import useProfile from '../../hooks/useStudentProfile';
+import useSchools from '../../hooks/useSchools';
+import { useParams, useNavigate } from 'react-router-dom';
+import useMutation from '../../hooks/useMutation';
+import Swal from 'sweetalert2';
+import { STUDENT_BASE_URL } from '../../constants';
+import { ArrowLeftOutlined } from '@ant-design/icons';
+import { StudentEnrollments } from './student-enrollments';
+import { PaymentHistory } from './payment-history';
 
 const StudentProfile = () => {
   const navigate = useNavigate();
   const params = useParams();
   if (!params?.studentId) {
-    navigate("/students");
+    navigate('/students');
   }
 
   const [form] = Form.useForm();
@@ -30,12 +30,12 @@ const StudentProfile = () => {
   } = useSchools();
 
   if (error || isSchoolError) {
-    navigate("/students");
+    navigate('/students');
   }
 
   const STUDENT_ENTITY_URL = `${STUDENT_BASE_URL}/${params.studentId}`;
   const { mutate: updateStudentProfile, loading: updateStudentLoading } =
-    useMutation(STUDENT_ENTITY_URL, "PUT", "students");
+    useMutation(STUDENT_ENTITY_URL, 'PUT', 'students');
 
   useEffect(() => {
     if (data) {
@@ -48,8 +48,8 @@ const StudentProfile = () => {
 
   const onFormFailed = (errorInfo) => {
     Swal.fire({
-      icon: "error",
-      title: "Student Information Update Error",
+      icon: 'error',
+      title: 'Student Information Update Error',
       text: JSON.stringify(errorInfo),
     });
   };
@@ -59,17 +59,17 @@ const StudentProfile = () => {
       const res = await updateStudentProfile(values);
       if (res) {
         Swal.fire({
-          icon: "success",
-          title: "Student information updated!",
+          icon: 'success',
+          title: 'Student information updated!',
           timer: 2000,
         });
         setIsEditing(false);
       }
     } catch (error) {
       Swal.fire({
-        icon: "error",
-        title: "Student Information Update Error",
-        text: "There might be some error in your entries. Please double check and try again!",
+        icon: 'error',
+        title: 'Student Information Update Error',
+        text: 'There might be some error in your entries. Please double check and try again!',
       });
     }
   };
@@ -80,7 +80,7 @@ const StudentProfile = () => {
     <div>
       <CustomButton
         type="text"
-        onClick={() => navigate("/students")}
+        onClick={() => navigate('/students')}
         icon={<ArrowLeftOutlined />}
         className="mb-6"
       />
@@ -106,17 +106,17 @@ const StudentProfile = () => {
                     </h1>
                   </Col>
                   <Col xs={24} sm={24} md={8} lg={6}>
-                    <div style={{ textAlign: "right", marginBottom: "20px" }}>
+                    <div style={{ textAlign: 'right', marginBottom: '20px' }}>
                       {isEditing ? (
                         <div
                           style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
+                            display: 'flex',
+                            justifyContent: 'flex-end',
                           }}
                         >
                           <Button
                             size="large"
-                            style={{ marginRight: "10px" }}
+                            style={{ marginRight: '10px' }}
                             className="mr-[10px]"
                             loading={updateStudentLoading}
                             disabled={updateStudentLoading}
@@ -154,13 +154,13 @@ const StudentProfile = () => {
                 <div layout="vertical" className="w-1/2">
                   {isEditing && (
                     <>
-                      <strong>First name:</strong>{" "}
+                      <strong>First name:</strong>{' '}
                       <Form.Item
                         name="firstName"
                         rules={[
                           {
                             required: true,
-                            message: "Please input your First Name",
+                            message: 'Please input your First Name',
                           },
                         ]}
                       >
@@ -172,13 +172,13 @@ const StudentProfile = () => {
 
                   {isEditing && (
                     <>
-                      <strong>Middle name:</strong>{" "}
+                      <strong>Middle name:</strong>{' '}
                       <Form.Item
                         name="middleName"
                         rules={[
                           {
                             required: true,
-                            message: "Please input your Middle Name",
+                            message: 'Please input your Middle Name',
                           },
                         ]}
                       >
@@ -190,13 +190,13 @@ const StudentProfile = () => {
 
                   {isEditing && (
                     <>
-                      <strong>Last name:</strong>{" "}
+                      <strong>Last name:</strong>{' '}
                       <Form.Item
                         name="lastName"
                         rules={[
                           {
                             required: true,
-                            message: "Please input your Last Name",
+                            message: 'Please input your Last Name',
                           },
                         ]}
                       >
@@ -206,7 +206,7 @@ const StudentProfile = () => {
                     </>
                   )}
                   <p>
-                    <strong>School:</strong>{" "}
+                    <strong>School:</strong>{' '}
                     {isEditing ? (
                       <Form.Item name="schoolId">
                         <Select
@@ -222,7 +222,7 @@ const StudentProfile = () => {
                   </p>
                   <Divider />
                   <p>
-                    <strong>Address:</strong>{" "}
+                    <strong>Address:</strong>{' '}
                     {isEditing ? (
                       <Form.Item name="address">
                         <CustomInput />
@@ -233,14 +233,14 @@ const StudentProfile = () => {
                   </p>
                   <Divider />
                   <p>
-                    <strong>Contact No.:</strong>{" "}
+                    <strong>Contact No.:</strong>{' '}
                     {isEditing ? (
                       <Form.Item
                         name="contactNumber"
                         rules={[
                           {
                             required: true,
-                            message: "Please input Contact Number",
+                            message: 'Please input Contact Number',
                           },
                         ]}
                       >
@@ -251,7 +251,7 @@ const StudentProfile = () => {
                     )}
                   </p>
                   <Divider />
-                  <div style={{ marginTop: "15px", marginBottom: "20px" }}>
+                  <div style={{ marginTop: '15px', marginBottom: '20px' }}>
                     <small>
                       <i className="mb-[2vh]">
                         Person to be notified in case of emergency:
@@ -259,9 +259,9 @@ const StudentProfile = () => {
                     </small>
                   </div>
                   <p>
-                    <strong>Contact Name:</strong>{" "}
+                    <strong>Contact Name:</strong>{' '}
                     {isEditing ? (
-                      <Form.Item name={["emergencyContact", "name"]}>
+                      <Form.Item name={['emergencyContact', 'name']}>
                         <CustomInput />
                       </Form.Item>
                     ) : (
@@ -270,9 +270,9 @@ const StudentProfile = () => {
                   </p>
                   <Divider />
                   <p>
-                    <strong>Relationship:</strong>{" "}
+                    <strong>Relationship:</strong>{' '}
                     {isEditing ? (
-                      <Form.Item name={["emergencyContact", "relationship"]}>
+                      <Form.Item name={['emergencyContact', 'relationship']}>
                         <CustomInput />
                       </Form.Item>
                     ) : (
@@ -281,9 +281,9 @@ const StudentProfile = () => {
                   </p>
                   <Divider />
                   <p>
-                    <strong>Emergency Address:</strong>{" "}
+                    <strong>Emergency Address:</strong>{' '}
                     {isEditing ? (
-                      <Form.Item name={["emergencyContact", "address"]}>
+                      <Form.Item name={['emergencyContact', 'address']}>
                         <CustomInput />
                       </Form.Item>
                     ) : (
@@ -292,9 +292,9 @@ const StudentProfile = () => {
                   </p>
                   <Divider />
                   <p>
-                    <strong>Emergency Contact No.:</strong>{" "}
+                    <strong>Emergency Contact No.:</strong>{' '}
                     {isEditing ? (
-                      <Form.Item name={["emergencyContact", "contactNumber"]}>
+                      <Form.Item name={['emergencyContact', 'contactNumber']}>
                         <CustomInput />
                       </Form.Item>
                     ) : (

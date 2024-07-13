@@ -16,7 +16,7 @@ function useEnrollments(params = {}) {
     yearOffered = undefined,
   } = params;
 
-  let url = `branches/${DEFAULT_BRANCH_ID}/enrollments`;
+  let url = `branches/${DEFAULT_BRANCH_ID()}/enrollments`;
   const queryParams = new URLSearchParams();
 
   if (pageNo) queryParams.append('pageNo', pageNo);

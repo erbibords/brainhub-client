@@ -1,16 +1,16 @@
-import React, { useCallback, useState } from "react";
-import CustomInput from "../../components/Input/Input";
-import CustomButton from "../../components/Button/Button";
-import { Select, Form, DatePicker } from "antd";
-import { useCourse } from "../../contexts/courses";
-import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
-import { DateTime } from "luxon";
-import useMutation from "../../hooks/useMutation";
-import { DEFAULT_BRANCH_ID, SEMESTER, YEAR } from "../../constants";
-import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
-import { useProgramContext } from "../../contexts/programs";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import React, { useCallback, useState } from 'react';
+import CustomInput from '../../components/Input/Input';
+import CustomButton from '../../components/Button/Button';
+import { Select, Form, DatePicker } from 'antd';
+import { useCourse } from '../../contexts/courses';
+import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
+import { DateTime } from 'luxon';
+import useMutation from '../../hooks/useMutation';
+import { DEFAULT_BRANCH_ID, SEMESTER, YEAR } from '../../constants';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import { useProgramContext } from '../../contexts/programs';
+import { ArrowLeftOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
 const AddOfferings = () => {
@@ -18,9 +18,9 @@ const AddOfferings = () => {
   const { courses, getCoursesLoading, getCoursesError } = useCourse();
   const [selectedCourseId, setSelectedCourseId] = useState(undefined);
   const { mutate: AddOffering, loading: AddOfferingLoading } = useMutation(
-    `branches/${DEFAULT_BRANCH_ID}/courses/${selectedCourseId}/offerings`,
-    "POST",
-    "offerings"
+    `branches/${DEFAULT_BRANCH_ID()}/courses/${selectedCourseId}/offerings`,
+    'POST',
+    'offerings'
   );
   const { programs, getProgramsLoading, getProgramsError } =
     useProgramContext();
@@ -59,26 +59,26 @@ const AddOfferings = () => {
       console.log(values);
       if (!selectedCourseId) {
         Swal.fire({
-          icon: "warning",
-          title: "Please select course for this offering.",
+          icon: 'warning',
+          title: 'Please select course for this offering.',
           timer: 2000,
         });
       }
       try {
         const res = await AddOffering(values);
         if (res) {
-          navigate("/offerings");
+          navigate('/offerings');
           Swal.fire({
-            icon: "success",
-            title: "Offering successfully added!",
+            icon: 'success',
+            title: 'Offering successfully added!',
             timer: 2000,
           });
         }
       } catch (error) {
         Swal.fire({
-          icon: "error",
+          icon: 'error',
           title:
-            "Something went wrong on adding offering, Please try again later!",
+            'Something went wrong on adding offering, Please try again later!',
           timer: 2000,
         });
       }
@@ -90,7 +90,7 @@ const AddOfferings = () => {
     <div className="w-1/2">
       <CustomButton
         type="text"
-        onClick={() => navigate("/offerings")}
+        onClick={() => navigate('/offerings')}
         icon={<ArrowLeftOutlined />}
         className="mb-6"
       />
@@ -99,15 +99,15 @@ const AddOfferings = () => {
         onFinish={onFinish}
         layout="vertical"
         initialValues={{
-          program: "INTENSIVE",
-          semester: "FIRST_SEMESTER",
-          yearOffered: "2024-2025",
+          program: 'INTENSIVE',
+          semester: 'FIRST_SEMESTER',
+          yearOffered: '2024-2025',
         }}
       >
         <Form.Item
           label="Course"
           name="courseId"
-          rules={[{ required: true, message: "Please select course!" }]}
+          rules={[{ required: true, message: 'Please select course!' }]}
         >
           <Select
             loading={getCoursesLoading}
@@ -120,7 +120,7 @@ const AddOfferings = () => {
               courses?.data.map((course) => {
                 return (
                   <Option key={course.id} value={course.id}>
-                    {" "}
+                    {' '}
                     {course.name}
                   </Option>
                 );
@@ -131,7 +131,7 @@ const AddOfferings = () => {
         <Form.Item
           label="Review Program"
           name="reviewProgramId"
-          rules={[{ required: true, message: "Please select review program!" }]}
+          rules={[{ required: true, message: 'Please select review program!' }]}
         >
           <Select
             className="h-[40px] w"
@@ -151,7 +151,7 @@ const AddOfferings = () => {
         <Form.Item
           label="Semester Offered"
           name="semester"
-          rules={[{ required: true, message: "Please select semester!" }]}
+          rules={[{ required: true, message: 'Please select semester!' }]}
         >
           <Select name="semester" className="h-[40px] w">
             {SEMESTER.map((sem) => (
@@ -165,7 +165,7 @@ const AddOfferings = () => {
         <Form.Item
           label="School Year"
           name="yearOffered"
-          rules={[{ required: true, message: "Please select year!" }]}
+          rules={[{ required: true, message: 'Please select year!' }]}
         >
           <Select placeholder="Year" className="h-[40px] w-full">
             {YEAR.map((y) => (
@@ -179,7 +179,7 @@ const AddOfferings = () => {
         <Form.Item
           label="Start Date"
           name="startDate"
-          rules={[{ required: true, message: "Please select start date!" }]}
+          rules={[{ required: true, message: 'Please select start date!' }]}
         >
           <DatePicker className="w-full" size="large" />
         </Form.Item>
@@ -188,7 +188,7 @@ const AddOfferings = () => {
           label="Payment Deadline"
           name="paymentDeadline"
           rules={[
-            { required: true, message: "Please select payment deadline!" },
+            { required: true, message: 'Please select payment deadline!' },
           ]}
         >
           <DatePicker className="w-full" size="large" />
@@ -197,7 +197,7 @@ const AddOfferings = () => {
         <Form.Item
           label="Review Fee"
           name="reviewCost"
-          rules={[{ required: true, message: "Please input review cost!" }]}
+          rules={[{ required: true, message: 'Please input review cost!' }]}
         >
           <CustomInput type="text" className="w-full h-[40px]" />
         </Form.Item>
