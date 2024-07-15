@@ -28,7 +28,13 @@ export const StudentEnrollments = ({ enrollments }) => {
       key: "createdAt",
       render: (data) => formatDate(data),
     },
-    { title: "processedBy", dataIndex: "processedBy", key: "processedBy" },
+    { title: "Processed By", dataIndex: "processedBy", key: "processedBy" },
+    {
+      title: "Remaining Balance",
+      dataIndex: "remainingBalance",
+      key: "remainingBalance",
+      render: (data) => formatAmount(data),
+    },
   ];
 
   return (
