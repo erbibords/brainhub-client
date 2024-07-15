@@ -13,6 +13,11 @@ export const PaymentHistory = ({ payments }) => {
   const navigate = useNavigate();
   if (!payments) return null;
 
+  const sortedPayments = payments.sort((a, b) => {
+    return new Date(a.createdAt) - new Date(b.createdAt);
+  });
+
+  console.log(sortedPayments, payments);
   const columns = [
     {
       title: "Reference",
@@ -90,7 +95,7 @@ export const PaymentHistory = ({ payments }) => {
     <Row gutter={[16, 16]}>
       <Col span={24}>
         <Table
-          dataSource={payments}
+          dataSource={sortedPayments}
           columns={columns}
           title={() => <h2 className="text-2xl">Payments History</h2>}
         />

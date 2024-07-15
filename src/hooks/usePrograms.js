@@ -3,7 +3,7 @@ import { REVIEW_PROGRAM_BASE_URL } from '../constants';
 import fetcher from '../utils/fetcher';
 
 function usePrograms(params = {}) {
-  const { name = undefined, pageNo = 1, pageSize = 25 } = params;
+  const { name = undefined, pageNo = 1, pageSize = 250 } = params;
 
   let url = REVIEW_PROGRAM_BASE_URL;
   const queryParams = new URLSearchParams();

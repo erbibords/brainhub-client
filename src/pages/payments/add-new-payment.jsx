@@ -30,7 +30,6 @@ const AddNewPayment = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
   const { data: cashReference, error: cashReferenceError } = useCashReference();
 
-  console.log(cashReference);
   if (!params?.studentId) {
     navigate("/students");
   }
@@ -47,6 +46,8 @@ const AddNewPayment = () => {
   );
 
   const { data: student } = useProfile(params?.studentId);
+
+  console.log(student);
 
   useEffect(() => {
     const handleResize = () => {

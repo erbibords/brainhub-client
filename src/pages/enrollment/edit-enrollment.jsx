@@ -1,53 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import CustomInput from '../../components/Input/Input';
-import { Select, Input, Form } from 'antd';
-import CustomButton from '../../components/Button/Button';
-import useMutation from '../../hooks/useMutation';
-import { ArrowLeftOutlined } from '@ant-design/icons';
-import { useParams, useNavigate } from 'react-router-dom';
-import { DEFAULT_BRANCH_ID, YEAR_LEVELS, PROCESSED_BY } from '../../constants';
-import useEnrollment from '../../hooks/useEnrollment';
-import { useOfferingsContext } from '../../contexts/offerings';
-import { getCourseOfferingName } from '../../utils/mappings';
-import Swal from 'sweetalert2';
+import React, { useEffect } from "react";
+import CustomInput from "../../components/Input/Input";
+import { Select, Form, Checkbox } from "antd";
+import CustomButton from "../../components/Button/Button";
+import useMutation from "../../hooks/useMutation";
+import { ArrowLeftOutlined } from "@ant-design/icons";
+import { useParams, useNavigate } from "react-router-dom";
+import { DEFAULT_BRANCH_ID, YEAR_LEVELS, PROCESSED_BY } from "../../constants";
+import useEnrollment from "../../hooks/useEnrollment";
+import { useOfferingsContext } from "../../contexts/offerings";
+import { getCourseOfferingName } from "../../utils/mappings";
+import Swal from "sweetalert2";
 
 const { Option } = Select;
-const { TextArea } = Input;
-
-const options = [
-  {
-    label: 'Existing',
-    value: 'existing',
-  },
-  {
-    label: 'New',
-    value: 'new',
-  },
-];
 
 const EditEnrollment = () => {
   const navigate = useNavigate();
   const params = useParams();
   if (!params?.enrollmentId) {
-    console.log('INSLAHADW');
-    navigate('/enrollments');
+    navigate("/enrollments");
   }
 
   const [form] = Form.useForm();
-  const [isEditing, setIsEditing] = useState(false);
 
-  const { data, error, isLoading } = useEnrollment(params?.enrollmentId);
+  const { data, error } = useEnrollment(params?.enrollmentId);
   if (error) {
-    console.log('ERRROIST', error);
-    navigate('/enrollments');
+    console.log("ERRROIST", error);
+    navigate("/enrollments");
   }
 
   const { data: offerings } = useOfferingsContext();
 
-  console.log('======DATA=====', data);
+  console.log("======DATA=====", data);
 
-  const { mutate: updatedEnrollment, loading: addEnrollmentLoading } =
-    useMutation('', 'PUT', 'enrollments');
+  const { mutate: updatedEnrollment } = useMutation("", "PUT", "enrollments");
 
   useEffect(() => {
     if (data) {
@@ -58,39 +43,46 @@ const EditEnrollment = () => {
   }, [data]);
 
   const onFormSubmission = async (values) => {
-    console.log('values', values);
+    const reviewFee =
+      parseFloat(data?.discountAmount ?? 0) +
+      parseFloat(data?.reviewFee) -
+      parseFloat(values?.discountAmount ?? 0);
+    const updatedValues = {
+      ...values,
+      reviewFee: reviewFee.toString(),
+    };
 
-    if (!values.takerType) {
+    if (!updatedValues.takerType) {
       Swal.fire({
-        icon: 'warning',
-        title: 'Please add taker type!',
+        icon: "warning",
+        title: "Please add taker type!",
         timer: 2500,
       });
       return;
     }
 
-    if (!values.processedBy) {
+    if (!updatedValues.processedBy) {
       Swal.fire({
-        icon: 'warning',
-        title: 'Please select processed by.',
+        icon: "warning",
+        title: "Please select processed by.",
         timer: 2500,
       });
       return;
     }
 
-    if (!values.yearLevel) {
+    if (!updatedValues.yearLevel) {
       Swal.fire({
-        icon: 'warning',
-        title: 'Please select year level.',
+        icon: "warning",
+        title: "Please select year level.",
         timer: 2500,
       });
       return;
     }
 
-    if (!values.reviewFee) {
+    if (!updatedValues.reviewFee) {
       Swal.fire({
-        icon: 'warning',
-        title: 'Please add review fee.',
+        icon: "warning",
+        title: "Please add review fee.",
         timer: 2500,
       });
       return;
@@ -99,24 +91,23 @@ const EditEnrollment = () => {
     try {
       const enrollmentRes = await updatedEnrollment(
         {
-          ...values,
+          ...updatedValues,
           studentId: data.studentId,
         },
-        `/branches/${DEFAULT_BRANCH_ID}/offerings/${values.courseOffering.id}/enrollments`
+        `/branches/${DEFAULT_BRANCH_ID}/offerings/${updatedValues.courseOffering.id}/enrollments`
       );
       if (enrollmentRes) {
         Swal.fire({
-          icon: 'success',
-          title: 'Enrollment successful!',
-          text: 'Redirecting to enrollment form printing...',
+          icon: "success",
+          title: "Enrollment Updated!",
           timer: 2500,
         });
       }
     } catch (error) {
       Swal.fire({
-        icon: 'error',
-        title: 'Enrollment failed!',
-        text: 'This may be due to inputs. Please try again later!',
+        icon: "error",
+        title: "Enrollment update failed!",
+        text: "This may be due to inputs. Please try again later!",
         timer: 2500,
       });
     }
@@ -127,7 +118,7 @@ const EditEnrollment = () => {
       <div>
         <CustomButton
           type="text"
-          onClick={() => navigate('/enrollments')}
+          onClick={() => navigate("/enrollments")}
           icon={<ArrowLeftOutlined />}
           className="mb-6"
         />
@@ -136,21 +127,21 @@ const EditEnrollment = () => {
           onFinish={onFormSubmission}
           form={form}
           layout="vertical"
-          className="w-1/2"
+          className="w-full"
         >
           <h1 className="text-2xl mb-[2vh]">Edit Student Enrollment</h1>
           <Form.Item
             label="Student name"
             layout="vertical"
-            name={['student', 'fullName']}
-            className="w-full mb-[2vh]"
+            name={["student", "fullName"]}
+            className="w-1/2 mb-[2vh]"
           >
             <CustomInput type="text" name="remarks" disabled />
           </Form.Item>
 
           <Form.Item
             label="Course Offering:"
-            name={['courseOffering', 'id']}
+            name={["courseOffering", "id"]}
             layout="vertical"
             className="w-1/2 mb-[2vh]"
           >
@@ -198,11 +189,11 @@ const EditEnrollment = () => {
             label="Review Fee"
             name="reviewFee"
             layout="vertical"
-            className="w-1/2 mb-[2vh]"
+            className="w-full mb-[2vh] w-full"
           >
-            <CustomInput
-              className="w-1/2 mb-[2vh] px-[12px] py-[10px]"
-              type="text"
+            <input
+              type="number"
+              className="ant-input ant-input-lg css-dev-only-do-not-override-3rel02 ant-input-outlined ant-input-status-success w-1/2 mb-[2vh] px-[12px] py-[10px]"
             />
           </Form.Item>
 
@@ -210,9 +201,28 @@ const EditEnrollment = () => {
             label="Discount Amount"
             name="discountAmount"
             layout="vertical"
+            className="w-full mb-[2vh]"
+          >
+            <input
+              type="number"
+              className="ant-input ant-input-lg css-dev-only-do-not-override-3rel02 ant-input-outlined ant-input-status-success w-1/2 mb-[2vh] px-[12px] py-[10px]"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="backedout"
+            layout="vertical"
             className="w-1/2 mb-[2vh]"
           >
-            <CustomInput type="text" name="discount" onChange={(e) => {}} />
+            <Checkbox
+              name="backedout"
+              size="large"
+              onChange={(e) => {
+                form.setFieldsValue({ backedout: e.target.checked });
+              }}
+            >
+              Backout
+            </Checkbox>
           </Form.Item>
 
           <Form.Item

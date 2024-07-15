@@ -1,21 +1,21 @@
-import React, { useCallback, useState, useMemo } from 'react';
-import { Table, Row, Col, Select, DatePicker, Form, Button, Space } from 'antd';
-import CustomInput from '../../components/Input/Input';
-import useSchools from '../../hooks/useSchools';
-import { useEnrollmentsContext } from '../../contexts/enrollments';
-import { useCourse } from '../../contexts/courses';
-import { DateTime } from 'luxon';
-import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
-import { getCourseById, getSchoolById } from '../../utils/mappings';
-import CustomButton from '../../components/Button/Button';
+import React, { useCallback, useState, useMemo } from "react";
+import { Table, Row, Col, Select, DatePicker, Form, Button, Space } from "antd";
+import CustomInput from "../../components/Input/Input";
+import useSchools from "../../hooks/useSchools";
+import { useEnrollmentsContext } from "../../contexts/enrollments";
+import { useCourse } from "../../contexts/courses";
+import { DateTime } from "luxon";
+import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
+import { getCourseById, getSchoolById } from "../../utils/mappings";
+import CustomButton from "../../components/Button/Button";
 import {
   formatAmount,
   formatSemester,
   formatTakerType,
-} from '../../utils/formatting';
-import { SEMESTER, YEAR } from '../../constants';
-import { useNavigate } from 'react-router-dom';
-import { cleanParams } from '../../utils/formatting';
+} from "../../utils/formatting";
+import { SEMESTER, YEAR } from "../../constants";
+import { useNavigate } from "react-router-dom";
+import { cleanParams } from "../../utils/formatting";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -53,71 +53,67 @@ const Enrollment = () => {
     to: null,
   });
 
-  const handleViewEnrollment = (studentId) => {
-    navigate(`/enrollments/${studentId}`);
-  };
-
   const columns = useMemo(
     () => [
       {
-        title: 'Name',
-        dataIndex: ['student', 'fullName'],
+        title: "Name",
+        dataIndex: ["student", "fullName"],
         render: (data) => <label className="p-1">{data}</label>,
       },
       {
-        title: 'Contact #',
-        dataIndex: 'student',
+        title: "Contact #",
+        dataIndex: "student",
         render: (student) => {
           return <label>{student?.contactNumber}</label>;
         },
       },
       {
-        title: 'Semester',
-        dataIndex: 'courseOffering',
+        title: "Semester",
+        dataIndex: "courseOffering",
         render: (course) => {
           return formatSemester(course.semester);
         },
       },
       {
-        title: 'Year Level',
-        dataIndex: 'yearLevel',
-        key: 'yearLevel',
+        title: "Year Level",
+        dataIndex: "yearLevel",
+        key: "yearLevel",
       },
       {
-        title: 'Enrollment Date',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
+        title: "Enrollment Date",
+        dataIndex: "createdAt",
+        key: "createdAt",
         render: (val) => {
           const date = DateTime.fromISO(val);
-          const formattedDate = date.toFormat('MMM dd, yyyy');
+          const formattedDate = date.toFormat("MMM dd, yyyy");
           return <label>{formattedDate}</label>;
         },
       },
       {
-        title: 'Review Fee',
-        dataIndex: 'reviewFee',
-        key: 'reviewFee',
+        title: "Review Fee",
+        dataIndex: "reviewFee",
+        key: "reviewFee",
         render: (data) => formatAmount(data ?? 0),
       },
       {
-        title: 'Discount Amount',
-        dataIndex: 'discountAmount',
-        key: 'discountAmount',
+        title: "Discount Amount",
+        dataIndex: "discountAmount",
+        key: "discountAmount",
         render: (data) => formatAmount(data ?? 0),
       },
       {
-        title: 'Remarks',
-        dataIndex: 'remarks',
-        key: 'remarks',
+        title: "Remarks",
+        dataIndex: "remarks",
+        key: "remarks",
       },
       {
-        title: 'Processed By',
-        dataIndex: 'processedBy',
-        key: 'processedBy',
+        title: "Processed By",
+        dataIndex: "processedBy",
+        key: "processedBy",
       },
       {
-        title: 'Action',
-        key: 'action',
+        title: "Action",
+        key: "action",
         render: (_, record) => {
           return (
             <Space size="middle">
@@ -217,7 +213,7 @@ const Enrollment = () => {
                 <Form.Item name="dateRange">
                   <p>Date From - Date To:</p>
                   <RangePicker
-                    placeholder={['Date From', 'Date To']}
+                    placeholder={["Date From", "Date To"]}
                     className="h-[50px] w-full"
                     onChange={handleDateRangeChange}
                   />

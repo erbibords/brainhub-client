@@ -40,7 +40,10 @@ const ViewOffering = () => {
 
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
-  const [searchAmount, setSearchAmount] = useState();
+  const [searchAmount, setSearchAmount] = useState({
+    min: 0,
+    max: 10000,
+  });
   const [enrollments, setEnrollments] = useState([]);
   const { courses, coursesError } = useCourse();
   const {
@@ -168,12 +171,25 @@ const ViewOffering = () => {
     },
   ];
 
+  console.log(searchAmount);
+
   const filterEnrollment = useCallback(() => {
-    if (!searchAmount) return offering?.enrollments;
+    if (!searchAmount.min && !searchAmount.max)
+      return offering?.enrollments || [];
     if (!offering?.enrollments) return [];
 
-    const data = offering?.enrollments?.filter(
-      (record) => record.remainingBalance >= searchAmount
+    if (searchAmount?.min >= searchAmount?.max) {
+      Swal.fire({
+        icon: "error",
+        title: "min amount cannot be greater than or equal to max amount!",
+      });
+      return offering?.enrollments || [];
+    }
+
+    const data = offering.enrollments.filter(
+      (record) =>
+        record.remainingBalance >= searchAmount.min &&
+        record.remainingBalance <= searchAmount.max
     );
     setEnrollments(data);
   }, [searchAmount, offering?.enrollments, setEnrollments]);
@@ -384,13 +400,30 @@ const ViewOffering = () => {
               <Row gutter={[16, 16]}>
                 <Col span={12}>
                   <div className="flex flex-col gap-[6px]">
-                    <label> Amount paid:</label>
+                    <label> Amount paid (min - max):</label>
                     <div className="flex gap-[6px]">
                       <CustomInput
                         type="number"
+                        placeholder="min amount"
+                        className="w-full"
+                        value={searchAmount?.min}
+                        onChange={(val) => {
+                          setSearchAmount({
+                            ...searchAmount,
+                            min: val,
+                          });
+                        }}
+                      />
+                      <CustomInput
+                        type="number"
+                        value={searchAmount?.max}
+                        placeholder="max amount"
                         className="w-full"
                         onChange={(val) => {
-                          setSearchAmount(val);
+                          setSearchAmount({
+                            ...searchAmount,
+                            max: val,
+                          });
                         }}
                       />
                       <CustomButton

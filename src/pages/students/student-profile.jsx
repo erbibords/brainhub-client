@@ -169,7 +169,6 @@ const StudentProfile = () => {
                       <Divider />
                     </>
                   )}
-
                   {isEditing && (
                     <>
                       <strong>Middle name:</strong>{" "}
@@ -187,7 +186,6 @@ const StudentProfile = () => {
                       <Divider />
                     </>
                   )}
-
                   {isEditing && (
                     <>
                       <strong>Last name:</strong>{" "}

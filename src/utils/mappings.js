@@ -34,3 +34,9 @@ export const getDataById = (data, id) => {
 export const getLatestData = (data) => data.reduce((latest, current) => {
   return new Date(current.createdAt) > new Date(latest.createdAt) ? current : latest;
 }, data[0]);
+
+
+export const getStudentRemainingBalance = data => {
+  if(!data) 0;
+  return data.reduce((acc, item) => acc + item.remainingBalance, 0);
+};

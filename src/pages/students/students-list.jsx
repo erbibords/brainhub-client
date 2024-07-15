@@ -6,8 +6,15 @@ import { useStudentContext } from "../../contexts/students";
 import useSchools from "../../hooks/useSchools";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import CustomButton from "../../components/Button/Button";
-import { cleanParams, formatTakerType } from "../../utils/formatting";
-import { getLatestData } from "../../utils/mappings";
+import {
+  cleanParams,
+  formatAmount,
+  formatTakerType,
+} from "../../utils/formatting";
+import {
+  getLatestData,
+  getStudentRemainingBalance,
+} from "../../utils/mappings";
 const { Option } = Select;
 
 const StudentsList = () => {
@@ -29,6 +36,8 @@ const StudentsList = () => {
     setParams({});
   }, []);
 
+  console.log(students);
+
   const columns = [
     { title: "Name", dataIndex: "name", key: "name" },
     { title: "School", dataIndex: "school", key: "school" },
@@ -44,6 +53,13 @@ const StudentsList = () => {
     },
     { title: "Contact No.", dataIndex: "contactNumber", key: "contact" },
     { title: "Address.", dataIndex: "address", key: "address" },
+    {
+      title: "Remaining Balance.",
+      dataIndex: "enrollments",
+      key: "balance",
+      render: (data) => formatAmount(getStudentRemainingBalance(data)),
+    },
+
     {
       title: "Action",
       key: "action",
