@@ -99,7 +99,7 @@ const ViewReviewProgram = () => {
                       <CustomInput />
                     </Form.Item>
                   ) : (
-                    "Program 1"
+                    ""
                   )}
                 </p>
                 <Divider />
@@ -118,7 +118,7 @@ const ViewReviewProgram = () => {
                       <CustomInput />
                     </Form.Item>
                   ) : (
-                    "This is test Desc"
+                    ""
                   )}
                 </p>
 
@@ -138,7 +138,7 @@ const ViewReviewProgram = () => {
                       <CustomInput />
                     </Form.Item>
                   ) : (
-                    "This is test Course"
+                    ""
                   )}
                 </p>
 
@@ -158,7 +158,7 @@ const ViewReviewProgram = () => {
                       <CustomInput />
                     </Form.Item>
                   ) : (
-                    "This is test School"
+                    ""
                   )}
                 </p>
               </div>

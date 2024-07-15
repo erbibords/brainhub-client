@@ -99,26 +99,7 @@ const ViewSchools = () => {
                       <CustomInput />
                     </Form.Item>
                   ) : (
-                    "San Beda"
-                  )}
-                </p>
-                <Divider />
-                <p>
-                  <strong>Description:</strong>{" "}
-                  {isEditing ? (
-                    <Form.Item
-                      name="description"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input School description",
-                        },
-                      ]}
-                    >
-                      <CustomInput />
-                    </Form.Item>
-                  ) : (
-                    "This is test School Desc"
+                    ""
                   )}
                 </p>
               </div>
