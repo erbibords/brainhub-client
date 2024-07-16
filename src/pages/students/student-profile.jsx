@@ -105,50 +105,6 @@ const StudentProfile = () => {
                       {data.firstName} {data.middleName} {data.lastName}
                     </h1>
                   </Col>
-                  <Col xs={24} sm={24} md={8} lg={6}>
-                    <div style={{ textAlign: "right", marginBottom: "20px" }}>
-                      {isEditing ? (
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                          }}
-                        >
-                          <Button
-                            size="large"
-                            style={{ marginRight: "10px" }}
-                            className="mr-[10px]"
-                            loading={updateStudentLoading}
-                            disabled={updateStudentLoading}
-                            onClick={() => setIsEditing(false)}
-                          >
-                            Cancel
-                          </Button>
-
-                          <Button
-                            size="large"
-                            type="primary"
-                            className="w-auto bg-primary text-white"
-                            loading={updateStudentLoading}
-                            disabled={updateStudentLoading}
-                            htmlType="submit"
-                          >
-                            Save
-                          </Button>
-                        </div>
-                      ) : (
-                        <Button
-                          type="primary"
-                          size="large"
-                          className="w-auto bg-primary text-white"
-                          disabled={!data && isLoading}
-                          onClick={() => setIsEditing(true)}
-                        >
-                          Edit
-                        </Button>
-                      )}
-                    </div>
-                  </Col>
                 </Row>
                 <Divider />
                 <div layout="vertical" className="w-1/2">
@@ -300,12 +256,50 @@ const StudentProfile = () => {
                     )}
                   </p>
                 </div>
+                <Col xs={24} sm={24} md={8} lg={6}>
+                  <div className="text-right mt-[20px] mb-[20px]">
+                    {isEditing ? (
+                      <div className="flex justify-end">
+                        <Button
+                          size="large"
+                          className="mr-[10px]"
+                          loading={updateStudentLoading}
+                          disabled={updateStudentLoading}
+                          onClick={() => setIsEditing(false)}
+                        >
+                          Cancel
+                        </Button>
+
+                        <Button
+                          size="large"
+                          type="primary"
+                          className="w-auto bg-primary text-white"
+                          loading={updateStudentLoading}
+                          disabled={updateStudentLoading}
+                          htmlType="submit"
+                        >
+                          Save
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        type="primary"
+                        size="large"
+                        className="w-auto bg-primary text-white"
+                        disabled={!data && isLoading}
+                        onClick={() => setIsEditing(true)}
+                      >
+                        Edit
+                      </Button>
+                    )}
+                  </div>
+                </Col>
               </Form>
             </Card>
           )}
         </Col>
       </Row>
-      <Divider />
+
       <StudentEnrollments enrollments={data?.enrollments} />
       <Divider />
       <PaymentHistory payments={data?.payments} />
