@@ -1,19 +1,73 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
-import { Button, Row, Col, Card, Divider, Skeleton, Form } from "antd";
+import { Row, Col, Card, Divider, Form, Select } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useParams, useNavigate } from "react-router-dom";
 import useMutation from "../../hooks/useMutation";
-import usePrograms from "../../hooks/usePrograms";
-
+import { useProgramContext } from "../../contexts/programs";
 import Swal from "sweetalert2";
+import { getDataById } from "../../utils/mappings";
+import { REVIEW_PROGRAM_BASE_URL } from "../../constants";
+import { useCourse } from "../../contexts/courses";
+import useSchools from "../../hooks/useSchools";
+const { Option } = Select;
 
 const ViewReviewProgram = () => {
-  const navigate = useNavigate();
-
+  const [form] = Form.useForm();
   const params = useParams();
+  const navigate = useNavigate();
+  const { programs, getProgramsError } = useProgramContext();
+  const { courses, getCoursesLoading, getCoursesError } = useCourse();
+  const {
+    data: schools,
+    isLoading: schoolsLoading,
+    error: schoolsError,
+  } = useSchools();
+
+  const id = params?.programId;
+
+  const { mutate: updateProgram, loading: updateProgramLoading } = useMutation(
+    `${REVIEW_PROGRAM_BASE_URL}/${id}`,
+    "PUT",
+    "programs"
+  );
+
+  const currentProgram = useMemo(() => {
+    if (!programs) return null;
+
+    return getDataById(programs?.data, id);
+  }, [programs]);
+
   const [isEditing, setIsEditing] = useState(false);
+
+  const onFormSubmission = async (val) => {
+    updateProgram(val);
+    const res = await updateProgram(val);
+    if (res) {
+      Swal.fire({
+        icon: "success",
+        title: "Review program updated!",
+        timer: 2000,
+      });
+      setIsEditing(false);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error updating review program!",
+        timer: 2000,
+      });
+    }
+  };
+  useEffect(() => {
+    if (programs && id && !getProgramsError) {
+      form.setFieldsValue({
+        ...currentProgram,
+      });
+    } else {
+      navigate("/review-program");
+    }
+  }, [programs, id, getProgramsError]);
 
   return (
     <div>
@@ -26,21 +80,13 @@ const ViewReviewProgram = () => {
 
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={24} md={36} lg={36}>
-          {/* {!data || isLoading ? (
-            <Card>
-              <Skeleton />
-            </Card>
-        //   ) : ( */}
           <Card>
-            <Form
-              //   form={form}
-              name="update_program"
-              // onFinish={onFormSubmission}
-              // onFinishFailed={onFormFailed}
-            >
+            <Form form={form} name="update_program" onFinish={onFormSubmission}>
               <Row gutter={[16, 16]}>
                 <Col xs={24} sm={24} md={16} lg={18}>
-                  <h1 className="text-2xl mb-[2vh]">Program 1</h1>
+                  <h1 className="text-2xl mb-[2vh]">
+                    Manage {currentProgram?.name}
+                  </h1>
                 </Col>
                 <Col xs={24} sm={24} md={8} lg={6}>
                   <div className="text-right mb-[20px]">
@@ -99,7 +145,7 @@ const ViewReviewProgram = () => {
                       <CustomInput />
                     </Form.Item>
                   ) : (
-                    "Program 1"
+                    currentProgram?.name
                   )}
                 </p>
                 <Divider />
@@ -118,7 +164,7 @@ const ViewReviewProgram = () => {
                       <CustomInput />
                     </Form.Item>
                   ) : (
-                    "This is test Desc"
+                    currentProgram?.description
                   )}
                 </p>
 
@@ -127,18 +173,24 @@ const ViewReviewProgram = () => {
                   <strong>Course:</strong>{" "}
                   {isEditing ? (
                     <Form.Item
-                      name="course"
+                      name="courseId"
                       rules={[
                         {
                           required: true,
-                          message: "Please input course",
+                          message: "Please select course",
                         },
                       ]}
                     >
-                      <CustomInput />
+                      <Select name="courseId">
+                        {courses?.data?.map((course) => (
+                          <Option value={course?.id} id={course?.id}>
+                            {course?.name}
+                          </Option>
+                        ))}
+                      </Select>
                     </Form.Item>
                   ) : (
-                    "This is test Course"
+                    currentProgram?.course?.name
                   )}
                 </p>
 
@@ -147,18 +199,24 @@ const ViewReviewProgram = () => {
                   <strong>School:</strong>{" "}
                   {isEditing ? (
                     <Form.Item
-                      name="school"
+                      name="schoolId"
                       rules={[
                         {
                           required: true,
-                          message: "Please input school",
+                          message: "Please select school",
                         },
                       ]}
                     >
-                      <CustomInput />
+                      <Select name="schoolId">
+                        {schools?.data?.map((school) => (
+                          <Option value={school?.id} id={school?.id}>
+                            {school?.name}
+                          </Option>
+                        ))}
+                      </Select>
                     </Form.Item>
                   ) : (
-                    "This is test School"
+                    currentProgram?.school?.name
                   )}
                 </p>
               </div>

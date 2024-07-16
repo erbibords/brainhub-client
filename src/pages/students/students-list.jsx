@@ -36,8 +36,6 @@ const StudentsList = () => {
     setParams({});
   }, []);
 
-  console.log(students);
-
   const columns = [
     { title: "Name", dataIndex: "name", key: "name" },
     { title: "School", dataIndex: "school", key: "school" },

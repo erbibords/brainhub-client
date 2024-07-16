@@ -49,7 +49,9 @@ const ReviewProgram = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <CustomButton onClick={() => navigate("/review-program/:programId")}>
+          <CustomButton
+            onClick={() => navigate(`/review-program/${record?.id}`)}
+          >
             View
           </CustomButton>
 

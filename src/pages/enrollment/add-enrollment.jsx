@@ -43,9 +43,10 @@ const Enrollment = () => {
   const { courses, getCoursesLoading, getCoursesError } = useCourse();
   const [offeringsSearchParams, setOfferingsSearchParams] = useState({
     pageNo: 1,
-    pageSize: 25,
-    yearOffered: new Date().getFullYear(),
+    pageSize: 50,
+    yearOffered: `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`,
   });
+
   const [studentSearchText, setStudentSearchText] = useState();
   const { students, studentDataLoading, getStudentError, addStudent } =
     useStudentContext();
@@ -330,6 +331,9 @@ const Enrollment = () => {
           <Form.Item label="Year" name="year">
             <Select
               className="w-full mb=[2vh]"
+              defaultValue={`${new Date().getFullYear()}-${
+                new Date().getFullYear() + 1
+              }`}
               size="large"
               onChange={(value) =>
                 setOfferingsSearchParams({
