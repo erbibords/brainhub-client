@@ -226,44 +226,6 @@ const ViewOffering = () => {
                       {offering.yearOffered}
                     </h1>
                   </Col>
-                  <Col xs={24} sm={24} md={8} lg={6}>
-                    <div className="text-right mb-5">
-                      {isEditing ? (
-                        <div className="flex justify-end">
-                          <CustomButton
-                            size="large"
-                            className="mr-[10px]"
-                            loading={updateStudentLoading}
-                            disabled={updateStudentLoading}
-                            onClick={() => setIsEditing(false)}
-                          >
-                            Cancel
-                          </CustomButton>
-
-                          <CustomButton
-                            size="large"
-                            type="primary"
-                            className="w-auto bg-primary text-white"
-                            loading={updateStudentLoading}
-                            disabled={updateStudentLoading}
-                            htmlType="submit"
-                          >
-                            Save
-                          </CustomButton>
-                        </div>
-                      ) : (
-                        <CustomButton
-                          type="primary"
-                          size="large"
-                          className="w-auto bg-primary text-white"
-                          disabled={!offering && isLoading}
-                          onClick={() => setIsEditing(true)}
-                        >
-                          Edit
-                        </CustomButton>
-                      )}
-                    </div>
-                  </Col>
                 </Row>
                 <Divider />
                 <div layout="vertical" className="w-1/2">
@@ -393,9 +355,47 @@ const ViewOffering = () => {
                       offering.budgetProposal
                     )}
                   </p>
-                  <Divider />
                 </div>
+                <Col xs={24} sm={24} md={8} lg={6}>
+                  <div className="text-right mb-5 mt-5">
+                    {isEditing ? (
+                      <div className="flex justify-end">
+                        <CustomButton
+                          size="large"
+                          className="mr-[10px]"
+                          loading={updateStudentLoading}
+                          disabled={updateStudentLoading}
+                          onClick={() => setIsEditing(false)}
+                        >
+                          Cancel
+                        </CustomButton>
+
+                        <CustomButton
+                          size="large"
+                          type="primary"
+                          className="w-auto bg-primary text-white"
+                          loading={updateStudentLoading}
+                          disabled={updateStudentLoading}
+                          htmlType="submit"
+                        >
+                          Save
+                        </CustomButton>
+                      </div>
+                    ) : (
+                      <CustomButton
+                        type="primary"
+                        size="large"
+                        className="w-auto bg-primary text-white"
+                        disabled={!offering && isLoading}
+                        onClick={() => setIsEditing(true)}
+                      >
+                        Edit
+                      </CustomButton>
+                    )}
+                  </div>
+                </Col>
               </Form>
+              <Divider />
 
               <Row gutter={[16, 16]}>
                 <Col span={12}>

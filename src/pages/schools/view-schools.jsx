@@ -42,45 +42,6 @@ const ViewSchools = () => {
                 <Col xs={24} sm={24} md={16} lg={18}>
                   <h1 className="text-2xl mb-[2vh]">San Beda</h1>
                 </Col>
-                <Col xs={24} sm={24} md={8} lg={6}>
-                  <div className="text-right mb-[20px]">
-                    {isEditing ? (
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                        }}
-                      >
-                        <CustomButton
-                          size="large"
-                          className="mr-[10px]"
-                          onClick={() => setIsEditing(false)}
-                        >
-                          Cancel
-                        </CustomButton>
-
-                        <CustomButton
-                          size="large"
-                          type="primary"
-                          className="w-auto bg-primary text-white"
-                          htmlType="submit"
-                        >
-                          Save
-                        </CustomButton>
-                      </div>
-                    ) : (
-                      <CustomButton
-                        type="primary"
-                        size="large"
-                        className="w-auto bg-primary text-white"
-                        // disabled={isLoading}
-                        onClick={() => setIsEditing(true)}
-                      >
-                        Edit
-                      </CustomButton>
-                    )}
-                  </div>
-                </Col>
               </Row>
               <Divider />
               <div layout="vertical" className="w-1/2">
@@ -103,6 +64,40 @@ const ViewSchools = () => {
                   )}
                 </p>
               </div>
+              <Col xs={24} sm={24} md={8} lg={6}>
+                <div className="text-right mt-[20px]">
+                  {isEditing ? (
+                    <div className="flex justify-end">
+                      <CustomButton
+                        size="large"
+                        className="mr-[10px]"
+                        onClick={() => setIsEditing(false)}
+                      >
+                        Cancel
+                      </CustomButton>
+
+                      <CustomButton
+                        size="large"
+                        type="primary"
+                        className="w-auto bg-primary text-white"
+                        htmlType="submit"
+                      >
+                        Save
+                      </CustomButton>
+                    </div>
+                  ) : (
+                    <CustomButton
+                      type="primary"
+                      size="large"
+                      className="w-auto bg-primary text-white"
+                      // disabled={isLoading}
+                      onClick={() => setIsEditing(true)}
+                    >
+                      Edit
+                    </CustomButton>
+                  )}
+                </div>
+              </Col>
             </Form>
           </Card>
           {/* //   )} */}
