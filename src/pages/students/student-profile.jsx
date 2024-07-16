@@ -205,7 +205,7 @@ const StudentProfile = () => {
                     )}
                   </p>
                   <Divider />
-                  <div className="mb-[20px]">
+                  <div style={{ marginTop: "15px", marginBottom: "20px" }}>
                     <small>
                       <i className="mb-[2vh]">
                         Person to be notified in case of emergency:
@@ -257,7 +257,7 @@ const StudentProfile = () => {
                   </p>
                 </div>
                 <Col xs={24} sm={24} md={8} lg={6}>
-                  <div className="text-right mt-[20px]">
+                  <div className="text-right mt-[20px] mb-[20px]">
                     {isEditing ? (
                       <div className="flex justify-end">
                         <Button
@@ -299,7 +299,7 @@ const StudentProfile = () => {
           )}
         </Col>
       </Row>
-      <Divider />
+
       <StudentEnrollments enrollments={data?.enrollments} />
       <Divider />
       <PaymentHistory payments={data?.payments} />

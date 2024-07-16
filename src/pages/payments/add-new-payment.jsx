@@ -16,7 +16,7 @@ import { UploadOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useCashReference from "../../hooks/useCashReference";
-
+import dayjs from "dayjs";
 const { Content } = Layout;
 const { Option } = Select;
 
@@ -154,9 +154,19 @@ const AddNewPayment = () => {
     handlePreview(file);
   };
 
+  const today = dayjs();
+
   return (
     <Content className="md:pr-0 lg:pr-[45%]">
-      <Form name="payments" onFinish={onFinish} layout="vertical" form={form}>
+      <Form
+        name="payments"
+        onFinish={onFinish}
+        layout="vertical"
+        form={form}
+        initialValues={{
+          paidAt: today,
+        }}
+      >
         <div>
           <CustomButton
             type="text"
@@ -254,7 +264,7 @@ const AddNewPayment = () => {
             </Upload>
 
             {imagePreview && (
-              <div className="mt-[20px]">
+              <div className="mt-[10px]">
                 <Image
                   src={imagePreview}
                   alt="Selected"
@@ -272,7 +282,12 @@ const AddNewPayment = () => {
               { required: true, message: "Please select a payment date." },
             ]}
           >
-            <DatePicker className="w-full" size="large" />
+            <DatePicker
+              className="w-full"
+              size="large"
+              defaultValue={today}
+              format="YYYY-MM-DD"
+            />
           </Form.Item>
 
           <Form.Item

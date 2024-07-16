@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import CustomButton from "../../components/Button/Button";
 import { Row, Table, Col, Image, Space } from "antd";
 import {
@@ -13,11 +13,10 @@ export const PaymentHistory = ({ payments }) => {
   const navigate = useNavigate();
   if (!payments) return null;
 
-  const sortedPayments = payments.sort((a, b) => {
-    return new Date(a.createdAt) - new Date(b.createdAt);
-  });
+  const sortByPaidAt = useMemo(() => {
+    return payments.sort((a, b) => new Date(b.paidAt) - new Date(a.paidAt));
+  }, [payments]);
 
-  console.log(sortedPayments, payments);
   const columns = [
     {
       title: "Reference",
@@ -44,8 +43,8 @@ export const PaymentHistory = ({ payments }) => {
     },
     {
       title: "Payment Date",
-      dataIndex: "createdAt",
-      key: "createdAt",
+      dataIndex: "paidAt",
+      key: "paidAt",
       render: (data) => formatDate(data),
     },
     {
@@ -95,7 +94,7 @@ export const PaymentHistory = ({ payments }) => {
     <Row gutter={[16, 16]}>
       <Col span={24}>
         <Table
-          dataSource={sortedPayments}
+          dataSource={sortByPaidAt}
           columns={columns}
           title={() => <h2 className="text-2xl">Payments History</h2>}
         />

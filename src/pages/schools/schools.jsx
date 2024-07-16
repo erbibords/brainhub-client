@@ -61,7 +61,7 @@ const SchoolList = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <CustomButton onClick={() => navigate("/schools/:schoolId")}>
+          <CustomButton onClick={() => navigate(`/schools/${record?.id}`)}>
             View
           </CustomButton>
           {/* <CustomButton type="delete" onClick={() => navigate(`${record.id}`)}>

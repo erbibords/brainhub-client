@@ -23,11 +23,13 @@ import {
   formatDate,
   formatSemester,
 } from "../../utils/formatting";
-import { REVIEW_PROGRAM, SEMESTER, YEAR } from "../../constants";
+import { SEMESTER, YEAR } from "../../constants";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
-import { getSchoolById } from "../../utils/mappings";
+import { getDataById, getSchoolById } from "../../utils/mappings";
 import useSchools from "../../hooks/useSchools";
+import { useProgramContext } from "../../contexts/programs";
+import dayjs from "dayjs";
 
 const ViewOffering = () => {
   const navigate = useNavigate();
@@ -51,6 +53,8 @@ const ViewOffering = () => {
     isLoading,
     error: offeringError,
   } = useOffering(params.offeringId);
+  const { programs, getProgramsLoading, getProgramsError } =
+    useProgramContext();
 
   useEffect(() => {
     if (offering && offering?.enrollments?.length) {
@@ -74,11 +78,14 @@ const ViewOffering = () => {
     "offerings"
   );
 
+  console.log(offering);
+
   useEffect(() => {
     if (offering) {
       form.setFieldsValue({
         ...offering,
-        testDate: DateTime.fromISO(offering.startDate).toJSDate(),
+        startDate: dayjs(offering?.startDate),
+        paymentDeadline: dayjs(offering?.paymentDeadline),
       });
     }
   }, [offering]);
@@ -91,6 +98,8 @@ const ViewOffering = () => {
     });
   };
 
+  console.log(dayjs(offering?.startDate));
+
   const onFormSubmission = async (values) => {
     const { course, ...body } = values;
     try {
@@ -99,11 +108,12 @@ const ViewOffering = () => {
         courseId: course.id,
         startDate: offering.startDate,
         paymentDeadline: offering.paymentDeadline,
+        reviewCost: values?.reviewFee,
       });
       if (res) {
         Swal.fire({
           icon: "success",
-          title: "Course information updated!",
+          title: "Offering information updated!",
           timer: 2000,
         });
         setIsEditing(false);
@@ -111,13 +121,12 @@ const ViewOffering = () => {
     } catch (error) {
       Swal.fire({
         icon: "error",
-        title: "Course Information Update Error",
+        title: "Offering Information Update Error",
         text: "There might be some error in your entries. Please double check and try again!",
       });
     }
   };
 
-  console.log(offering?.enrollments);
   const columns = [
     { title: "Name", dataIndex: ["student", "fullName"], key: "name" },
     {
@@ -171,8 +180,6 @@ const ViewOffering = () => {
     },
   ];
 
-  console.log(searchAmount);
-
   const filterEnrollment = useCallback(() => {
     if (!searchAmount.min && !searchAmount.max)
       return offering?.enrollments || [];
@@ -193,6 +200,11 @@ const ViewOffering = () => {
     );
     setEnrollments(data);
   }, [searchAmount, offering?.enrollments, setEnrollments]);
+
+  const reviewProgram = useMemo(() => {
+    if (!programs?.data || !offering?.reviewProgramId) return null;
+    return getDataById(programs?.data, offering?.reviewProgramId);
+  }, [programs, offering?.reviewProgramId]);
 
   return (
     <div>
@@ -216,6 +228,7 @@ const ViewOffering = () => {
                 name="update_student"
                 onFinish={onFormSubmission}
                 onFinishFailed={onFormFailed}
+                className="mb-10"
               >
                 <Row gutter={[16, 16]}>
                   <Col xs={24} sm={24} md={16} lg={18}>
@@ -249,16 +262,20 @@ const ViewOffering = () => {
                   <p>
                     <strong>Review program:</strong>{" "}
                     {isEditing ? (
-                      <Form.Item name="program">
+                      <Form.Item name="reviewProgramId">
                         <Select
-                          options={REVIEW_PROGRAM.map((program) => ({
-                            value: program.value,
-                            label: program.value,
-                          }))}
+                          disabled={getProgramsError || getProgramsLoading}
+                          options={
+                            programs &&
+                            programs?.data.map((program) => ({
+                              value: program.id,
+                              label: program.name,
+                            }))
+                          }
                         />
                       </Form.Item>
                     ) : (
-                      offering.program
+                      reviewProgram?.name
                     )}
                   </p>
                   <Divider />
@@ -301,10 +318,14 @@ const ViewOffering = () => {
                     <strong>Start date:</strong>{" "}
                     {isEditing ? (
                       <Form.Item>
-                        <DatePicker className="w-full" size="large" />
+                        <DatePicker
+                          className="w-full"
+                          size="large"
+                          defaultValue={dayjs(offering?.startDate)}
+                        />
                       </Form.Item>
                     ) : (
-                      offering.startDate
+                      formatDate(offering.startDate)
                     )}
                   </p>
                   <Divider />
@@ -313,51 +334,36 @@ const ViewOffering = () => {
                     <strong>Payment Deadline:</strong>{" "}
                     {isEditing ? (
                       <Form.Item>
-                        <DatePicker className="w-full" size="large" />
+                        <DatePicker
+                          className="w-full"
+                          size="large"
+                          defaultValue={dayjs(offering?.paymentDeadline)}
+                        />
                       </Form.Item>
                     ) : (
-                      offering.paymentDeadline
+                      formatDate(offering.paymentDeadline)
                     )}
                   </p>
                   <Divider />
 
                   <p>
-                    <strong>Capacity:</strong>{" "}
-                    {isEditing ? (
-                      <Form.Item name="enrollmentCapacity">
-                        <CustomInput />
-                      </Form.Item>
-                    ) : (
-                      offering.enrollmentCapacity
-                    )}
+                    <strong>Capacity:</strong> {offering.enrollmentCapacity}
                   </p>
                   <Divider />
 
                   <p>
                     <strong>Review cost:</strong>{" "}
                     {isEditing ? (
-                      <Form.Item name="reviewCost">
+                      <Form.Item name="reviewFee">
                         <CustomInput />
                       </Form.Item>
                     ) : (
-                      offering.reviewCost
-                    )}
-                  </p>
-                  <Divider />
-
-                  <p>
-                    <strong>Budget proposal:</strong>{" "}
-                    {isEditing ? (
-                      <Form.Item name="budgetProposal">
-                        <CustomInput />
-                      </Form.Item>
-                    ) : (
-                      offering.budgetProposal
+                      offering.reviewFee
                     )}
                   </p>
                 </div>
                 <Col xs={24} sm={24} md={8} lg={6}>
-                  <div className="text-right mb-5 mt-5">
+                  <div className="text-right mb-5">
                     {isEditing ? (
                       <div className="flex justify-end">
                         <CustomButton
@@ -396,9 +402,11 @@ const ViewOffering = () => {
                 </Col>
               </Form>
               <Divider />
-
               <Row gutter={[16, 16]}>
                 <Col span={12}>
+                  <h2 className="text-2xl mb-5 mt-10">
+                    Enrolled Student List ({enrollments?.length})
+                  </h2>
                   <div className="flex flex-col gap-[6px]">
                     <label> Amount paid (min - max):</label>
                     <div className="flex gap-[6px]">
@@ -440,11 +448,6 @@ const ViewOffering = () => {
                   <Table
                     dataSource={enrollments && enrollments}
                     columns={columns}
-                    title={() => (
-                      <h2 className="text-2xl">
-                        Enrolled Student List ({enrollments?.length})
-                      </h2>
-                    )}
                   />
                 </Col>
               </Row>
