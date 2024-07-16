@@ -155,7 +155,7 @@ const AddNewPayment = () => {
   };
 
   return (
-    <Content style={{ paddingRight: screenWidth <= 1024 ? 0 : "45%" }}>
+    <Content className="md:pr-0 lg:pr-[45%]">
       <Form name="payments" onFinish={onFinish} layout="vertical" form={form}>
         <div>
           <CustomButton
@@ -254,7 +254,7 @@ const AddNewPayment = () => {
             </Upload>
 
             {imagePreview && (
-              <div style={{ marginTop: "10px" }}>
+              <div className="mt-[20px]">
                 <Image
                   src={imagePreview}
                   alt="Selected"
