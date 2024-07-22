@@ -287,18 +287,18 @@ const Enrollment = () => {
         return;
       }
       const addStudentValue = {
-        lastName: values?.lastName,
-        middleName: values?.middleName,
-        firstName: values?.firstName,
+        lastName: values?.lastName?.toUpperCase(),
+        middleName: values?.middleName?.toUpperCase(),
+        firstName: values?.firstName?.toUpperCase(),
         contactNumber: values?.contactNumber,
         schoolId: values?.schoolId,
-        address: values?.address,
+        address: values?.address?.toUpperCase(),
         age: 0,
         emergencyContact: {
-          name: values?.emergencyContactName,
-          relationship: values?.emergencyContactRelationship,
-          address: values?.emergencyContactAddress,
-          contactNumber: values?.emergencyContactNumber,
+          name: values?.emergencyContactName?.toUpperCase(),
+          relationship: values?.emergencyContactRelationship?.toUpperCase(),
+          address: values?.emergencyContactAddress?.toUpperCase(),
+          contactNumber: values?.emergencyContactNumber?.toUpperCase(),
         },
       };
 
