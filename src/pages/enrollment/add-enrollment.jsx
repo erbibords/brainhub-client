@@ -166,15 +166,6 @@ const Enrollment = () => {
         return;
       }
 
-      if (!data.yearLevel) {
-        Swal.fire({
-          icon: "warning",
-          title: "Please select year level.",
-          timer: 2500,
-        });
-        return;
-      }
-
       if (!data.reviewFee) {
         Swal.fire({
           icon: "warning",
@@ -581,7 +572,11 @@ const Enrollment = () => {
                   { required: true, message: "Please input your First Name" },
                 ]}
               >
-                <CustomInput type="text" name="firstName" />
+                <CustomInput
+                  type="text"
+                  name="firstName"
+                  className="uppercase"
+                />
               </Form.Item>
 
               <Form.Item
@@ -591,7 +586,11 @@ const Enrollment = () => {
                   { required: true, message: "Please input your Middle Name" },
                 ]}
               >
-                <CustomInput type="text" name="middleName" />
+                <CustomInput
+                  type="text"
+                  name="middleName"
+                  className="uppercase"
+                />
               </Form.Item>
 
               <Form.Item
@@ -601,7 +600,11 @@ const Enrollment = () => {
                   { required: true, message: "Please input your Last Name" },
                 ]}
               >
-                <CustomInput type="text" name="lastName" />
+                <CustomInput
+                  type="text"
+                  name="lastName"
+                  className="uppercase"
+                />
               </Form.Item>
 
               <Form.Item
@@ -637,7 +640,7 @@ const Enrollment = () => {
                   name="address"
                   placeholder=""
                   rows={4}
-                  className="mb-[2vh]"
+                  className="mb-[2vh] uppercase"
                   size="large"
                 />
               </Form.Item>
@@ -676,7 +679,11 @@ const Enrollment = () => {
                   //   },
                   // ]}
                 >
-                  <CustomInput type="text" name="emergencyName" />
+                  <CustomInput
+                    type="text"
+                    name="emergencyName"
+                    className="uppercase"
+                  />
                 </Form.Item>
 
                 <Form.Item
@@ -690,7 +697,11 @@ const Enrollment = () => {
                   //   },
                   // ]}
                 >
-                  <CustomInput type="text" name="emergencyRelationship" />
+                  <CustomInput
+                    type="text"
+                    name="emergencyRelationship"
+                    className="uppercase"
+                  />
                 </Form.Item>
 
                 <Form.Item
@@ -708,7 +719,7 @@ const Enrollment = () => {
                     name="emergencyAddress"
                     placeholder=""
                     rows={4}
-                    className="mb-[2vh]"
+                    className="mb-[2vh] uppercase"
                     size="large"
                   />
                 </Form.Item>
