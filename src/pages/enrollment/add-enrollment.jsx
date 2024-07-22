@@ -74,8 +74,6 @@ const Enrollment = () => {
     }
   }, [selectedOffering, selectedOfferingId]);
 
-  console.log(additionalEnrollmentData);
-
   const getRadioStudent = ({ target: { value } }) => {
     setstudentToEnrollRadioValue(value);
   };

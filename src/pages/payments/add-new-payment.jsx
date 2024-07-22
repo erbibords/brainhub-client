@@ -47,8 +47,6 @@ const AddNewPayment = () => {
 
   const { data: student } = useProfile(params?.studentId);
 
-  console.log(student);
-
   useEffect(() => {
     const handleResize = () => {
       setScreenWidth(window.innerWidth);
@@ -63,7 +61,6 @@ const AddNewPayment = () => {
 
   useEffect(() => {
     if (selectedPaymentMethod && selectedPaymentMethod === "CASH") {
-      console.log(selectedPaymentMethod);
       form.setFieldsValue({ reference: cashReference?.referenceNo ?? null });
     } else {
       form.setFieldsValue({ reference: null });

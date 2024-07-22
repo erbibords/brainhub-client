@@ -11,10 +11,12 @@ import { MEDIA_BASE_URL } from "../../constants";
 
 export const PaymentHistory = ({ payments }) => {
   const navigate = useNavigate();
+
   if (!payments) return null;
 
   const sortByPaidAt = useMemo(() => {
-    return payments.sort((a, b) => new Date(b.paidAt) - new Date(a.paidAt));
+    if (!payments || payments?.length <= 0) return [];
+    return payments?.sort((a, b) => new Date(b?.paidAt) - new Date(a?.paidAt));
   }, [payments]);
 
   const columns = [
@@ -94,7 +96,7 @@ export const PaymentHistory = ({ payments }) => {
     <Row gutter={[16, 16]}>
       <Col span={24}>
         <Table
-          dataSource={sortByPaidAt}
+          dataSource={payments && sortByPaidAt}
           columns={columns}
           title={() => <h2 className="text-2xl">Payments History</h2>}
         />

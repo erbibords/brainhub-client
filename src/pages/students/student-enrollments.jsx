@@ -1,7 +1,7 @@
 import React from "react";
 import { Row, Table, Col } from "antd";
 import { formatDate, formatAmount } from "../../utils/formatting";
-import { getCourseOfferingName } from "../../utils/formatting";
+import { getCourseOfferingName } from "../../utils/mappings";
 export const StudentEnrollments = ({ enrollments }) => {
   if (!enrollments) return null;
 

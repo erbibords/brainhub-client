@@ -24,13 +24,10 @@ const EditEnrollment = () => {
 
   const { data, error } = useEnrollment(params?.enrollmentId);
   if (error) {
-    console.log("ERRROIST", error);
     navigate("/enrollments");
   }
 
   const { data: offerings } = useOfferingsContext();
-
-  console.log("======DATA=====", data);
 
   const { mutate: updatedEnrollment } = useMutation("", "PUT", "enrollments");
 
@@ -45,8 +42,9 @@ const EditEnrollment = () => {
   const onFormSubmission = async (values) => {
     const reviewFee =
       parseFloat(data?.discountAmount ?? 0) +
-      parseFloat(data?.reviewFee) -
+      parseFloat(values?.reviewFee) -
       parseFloat(values?.discountAmount ?? 0);
+
     const updatedValues = {
       ...values,
       reviewFee: reviewFee.toString(),

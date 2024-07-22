@@ -56,7 +56,6 @@ const AddOfferings = () => {
 
   const handleAddOffering = useCallback(
     async (values) => {
-      console.log(values);
       if (!selectedCourseId) {
         Swal.fire({
           icon: "warning",

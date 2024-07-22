@@ -21,7 +21,9 @@ export const formatTakerType = (takerType) => {
       return '1st Taker'
   } else if(takerType === 'RE_TAKER') {
       return 'Re-taker'
-  } 
+  } else if(takerType === 'SUMMER') {
+      return 'Summer'
+  }
 }
 
 export const formatAmount = (amount) => {
@@ -40,7 +42,7 @@ export const formatAmount = (amount) => {
   export const getCourseOfferingName = (offering) => {
     if(!offering) return null;
     const { course, reviewProgram, yearOffered, semester} = offering;
-    return `${course?.name}-${reviewProgram?.name}-${yearOffered}-${semester}`
+    return `${course?.name}-${reviewProgram?.name?.substring(0, 3)}-${yearOffered}-${semester}`
   }
 
   

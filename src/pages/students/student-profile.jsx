@@ -74,8 +74,6 @@ const StudentProfile = () => {
     }
   };
 
-  console.log(data?.payments);
-
   return (
     <div>
       <CustomButton
@@ -306,9 +304,9 @@ const StudentProfile = () => {
         </Col>
       </Row>
       <Divider />
-      <StudentEnrollments enrollments={data?.enrollments} />
+      <StudentEnrollments enrollments={data?.enrollments ?? []} />
       <Divider />
-      <PaymentHistory payments={data?.payments} />
+      <PaymentHistory payments={data?.payments ?? []} />
     </div>
   );
 };

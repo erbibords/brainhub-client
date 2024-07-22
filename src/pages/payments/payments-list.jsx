@@ -54,11 +54,11 @@ const PaymentsList = () => {
     yearOffered: undefined,
   });
 
+  console.log(payments);
+
   useEffect(() => {
     setParams({});
   }, []);
-
-  console.log(payments?.data);
 
   const handleFilter = useCallback(() => {
     setParams(cleanParams(searchParams));

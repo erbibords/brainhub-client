@@ -46,8 +46,6 @@ const Receipt = () => {
     ];
   }, [paymentDetails, formatAmount]);
 
-  console.log(paymentDetails);
-
   const columns = useMemo(() => {
     return [
       {

@@ -78,8 +78,6 @@ const ViewOffering = () => {
     "offerings"
   );
 
-  console.log(offering);
-
   useEffect(() => {
     if (offering) {
       form.setFieldsValue({
@@ -97,8 +95,6 @@ const ViewOffering = () => {
       text: JSON.stringify(errorInfo),
     });
   };
-
-  console.log(dayjs(offering?.startDate));
 
   const onFormSubmission = async (values) => {
     const { course, ...body } = values;

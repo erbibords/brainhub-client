@@ -32,8 +32,6 @@ const Enrollment = () => {
   const { enrollments, getEnrollmentsLoading, getEnrollmentsError, setParams } =
     useEnrollmentsContext();
 
-  console.log(enrollments);
-
   const [searchParams, setSearchParams] = useState({
     startDate: undefined,
     endDate: undefined,
