@@ -20,11 +20,11 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (!getToken()) {
       navigate("/login");
-      Swal.fire({
-        icon: "warning",
-        title: "Your session has ended, please login again!",
-        timer: 2000,
-      });
+      // Swal.fire({
+      //   icon: "warning",
+      //   title: "Your session has ended, please login again!",
+      //   timer: 2000,
+      // });
     } else {
       setIsAuthenticated(true);
     }
