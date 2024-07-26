@@ -79,7 +79,7 @@ const Enrollment = () => {
   };
 
   const { mutate: addEnrollment, loading: addEnrollmentLoading } = useMutation(
-    `/branches/${DEFAULT_BRANCH_ID}/offerings/${selectedOfferingId}/enrollments`,
+    `/branches/${DEFAULT_BRANCH_ID()}/offerings/${selectedOfferingId}/enrollments`,
     "PUT",
     "enrollments"
   );

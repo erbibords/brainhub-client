@@ -1,10 +1,10 @@
-import React from "react";
-import { Menu, Dropdown, Avatar, Button } from "antd";
-import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
-import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../../contexts/auth";
-import { removeToken } from "../../utils/token";
-import logo from "../../assets/images/bhub-logo.png";
+import React from 'react';
+import { Menu, Dropdown, Avatar, Button } from 'antd';
+import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../../contexts/auth';
+import { removeBranch, removeToken } from '../../utils/token';
+import logo from '../../assets/images/bhub-logo.png';
 
 const Navbar = ({ currentRoute }) => {
   const navigate = useNavigate();
@@ -12,12 +12,15 @@ const Navbar = ({ currentRoute }) => {
 
   const handleLogout = () => {
     removeToken();
+    removeBranch();
     setIsAuthenticated(false);
-    navigate("/login");
+    navigate('/login');
+    // following up on a full reload to knock off localStorage
+    window.location.reload();
   };
 
   const handleAddNewEnrollment = () => {
-    navigate("/add-enrollment");
+    navigate('/add-enrollment');
   };
 
   const menu = (
@@ -48,7 +51,7 @@ const Navbar = ({ currentRoute }) => {
             >
               <Link to="/enrollments"> Add New Enrollment</Link>
             </Button>
-            {currentRoute !== "/login" && (
+            {currentRoute !== '/login' && (
               <Dropdown overlay={menu} placement="bottomRight">
                 <Avatar
                   size="large"

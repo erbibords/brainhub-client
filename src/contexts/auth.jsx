@@ -6,7 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import axiosInstance from "../utils/axiosInstance";
-import { setToken, getToken } from "../utils/token";
+import { setToken, getToken, setBranch } from "../utils/token";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -43,11 +43,13 @@ export const AuthProvider = ({ children }) => {
           setIsLoading(false);
           setIsAuthenticated(true);
           setToken(res.data.token);
+          setBranch(res.data?.branchId ?? "");
           return true;
         }
 
         return false;
       } catch (error) {
+        console.error(`Unable to process login`, { error });
         setIsLoading(false);
         setIsAuthenticated(false);
         return false;
