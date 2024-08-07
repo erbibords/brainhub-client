@@ -3,7 +3,7 @@ import { Menu, Dropdown, Avatar, Button } from "antd";
 import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
-import { removeToken } from "../../utils/token";
+import { removeBranch, removeToken } from "../../utils/token";
 import logo from "../../assets/images/bhub-logo.png";
 
 const Navbar = ({ currentRoute }) => {
@@ -12,8 +12,11 @@ const Navbar = ({ currentRoute }) => {
 
   const handleLogout = () => {
     removeToken();
+    removeBranch();
     setIsAuthenticated(false);
     navigate("/login");
+    // following up on a full reload to knock off localStorage
+    window.location.reload();
   };
 
   const handleAddNewEnrollment = () => {
@@ -37,7 +40,7 @@ const Navbar = ({ currentRoute }) => {
             alt="Brain Hub Logo"
             className="h-12 w-12 rounded-full mr-2"
           />
-          <div className="text-white text-2xl font-bold">Brain Hub</div>
+          <div className="text-white text-2xl font-bold">Brain Hubs</div>
         </div>
         {isAuthenticated && (
           <div className="flex items-center">

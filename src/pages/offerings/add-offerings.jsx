@@ -18,7 +18,7 @@ const AddOfferings = () => {
   const { courses, getCoursesLoading, getCoursesError } = useCourse();
   const [selectedCourseId, setSelectedCourseId] = useState(undefined);
   const { mutate: AddOffering, loading: AddOfferingLoading } = useMutation(
-    `branches/${DEFAULT_BRANCH_ID}/courses/${selectedCourseId}/offerings`,
+    `branches/${DEFAULT_BRANCH_ID()}/courses/${selectedCourseId}/offerings`,
     "POST",
     "offerings"
   );
@@ -56,7 +56,6 @@ const AddOfferings = () => {
 
   const handleAddOffering = useCallback(
     async (values) => {
-      console.log(values);
       if (!selectedCourseId) {
         Swal.fire({
           icon: "warning",
