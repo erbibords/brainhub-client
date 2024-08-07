@@ -74,12 +74,14 @@ const Enrollment = () => {
     }
   }, [selectedOffering, selectedOfferingId]);
 
+  console.log(additionalEnrollmentData);
+
   const getRadioStudent = ({ target: { value } }) => {
     setstudentToEnrollRadioValue(value);
   };
 
   const { mutate: addEnrollment, loading: addEnrollmentLoading } = useMutation(
-    `/branches/${DEFAULT_BRANCH_ID()}/offerings/${selectedOfferingId}/enrollments`,
+    `/branches/${DEFAULT_BRANCH_ID}/offerings/${selectedOfferingId}/enrollments`,
     "PUT",
     "enrollments"
   );
@@ -159,6 +161,15 @@ const Enrollment = () => {
         Swal.fire({
           icon: "warning",
           title: "Please select processed by.",
+          timer: 2500,
+        });
+        return;
+      }
+
+      if (!data.yearLevel) {
+        Swal.fire({
+          icon: "warning",
+          title: "Please select year level.",
           timer: 2500,
         });
         return;
@@ -285,18 +296,18 @@ const Enrollment = () => {
         return;
       }
       const addStudentValue = {
-        lastName: values?.lastName?.toUpperCase(),
-        middleName: values?.middleName?.toUpperCase(),
-        firstName: values?.firstName?.toUpperCase(),
+        lastName: values?.lastName,
+        middleName: values?.middleName,
+        firstName: values?.firstName,
         contactNumber: values?.contactNumber,
         schoolId: values?.schoolId,
-        address: values?.address?.toUpperCase(),
+        address: values?.address,
         age: 0,
         emergencyContact: {
-          name: values?.emergencyContactName?.toUpperCase(),
-          relationship: values?.emergencyContactRelationship?.toUpperCase(),
-          address: values?.emergencyContactAddress?.toUpperCase(),
-          contactNumber: values?.emergencyContactNumber?.toUpperCase(),
+          name: values?.emergencyContactName,
+          relationship: values?.emergencyContactRelationship,
+          address: values?.emergencyContactAddress,
+          contactNumber: values?.emergencyContactNumber,
         },
       };
 
@@ -570,11 +581,7 @@ const Enrollment = () => {
                   { required: true, message: "Please input your First Name" },
                 ]}
               >
-                <CustomInput
-                  type="text"
-                  name="firstName"
-                  className="uppercase"
-                />
+                <CustomInput type="text" name="firstName" />
               </Form.Item>
 
               <Form.Item
@@ -584,11 +591,7 @@ const Enrollment = () => {
                   { required: true, message: "Please input your Middle Name" },
                 ]}
               >
-                <CustomInput
-                  type="text"
-                  name="middleName"
-                  className="uppercase"
-                />
+                <CustomInput type="text" name="middleName" />
               </Form.Item>
 
               <Form.Item
@@ -598,11 +601,7 @@ const Enrollment = () => {
                   { required: true, message: "Please input your Last Name" },
                 ]}
               >
-                <CustomInput
-                  type="text"
-                  name="lastName"
-                  className="uppercase"
-                />
+                <CustomInput type="text" name="lastName" />
               </Form.Item>
 
               <Form.Item
@@ -638,7 +637,7 @@ const Enrollment = () => {
                   name="address"
                   placeholder=""
                   rows={4}
-                  className="mb-[2vh] uppercase"
+                  className="mb-[2vh]"
                   size="large"
                 />
               </Form.Item>
@@ -677,11 +676,7 @@ const Enrollment = () => {
                   //   },
                   // ]}
                 >
-                  <CustomInput
-                    type="text"
-                    name="emergencyName"
-                    className="uppercase"
-                  />
+                  <CustomInput type="text" name="emergencyName" />
                 </Form.Item>
 
                 <Form.Item
@@ -695,11 +690,7 @@ const Enrollment = () => {
                   //   },
                   // ]}
                 >
-                  <CustomInput
-                    type="text"
-                    name="emergencyRelationship"
-                    className="uppercase"
-                  />
+                  <CustomInput type="text" name="emergencyRelationship" />
                 </Form.Item>
 
                 <Form.Item
@@ -717,7 +708,7 @@ const Enrollment = () => {
                     name="emergencyAddress"
                     placeholder=""
                     rows={4}
-                    className="mb-[2vh] uppercase"
+                    className="mb-[2vh]"
                     size="large"
                   />
                 </Form.Item>
