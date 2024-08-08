@@ -1,15 +1,15 @@
-import React, { useEffect } from "react";
-import CustomInput from "../../components/Input/Input";
-import { Select, Form, Checkbox } from "antd";
-import CustomButton from "../../components/Button/Button";
-import useMutation from "../../hooks/useMutation";
-import { ArrowLeftOutlined } from "@ant-design/icons";
-import { useParams, useNavigate } from "react-router-dom";
-import { DEFAULT_BRANCH_ID, YEAR_LEVELS, PROCESSED_BY } from "../../constants";
-import useEnrollment from "../../hooks/useEnrollment";
-import { useOfferingsContext } from "../../contexts/offerings";
-import { getCourseOfferingName } from "../../utils/mappings";
-import Swal from "sweetalert2";
+import React, { useEffect } from 'react';
+import CustomInput from '../../components/Input/Input';
+import { Select, Form, Checkbox } from 'antd';
+import CustomButton from '../../components/Button/Button';
+import useMutation from '../../hooks/useMutation';
+import { ArrowLeftOutlined } from '@ant-design/icons';
+import { useParams, useNavigate } from 'react-router-dom';
+import { DEFAULT_BRANCH_ID, YEAR_LEVELS, PROCESSED_BY } from '../../constants';
+import useEnrollment from '../../hooks/useEnrollment';
+import { useOfferingsContext } from '../../contexts/offerings';
+import { getCourseOfferingName } from '../../utils/mappings';
+import Swal from 'sweetalert2';
 
 const { Option } = Select;
 
@@ -17,19 +17,19 @@ const EditEnrollment = () => {
   const navigate = useNavigate();
   const params = useParams();
   if (!params?.enrollmentId) {
-    navigate("/enrollments");
+    navigate('/enrollments');
   }
 
   const [form] = Form.useForm();
 
   const { data, error } = useEnrollment(params?.enrollmentId);
   if (error) {
-    navigate("/enrollments");
+    navigate('/enrollments');
   }
 
   const { data: offerings } = useOfferingsContext();
 
-  const { mutate: updatedEnrollment } = useMutation("", "PUT", "enrollments");
+  const { mutate: updatedEnrollment } = useMutation('', 'PUT', 'enrollments');
 
   useEffect(() => {
     if (data) {
@@ -52,8 +52,8 @@ const EditEnrollment = () => {
 
     if (!updatedValues.takerType) {
       Swal.fire({
-        icon: "warning",
-        title: "Please add taker type!",
+        icon: 'warning',
+        title: 'Please add taker type!',
         timer: 2500,
       });
       return;
@@ -61,8 +61,8 @@ const EditEnrollment = () => {
 
     if (!updatedValues.processedBy) {
       Swal.fire({
-        icon: "warning",
-        title: "Please select processed by.",
+        icon: 'warning',
+        title: 'Please select processed by.',
         timer: 2500,
       });
       return;
@@ -70,8 +70,8 @@ const EditEnrollment = () => {
 
     if (!updatedValues.yearLevel) {
       Swal.fire({
-        icon: "warning",
-        title: "Please select year level.",
+        icon: 'warning',
+        title: 'Please select year level.',
         timer: 2500,
       });
       return;
@@ -79,8 +79,8 @@ const EditEnrollment = () => {
 
     if (!updatedValues.reviewFee) {
       Swal.fire({
-        icon: "warning",
-        title: "Please add review fee.",
+        icon: 'warning',
+        title: 'Please add review fee.',
         timer: 2500,
       });
       return;
@@ -92,20 +92,22 @@ const EditEnrollment = () => {
           ...updatedValues,
           studentId: data.studentId,
         },
-        `/branches/${DEFAULT_BRANCH_ID}/offerings/${updatedValues.courseOffering.id}/enrollments`
+        `/branches/${DEFAULT_BRANCH_ID()}/offerings/${
+          updatedValues.courseOffering.id
+        }/enrollments`
       );
       if (enrollmentRes) {
         Swal.fire({
-          icon: "success",
-          title: "Enrollment Updated!",
+          icon: 'success',
+          title: 'Enrollment Updated!',
           timer: 2500,
         });
       }
     } catch (error) {
       Swal.fire({
-        icon: "error",
-        title: "Enrollment update failed!",
-        text: "This may be due to inputs. Please try again later!",
+        icon: 'error',
+        title: 'Enrollment update failed!',
+        text: 'This may be due to inputs. Please try again later!',
         timer: 2500,
       });
     }
@@ -116,7 +118,7 @@ const EditEnrollment = () => {
       <div>
         <CustomButton
           type="text"
-          onClick={() => navigate("/enrollments")}
+          onClick={() => navigate('/enrollments')}
           icon={<ArrowLeftOutlined />}
           className="mb-6"
         />
@@ -131,7 +133,7 @@ const EditEnrollment = () => {
           <Form.Item
             label="Student name"
             layout="vertical"
-            name={["student", "fullName"]}
+            name={['student', 'fullName']}
             className="w-1/2 mb-[2vh]"
           >
             <CustomInput type="text" name="remarks" disabled />
@@ -139,7 +141,7 @@ const EditEnrollment = () => {
 
           <Form.Item
             label="Course Offering:"
-            name={["courseOffering", "id"]}
+            name={['courseOffering', 'id']}
             layout="vertical"
             className="w-1/2 mb-[2vh]"
           >
