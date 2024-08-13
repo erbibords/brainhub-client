@@ -161,7 +161,9 @@ const ViewOffering = () => {
       title: "Remaining Balance",
       dataIndex: "remainingBalance",
       key: "remainingBalance",
-      render: (data) => formatAmount(data),
+      render: (data) => (
+        <p className="text-red-600 font-bold">{formatAmount(data)}</p>
+      ),
     },
     {
       title: "Enrollment Date",
