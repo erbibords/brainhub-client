@@ -255,7 +255,7 @@ const StudentProfile = () => {
                     )}
                   </p>
                 </div>
-                <Col xs={24} sm={24} md={8} lg={6}>
+                <Col xs={24} sm={24} md={8} lg={12}>
                     <div style={{ textAlign: 'right', marginTop: '20px' }}>
                       {isEditing ? (
                         <div
