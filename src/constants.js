@@ -89,7 +89,7 @@ export const SEMESTER = [
     value: 'SEPTEMBER',
   },
   {
-    label: 'Octoboer',
+    label: 'October',
     value: 'OCTOBER',
   },
   {
