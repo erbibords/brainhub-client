@@ -4,10 +4,10 @@ import React, {
   useMemo,
   useState,
   useContext,
-} from "react";
-import useStudents from "../hooks/useStudents";
-import axiosInstance from "../utils/axiosInstance";
-import { DEFAULT_BRANCH_ID } from "../constants";
+} from 'react';
+import useStudents from '../hooks/useStudents';
+import axiosInstance from '../utils/axiosInstance';
+import { DEFAULT_BRANCH_ID } from '../constants';
 
 const StudentContext = createContext({
   students: [],
@@ -44,7 +44,7 @@ export const StudentProvider = ({ children }) => {
     }) => {
       try {
         const res = await axiosInstance.post(
-          `branches/${DEFAULT_BRANCH_ID}/students`,
+          `branches/${DEFAULT_BRANCH_ID()}/students`,
           {
             firstName,
             lastName,

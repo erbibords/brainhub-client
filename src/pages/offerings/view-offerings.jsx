@@ -78,8 +78,6 @@ const ViewOffering = () => {
     "offerings"
   );
 
-  console.log(offering);
-
   useEffect(() => {
     if (offering) {
       form.setFieldsValue({
@@ -97,8 +95,6 @@ const ViewOffering = () => {
       text: JSON.stringify(errorInfo),
     });
   };
-
-  console.log(dayjs(offering?.startDate));
 
   const onFormSubmission = async (values) => {
     const { course, ...body } = values;
@@ -165,7 +161,9 @@ const ViewOffering = () => {
       title: "Remaining Balance",
       dataIndex: "remainingBalance",
       key: "remainingBalance",
-      render: (data) => formatAmount(data),
+      render: (data) => (
+        <p className="text-red-600 font-bold">{formatAmount(data)}</p>
+      ),
     },
     {
       title: "Enrollment Date",

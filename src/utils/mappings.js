@@ -14,11 +14,18 @@ export const getFullName = (studentData) => {
   return `${firstName} ${middleName} ${lastName}`;
 };
 
+
+export const formatSemesterForOffering = (semester) => {
+  if(semester === 'FIRST_SEMESTER') return '1ST_SEM'
+  if(semester === 'SECOND_SEMESTER') return '2ND_SEM'
+  if(semester === 'SUMMER') return semester;
+  return semester?.substring(0,3) ?? semester;
+}
 export const getCourseOfferingName = (courseOffering) => {
   if(!courseOffering) return ''
   return `${courseOffering?.course?.name ?? ""}-${
-    courseOffering?.reviewProgram?.name ?? ""
-  }-${courseOffering?.yearOffered ?? ""}-${courseOffering?.semester ?? ""}`;
+    courseOffering?.reviewProgram?.name?.substring(0, 3) ?? ""
+  }-${courseOffering?.yearOffered ?? ""}-${formatSemesterForOffering(courseOffering?.semester) ?? ""}`;
 };
 
 export const getPaymentById = (payments, id) => {

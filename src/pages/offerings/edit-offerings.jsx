@@ -1,15 +1,15 @@
-import React, { useCallback, useState } from "react";
-import CustomInput from "../../components/Input/Input";
-import CustomButton from "../../components/Button/Button";
-import { Select, Form, DatePicker } from "antd";
-import { useCourse } from "../../contexts/courses";
-import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
-import { DateTime } from "luxon";
-import useMutation from "../../hooks/useMutation";
-import { DEFAULT_BRANCH_ID, SEMESTER } from "../../constants";
-import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
-import { useProgramContext } from "../../contexts/programs";
+import React, { useCallback, useState } from 'react';
+import CustomInput from '../../components/Input/Input';
+import CustomButton from '../../components/Button/Button';
+import { Select, Form, DatePicker } from 'antd';
+import { useCourse } from '../../contexts/courses';
+import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
+import { DateTime } from 'luxon';
+import useMutation from '../../hooks/useMutation';
+import { DEFAULT_BRANCH_ID, SEMESTER } from '../../constants';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import { useProgramContext } from '../../contexts/programs';
 const { Option } = Select;
 
 const EditOfferings = () => {
@@ -17,9 +17,9 @@ const EditOfferings = () => {
   const { courses, getCoursesLoading, getCoursesError } = useCourse();
   const [selectedCourseId, setSelectedCourseId] = useState(undefined);
   const { mutate: AddOffering, loading: AddOfferingLoading } = useMutation(
-    `branches/${DEFAULT_BRANCH_ID}/courses/${selectedCourseId}/offerings`,
-    "POST",
-    "offerings"
+    `branches/${DEFAULT_BRANCH_ID()}/courses/${selectedCourseId}/offerings`,
+    'POST',
+    'offerings'
   );
   const { programs, getProgramsLoading, getProgramsError } =
     useProgramContext();
@@ -35,15 +35,15 @@ const EditOfferings = () => {
         // onFinish={updateOfferings}
         layout="vertical"
         initialValues={{
-          program: "INTENSIVE",
-          semester: "FIRST_SEMESTER",
+          program: 'INTENSIVE',
+          semester: 'FIRST_SEMESTER',
           yearOffered: 2024,
         }}
       >
         <Form.Item
           label="Course"
           name="courseId"
-          rules={[{ required: true, message: "Please select course!" }]}
+          rules={[{ required: true, message: 'Please select course!' }]}
         >
           <Select
             loading={getCoursesLoading}
@@ -57,7 +57,7 @@ const EditOfferings = () => {
               courses?.data.map((course) => {
                 return (
                   <Option key={course.id} value={course.id}>
-                    {" "}
+                    {' '}
                     {course.name}
                   </Option>
                 );
@@ -68,7 +68,7 @@ const EditOfferings = () => {
         <Form.Item
           label="Review Program"
           name="program"
-          rules={[{ required: true, message: "Please select review program!" }]}
+          rules={[{ required: true, message: 'Please select review program!' }]}
         >
           <Select
             defaultValue="INTENSIVE"
@@ -82,7 +82,7 @@ const EditOfferings = () => {
         <Form.Item
           label="Semester Offered"
           name="semester"
-          rules={[{ required: true, message: "Please select semester!" }]}
+          rules={[{ required: true, message: 'Please select semester!' }]}
         >
           <Select
             defaultValue="FIRST_SEMESTER"
@@ -99,7 +99,7 @@ const EditOfferings = () => {
         <Form.Item
           label="School Year"
           name="yearOffered"
-          rules={[{ required: true, message: "Please select year!" }]}
+          rules={[{ required: true, message: 'Please select year!' }]}
         >
           <Select
             placeholder="Year"
@@ -121,7 +121,7 @@ const EditOfferings = () => {
         <Form.Item
           label="Start Date"
           name="startDate"
-          rules={[{ required: true, message: "Please select start date!" }]}
+          rules={[{ required: true, message: 'Please select start date!' }]}
         >
           <DatePicker className="w-full" size="large" value="2024-06-25" />
         </Form.Item>
@@ -130,7 +130,7 @@ const EditOfferings = () => {
           label="Payment Deadline"
           name="paymentDeadline"
           rules={[
-            { required: true, message: "Please select payment deadline!" },
+            { required: true, message: 'Please select payment deadline!' },
           ]}
         >
           <DatePicker className="w-full" size="large" value="2024-08-25" />
@@ -139,7 +139,7 @@ const EditOfferings = () => {
         <Form.Item
           label="Capacity"
           name="enrollmentCapacity"
-          rules={[{ required: true, message: "Please input capacity!" }]}
+          rules={[{ required: true, message: 'Please input capacity!' }]}
         >
           <CustomInput type="number" className="w-full" value="23" />
         </Form.Item>
@@ -147,7 +147,7 @@ const EditOfferings = () => {
         <Form.Item
           label="Review Cost"
           name="reviewCost"
-          rules={[{ required: true, message: "Please input review cost!" }]}
+          rules={[{ required: true, message: 'Please input review cost!' }]}
         >
           <CustomInput
             type="text"
@@ -159,7 +159,7 @@ const EditOfferings = () => {
         <Form.Item
           label="Budget Proposal"
           name="budgetProposal"
-          rules={[{ required: true, message: "Please input budget proposal!" }]}
+          rules={[{ required: true, message: 'Please input budget proposal!' }]}
         >
           <CustomInput type="text" className="w-full h-[40px]" value="3232" />
         </Form.Item>

@@ -1,12 +1,17 @@
 import useSWR from 'swr';
-import { DEFAULT_BRANCH_ID} from '../constants'
+import { DEFAULT_BRANCH_ID } from '../constants';
 import fetcher from '../utils/fetcher';
 import { useEffect } from 'react';
 function useStudents(params = {}) {
-  const { studentName = undefined, schoolId = undefined, pageNo = 1, pageSize = 25 } = params;
-  
+  const {
+    studentName = undefined,
+    schoolId = undefined,
+    pageNo = 1,
+    pageSize = 25,
+  } = params;
+
   const generateUrl = () => {
-    let url = `branches/${DEFAULT_BRANCH_ID}/students`;
+    let url = `branches/${DEFAULT_BRANCH_ID()}/students`;
     const queryParams = new URLSearchParams();
 
     if (pageNo) queryParams.append('pageNo', pageNo);
@@ -21,14 +26,16 @@ function useStudents(params = {}) {
     return url;
   };
 
-  const { data, error, mutate, isLoading } = useSWR('students', () => fetcher(generateUrl()));
+  const { data, error, mutate, isLoading } = useSWR('students', () =>
+    fetcher(generateUrl())
+  );
 
   useEffect(() => {
     mutate();
   }, [params]);
-  
+
   return {
-     data,
+    data,
     error,
     isLoading,
   };

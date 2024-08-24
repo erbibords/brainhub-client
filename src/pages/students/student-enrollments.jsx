@@ -1,7 +1,7 @@
 import React from "react";
 import { Row, Table, Col } from "antd";
 import { formatDate, formatAmount } from "../../utils/formatting";
-import { getCourseOfferingName } from "../../utils/formatting";
+import { getCourseOfferingName } from "../../utils/mappings";
 export const StudentEnrollments = ({ enrollments }) => {
   if (!enrollments) return null;
 
@@ -33,7 +33,9 @@ export const StudentEnrollments = ({ enrollments }) => {
       title: "Remaining Balance",
       dataIndex: "remainingBalance",
       key: "remainingBalance",
-      render: (data) => formatAmount(data),
+      render: (data) => (
+        <p className="text-red-600 font-bold"> {formatAmount(data)}</p>
+      ),
     },
   ];
 
