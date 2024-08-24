@@ -129,12 +129,6 @@ const StudentProfile = () => {
                       <strong>Middle name:</strong>{' '}
                       <Form.Item
                         name="middleName"
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Please input your Middle Name',
-                          },
-                        ]}
                       >
                         <CustomInput />
                       </Form.Item>
@@ -190,12 +184,6 @@ const StudentProfile = () => {
                     {isEditing ? (
                       <Form.Item
                         name="contactNumber"
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Please input Contact Number',
-                          },
-                        ]}
                       >
                         <CustomInput />
                       </Form.Item>
