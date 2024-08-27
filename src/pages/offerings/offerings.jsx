@@ -161,7 +161,7 @@ const Offerings = () => {
               {programs &&
                 programs?.data?.map((program) => (
                   <Option value={program.name} key={program.id}>
-                    {program.name}
+                    {`${program.description} (${program.name})`}
                   </Option>
                 ))}
             </Select>
