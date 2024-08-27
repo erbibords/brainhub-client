@@ -107,7 +107,9 @@ const PaymentsList = () => {
       title: "Balance after payment",
       dataIndex: "balance",
       key: "balance",
-      render: (data) => formatAmount(data ?? 0),
+      render: (data) => (
+        <p className="text-red-600 font-bold">{formatAmount(data ?? 0)}</p>
+      ),
     },
     {
       title: "Payment Method",
