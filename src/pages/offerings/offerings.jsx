@@ -159,9 +159,11 @@ const Offerings = () => {
               loading={getProgramsLoading}
             >
               {programs &&
-                Array.from(new Set(programs?.data ?? [])).map((program) => (
-                  <Option value={program.name} key={program.id}>
-                    {program.name}
+                Array.from(
+                  new Set(programs?.data.map((pg) => pg.name) ?? [])
+                ).map((pg, index) => (
+                  <Option value={pg.name} key={index}>
+                    {pg.name}
                   </Option>
                 ))}
             </Select>
