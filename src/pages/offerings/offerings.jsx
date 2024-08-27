@@ -162,8 +162,8 @@ const Offerings = () => {
                 Array.from(
                   new Set(programs?.data.map((pg) => pg.name) ?? [])
                 ).map((pg, index) => (
-                  <Option value={pg.name} key={index}>
-                    {pg.name}
+                  <Option value={pg} key={index}>
+                    {pg}
                   </Option>
                 ))}
             </Select>
