@@ -159,9 +159,9 @@ const Offerings = () => {
               loading={getProgramsLoading}
             >
               {programs &&
-                programs?.data?.map((program) => (
+                Array.from(new Set(programs?.data ?? [])).map((program) => (
                   <Option value={program.name} key={program.id}>
-                    {`${program.description} (${program.name})`}
+                    {program.name}
                   </Option>
                 ))}
             </Select>
