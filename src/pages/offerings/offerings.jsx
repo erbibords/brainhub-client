@@ -1,15 +1,15 @@
-import React, { useCallback, useEffect } from "react";
-import CustomButton from "../../components/Button/Button";
-import { Table, Space, Row, Col, Button, Select, Form } from "antd";
-import { useNavigate } from "react-router";
-import { useOfferingsContext } from "../../contexts/offerings";
-import { useCourse } from "../../contexts/courses";
-import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
-import { DateTime } from "luxon";
-import { formatSemester, formatAmount } from "../../utils/formatting";
-import { SEMESTER, YEAR } from "../../constants";
-import { useProgramContext } from "../../contexts/programs";
-import { cleanParams } from "../../utils/formatting";
+import React, { useCallback, useEffect } from 'react';
+import CustomButton from '../../components/Button/Button';
+import { Table, Space, Row, Col, Button, Select, Form } from 'antd';
+import { useNavigate } from 'react-router';
+import { useOfferingsContext } from '../../contexts/offerings';
+import { useCourse } from '../../contexts/courses';
+import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
+import { DateTime } from 'luxon';
+import { formatSemester, formatAmount } from '../../utils/formatting';
+import { SEMESTER, YEAR } from '../../constants';
+import { useProgramContext } from '../../contexts/programs';
+import { cleanParams } from '../../utils/formatting';
 const { Option } = Select;
 
 const Offerings = () => {
@@ -34,62 +34,62 @@ const Offerings = () => {
 
   const columns = [
     {
-      title: "Course",
-      dataIndex: "course",
-      key: "course",
+      title: 'Course',
+      dataIndex: 'course',
+      key: 'course',
       render: (_, record) => <p>{record?.course?.name}</p>,
     },
     {
-      title: "Review Program",
-      dataIndex: "reviewProgram",
-      key: "reviewProgram",
+      title: 'Review Program',
+      dataIndex: 'reviewProgram',
+      key: 'reviewProgram',
       render: (data) => data?.name,
     },
 
     {
-      title: "Semester",
-      dataIndex: "semester",
-      key: "semester",
+      title: 'Semester',
+      dataIndex: 'semester',
+      key: 'semester',
       render: (value) => {
         return formatSemester(value);
       },
     },
-    { title: "School Year", dataIndex: "yearOffered", key: "yearOffered" },
+    { title: 'School Year', dataIndex: 'yearOffered', key: 'yearOffered' },
     {
-      title: "Start Date",
-      dataIndex: "startDate",
-      key: "startDate",
+      title: 'Start Date',
+      dataIndex: 'startDate',
+      key: 'startDate',
       render: (value) => {
-        return DateTime.fromISO(value).toFormat("MMM dd, yyyy");
+        return DateTime.fromISO(value).toFormat('MMM dd, yyyy');
       },
     },
     {
-      title: "Payment Deadline",
-      dataIndex: "paymentDeadline",
-      key: "paymentDeadline",
+      title: 'Payment Deadline',
+      dataIndex: 'paymentDeadline',
+      key: 'paymentDeadline',
       render: (value) => {
-        return DateTime.fromISO(value).toFormat("MMM dd, yyyy");
+        return DateTime.fromISO(value).toFormat('MMM dd, yyyy');
       },
     },
     {
-      title: "Enrollees",
-      dataIndex: "enrollmentCapacity",
+      title: 'Enrollees',
+      dataIndex: 'enrollmentCapacity',
     },
     {
-      title: "Review Fee",
-      dataIndex: "reviewFee",
+      title: 'Review Fee',
+      dataIndex: 'reviewFee',
       render: (value) => formatAmount(value),
     },
     {
-      title: "Total Collectibles",
-      dataIndex: "budgetProposal",
-      key: "budgetProposal",
+      title: 'Total Collectibles',
+      dataIndex: 'budgetProposal',
+      key: 'budgetProposal',
       render: (value) => formatAmount(value),
     },
 
     {
-      title: "Action",
-      key: "action",
+      title: 'Action',
+      key: 'action',
       render: (_, record) => (
         <Space size="small">
           <CustomButton
@@ -104,6 +104,7 @@ const Offerings = () => {
   ];
 
   const onSearch = useCallback((values) => {
+    console.log('filtering courses by', values);
     const params = cleanParams(values);
     setParams(params);
   }, []);
@@ -146,7 +147,7 @@ const Offerings = () => {
           </Form.Item>
 
           <Form.Item
-            name="reviewProgramId"
+            name="reviewProgramName"
             label="Program :"
             layout="vertical"
             className="w-[15vw]"
