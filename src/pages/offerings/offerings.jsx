@@ -154,13 +154,13 @@ const Offerings = () => {
           >
             <Select
               className="h-[40px] w"
-              name="reviewProgramId"
+              name="reviewProgramName"
               disabled={getProgramsError || getProgramsLoading}
               loading={getProgramsLoading}
             >
               {programs &&
                 programs?.data?.map((program) => (
-                  <Option value={program.id} key={program.id}>
+                  <Option value={program.name} key={program.id}>
                     {program.name}
                   </Option>
                 ))}
