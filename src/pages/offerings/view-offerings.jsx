@@ -193,8 +193,8 @@ const ViewOffering = () => {
 
     const data = offering.enrollments.filter(
       (record) =>
-        record.remainingBalance >= searchAmount.min &&
-        record.remainingBalance <= searchAmount.max
+        record.amountPaid >= searchAmount.min &&
+        record.amountPaid <= searchAmount.max
     );
     setEnrollments(data);
   }, [searchAmount, offering?.enrollments, setEnrollments]);
@@ -360,7 +360,7 @@ const ViewOffering = () => {
                     )}
                   </p>
                 </div>
-                <Col xs={24} sm={24} md={8} lg={6}>
+                <Col xs={24} sm={24} md={8} lg={12}>
                   <div className="text-right mb-5">
                     {isEditing ? (
                       <div className="flex justify-end">

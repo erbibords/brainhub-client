@@ -1,9 +1,9 @@
-import { getBranch } from './utils/token';
+import { getBranch } from "./utils/token";
 
 export const DEFAULT_BRANCH_ID = () => {
   return getBranch();
 };
-export const BASE_URL = 'https://brainhub-sandbox-api.onrender.com/v1/';
+export const BASE_URL = "https://brainhub-sandbox-api.onrender.com/v1/";
 
 export const COURSE_BASE_URL = `branches/${DEFAULT_BRANCH_ID()}/courses`;
 export const STUDENT_BASE_URL = `branches/${DEFAULT_BRANCH_ID()}/students`;
@@ -15,121 +15,121 @@ export const ENROLLMENT_BASE_URL = `branches/${DEFAULT_BRANCH_ID()}/enrollments`
 export const MEDIA_BASE_URL = `${BASE_URL}branches/${DEFAULT_BRANCH_ID()}/payments/uploads`;
 
 export const YEAR = [
-  '2024',
-  '2024-2025',
-  '2025',
-  '2025-2026',
-  '2026',
-  '2026-2027',
-  '2027',
-  '2027-2028',
-  '2028',
-  '2028-2029',
-  '2029',
-  '2029-2030',
-  '2030',
-  '2030-2031',
+  "2024",
+  "2024-2025",
+  "2025",
+  "2025-2026",
+  "2026",
+  "2026-2027",
+  "2027",
+  "2027-2028",
+  "2028",
+  "2028-2029",
+  "2029",
+  "2029-2030",
+  "2030",
+  "2030-2031",
 ];
 export const YEAR_LEVELS = [
-  '1st Year',
-  '2nd Year',
-  '3rd Year',
-  '4th Year',
-  '5th Year',
-  '6th Year',
+  "1st Year",
+  "2nd Year",
+  "3rd Year",
+  "4th Year",
+  "5th Year",
+  "6th Year",
 ];
 
 export const SEMESTER = [
   {
-    label: '1st',
-    value: 'FIRST_SEMESTER',
+    label: "1st",
+    value: "FIRST_SEMESTER",
   },
   {
-    label: '2nd',
-    value: 'SECOND_SEMESTER',
+    label: "2nd",
+    value: "SECOND_SEMESTER",
   },
   {
-    label: 'Summer',
-    value: 'SUMMER',
+    label: "Summer",
+    value: "SUMMER",
   },
   {
-    label: 'January',
-    value: 'JANUARY',
+    label: "January",
+    value: "JANUARY",
   },
   {
-    label: 'February',
-    value: 'FEBRUARY',
+    label: "February",
+    value: "FEBRUARY",
   },
   {
-    label: 'March',
-    value: 'MARCH',
+    label: "March",
+    value: "MARCH",
   },
   {
-    label: 'April',
-    value: 'APRIL',
+    label: "April",
+    value: "APRIL",
   },
   {
-    label: 'May',
-    value: 'MAY',
+    label: "May",
+    value: "MAY",
   },
   {
-    label: 'June',
-    value: 'JUNE',
+    label: "June",
+    value: "JUNE",
   },
   {
-    label: 'July',
-    value: 'JULY',
+    label: "July",
+    value: "JULY",
   },
   {
-    label: 'August',
-    value: 'AUGUST',
+    label: "August",
+    value: "AUGUST",
   },
   {
-    label: 'September',
-    value: 'SEPTEMBER',
+    label: "September",
+    value: "SEPTEMBER",
   },
   {
-    label: 'Octoboer',
-    value: 'OCTOBER',
+    label: "October",
+    value: "OCTOBER",
   },
   {
-    label: 'November',
-    value: 'NOVEMBER',
+    label: "November",
+    value: "NOVEMBER",
   },
   {
-    label: 'December',
-    value: 'DECEMBER',
+    label: "December",
+    value: "DECEMBER",
   },
 ];
 
 export const REVIEW_PROGRAM = [
   {
-    label: 'Intensive',
-    value: 'INTENSIVE',
+    label: "Intensive",
+    value: "INTENSIVE",
   },
   {
-    label: 'Enhancement-Intensive',
-    value: 'ENHANCEMENT',
+    label: "Enhancement-Intensive",
+    value: "ENHANCEMENT",
   },
 ];
 
 export const PROCESSED_BY = [
-  'Ma. Nelly Wendam',
-  'Christine Dela Torre',
-  'Elaine Mae Entreguena',
+  "Ma. Nelly Wendam",
+  "Christine Dela Torre",
+  "Elaine Mae Entreguena",
 ];
 
 export const PAYMENT_METHODS = [
   {
-    name: 'Bank Transfer',
-    value: 'BANK',
+    name: "Bank Transfer",
+    value: "BANK",
   },
   {
-    name: 'Cash',
-    value: 'CASH',
+    name: "Cash",
+    value: "CASH",
   },
   {
-    name: 'Gcash',
-    value: 'GCASH',
+    name: "Gcash",
+    value: "GCASH",
   },
 ];

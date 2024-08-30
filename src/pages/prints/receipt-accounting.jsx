@@ -1,5 +1,5 @@
 import React, { useMemo, useRef } from "react";
-import { Typography, Row, Col, Table, Form, Divider } from "antd";
+import { Typography, Row, Col, Table, Form } from "antd";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
 import { useParams, useNavigate } from "react-router-dom";
@@ -7,11 +7,7 @@ import { getPaymentById } from "../../utils/mappings";
 import { usePaymentsContext } from "../../contexts/payments";
 import logo from "../../assets/images/brainhub-logo-new.png";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
-import {
-  formatDate,
-  formatAmount,
-  getCourseOfferingName,
-} from "../../utils/formatting";
+import { formatDate, formatAmount } from "../../utils/formatting";
 import { useReactToPrint } from "react-to-print";
 const { Title, Text } = Typography;
 
@@ -50,8 +46,6 @@ const Receipt = () => {
     ];
   }, [paymentDetails, formatAmount]);
 
-  console.log(paymentDetails);
-
   const columns = useMemo(() => {
     return [
       {
@@ -80,25 +74,23 @@ const Receipt = () => {
 
   return (
     <div className="max-w-md mx-auto font-sans text-xs">
-      <div ref={contentToPrint} className="scale-100">
-        <Form name="printReciept" layout="vertical" className="space-y-2">
+      <div ref={contentToPrint} className="scale-100 space-y-2 px-1">
+        <Form name="printReciept">
           <div className="text-center mb-1">
             <div className="flex items-center justify-center">
-              <img
-                src={logo}
-                alt="Brain Hub Logo"
-                className="h-15 w-full mr-1"
-              />
+              <img src={logo} alt="Brain Hub Logo" className="h-15 w-full" />
             </div>
             <Text className="text-center d-block text-xs">
-              <p>ALVIN D. ANDRADE - Prop</p>
-              <p>Iloilo Doctor's College West Timawa Molo 5000 Iloilo City</p>
+              <p className="!mb-0">ALVIN D. ANDRADE - Prop</p>
+              <p className="!mb-0">
+                Iloilo Doctor's College West Timawa Molo 5000 Iloilo City
+              </p>
               <p>Non-Vat Reg. TIN: 310-118-125-00000</p>
             </Text>
             <Row className="mb-1">
               <Col span={16} className="flex items-center">
                 <Text className="mr-1 whitespace-nowrap text-xs">
-                  INVOICE OFFICIAL RECEIPT
+                  INVOICE RECEIPT
                 </Text>
               </Col>
               <Col span={8} className="text-right">
@@ -120,14 +112,16 @@ const Receipt = () => {
               </Text>
             </Col>
             <Col span={24} className="flex items-center mt-1">
-              <Text className="mr-1 whitespace-nowrap text-xs">
-                Received From:
-              </Text>
-              <Text className="mr-1 whitespace-nowrap text-xs font-bold max-w-[100px]">
-                {paymentDetails?.enrollment?.student?.fullName
-                  ?.toString()
-                  .toUpperCase()}
-              </Text>
+              <div className="w-[60%]">
+                <Text className="mr-1 whitespace-nowrap text-xs">
+                  Received From:
+                </Text>
+                <Text className="mr-1 text-xs font-bold overflow-hidden text-ellipsis break-words">
+                  {paymentDetails?.enrollment?.student?.fullName
+                    ?.toString()
+                    .toUpperCase()}
+                </Text>
+              </div>
             </Col>
 
             <Col span={24} className="flex items-center mt-1">
@@ -155,7 +149,7 @@ const Receipt = () => {
                 </Text>
               </Col>
               <Col span={12}>
-                <Text className="float-right mt-1 mr-1 text-xs font-bold max-w-[100px] text-sm">
+                <Text className="float-right mt-1 mr-1 text-xs font-bold max-w-[100px] text-xs">
                   {formatAmount(paymentDetails?.amountPaid ?? 0)}
                 </Text>
               </Col>
@@ -163,7 +157,7 @@ const Receipt = () => {
           </Form.Item>
 
           <Form.Item className="mt-1 flex justify-end">
-            <p> {paymentDetails?.processedBy} </p>
+            <p className="mt-5"> {paymentDetails?.processedBy} </p>
             <hr />
             <p className="text-center text-xs">Authorized Signature</p>
           </Form.Item>
