@@ -115,15 +115,17 @@ const Receipt = () => {
                 Date: {formatDate(paymentDetails?.paidAt) ?? ""}
               </Text>
             </Col>
-            <Col span={24} className="flex items-center mt-1">
-              <Text className="mr-1 whitespace-nowrap text-sm">
-                Received From:
-              </Text>
-              <Text className="mr-1 whitespace-nowrap text-sm font-bold max-w-[100px]">
-                {paymentDetails?.enrollment?.student?.fullName
-                  ?.toString()
-                  .toUpperCase()}
-              </Text>
+             <Col span={24} className="flex items-center mt-1">
+              <div className="w-[60%]">
+                <Text className="mr-1 whitespace-nowrap text-xs">
+                  Received From:
+                </Text>
+                <Text className="mr-1 text-xs font-bold overflow-hidden text-ellipsis break-words">
+                  {paymentDetails?.enrollment?.student?.fullName
+                    ?.toString()
+                    .toUpperCase()}
+                </Text>
+              </div>
             </Col>
 
             <Col span={24} className="flex items-center mt-1">
