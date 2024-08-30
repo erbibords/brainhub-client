@@ -12,7 +12,6 @@ import {
 } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useParams, useNavigate } from "react-router-dom";
-import { DateTime } from "luxon";
 import useMutation from "../../hooks/useMutation";
 import { useCourse } from "../../contexts/courses";
 import Swal from "sweetalert2";
@@ -191,10 +190,11 @@ const ViewOffering = () => {
       return offering?.enrollments || [];
     }
 
+    console.log(offering.enrollments);
     const data = offering.enrollments.filter(
       (record) =>
-        record.amountPaid >= searchAmount.min &&
-        record.amountPaid <= searchAmount.max
+        record.totalAmountPaid >= searchAmount.min &&
+        record.totalAmountPaid <= searchAmount.max
     );
     setEnrollments(data);
   }, [searchAmount, offering?.enrollments, setEnrollments]);

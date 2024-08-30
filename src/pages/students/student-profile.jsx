@@ -126,15 +126,7 @@ const StudentProfile = () => {
                   {isEditing && (
                     <>
                       <strong>Middle name:</strong>{" "}
-                      <Form.Item
-                        name="middleName"
-                        // rules={[
-                        //   {
-                        //     required: false,
-                        //     message: "Please input your Middle Name",
-                        //   },
-                        // ]}
-                      >
+                      <Form.Item name="middleName">
                         <CustomInput />
                       </Form.Item>
                       <Divider />
@@ -187,15 +179,7 @@ const StudentProfile = () => {
                   <p>
                     <strong>Contact No.:</strong>{" "}
                     {isEditing ? (
-                      <Form.Item
-                        name="contactNumber"
-                        // rules={[
-                        //   {
-                        //     required: true,
-                        //     message: "Please input Contact Number",
-                        //   },
-                        // ]}
-                      >
+                      <Form.Item name="contactNumber">
                         <CustomInput />
                       </Form.Item>
                     ) : (
@@ -254,7 +238,6 @@ const StudentProfile = () => {
                     )}
                   </p>
                 </div>
-
                 <Col xs={24} sm={24} md={8} lg={12}>
                   <div style={{ textAlign: "right", marginTop: "20px" }}>
                     {isEditing ? (
