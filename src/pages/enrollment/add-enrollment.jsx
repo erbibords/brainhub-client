@@ -526,11 +526,12 @@ const Enrollment = () => {
                 <Select
                   className="w-full mb=[2vh]"
                   size="large"
-                  defaultValue="1st"
+                  defaultValue=""
                   onChange={(value) => {
                     setTakerType(value);
                   }}
                 >
+                  <Option value=""></Option>
                   <Option value="FIRST_TAKER">1st Taker</Option>
                   <Option value="RE_TAKER">Re-taker</Option>
                   <Option value="SUMMER">Summer</Option>

@@ -7,7 +7,7 @@ import { formatTakerType } from "../../utils/formatting";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import CustomButton from "../../components/Button/Button";
 import { useReactToPrint } from "react-to-print";
-import logo from "../../assets/images/brainhub-logo-new.png";
+import logo from "../../assets/images/brainhub-logo2.png";
 const { Title, Text } = Typography;
 
 const PrintEnrollmentForm = () => {
@@ -50,7 +50,7 @@ const PrintEnrollmentForm = () => {
       <div ref={contentToPrint} className="p-4">
         <div className="text-center mb-1">
           <div className="flex items-center justify-center">
-            <img src={logo} alt="Brain Hub Logo" className="h-[100px] w-full" />
+            <img src={logo} alt="Brain Hub Logo" className="h-[120px] w-full" />
           </div>
         </div>
         <Title level={4} className="text-center">

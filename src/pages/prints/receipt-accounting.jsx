@@ -112,7 +112,7 @@ const Receipt = () => {
               </Text>
             </Col>
             <Col span={24} className="flex items-center mt-1">
-              <div className="w-[60%]">
+              <div className="w-[100%]">
                 <Text className="mr-1 whitespace-nowrap text-xs">
                   Received From:
                 </Text>

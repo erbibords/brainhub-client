@@ -284,6 +284,8 @@ const AddNewPayment = () => {
               size="large"
               defaultValue={today}
               format="YYYY-MM-DD"
+              inputReadOnly
+              style={{ pointerEvents: "none", backgroundColor: "#f5f5f5" }}
             />
           </Form.Item>
 
