@@ -33,13 +33,48 @@ const Receipt = () => {
     );
   }
 
+  const shortenParticulars = (particulars) => {
+    if (!particulars) return "";
+
+    // Handle INTENSIVE and ENHANCEMENT cases
+    let shortenedProgram = particulars;
+
+    if (
+      shortenedProgram.includes("INTENSIVE") &&
+      shortenedProgram.includes("ENHANCEMENT")
+    ) {
+      shortenedProgram = shortenedProgram
+        .replace("INTENSIVE", "INT")
+        .replace("ENHANCEMENT", "ENH");
+    } else if (shortenedProgram.includes("INTENSIVE")) {
+      shortenedProgram = shortenedProgram.replace("INTENSIVE", "INT");
+    } else if (shortenedProgram.includes("ENHANCEMENT")) {
+      shortenedProgram = shortenedProgram.replace("ENHANCEMENT", "ENH");
+    }
+
+    // Split the string by "-"
+    const parts = shortenedProgram.split("-");
+
+    // Handle the year part: if there are two years (e.g., 2024-2025), shorten them to 24-25
+    const yearParts = parts.slice(-2).map((year) => {
+      return year.length === 4 ? year.slice(2) : year; // Shorten 2024 -> 24
+    });
+
+    // Combine the shortened program part and the year part
+    const shortened = [...parts.slice(0, -2), ...yearParts].join("-");
+
+    return shortened;
+  };
+
   const dataSource = useMemo(() => {
+    const originalParticulars =
+      `${paymentDetails?.enrollment?.courseOffering?.reviewProgram?.name}-${paymentDetails?.enrollment?.courseOffering?.yearOffered}` ??
+      "";
+
     return [
       {
         key: "1",
-        particulars:
-          `${paymentDetails?.enrollment?.courseOffering?.reviewProgram?.name}-${paymentDetails?.enrollment?.courseOffering?.yearOffered}` ??
-          "",
+        particulars: shortenParticulars(originalParticulars), // Apply the updated shortening logic here
         qty: "1",
         amount: formatAmount(paymentDetails?.amountPaid) ?? 0,
       },
@@ -52,19 +87,12 @@ const Receipt = () => {
         title: "Particulars",
         dataIndex: "particulars",
         key: "particulars",
-        render: (_) => {
-          return (
-            <label>
-              {`${paymentDetails?.enrollment?.courseOffering?.reviewProgram?.name}-${paymentDetails?.enrollment?.courseOffering?.yearOffered}` ??
-                ""}
-            </label>
-          );
-        },
+        render: (_, record) => <label>{record.particulars}</label>, // Now it renders the shortened value
       },
       { title: "Qty.", dataIndex: "qty", key: "qty" },
       { title: "Amount", dataIndex: "amount", key: "amount" },
     ];
-  }, [paymentDetails, dataSource]);
+  }, [dataSource]);
 
   const contentToPrint = useRef(null);
   const handlePrint = useReactToPrint({
