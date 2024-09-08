@@ -33,13 +33,48 @@ const Receipt = () => {
     );
   }
 
+  const shortenParticulars = (particulars) => {
+    if (!particulars) return "";
+
+    // Handle INTENSIVE and ENHANCEMENT cases
+    let shortenedProgram = particulars;
+
+    if (
+      shortenedProgram.includes("INTENSIVE") &&
+      shortenedProgram.includes("ENHANCEMENT")
+    ) {
+      shortenedProgram = shortenedProgram
+        .replace("INTENSIVE", "INT")
+        .replace("ENHANCEMENT", "ENH");
+    } else if (shortenedProgram.includes("INTENSIVE")) {
+      shortenedProgram = shortenedProgram.replace("INTENSIVE", "INT");
+    } else if (shortenedProgram.includes("ENHANCEMENT")) {
+      shortenedProgram = shortenedProgram.replace("ENHANCEMENT", "ENH");
+    }
+
+    // Split the string by "-"
+    const parts = shortenedProgram.split("-");
+
+    // Handle the year part: if there are two years (e.g., 2024-2025), shorten them to 24-25
+    const yearParts = parts.slice(-2).map((year) => {
+      return year.length === 4 ? year.slice(2) : year; // Shorten 2024 -> 24
+    });
+
+    // Combine the shortened program part and the year part
+    const shortened = [...parts.slice(0, -2), ...yearParts].join("-");
+
+    return shortened;
+  };
+
   const dataSource = useMemo(() => {
+    const originalParticulars =
+      `${paymentDetails?.enrollment?.courseOffering?.reviewProgram?.name}-${paymentDetails?.enrollment?.courseOffering?.yearOffered}` ??
+      "";
+
     return [
       {
         key: "1",
-        particulars:
-          `${paymentDetails?.enrollment?.courseOffering?.reviewProgram?.name}-${paymentDetails?.enrollment?.courseOffering?.yearOffered}` ??
-          "",
+        particulars: shortenParticulars(originalParticulars), // Apply the updated shortening logic here
         qty: "1",
         amount: formatAmount(paymentDetails?.amountPaid) ?? 0,
       },
@@ -52,19 +87,12 @@ const Receipt = () => {
         title: "Particulars",
         dataIndex: "particulars",
         key: "particulars",
-        render: (_) => {
-          return (
-            <label>
-              {`${paymentDetails?.enrollment?.courseOffering?.reviewProgram?.name}-${paymentDetails?.enrollment?.courseOffering?.yearOffered}` ??
-                ""}
-            </label>
-          );
-        },
+        render: (_, record) => <label>{record.particulars}</label>, // Now it renders the shortened value
       },
       { title: "Qty.", dataIndex: "qty", key: "qty" },
       { title: "Amount", dataIndex: "amount", key: "amount" },
     ];
-  }, [paymentDetails, dataSource]);
+  }, [dataSource]);
 
   const contentToPrint = useRef(null);
   const handlePrint = useReactToPrint({
@@ -73,18 +101,14 @@ const Receipt = () => {
   });
 
   return (
-    <div className="max-w-md mx-auto font-sans text-sm">
-      <div ref={contentToPrint} className="scale-100">
-        <Form name="printReciept" layout="vertical" className="space-y-2">
+    <div className="max-w-md mx-auto font-sans text-xs">
+      <div ref={contentToPrint} className="scale-100 space-y-2 px-1">
+        <Form name="printReciept">
           <div className="text-center mb-1">
             <div className="flex items-center justify-center">
-              <img
-                src={logo}
-                alt="Brain Hub Logo"
-                className="h-15 w-full mr-1"
-              />
+              <img src={logo} alt="Brain Hub Logo" className="h-15 w-full" />
             </div>
-            <Text className="text-center d-block text-sm">
+            <Text className="text-center d-block text-xs">
               <p className="!mb-0">ALVIN D. ANDRADE - Prop</p>
               <p className="!mb-0">
                 Iloilo Doctor's College West Timawa Molo 5000 Iloilo City
@@ -93,12 +117,12 @@ const Receipt = () => {
             </Text>
             <Row className="mb-1">
               <Col span={16} className="flex items-center">
-                <Text className="mr-1 whitespace-nowrap text-sm">
-                  INVOICE OFFICIAL RECEIPT
+                <Text className="mr-1 whitespace-nowrap text-xs">
+                  INVOICE RECEIPT
                 </Text>
               </Col>
               <Col span={8} className="text-right">
-                <Text className="mr-1 whitespace-nowrap text-sm">
+                <Text className="mr-1 whitespace-nowrap text-xs">
                   No: {paymentDetails?.referenceNo}
                 </Text>
               </Col>
@@ -107,16 +131,16 @@ const Receipt = () => {
 
           <Row className="mb-1">
             <Col span={24} className="flex items-center">
-              <Text className="mr-1 whitespace-nowrap text-sm">ORIGINAL:</Text>
-              <CustomInput className="border-0 flex-grow text-sm" />
+              <Text className="mr-1 whitespace-nowrap text-xs">ORIGINAL:</Text>
+              <CustomInput className="border-0 flex-grow text-xs" />
             </Col>
             <Col span={24}>
-              <Text className="text-sm">
+              <Text className="text-xs">
                 Date: {formatDate(paymentDetails?.paidAt) ?? ""}
               </Text>
             </Col>
-             <Col span={24} className="flex items-center mt-1">
-              <div className="w-[60%]">
+            <Col span={24} className="flex items-center mt-1">
+              <div className="w-[100%]">
                 <Text className="mr-1 whitespace-nowrap text-xs">
                   Received From:
                 </Text>
@@ -129,10 +153,10 @@ const Receipt = () => {
             </Col>
 
             <Col span={24} className="flex items-center mt-1">
-              <Text className="mr-1 whitespace-nowrap text-sm">
+              <Text className="mr-1 whitespace-nowrap text-xs">
                 Mode of payment:
               </Text>
-              <Text className="mr-1 whitespace-nowrap text-sm font-bold max-w-[100px]">
+              <Text className="mr-1 whitespace-nowrap text-xs font-bold max-w-[100px]">
                 {paymentDetails?.paymentMethod}
               </Text>
             </Col>
@@ -148,12 +172,12 @@ const Receipt = () => {
           <Form.Item className="mt-1 flex justify-end">
             <Row className="mb-1">
               <Col span={12}>
-                <Text className="float-right mt-1 mr-1 text-sm w-[100px]">
+                <Text className="float-right mt-1 mr-1 text-xs w-[100px]">
                   Total Amount:
                 </Text>
               </Col>
               <Col span={12}>
-                <Text className="float-right mt-1 mr-1 text-sm font-bold max-w-[100px] text-sm">
+                <Text className="float-right mt-1 mr-1 text-xs font-bold max-w-[100px] text-xs">
                   {formatAmount(paymentDetails?.amountPaid ?? 0)}
                 </Text>
               </Col>
@@ -163,7 +187,7 @@ const Receipt = () => {
           <Form.Item className="mt-1 flex justify-end">
             <p className="mt-5"> {paymentDetails?.processedBy} </p>
             <hr />
-            <p className="text-center text-sm">Authorized Signature</p>
+            <p className="text-center text-xs">Authorized Signature</p>
           </Form.Item>
         </Form>
       </div>
