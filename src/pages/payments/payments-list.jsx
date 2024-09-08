@@ -13,6 +13,8 @@ import {
   Image,
   Form,
   Button,
+  Modal,
+  Input,
 } from "antd";
 import {
   SEMESTER,
@@ -55,6 +57,10 @@ const PaymentsList = () => {
   });
 
   console.log(payments);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [password, setPassword] = useState("");
+  const [currentRecord, setCurrentRecord] = useState(null);
 
   useEffect(() => {
     setParams({});
@@ -104,7 +110,7 @@ const PaymentsList = () => {
       render: (data) => formatAmount(data ?? 0),
     },
     {
-      title: "Balance after payment",
+      title: "Balance after payments",
       dataIndex: "balance",
       key: "balance",
       render: (data) => (
@@ -154,16 +160,41 @@ const PaymentsList = () => {
       title: "Action",
       key: "action",
       render: (text, record) => (
-        <Space size="middle">
+        <Space size="middle" style={{ columnGap: "4px" }}>
           <CustomButton
             onClick={() => navigate(`/prints/receipt/${record?.id}`)}
           >
             Print
           </CustomButton>
+          <CustomButton
+            type="delete"
+            onClick={() => handleRemoveData(record?.id)}
+          >
+            Remove
+          </CustomButton>
         </Space>
       ),
     },
   ];
+
+  const handleRemoveData = (record) => {
+    setCurrentRecord(record);
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    // Handle the removal logic here, e.g., validate password, remove data, etc.
+    console.log("Password:", password);
+    console.log("Record to be removed:", currentRecord);
+
+    // You can add your API call here to remove the record
+    // After successful removal, close the modal
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   return (
     <div>
@@ -378,6 +409,21 @@ const PaymentsList = () => {
           </Col>
         </Row>
       </Form>
+
+      <Modal
+        title="Are you sure you want to remove this?"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText="Confirm"
+        cancelText="Cancel"
+      >
+        <Input.Password
+          placeholder="Enter password to remove"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </Modal>
     </div>
   );
 };
