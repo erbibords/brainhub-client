@@ -13,19 +13,23 @@ import {
   Image,
   Form,
   Button,
+  Divider,
 } from "antd";
 import {
   SEMESTER,
   MEDIA_BASE_URL,
   YEAR,
   PAYMENT_METHODS,
+  PAYMENTS_BASE_URL,
 } from "../../constants";
 import { usePaymentsContext } from "../../contexts/payments";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { getCourseOfferingName } from "../../utils/mappings";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
+import useMutation from "../../hooks/useMutation";
 import { cleanParams, formatAmount, formatDate } from "../../utils/formatting";
+import Swal from "sweetalert2";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -33,8 +37,15 @@ const { RangePicker } = DatePicker;
 const PaymentsList = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const [selectedPaymentid, setSelectedPaymentId] = useState(undefined);
   const { payments, getPaymentsLoading, getPaymentsError, setParams } =
     usePaymentsContext();
+  const { mutate: undoPaymentMutate, loading: undoPaymentLoading } =
+    useMutation(
+      `${PAYMENTS_BASE_URL}/${selectedPaymentid}`,
+      "DELETE",
+      "payments"
+    );
 
   const {
     data: schools,
@@ -53,8 +64,6 @@ const PaymentsList = () => {
     semester: undefined,
     yearOffered: undefined,
   });
-
-  console.log(payments);
 
   useEffect(() => {
     setParams({});
@@ -83,6 +92,34 @@ const PaymentsList = () => {
       setDateRange({ start: null, end: null });
     }
   };
+
+  const undoPayment = useCallback(
+    async (id) => {
+      setSelectedPaymentId(id);
+      console.log(!selectedPaymentid);
+
+      if (!selectedPaymentid) return;
+
+      try {
+        const res = await undoPaymentMutate();
+        if (res) {
+          Swal.fire({
+            icon: "success",
+            title: "Payment Removed!",
+            timer: 2000,
+          });
+          setSelectedPaymentId(undefined);
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Error removing payment. Please try again!",
+        });
+      }
+    },
+    [selectedPaymentid]
+  );
 
   const columns = [
     {
@@ -153,12 +190,16 @@ const PaymentsList = () => {
     {
       title: "Action",
       key: "action",
-      render: (text, record) => (
+      render: (_, record) => (
         <Space size="middle">
           <CustomButton
             onClick={() => navigate(`/prints/receipt/${record?.id}`)}
           >
             Print
+          </CustomButton>
+          <Divider />
+          <CustomButton onClick={() => undoPayment(record?.id)}>
+            Undo
           </CustomButton>
         </Space>
       ),

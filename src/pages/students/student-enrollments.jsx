@@ -19,16 +19,23 @@ export const StudentEnrollments = ({ enrollments }) => {
       dataIndex: "reviewCost",
       key: "reviewCost",
       render: (_, data) => {
+        console.log(data);
         return formatAmount(data?.courseOffering?.reviewCost);
       },
     },
+
     {
-      title: "Enrollment Date",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      render: (data) => formatDate(data),
+      title: "Discount Amount",
+      dataIndex: "discountAmount",
+      key: "discountAmount",
+      render: (data) => <p className="font-bold"> {formatAmount(data)}</p>,
     },
-    { title: "Processed By", dataIndex: "processedBy", key: "processedBy" },
+    {
+      title: "Total Amount Paid",
+      dataIndex: "totalAmountPaid",
+      key: "totalAmountPaid",
+      render: (data) => <p className="font-bold"> {formatAmount(data)}</p>,
+    },
     {
       title: "Remaining Balance",
       dataIndex: "remainingBalance",
@@ -37,6 +44,13 @@ export const StudentEnrollments = ({ enrollments }) => {
         <p className="text-red-600 font-bold"> {formatAmount(data)}</p>
       ),
     },
+    {
+      title: "Enrollment Date",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (data) => formatDate(data),
+    },
+    { title: "Processed By", dataIndex: "processedBy", key: "processedBy" },
   ];
 
   return (
