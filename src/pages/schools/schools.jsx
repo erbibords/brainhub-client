@@ -1,25 +1,25 @@
-import React, { useCallback, useState, useMemo } from "react";
-import { Table, Space, Row, Col, Button, Form } from "antd";
-import CustomInput from "../../components/Input/Input";
-import AddSchoolModal from "../../components/AddSchoolModal/AddSchoolModal";
-import useMutation from "../../hooks/useMutation";
-import Swal from "sweetalert2";
-import CustomButton from "../../components/Button/Button";
-import { useNavigate } from "react-router-dom";
-import useSchools from "../../hooks/useSchools";
-import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
-import { SCHOOLS_BASE_URL } from "../../constants";
+import React, { useCallback, useState, useMemo } from 'react';
+import { Table, Space, Row, Col, Button, Form } from 'antd';
+import CustomInput from '../../components/Input/Input';
+import AddSchoolModal from '../../components/AddSchoolModal/AddSchoolModal';
+import useMutation from '../../hooks/useMutation';
+import Swal from 'sweetalert2';
+import CustomButton from '../../components/Button/Button';
+import { useNavigate } from 'react-router-dom';
+import useSchools from '../../hooks/useSchools';
+import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
+import { SCHOOLS_BASE_URL } from '../../constants';
 
 const SchoolList = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { data: schools, isLoading, error } = useSchools();
-  const [searchSchoolText, setSearchSchoolText] = useState("");
+  const [searchSchoolText, setSearchSchoolText] = useState('');
   const { mutate: addSchool, loading: addSchoolLoading } = useMutation(
     SCHOOLS_BASE_URL,
-    "POST",
-    "schools"
+    'POST',
+    'schools'
   );
   const showModal = () => {
     setIsModalVisible(true);
@@ -35,8 +35,8 @@ const SchoolList = () => {
         const res = await addSchool(data);
         if (res) {
           Swal.fire({
-            icon: "success",
-            title: "School Added!",
+            icon: 'success',
+            title: 'School Added!',
             timer: 2000,
           });
           hideModal();
@@ -44,9 +44,9 @@ const SchoolList = () => {
         }
       } catch (error) {
         Swal.fire({
-          icon: "error",
+          icon: 'error',
           title:
-            "Error adding school! It may be due to input, please try again later!",
+            'Error adding school! It may be due to input, please try again later!',
           timer: 2000,
         });
       }
@@ -55,10 +55,15 @@ const SchoolList = () => {
   );
 
   const columns = [
-    { title: "School", dataIndex: "name" },
+    { title: 'School', dataIndex: 'name' },
     {
-      title: "Action",
-      key: "action",
+      title: 'Total Collectibles',
+      dataIndex: 'totalCollectibles',
+      render: (data) => data?.totalCollectibles,
+    },
+    {
+      title: 'Action',
+      key: 'action',
       render: (_, record) => (
         <Space size="middle">
           <CustomButton onClick={() => navigate(`/schools/${record?.id}`)}>
