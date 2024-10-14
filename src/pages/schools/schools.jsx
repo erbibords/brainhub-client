@@ -59,7 +59,7 @@ const SchoolList = () => {
     {
       title: 'Total Collectibles',
       dataIndex: 'totalCollectibles',
-      render: (data) => data?.totalCollectibles,
+      render: (data) => data,
     },
     {
       title: 'Action',
