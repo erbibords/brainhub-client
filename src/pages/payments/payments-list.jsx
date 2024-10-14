@@ -14,6 +14,8 @@ import {
   Form,
   Button,
   Divider,
+  Modal,
+  Input,
 } from "antd";
 import {
   SEMESTER,
@@ -65,6 +67,10 @@ const PaymentsList = () => {
     yearOffered: undefined,
   });
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [password, setPassword] = useState("");
+  const [currentRecord, setCurrentRecord] = useState(null);
+
   useEffect(() => {
     setParams({});
   }, []);
@@ -93,33 +99,27 @@ const PaymentsList = () => {
     }
   };
 
-  const undoPayment = useCallback(
-    async (id) => {
-      setSelectedPaymentId(id);
-      console.log(!selectedPaymentid);
+  const undoPayment = useCallback(async () => {
+    if (!selectedPaymentid) return;
 
-      if (!selectedPaymentid) return;
-
-      try {
-        const res = await undoPaymentMutate();
-        if (res) {
-          Swal.fire({
-            icon: "success",
-            title: "Payment Removed!",
-            timer: 2000,
-          });
-          setSelectedPaymentId(undefined);
-        }
-      } catch (error) {
+    try {
+      const res = await undoPaymentMutate();
+      if (res) {
         Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Error removing payment. Please try again!",
+          icon: "success",
+          title: "Payment Removed!",
+          timer: 2000,
         });
+        setSelectedPaymentId(undefined);
       }
-    },
-    [selectedPaymentid]
-  );
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Error removing payment. Please try again!",
+      });
+    }
+  }, [selectedPaymentid]);
 
   const columns = [
     {
@@ -141,7 +141,7 @@ const PaymentsList = () => {
       render: (data) => formatAmount(data ?? 0),
     },
     {
-      title: "Balance after payment",
+      title: "Balance after payments",
       dataIndex: "balance",
       key: "balance",
       render: (data) => (
@@ -198,13 +198,39 @@ const PaymentsList = () => {
             Print
           </CustomButton>
           <Divider />
-          <CustomButton onClick={() => undoPayment(record?.id)}>
+          <CustomButton
+            type="delete"
+            onClick={() => {
+              setCurrentRecord(record);
+              setIsModalVisible(true);
+              setSelectedPaymentId(record.id);
+            }}
+          >
             Undo
           </CustomButton>
         </Space>
       ),
     },
   ];
+
+  const handleOk = useCallback(() => {
+    if (!selectedPaymentid) return;
+    if (password === "brainhubph2024") {
+      undoPayment();
+      setIsModalVisible(false);
+      setPassword(null);
+    } else {
+      Swal.fire({
+        icon: "warning",
+        title: "Password not matched!",
+        timer: 2000,
+      });
+    }
+  }, [selectedPaymentid, password]);
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   return (
     <div>
@@ -419,6 +445,21 @@ const PaymentsList = () => {
           </Col>
         </Row>
       </Form>
+
+      <Modal
+        title="Are you sure you want to remove this?"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText="Confirm"
+        cancelText="Cancel"
+      >
+        <Input.Password
+          placeholder="Enter password to remove"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </Modal>
     </div>
   );
 };
