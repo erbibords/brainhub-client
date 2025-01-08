@@ -40,7 +40,7 @@ const StudentsList = () => {
     { title: "Name", dataIndex: "name", key: "name" },
     { title: "School", dataIndex: "school", key: "school" },
     {
-      title: "Student Status",
+      title: "Taker Type",
       dataIndex: "status",
       key: "status",
       render: (_, record) => {
@@ -51,6 +51,11 @@ const StudentsList = () => {
     },
     { title: "Contact No.", dataIndex: "contactNumber", key: "contact" },
     { title: "Address.", dataIndex: "address", key: "address" },
+    {
+      title: "Enrollee Type:.",
+      dataIndex: "enrolleeType",
+      key: "enrolleeType",
+    },
     {
       title: "Remaining Balance.",
       dataIndex: "enrollments",
@@ -147,6 +152,28 @@ const StudentsList = () => {
                       {school.name}
                     </Option>
                   ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item name="enrolleeType">
+              <p>Enrollee Type: </p>
+              <Select
+                loading={schoolsLoading}
+                disabled={schoolsLoading}
+                size="large"
+                className="custom-select"
+                placeholder="Select Enrollee Type" // Optional placeholder
+              >
+                <Option value="all" key="all">
+                  All
+                </Option>
+                <Option value="combi" key="combi">
+                  Combi Enrollee
+                </Option>
+                <Option value="regular" key="regular">
+                  Regular Enrollee
+                </Option>
               </Select>
             </Form.Item>
           </Col>

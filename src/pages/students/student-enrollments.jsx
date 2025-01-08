@@ -50,6 +50,13 @@ export const StudentEnrollments = ({ enrollments }) => {
       key: "createdAt",
       render: (data) => formatDate(data),
     },
+
+    {
+      title: "Enrollee Type",
+      dataIndex: "enrolleeType",
+      key: "enrolleeType",
+      // render: (data) => formatDate(data),
+    },
     { title: "Processed By", dataIndex: "processedBy", key: "processedBy" },
   ];
 

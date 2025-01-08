@@ -1,15 +1,15 @@
-import React, { useCallback, useEffect } from 'react';
-import CustomButton from '../../components/Button/Button';
-import { Table, Space, Row, Col, Button, Select, Form } from 'antd';
-import { useNavigate } from 'react-router';
-import { useOfferingsContext } from '../../contexts/offerings';
-import { useCourse } from '../../contexts/courses';
-import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
-import { DateTime } from 'luxon';
-import { formatSemester, formatAmount } from '../../utils/formatting';
-import { SEMESTER, YEAR } from '../../constants';
-import { useProgramContext } from '../../contexts/programs';
-import { cleanParams } from '../../utils/formatting';
+import React, { useCallback, useEffect } from "react";
+import CustomButton from "../../components/Button/Button";
+import { Table, Space, Row, Col, Button, Select, Form } from "antd";
+import { useNavigate } from "react-router";
+import { useOfferingsContext } from "../../contexts/offerings";
+import { useCourse } from "../../contexts/courses";
+import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
+import { DateTime } from "luxon";
+import { formatSemester, formatAmount } from "../../utils/formatting";
+import { SEMESTER, YEAR } from "../../constants";
+import { useProgramContext } from "../../contexts/programs";
+import { cleanParams } from "../../utils/formatting";
 const { Option } = Select;
 
 const Offerings = () => {
@@ -34,62 +34,68 @@ const Offerings = () => {
 
   const columns = [
     {
-      title: 'Course',
-      dataIndex: 'course',
-      key: 'course',
+      title: "Course",
+      dataIndex: "course",
+      key: "course",
       render: (_, record) => <p>{record?.course?.name}</p>,
     },
     {
-      title: 'Review Program',
-      dataIndex: 'reviewProgram',
-      key: 'reviewProgram',
+      title: "Review Program",
+      dataIndex: "reviewProgram",
+      key: "reviewProgram",
       render: (data) => data?.name,
     },
 
     {
-      title: 'Semester',
-      dataIndex: 'semester',
-      key: 'semester',
+      title: "Semester",
+      dataIndex: "semester",
+      key: "semester",
       render: (value) => {
         return formatSemester(value);
       },
     },
-    { title: 'School Year', dataIndex: 'yearOffered', key: 'yearOffered' },
+    { title: "School Year", dataIndex: "yearOffered", key: "yearOffered" },
     {
-      title: 'Start Date',
-      dataIndex: 'startDate',
-      key: 'startDate',
+      title: "Start Date",
+      dataIndex: "startDate",
+      key: "startDate",
       render: (value) => {
-        return DateTime.fromISO(value).toFormat('MMM dd, yyyy');
+        return DateTime.fromISO(value).toFormat("MMM dd, yyyy");
       },
     },
     {
-      title: 'Payment Deadline',
-      dataIndex: 'paymentDeadline',
-      key: 'paymentDeadline',
+      title: "Payment Deadline",
+      dataIndex: "paymentDeadline",
+      key: "paymentDeadline",
       render: (value) => {
-        return DateTime.fromISO(value).toFormat('MMM dd, yyyy');
+        return DateTime.fromISO(value).toFormat("MMM dd, yyyy");
       },
     },
     {
-      title: 'Enrollees',
-      dataIndex: 'enrollmentCapacity',
+      title: "Enrollees",
+      dataIndex: "enrollmentCapacity",
     },
     {
-      title: 'Review Fee',
-      dataIndex: 'reviewFee',
+      title: "Review Fee",
+      dataIndex: "reviewFee",
       render: (value) => formatAmount(value),
     },
     {
-      title: 'Total Collectibles',
-      dataIndex: 'budgetProposal',
-      key: 'budgetProposal',
+      title: "Total Collectibles",
+      dataIndex: "budgetProposal",
+      key: "budgetProposal",
       render: (value) => formatAmount(value),
+    },
+    {
+      title: "Enrollee Type",
+      dataIndex: "enrolleeType",
+      key: "enrolleeType",
+      // render: (value) => formatAmount(value),
     },
 
     {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       render: (_, record) => (
         <Space size="small">
           <CustomButton
@@ -104,7 +110,7 @@ const Offerings = () => {
   ];
 
   const onSearch = useCallback((values) => {
-    console.log('filtering courses by', values);
+    console.log("filtering courses by", values);
     const params = cleanParams(values);
     setParams(params);
   }, []);
@@ -120,20 +126,16 @@ const Offerings = () => {
   return (
     <div>
       <h1 className="text-2xl mb-[2vh]">Offerings</h1>
-      <Row>
-        <Form
-          form={form}
-          className="w-full flex gap-[12px]"
-          onFinish={onSearch}
-        >
+      <Row gutter={[16, 16]}>
+        <Col span={8}>
           <Form.Item
             name="courseId"
             label="Course: "
             layout="vertical"
-            className="w-[15vw] h-[70px]"
+            className="w-full h-[70px]"
           >
             <Select
-              className="h-[40px] w"
+              className="h-[40px] w-full"
               disabled={getCoursesLoading || getCoursesError}
               loading={getCoursesLoading}
               name="courseId"
@@ -145,15 +147,17 @@ const Offerings = () => {
               ))}
             </Select>
           </Form.Item>
+        </Col>
 
+        <Col span={8}>
           <Form.Item
             name="reviewProgramName"
             label="Program :"
             layout="vertical"
-            className="w-[15vw]"
+            className="w-full"
           >
             <Select
-              className="h-[40px] w"
+              className="h-[40px] w-full"
               name="reviewProgramName"
               disabled={getProgramsError || getProgramsLoading}
               loading={getProgramsLoading}
@@ -168,14 +172,16 @@ const Offerings = () => {
                 ))}
             </Select>
           </Form.Item>
+        </Col>
 
+        <Col span={8}>
           <Form.Item
             name="yearOffered"
             label="Year : "
             layout="vertical"
-            className="w-[15vw]"
+            className="w-full"
           >
-            <Select className="h-[40px] w" name="yearOffered">
+            <Select className="h-[40px] w-full" name="yearOffered">
               {YEAR.map((y) => (
                 <Option value={y} key={y}>
                   {y}
@@ -183,14 +189,16 @@ const Offerings = () => {
               ))}
             </Select>
           </Form.Item>
+        </Col>
 
+        <Col span={8}>
           <Form.Item
             name="semester"
             layout="vertical"
-            className="w-[15vw]"
+            className="w-full"
             label="Semester: "
           >
-            <Select className="h-[40px] w" name="semester">
+            <Select className="h-[40px] w-full" name="semester">
               {SEMESTER.map((sem) => (
                 <Option value={sem.value} key={sem.value}>
                   {sem.label}
@@ -198,8 +206,31 @@ const Offerings = () => {
               ))}
             </Select>
           </Form.Item>
+        </Col>
 
-          <Form.Item className="flex items-end" label="">
+        <Col span={8}>
+          <Form.Item
+            name="enrolleeType"
+            layout="vertical"
+            className="w-full"
+            label="Enrollee Type: "
+          >
+            <Select className="h-[40px] w-full" name="enrolleeType">
+              <Option value="all" key="all">
+                All
+              </Option>
+              <Option value="combi" key="combi">
+                Combi Enrollee
+              </Option>
+              <Option value="regular" key="regular">
+                Regular Enrollee
+              </Option>
+            </Select>
+          </Form.Item>
+        </Col>
+
+        <Col span={8} className="flex items-end">
+          <Form.Item label="">
             <CustomButton type="primary" className="mr-2" htmlType="submit">
               Filter
             </CustomButton>
@@ -211,8 +242,9 @@ const Offerings = () => {
               Clear
             </CustomButton>
           </Form.Item>
-        </Form>
+        </Col>
       </Row>
+
       <Row gutter={[12, 24]}>
         <Col span={24}>
           <CustomButton

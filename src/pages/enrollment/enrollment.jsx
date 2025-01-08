@@ -109,6 +109,12 @@ const Enrollment = () => {
         dataIndex: "processedBy",
         key: "processedBy",
       },
+
+      {
+        title: "Enrollee Type",
+        dataIndex: "enrolleeType",
+        key: "enrolleeType",
+      },
       {
         title: "Action",
         key: "action",
@@ -315,6 +321,29 @@ const Enrollment = () => {
                         {year}
                       </Option>
                     ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+
+              <Col span={6}>
+                <Form.Item name="enrolleeType">
+                  <p>Enrollee Type: </p>
+                  <Select
+                    loading={schoolsLoading}
+                    disabled={schoolsLoading}
+                    size="large"
+                    className="custom-select"
+                    placeholder="Select Enrollee Type" // Optional placeholder
+                  >
+                    <Option value="all" key="all">
+                      All
+                    </Option>
+                    <Option value="combi" key="combi">
+                      Combi Enrollee
+                    </Option>
+                    <Option value="regular" key="regular">
+                      Regular Enrollee
+                    </Option>
                   </Select>
                 </Form.Item>
               </Col>

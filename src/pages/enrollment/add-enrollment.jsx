@@ -3,7 +3,7 @@ import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
 import { useCourse } from "../../contexts/courses";
 import { useStudentContext } from "../../contexts/students";
-import { Select, Input, Form, Radio, AutoComplete } from "antd";
+import { Select, Input, Form, Radio, AutoComplete, Divider } from "antd";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
 import { useOfferingsContext } from "../../contexts/offerings";
@@ -34,6 +34,7 @@ const options = [
 ];
 
 const Enrollment = () => {
+  const [enrolleeType, setEnrolleeType] = useState(null);
   const navigate = useNavigate();
   const {
     data: schools,
@@ -313,460 +314,498 @@ const Enrollment = () => {
 
   return (
     <div className="w-full">
-      <div>
-        <Form layout="vertical" className="w-1/2">
-          <h1 className="text-2xl mb-[2vh]">Enroll Student</h1>
-
-          <Form.Item label="Year" name="year">
-            <Select
-              className="w-full mb=[2vh]"
-              defaultValue={`${new Date().getFullYear()}-${
-                new Date().getFullYear() + 1
-              }`}
-              size="large"
-              onChange={(value) =>
-                setOfferingsSearchParams({
-                  ...offeringsSearchParams,
-                  yearOffered: value,
-                })
-              }
-            >
-              {YEAR?.map((year) => (
-                <Option value={year} key={year}>
-                  {year}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-
-          <Form.Item label="Course" name="course_name">
-            <Select
-              className="w-full"
-              loading={getCoursesLoading}
-              disabled={getCoursesLoading || getCoursesError}
-              onChange={(value) =>
-                setOfferingsSearchParams({
-                  ...offeringsSearchParams,
-                  courseId: value,
-                })
-              }
-            >
-              {courses &&
-                courses?.data?.map((course) => (
-                  <Option key={course.id} value={course.id}>
-                    {course.name}
-                  </Option>
-                ))}
-            </Select>
-          </Form.Item>
-        </Form>
-
-        <Form.Item
-          label="Course Offering:"
-          name="courseId"
-          layout="vertical"
-          className="w-1/2 mb-[2vh]"
-        >
+      <h1 className="text-2xl mb-[2vh]">Enroll Student</h1>
+      <Form layout="vertical" className="w-1/2">
+        <Form.Item name="enrolleeType">
+          <p>Choose Enrollee Type: </p>
           <Select
             size="large"
-            disabled={getOfferingsLoading || getOfferingsError}
-            onChange={(value) => setSelectedOfferingId(value)}
+            className="custom-select"
+            placeholder="Choose Enrollee Type"
+            onChange={(value) => setEnrolleeType(value)}
           >
-            {offerings &&
-              offerings?.data?.map((offering) => {
-                return (
-                  <Option key={offering?.id} value={offering?.id}>
-                    {getCourseOfferingName(offering)}
-                  </Option>
-                );
-              })}
-          </Select>
-
-          {getOfferingsError && (
-            <label className="text-secondary">
-              Error loading offerings. please try again later!{" "}
-            </label>
-          )}
-        </Form.Item>
-
-        <Form.Item
-          label="Year Level"
-          name="yearLevel"
-          layout="vertical"
-          className="w-1/2 mb-[2vh]"
-        >
-          <Select
-            size="large"
-            name="yearLevel"
-            onChange={(data) =>
-              setAdditionalEnrollmentData({
-                ...additionalEnrollmentData,
-                yearLevel: data,
-              })
-            }
-          >
-            {YEAR_LEVELS?.map((year) => (
-              <Option value={year} key={year}>
-                {year}
-              </Option>
-            ))}
+            <Option value="regular" key="regular">
+              Regular Enrollee
+            </Option>
+            <Option value="combi" key="combi">
+              Combi Enrollee
+            </Option>
           </Select>
         </Form.Item>
+      </Form>
 
-        <div className="flex flex-col">
-          <label className="text-sm">Review Fee</label>
-          <CustomInput
-            className="w-1/2 mb-[2vh] px-[12px] py-[10px]"
-            type="text"
-            value={additionalEnrollmentData?.reviewFee}
-            onChange={(e) =>
-              setAdditionalEnrollmentData({
-                ...additionalEnrollmentData,
-                reviewFee: e.target.value,
-              })
-            }
-          />
-        </div>
-
-        <Form.Item
-          label="Discount Amount"
-          name="discountAmount"
-          layout="vertical"
-          className="w-1/2 mb-[2vh]"
-        >
-          <CustomInput
-            type="text"
-            name="discount"
-            onChange={(e) =>
-              setAdditionalEnrollmentData({
-                ...additionalEnrollmentData,
-                discountAmount: e.target.value,
-              })
-            }
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Remarks"
-          name="remarks"
-          layout="vertical"
-          className="w-1/2 mb-[2vh]"
-        >
-          <CustomInput
-            type="text"
-            name="remarks"
-            onChange={(e) =>
-              setAdditionalEnrollmentData({
-                ...additionalEnrollmentData,
-                remarks: e.target.value,
-              })
-            }
-          />
-        </Form.Item>
-        <Form.Item
-          label="Processed by:"
-          name="processedBy"
-          layout="vertical"
-          className="w-1/2 mb-[2vh]"
-        >
-          <Select
-            size="large"
-            onChange={(value) => setSelectedProcessedBy(value)}
-          >
-            {PROCESSED_BY.map((processedby) => (
-              <Option value={processedby} key={processedby}>
-                {processedby}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <div className="mb-[2vh]">
-          <p>
-            <small>
-              <i className="mb-[2vh]">Select Student to Enroll</i>
-            </small>
-          </p>
-
-          <Radio.Group
-            options={options}
-            onChange={getRadioStudent}
-            value={studentToEnrollRadioValue}
-            optionType="button"
-          />
-          {studentToEnrollRadioValue === "existing" && (
-            <>
-              <Form.Item
-                label="Student Name"
-                name="studentId"
-                className="mt-[10px] w-1/2"
-                layout="vertical"
-              >
-                <AutoComplete
-                  loading={studentDataLoading}
-                  disabled={studentDataLoading || getStudentError}
-                  className="w-full"
-                  placeholder="Select student"
-                  onSelect={(_, option) => {
-                    setSelectedStudentId(option.id);
-                  }}
-                  onSearch={(value) => {
-                    setStudentSearchText(value);
-                  }}
-                  options={filteredStudentOptions}
-                />
-                {getStudentError && (
-                  <label className="text-secondary">
-                    Error loading students. please try again later!{" "}
-                  </label>
-                )}
-              </Form.Item>
-
-              <Form.Item label="Taker type" layout="vertical" className="w-1/2">
+      {enrolleeType && (
+        <>
+          <div>
+            <Form layout="vertical" className="w-1/2">
+              <Form.Item label="Year" name="year">
                 <Select
                   className="w-full mb=[2vh]"
+                  defaultValue={`${new Date().getFullYear()}-${
+                    new Date().getFullYear() + 1
+                  }`}
                   size="large"
-                  defaultValue="1st"
-                  onChange={(value) => {
-                    setTakerType(value);
-                  }}
+                  onChange={(value) =>
+                    setOfferingsSearchParams({
+                      ...offeringsSearchParams,
+                      yearOffered: value,
+                    })
+                  }
                 >
-                  <Option value="FIRST_TAKER">1st Taker</Option>
-                  <Option value="RE_TAKER">Re-taker</Option>
-                  <Option value="SUMMER">Summer</Option>
+                  {YEAR?.map((year) => (
+                    <Option value={year} key={year}>
+                      {year}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
-            </>
-          )}
-        </div>
 
-        {studentToEnrollRadioValue === "new" && (
-          <Form
-            name="enrollment"
-            onFinish={onFinish}
-            layout="vertical"
-            className="w-1/2"
-            initialValues={
-              {
-                // lastName: "John",
-                // middleName: "Day",
-                // firstName: "Doe",
-                // contactNumber: "09182254329",
-                // address: "Lopez Jaena",
-                // age: 0,
-                // email: `test${generateFourDigitRandomNumber()}@brainhub.com`,
-                // emergencyContactName: "Jane Day Doe",
-                // emergencyContactRelationship: "Spouse",
-                // emergencyContactAddress: "USA",
-                // emergencyContactNumber: "09101214090",
-              }
-            }
-          >
-            <>
-              <Form.Item
-                label="First Name"
-                name="firstName"
-                rules={[
-                  { required: true, message: "Please input your First Name" },
-                ]}
-              >
-                <CustomInput
-                  type="text"
-                  name="firstName"
-                  className="uppercase"
-                />
-              </Form.Item>
-
-              <Form.Item
-                label="Middle Name"
-                name="middleName"
-                rules={[
-                  { required: true, message: "Please input your Middle Name" },
-                ]}
-              >
-                <CustomInput
-                  type="text"
-                  name="middleName"
-                  className="uppercase"
-                />
-              </Form.Item>
-
-              <Form.Item
-                label="Last Name"
-                name="lastName"
-                rules={[
-                  { required: true, message: "Please input your Last Name" },
-                ]}
-              >
-                <CustomInput
-                  type="text"
-                  name="lastName"
-                  className="uppercase"
-                />
-              </Form.Item>
-
-              <Form.Item
-                label="School"
-                name="schoolId"
-                rules={[
-                  { required: true, message: "Please input your School" },
-                ]}
-              >
+              <Form.Item label="Course" name="course_name">
                 <Select
                   className="w-full"
-                  loading={schoolsLoading}
-                  disabled={schoolsLoading || schoolsError}
+                  loading={getCoursesLoading}
+                  disabled={getCoursesLoading || getCoursesError}
+                  onChange={(value) =>
+                    setOfferingsSearchParams({
+                      ...offeringsSearchParams,
+                      courseId: value,
+                    })
+                  }
                 >
-                  {schools &&
-                    schools?.data?.map((school) => (
-                      <Option key={school.id} value={school.id}>
-                        {school.name}
+                  {courses &&
+                    courses?.data?.map((course) => (
+                      <Option key={course.id} value={course.id}>
+                        {course.name}
                       </Option>
                     ))}
                 </Select>
               </Form.Item>
+            </Form>
 
-              <Form.Item
-                label="Address"
-                name="address"
-                rules={[
-                  { required: true, message: "Please input your address!" },
-                ]}
-              >
-                <TextArea
-                  type="text"
-                  name="address"
-                  placeholder=""
-                  rows={4}
-                  className="mb-[2vh] uppercase"
-                  size="large"
-                />
-              </Form.Item>
-
-              <Form.Item
-                label="Contact No."
-                name="contactNumber"
-                rules={[
-                  { required: true, message: "Please input your Contact No." },
-                ]}
-              >
-                <CustomInput
-                  name="contactNumber"
-                  className="w-full mb-[2vh] py-[5px]"
-                />
-              </Form.Item>
-
-              <hr />
-              <br />
-              <div className="inline flex-row mb-[2vh]">
-                <div className="mb-[2vh]">
-                  <small>
-                    <i className="mb-[2vh]">
-                      Person to be notified in case of emergency:
-                    </i>
-                  </small>
-                </div>
-
-                <Form.Item
-                  label="Emergency Contact Name"
-                  name="emergencyContactName"
-                  // rules={[
-                  //   {
-                  //     required: true,
-                  //     message: "Please input your emergency contact name!",
-                  //   },
-                  // ]}
-                >
-                  <CustomInput
-                    type="text"
-                    name="emergencyName"
-                    className="uppercase"
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  label="Relationship"
-                  name="emergencyContactRelationship"
-                  // rules={[
-                  //   {
-                  //     required: true,
-                  //     message:
-                  //       "Please input your relation on your emergency contact!",
-                  //   },
-                  // ]}
-                >
-                  <CustomInput
-                    type="text"
-                    name="emergencyRelationship"
-                    className="uppercase"
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  label="Emergency Address"
-                  name="emergencyContactAddress"
-                  // rules={[
-                  //   {
-                  //     required: true,
-                  //     message: "Please input your emergency contact address!",
-                  //   },
-                  // ]}
-                >
-                  <TextArea
-                    type="text"
-                    name="emergencyAddress"
-                    placeholder=""
-                    rows={4}
-                    className="mb-[2vh] uppercase"
-                    size="large"
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  label="Emergency Contact No."
-                  name="emergencyContactNumber"
-                  // rules={[
-                  //   {
-                  //     required: true,
-                  //     message: "Please input your emergency contact no.",
-                  //   },
-                  // ]}
-                >
-                  <CustomInput
-                    name="emergencyContactNumber"
-                    size="large"
-                    className="w-full mb-[2vh] py-[5px]"
-                  />
-                </Form.Item>
-                <Form.Item className="flex justify-center">
-                  <CustomButton
-                    type="primary"
-                    htmlType="submit"
-                    size="large"
-                    loading={addEnrollmentLoading}
-                    disabled={addEnrollmentLoading}
-                  >
-                    Submit
-                  </CustomButton>
-                </Form.Item>
-              </div>
-            </>
-          </Form>
-        )}
-
-        {/* Save button */}
-        {studentToEnrollRadioValue === "existing" && (
-          <div className="text-right mb-5 w-1/2 flex justify-center">
-            <CustomButton
-              type="primary"
-              size="large"
-              onClick={enrollExistingStudent}
+            <Form.Item
+              label="Course Offering:"
+              name="courseId"
+              layout="vertical"
+              className="w-1/2 mb-[2vh]"
             >
-              Submit
-            </CustomButton>
+              <Select
+                size="large"
+                disabled={getOfferingsLoading || getOfferingsError}
+                onChange={(value) => setSelectedOfferingId(value)}
+              >
+                {offerings &&
+                  offerings?.data?.map((offering) => {
+                    return (
+                      <Option key={offering?.id} value={offering?.id}>
+                        {getCourseOfferingName(offering)}
+                      </Option>
+                    );
+                  })}
+              </Select>
+
+              {getOfferingsError && (
+                <label className="text-secondary">
+                  Error loading offerings. please try again later!{" "}
+                </label>
+              )}
+            </Form.Item>
+
+            <Form.Item
+              label="Year Level"
+              name="yearLevel"
+              layout="vertical"
+              className="w-1/2 mb-[2vh]"
+            >
+              <Select
+                size="large"
+                name="yearLevel"
+                onChange={(data) =>
+                  setAdditionalEnrollmentData({
+                    ...additionalEnrollmentData,
+                    yearLevel: data,
+                  })
+                }
+              >
+                {YEAR_LEVELS?.map((year) => (
+                  <Option value={year} key={year}>
+                    {year}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            <div className="flex flex-col">
+              <label className="text-sm">Review Fee</label>
+              <CustomInput
+                className="w-1/2 mb-[2vh] px-[12px] py-[10px]"
+                type="text"
+                value={additionalEnrollmentData?.reviewFee}
+                onChange={(e) =>
+                  setAdditionalEnrollmentData({
+                    ...additionalEnrollmentData,
+                    reviewFee: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <Form.Item
+              label="Discount Amount"
+              name="discountAmount"
+              layout="vertical"
+              className="w-1/2 mb-[2vh]"
+            >
+              <CustomInput
+                type="text"
+                name="discount"
+                onChange={(e) =>
+                  setAdditionalEnrollmentData({
+                    ...additionalEnrollmentData,
+                    discountAmount: e.target.value,
+                  })
+                }
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Remarks"
+              name="remarks"
+              layout="vertical"
+              className="w-1/2 mb-[2vh]"
+            >
+              <CustomInput
+                type="text"
+                name="remarks"
+                onChange={(e) =>
+                  setAdditionalEnrollmentData({
+                    ...additionalEnrollmentData,
+                    remarks: e.target.value,
+                  })
+                }
+              />
+            </Form.Item>
+            <Form.Item
+              label="Processed by:"
+              name="processedBy"
+              layout="vertical"
+              className="w-1/2 mb-[2vh]"
+            >
+              <Select
+                size="large"
+                onChange={(value) => setSelectedProcessedBy(value)}
+              >
+                {PROCESSED_BY.map((processedby) => (
+                  <Option value={processedby} key={processedby}>
+                    {processedby}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            <div className="mb-[2vh]">
+              <p>
+                <small>
+                  <i className="mb-[2vh]">Select Student to Enroll</i>
+                </small>
+              </p>
+
+              <Radio.Group
+                options={options}
+                onChange={getRadioStudent}
+                value={studentToEnrollRadioValue}
+                optionType="button"
+              />
+              {studentToEnrollRadioValue === "existing" && (
+                <>
+                  <Form.Item
+                    label="Student Name"
+                    name="studentId"
+                    className="mt-[10px] w-1/2"
+                    layout="vertical"
+                  >
+                    <AutoComplete
+                      loading={studentDataLoading}
+                      disabled={studentDataLoading || getStudentError}
+                      className="w-full"
+                      placeholder="Select student"
+                      onSelect={(_, option) => {
+                        setSelectedStudentId(option.id);
+                      }}
+                      onSearch={(value) => {
+                        setStudentSearchText(value);
+                      }}
+                      options={filteredStudentOptions}
+                    />
+                    {getStudentError && (
+                      <label className="text-secondary">
+                        Error loading students. please try again later!{" "}
+                      </label>
+                    )}
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Taker type"
+                    layout="vertical"
+                    className="w-1/2"
+                  >
+                    <Select
+                      className="w-full mb=[2vh]"
+                      size="large"
+                      defaultValue="1st"
+                      onChange={(value) => {
+                        setTakerType(value);
+                      }}
+                    >
+                      <Option value="FIRST_TAKER">1st Taker</Option>
+                      <Option value="RE_TAKER">Re-taker</Option>
+                      <Option value="SUMMER">Summer</Option>
+                    </Select>
+                  </Form.Item>
+                </>
+              )}
+            </div>
+
+            {studentToEnrollRadioValue === "new" && (
+              <Form
+                name="enrollment"
+                onFinish={onFinish}
+                layout="vertical"
+                className="w-1/2"
+                initialValues={
+                  {
+                    // lastName: "John",
+                    // middleName: "Day",
+                    // firstName: "Doe",
+                    // contactNumber: "09182254329",
+                    // address: "Lopez Jaena",
+                    // age: 0,
+                    // email: `test${generateFourDigitRandomNumber()}@brainhub.com`,
+                    // emergencyContactName: "Jane Day Doe",
+                    // emergencyContactRelationship: "Spouse",
+                    // emergencyContactAddress: "USA",
+                    // emergencyContactNumber: "09101214090",
+                  }
+                }
+              >
+                <>
+                  <Form.Item
+                    label="First Name"
+                    name="firstName"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your First Name",
+                      },
+                    ]}
+                  >
+                    <CustomInput
+                      type="text"
+                      name="firstName"
+                      className="uppercase"
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Middle Name"
+                    name="middleName"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Middle Name",
+                      },
+                    ]}
+                  >
+                    <CustomInput
+                      type="text"
+                      name="middleName"
+                      className="uppercase"
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Last Name"
+                    name="lastName"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Last Name",
+                      },
+                    ]}
+                  >
+                    <CustomInput
+                      type="text"
+                      name="lastName"
+                      className="uppercase"
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="School"
+                    name="schoolId"
+                    rules={[
+                      { required: true, message: "Please input your School" },
+                    ]}
+                  >
+                    <Select
+                      className="w-full"
+                      loading={schoolsLoading}
+                      disabled={schoolsLoading || schoolsError}
+                    >
+                      {schools &&
+                        schools?.data?.map((school) => (
+                          <Option key={school.id} value={school.id}>
+                            {school.name}
+                          </Option>
+                        ))}
+                    </Select>
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Address"
+                    name="address"
+                    rules={[
+                      { required: true, message: "Please input your address!" },
+                    ]}
+                  >
+                    <TextArea
+                      type="text"
+                      name="address"
+                      placeholder=""
+                      rows={4}
+                      className="mb-[2vh] uppercase"
+                      size="large"
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Contact No."
+                    name="contactNumber"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Contact No.",
+                      },
+                    ]}
+                  >
+                    <CustomInput
+                      name="contactNumber"
+                      className="w-full mb-[2vh] py-[5px]"
+                    />
+                  </Form.Item>
+
+                  <hr />
+                  <br />
+                  <div className="inline flex-row mb-[2vh]">
+                    <div className="mb-[2vh]">
+                      <small>
+                        <i className="mb-[2vh]">
+                          Person to be notified in case of emergency:
+                        </i>
+                      </small>
+                    </div>
+
+                    <Form.Item
+                      label="Emergency Contact Name"
+                      name="emergencyContactName"
+                      // rules={[
+                      //   {
+                      //     required: true,
+                      //     message: "Please input your emergency contact name!",
+                      //   },
+                      // ]}
+                    >
+                      <CustomInput
+                        type="text"
+                        name="emergencyName"
+                        className="uppercase"
+                      />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Relationship"
+                      name="emergencyContactRelationship"
+                      // rules={[
+                      //   {
+                      //     required: true,
+                      //     message:
+                      //       "Please input your relation on your emergency contact!",
+                      //   },
+                      // ]}
+                    >
+                      <CustomInput
+                        type="text"
+                        name="emergencyRelationship"
+                        className="uppercase"
+                      />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Emergency Address"
+                      name="emergencyContactAddress"
+                      // rules={[
+                      //   {
+                      //     required: true,
+                      //     message: "Please input your emergency contact address!",
+                      //   },
+                      // ]}
+                    >
+                      <TextArea
+                        type="text"
+                        name="emergencyAddress"
+                        placeholder=""
+                        rows={4}
+                        className="mb-[2vh] uppercase"
+                        size="large"
+                      />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Emergency Contact No."
+                      name="emergencyContactNumber"
+                      // rules={[
+                      //   {
+                      //     required: true,
+                      //     message: "Please input your emergency contact no.",
+                      //   },
+                      // ]}
+                    >
+                      <CustomInput
+                        name="emergencyContactNumber"
+                        size="large"
+                        className="w-full mb-[2vh] py-[5px]"
+                      />
+                    </Form.Item>
+                    <Form.Item className="flex justify-center">
+                      <CustomButton
+                        type="primary"
+                        htmlType="submit"
+                        size="large"
+                        loading={addEnrollmentLoading}
+                        disabled={addEnrollmentLoading}
+                      >
+                        Submit
+                      </CustomButton>
+                    </Form.Item>
+                  </div>
+                </>
+              </Form>
+            )}
+
+            {/* Save button */}
+            {studentToEnrollRadioValue === "existing" && (
+              <div className="text-right mb-5 w-1/2 flex justify-center">
+                <CustomButton
+                  type="primary"
+                  size="large"
+                  onClick={enrollExistingStudent}
+                >
+                  Submit
+                </CustomButton>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 };
