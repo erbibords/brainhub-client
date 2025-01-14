@@ -1,20 +1,20 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import CustomInput from "../../components/Input/Input";
-import { Select, Table, Space, Row, Col, Button, Form } from "antd";
-import { useNavigate } from "react-router-dom";
-import { useStudentContext } from "../../contexts/students";
-import useSchools from "../../hooks/useSchools";
-import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
-import CustomButton from "../../components/Button/Button";
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import CustomInput from '../../components/Input/Input';
+import { Select, Table, Space, Row, Col, Button, Form } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { useStudentContext } from '../../contexts/students';
+import useSchools from '../../hooks/useSchools';
+import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
+import CustomButton from '../../components/Button/Button';
 import {
   cleanParams,
   formatAmount,
   formatTakerType,
-} from "../../utils/formatting";
+} from '../../utils/formatting';
 import {
   getLatestData,
   getStudentRemainingBalance,
-} from "../../utils/mappings";
+} from '../../utils/mappings';
 const { Option } = Select;
 
 const StudentsList = () => {
@@ -24,6 +24,7 @@ const StudentsList = () => {
   const [searchParams, setSearchParams] = useState({
     studentName: undefined,
     schoolId: undefined,
+    offeringType: undefined,
   });
   const { students, studentDataLoading, getStudentError, setParams } =
     useStudentContext();
@@ -37,29 +38,30 @@ const StudentsList = () => {
   }, []);
 
   const columns = [
-    { title: "Name", dataIndex: "name", key: "name" },
-    { title: "School", dataIndex: "school", key: "school" },
+    { title: 'Name', dataIndex: 'name', key: 'name' },
+    { title: 'School', dataIndex: 'school', key: 'school' },
     {
-      title: "Taker Type",
-      dataIndex: "status",
-      key: "status",
+      title: 'Taker Type',
+      dataIndex: 'status',
+      key: 'status',
       render: (_, record) => {
         return (
-          formatTakerType(getLatestData(record?.enrollments)?.takerType) ?? ""
+          formatTakerType(getLatestData(record?.enrollments)?.takerType) ?? ''
         );
       },
     },
-    { title: "Contact No.", dataIndex: "contactNumber", key: "contact" },
-    { title: "Address.", dataIndex: "address", key: "address" },
+    { title: 'Contact No.', dataIndex: 'contactNumber', key: 'contact' },
+    { title: 'Address.', dataIndex: 'address', key: 'address' },
     {
-      title: "Enrollee Type:.",
-      dataIndex: "enrolleeType",
-      key: "enrolleeType",
+      title: 'Enrollee Type:.',
+      dataIndex: 'enrollments',
+      key: 'enrolleeType',
+      render: (data) => data[0].courseOffering.offeringType,
     },
     {
-      title: "Remaining Balance.",
-      dataIndex: "enrollments",
-      key: "balance",
+      title: 'Remaining Balance.',
+      dataIndex: 'enrollments',
+      key: 'balance',
       render: (data) => (
         <p className="text-red-600 font-bold">
           {formatAmount(getStudentRemainingBalance(data))}
@@ -68,8 +70,8 @@ const StudentsList = () => {
     },
 
     {
-      title: "Action",
-      key: "action",
+      title: 'Action',
+      key: 'action',
       render: (_, record) => {
         return (
           <Space size="small">
@@ -163,15 +165,21 @@ const StudentsList = () => {
                 disabled={schoolsLoading}
                 size="large"
                 className="custom-select"
+                onChange={(value, t) => {
+                  setSearchParams({
+                    ...searchParams,
+                    offeringType: value,
+                  });
+                }}
                 placeholder="Select Enrollee Type" // Optional placeholder
               >
                 <Option value="all" key="all">
                   All
                 </Option>
-                <Option value="combi" key="combi">
+                <Option value="COMBI" key="combi">
                   Combi Enrollee
                 </Option>
-                <Option value="regular" key="regular">
+                <Option value="REGULAR" key="regular">
                   Regular Enrollee
                 </Option>
               </Select>
