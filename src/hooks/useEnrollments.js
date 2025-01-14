@@ -14,6 +14,7 @@ function useEnrollments(params = {}) {
     startDate = undefined,
     endDate = undefined,
     yearOffered = undefined,
+    offeringType = undefined,
   } = params;
 
   let url = `branches/${DEFAULT_BRANCH_ID()}/enrollments`;
@@ -28,6 +29,7 @@ function useEnrollments(params = {}) {
   if (yearOffered) queryParams.append('yearOffered', yearOffered);
   if (startDate) queryParams.append('startDate', startDate);
   if (endDate) queryParams.append('endDate', endDate);
+  if (offeringType) queryParams.append('offeringType', offeringType);
 
   queryParams.append('includeStudent', 'true');
   queryParams.append('includeCourseOffering', 'true');

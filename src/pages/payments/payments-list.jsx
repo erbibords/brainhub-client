@@ -1,8 +1,8 @@
-import React, { useState, useCallback, useEffect } from "react";
-import CustomInput from "../../components/Input/Input";
-import CustomButton from "../../components/Button/Button";
-import useSchools from "../../hooks/useSchools";
-import { useCourse } from "../../contexts/courses";
+import React, { useState, useCallback, useEffect } from 'react';
+import CustomInput from '../../components/Input/Input';
+import CustomButton from '../../components/Button/Button';
+import useSchools from '../../hooks/useSchools';
+import { useCourse } from '../../contexts/courses';
 import {
   Table,
   Row,
@@ -16,22 +16,22 @@ import {
   Divider,
   Modal,
   Input,
-} from "antd";
+} from 'antd';
 import {
   SEMESTER,
   MEDIA_BASE_URL,
   YEAR,
   PAYMENT_METHODS,
   PAYMENTS_BASE_URL,
-} from "../../constants";
-import { usePaymentsContext } from "../../contexts/payments";
-import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
-import { getCourseOfferingName } from "../../utils/mappings";
-import { useNavigate } from "react-router-dom";
-import { DateTime } from "luxon";
-import useMutation from "../../hooks/useMutation";
-import { cleanParams, formatAmount, formatDate } from "../../utils/formatting";
-import Swal from "sweetalert2";
+} from '../../constants';
+import { usePaymentsContext } from '../../contexts/payments';
+import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
+import { getCourseOfferingName } from '../../utils/mappings';
+import { useNavigate } from 'react-router-dom';
+import { DateTime } from 'luxon';
+import useMutation from '../../hooks/useMutation';
+import { cleanParams, formatAmount, formatDate } from '../../utils/formatting';
+import Swal from 'sweetalert2';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -45,8 +45,8 @@ const PaymentsList = () => {
   const { mutate: undoPaymentMutate, loading: undoPaymentLoading } =
     useMutation(
       `${PAYMENTS_BASE_URL}/${selectedPaymentid}`,
-      "DELETE",
-      "payments"
+      'DELETE',
+      'payments'
     );
 
   const {
@@ -65,10 +65,11 @@ const PaymentsList = () => {
     schoolId: undefined,
     semester: undefined,
     yearOffered: undefined,
+    offeringType: undefined,
   });
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState('');
   const [currentRecord, setCurrentRecord] = useState(null);
 
   useEffect(() => {
@@ -106,90 +107,90 @@ const PaymentsList = () => {
       const res = await undoPaymentMutate();
       if (res) {
         Swal.fire({
-          icon: "success",
-          title: "Payment Removed!",
+          icon: 'success',
+          title: 'Payment Removed!',
           timer: 2000,
         });
         setSelectedPaymentId(undefined);
       }
     } catch (error) {
       Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Error removing payment. Please try again!",
+        icon: 'error',
+        title: 'Error',
+        text: 'Error removing payment. Please try again!',
       });
     }
   }, [selectedPaymentid]);
 
   const columns = [
     {
-      title: "Name",
+      title: 'Name',
       render: (_, record) => record.enrollment.student.fullName,
     },
     {
-      title: "Reference",
-      dataIndex: "referenceNo",
+      title: 'Reference',
+      dataIndex: 'referenceNo',
       render: (data) => {
-        if (data === "undefined" || undefined || null) return "";
+        if (data === 'undefined' || undefined || null) return '';
         return data;
       },
     },
 
     {
-      title: "Payment Amount",
-      dataIndex: "amountPaid",
+      title: 'Payment Amount',
+      dataIndex: 'amountPaid',
       render: (data) => formatAmount(data ?? 0),
     },
     {
-      title: "Balance after payments",
-      dataIndex: "balance",
-      key: "balance",
+      title: 'Balance after payments',
+      dataIndex: 'balance',
+      key: 'balance',
       render: (data) => (
         <p className="text-red-600 font-bold">{formatAmount(data ?? 0)}</p>
       ),
     },
     {
-      title: "Payment Method",
-      dataIndex: "paymentMethod",
-      key: "paymentMethod",
+      title: 'Payment Method',
+      dataIndex: 'paymentMethod',
+      key: 'paymentMethod',
     },
     {
-      title: "Payment Date",
-      dataIndex: "paidAt",
+      title: 'Payment Date',
+      dataIndex: 'paidAt',
       render: (data) => formatDate(data) ?? data,
     },
     {
-      title: "Attachment",
-      dataIndex: "attachment",
+      title: 'Attachment',
+      dataIndex: 'attachment',
       render: (_, record) => {
         return record?.attachments?.length >= 1 &&
-          record?.attachments[0] !== "" ? (
+          record?.attachments[0] !== '' ? (
           <Image
             width={100}
             height={100}
             src={`${MEDIA_BASE_URL}/${record?.attachments[0]}`}
             alt={record?.attachments[0]}
             preview={{
-              className: "custom-image-preview",
+              className: 'custom-image-preview',
               mask: <div>Click to preview</div>,
-              maskClassName: "custom-mask",
+              maskClassName: 'custom-mask',
             }}
           />
         ) : (
-          ""
+          ''
         );
       },
     },
     {
-      title: "Offering",
-      dataIndex: "offering",
+      title: 'Offering',
+      dataIndex: 'offering',
       render: (_, record) =>
         getCourseOfferingName(record.enrollment.courseOffering),
     },
-    { title: "Processed by", dataIndex: "processedBy" },
+    { title: 'Processed by', dataIndex: 'processedBy' },
     {
-      title: "Action",
-      key: "action",
+      title: 'Action',
+      key: 'action',
       render: (_, record) => (
         <Space size="middle">
           <CustomButton
@@ -215,14 +216,14 @@ const PaymentsList = () => {
 
   const handleOk = useCallback(() => {
     if (!selectedPaymentid) return;
-    if (password === "brainhubph2024") {
+    if (password === 'brainhubph2024') {
       undoPayment();
       setIsModalVisible(false);
       setPassword(null);
     } else {
       Swal.fire({
-        icon: "warning",
-        title: "Password not matched!",
+        icon: 'warning',
+        title: 'Password not matched!',
         timer: 2000,
       });
     }
@@ -243,7 +244,7 @@ const PaymentsList = () => {
                 <Form.Item name="dateRange">
                   <p>Date From - Date To:</p>
                   <RangePicker
-                    placeholder={["Date From", "Date To"]}
+                    placeholder={['Date From', 'Date To']}
                     className="h-[50px] w-full"
                     onChange={handleDateRangeChange}
                   />
@@ -381,6 +382,35 @@ const PaymentsList = () => {
                         {year}
                       </Option>
                     ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+
+              <Col span={6}>
+                <Form.Item name="offeringType">
+                  <p>Enrollee Type: </p>
+                  <Select
+                    loading={schoolsLoading}
+                    disabled={schoolsLoading}
+                    size="large"
+                    className="custom-select"
+                    onChange={(e) =>
+                      setSearchParams({
+                        ...searchParams,
+                        offeringType: e,
+                      })
+                    }
+                    placeholder="Select Enrollee Type" // Optional placeholder
+                  >
+                    <Option value="all" key="all">
+                      All
+                    </Option>
+                    <Option value="COMBI" key="combi">
+                      Combi Enrollee
+                    </Option>
+                    <Option value="REGULAR" key="regular">
+                      Regular Enrollee
+                    </Option>
                   </Select>
                 </Form.Item>
               </Col>

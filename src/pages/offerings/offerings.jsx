@@ -86,6 +86,11 @@ const Offerings = () => {
       key: 'budgetProposal',
       render: (value) => formatAmount(value),
     },
+    {
+      title: 'Enrollee Type',
+      dataIndex: 'offeringType',
+      key: 'enrolleeType',
+    },
 
     {
       title: 'Action',
@@ -103,11 +108,15 @@ const Offerings = () => {
     },
   ];
 
-  const onSearch = useCallback((values) => {
-    console.log('filtering courses by', values);
+  const onSearch = (values) => {
     const params = cleanParams(values);
-    setParams(params);
-  }, []);
+    console.log('filtering courses by', params);
+    setParams({
+      ...params,
+      pageNo: 1,
+      pageSize: 25,
+    });
+  };
 
   const handleClear = useCallback(() => {
     form.resetFields();
@@ -117,127 +126,157 @@ const Offerings = () => {
     });
   }, [form]);
 
+  console.log('UPDATED OFFERINGS', offerings);
+
   return (
     <div>
       <h1 className="text-2xl mb-[2vh]">Offerings</h1>
-      <Row>
-        <Form
-          form={form}
-          className="w-full flex gap-[12px]"
-          onFinish={onSearch}
-        >
-          <Form.Item
-            name="courseId"
-            label="Course: "
-            layout="vertical"
-            className="w-[15vw] h-[70px]"
-          >
-            <Select
-              className="h-[40px] w"
-              disabled={getCoursesLoading || getCoursesError}
-              loading={getCoursesLoading}
+      <Form form={form} onFinish={onSearch}>
+        <Row gutter={[16, 16]}>
+          <Col span={8}>
+            <Form.Item
               name="courseId"
+              label="Course: "
+              layout="vertical"
+              className="w-full h-[70px]"
             >
-              {courses?.data?.map((course) => (
-                <Option value={course.id} key={course.id}>
-                  {course.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-
-          <Form.Item
-            name="reviewProgramName"
-            label="Program :"
-            layout="vertical"
-            className="w-[15vw]"
-          >
-            <Select
-              className="h-[40px] w"
-              name="reviewProgramName"
-              disabled={getProgramsError || getProgramsLoading}
-              loading={getProgramsLoading}
-            >
-              {programs &&
-                Array.from(
-                  new Set(programs?.data.map((pg) => pg.name) ?? [])
-                ).map((pg, index) => (
-                  <Option value={pg} key={index}>
-                    {pg}
+              <Select
+                className="h-[40px] w-full"
+                disabled={getCoursesLoading || getCoursesError}
+                loading={getCoursesLoading}
+                name="courseId"
+              >
+                {courses?.data?.map((course) => (
+                  <Option value={course.id} key={course.id}>
+                    {course.name}
                   </Option>
                 ))}
-            </Select>
-          </Form.Item>
+              </Select>
+            </Form.Item>
+          </Col>
 
-          <Form.Item
-            name="yearOffered"
-            label="Year : "
-            layout="vertical"
-            className="w-[15vw]"
-          >
-            <Select className="h-[40px] w" name="yearOffered">
-              {YEAR.map((y) => (
-                <Option value={y} key={y}>
-                  {y}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-
-          <Form.Item
-            name="semester"
-            layout="vertical"
-            className="w-[15vw]"
-            label="Semester: "
-          >
-            <Select className="h-[40px] w" name="semester">
-              {SEMESTER.map((sem) => (
-                <Option value={sem.value} key={sem.value}>
-                  {sem.label}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-
-          <Form.Item className="flex items-end" label="">
-            <CustomButton type="primary" className="mr-2" htmlType="submit">
-              Filter
-            </CustomButton>
-            <CustomButton
-              type="primary"
-              htmlType="button"
-              onClick={handleClear}
+          <Col span={8}>
+            <Form.Item
+              name="reviewProgramName"
+              label="Program :"
+              layout="vertical"
+              className="w-full"
             >
-              Clear
+              <Select
+                className="h-[40px] w-full"
+                name="reviewProgramName"
+                disabled={getProgramsError || getProgramsLoading}
+                loading={getProgramsLoading}
+              >
+                {programs &&
+                  Array.from(
+                    new Set(programs?.data.map((pg) => pg.name) ?? [])
+                  ).map((pg, index) => (
+                    <Option value={pg} key={index}>
+                      {pg}
+                    </Option>
+                  ))}
+              </Select>
+            </Form.Item>
+          </Col>
+
+          <Col span={8}>
+            <Form.Item
+              name="yearOffered"
+              label="Year : "
+              layout="vertical"
+              className="w-full"
+            >
+              <Select className="h-[40px] w-full" name="yearOffered">
+                {YEAR.map((y) => (
+                  <Option value={y} key={y}>
+                    {y}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+
+          <Col span={8}>
+            <Form.Item
+              name="semester"
+              layout="vertical"
+              className="w-full"
+              label="Semester: "
+            >
+              <Select className="h-[40px] w-full" name="semester">
+                {SEMESTER.map((sem) => (
+                  <Option value={sem.value} key={sem.value}>
+                    {sem.label}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+
+          <Col span={8}>
+            <Form.Item
+              name="offeringType"
+              layout="vertical"
+              className="w-full"
+              label="Enrollee Type: "
+            >
+              <Select className="h-[40px] w-full" name="offeringType">
+                <Option value="all" key="all">
+                  All
+                </Option>
+                <Option value="COMBI" key="combi">
+                  Combi Enrollee
+                </Option>
+                <Option value="REGULAR" key="regular">
+                  Regular Enrollee
+                </Option>
+              </Select>
+            </Form.Item>
+          </Col>
+
+          <Col span={8} className="flex items-end">
+            <Form.Item label="">
+              <CustomButton type="primary" className="mr-2" htmlType="submit">
+                Filter
+              </CustomButton>
+              <CustomButton
+                type="primary"
+                htmlType="button"
+                onClick={handleClear}
+              >
+                Clear
+              </CustomButton>
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={[12, 24]}>
+          <Col span={24}>
+            <CustomButton
+              className="w-auto bg-primary text-white float-right mt-[3vh]"
+              size="large"
+              onClick={() => {
+                navigate(`/offerings/add`);
+              }}
+            >
+              Add Offerings
             </CustomButton>
-          </Form.Item>
-        </Form>
-      </Row>
-      <Row gutter={[12, 24]}>
-        <Col span={24}>
-          <CustomButton
-            className="w-auto bg-primary text-white float-right mt-[3vh]"
-            size="large"
-            onClick={() => {
-              navigate(`/offerings/add`);
-            }}
-          >
-            Add Offerings
-          </CustomButton>
-        </Col>
-        <Col span={24}>
-          {getOfferingsError ? (
-            <GenericErrorDisplay className="!items-start" />
-          ) : (
-            <Table
-              size="small"
-              dataSource={offerings && offerings?.data}
-              columns={columns}
-              loading={getOfferingsLoading}
-            />
-          )}
-        </Col>
-      </Row>
+          </Col>
+          <Col span={24}>
+            {getOfferingsError ? (
+              <GenericErrorDisplay className="!items-start" />
+            ) : (
+              <Table
+                size="small"
+                dataSource={offerings && offerings?.data}
+                columns={columns}
+                loading={getOfferingsLoading}
+              />
+            )}
+          </Col>
+        </Row>
+      </Form>
     </div>
   );
 };

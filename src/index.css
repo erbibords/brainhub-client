@@ -2,36 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
+/* * {
   text-transform: uppercase;
-}
+} */
 
-html, body {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    height: 100%;
-    width: 100%;
+html,
+body {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
 }
 
 .custom-select .ant-select-selector {
-    padding: 12px !important; 
-  }
+  padding: 12px !important;
+}
 
-  .ant-select {
-    height: 50px !important;
-    width: 100%;
-  }
-
-
+.ant-select {
+  height: 50px !important;
+  width: 100%;
+}
 
 .ant-image-preview-img {
   width: auto;
   max-width: 100%;
 }
-  
-  .custom-mask {
-    background-color: rgba(0, 0, 0, 0.5); 
-    color: white;
-    text-align: center;
-  }
+
+.custom-mask {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  text-align: center;
+}

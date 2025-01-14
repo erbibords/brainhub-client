@@ -11,6 +11,7 @@ function useOfferings(params = {}) {
     reviewProgramName = undefined,
     yearOffered = undefined,
     semester = undefined,
+    offeringType = undefined,
   } = params;
 
   const generateUrl = () => {
@@ -25,6 +26,7 @@ function useOfferings(params = {}) {
     if (yearOffered) queryParams.append('yearOffered', yearOffered);
     if (semester) queryParams.append('semester', semester);
     if (courseId) queryParams.append('courseId', courseId);
+    if (offeringType) queryParams.append('offeringType', offeringType);
     queryParams.append('includeEnrollment', true);
 
     if (queryParams.toString()) {

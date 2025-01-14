@@ -8,6 +8,7 @@ function useStudents(params = {}) {
     schoolId = undefined,
     pageNo = 1,
     pageSize = 25,
+    offeringType = undefined,
   } = params;
 
   const generateUrl = () => {
@@ -18,6 +19,7 @@ function useStudents(params = {}) {
     if (pageSize) queryParams.append('pageSize', pageSize);
     if (schoolId) queryParams.append('schoolId', schoolId);
     if (studentName) queryParams.append('studentName', studentName);
+    if (offeringType) queryParams.append('offeringType', offeringType);
 
     if (queryParams.toString()) {
       url += `?${queryParams.toString()}`;

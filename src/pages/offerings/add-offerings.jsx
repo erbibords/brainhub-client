@@ -50,7 +50,6 @@ const AddOfferings = () => {
     };
 
     delete updatedValues.courseId;
-
     handleAddOffering(updatedValues);
   };
 
@@ -199,6 +198,21 @@ const AddOfferings = () => {
           rules={[{ required: true, message: 'Please input review cost!' }]}
         >
           <CustomInput type="text" className="w-full h-[40px]" />
+        </Form.Item>
+
+        <Form.Item
+          label="Enrolle Type"
+          name="offeringType"
+          rules={[{ required: true, message: 'Please Enrollee Type!' }]}
+        >
+          <Select className="h-[40px] w-full" name="enrolleeType">
+            <Option value="COMBI" key="combi">
+              Combi Enrollee
+            </Option>
+            <Option value="REGULAR" key="regular">
+              Regular Enrollee
+            </Option>
+          </Select>
         </Form.Item>
 
         <div className="text-right mb-5">

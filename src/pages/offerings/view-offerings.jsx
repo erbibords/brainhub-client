@@ -171,6 +171,13 @@ const ViewOffering = () => {
       render: (data) => formatDate(data),
     },
     {
+      title: "Enrollee Type",
+      dataIndex: "enrolleeType",
+      key: "enrolleeType",
+      // render: (data) => formatDate(data),
+    },
+
+    {
       title: "Processed By",
       dataIndex: "processedBy",
       key: "processedBy",
@@ -395,6 +402,25 @@ const ViewOffering = () => {
                       </Form.Item>
                     ) : (
                       offering.reviewFee
+                    )}
+                  </p>
+                  <Divider />
+
+                  <p>
+                    <strong>Enrollee Type:</strong>{" "}
+                    {isEditing ? (
+                      <Form.Item name="enrolleeType">
+                        <Select className="h-[40px] w-full" name="enrolleeType">
+                          <Option value="combi" key="combi">
+                            Combi Enrollee
+                          </Option>
+                          <Option value="regular" key="regular">
+                            Regular Enrollee
+                          </Option>
+                        </Select>
+                      </Form.Item>
+                    ) : (
+                      ""
                     )}
                   </p>
                   <Divider />
