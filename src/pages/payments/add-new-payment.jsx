@@ -292,6 +292,9 @@ const AddNewPayment = () => {
             className="mb-[32px]"
             label="Processed By:"
             name="processedBy"
+            rules={[
+              { required: true, message: "Please select a payment method." },
+            ]}
           >
             <Select className="w-full" size="large" name="processedBy">
               {PROCESSED_BY?.map((processedBy) => (
