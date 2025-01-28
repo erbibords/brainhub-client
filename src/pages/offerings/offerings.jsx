@@ -43,7 +43,13 @@ const Offerings = () => {
       title: "Review Program",
       dataIndex: "reviewProgram",
       key: "reviewProgram",
-      render: (data) => data?.name,
+      render: (data) => {
+        return (
+          <p>
+            {data?.name} <br /> <small> {data?.description} </small>
+          </p>
+        );
+      },
     },
 
     {
@@ -91,7 +97,14 @@ const Offerings = () => {
       dataIndex: "offeringType",
       key: "enrolleeType",
     },
-
+    {
+      title: "School",
+      dataIndex: "school",
+      key: "school",
+      render: (value) => {
+        return value?.name ?? "";
+      },
+    },
     {
       title: "Action",
       key: "action",
@@ -125,8 +138,6 @@ const Offerings = () => {
       pageSize: 25,
     });
   }, [form]);
-
-  console.log("UPDATED OFFERINGS", offerings);
 
   return (
     <div>

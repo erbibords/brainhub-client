@@ -51,10 +51,16 @@ const ViewOffering = () => {
     data: offering,
     isLoading,
     error: offeringError,
+    refetch,
   } = useOffering(params.offeringId);
   const { programs, getProgramsLoading, getProgramsError } =
     useProgramContext();
+  const [offeringType, setOfferingType] = useState(offering?.offeringType);
 
+  useEffect(() => {
+    if (!offering?.offeringType) return;
+    setOfferingType(offering?.offeringType);
+  }, [offering?.offeringType]);
   useEffect(() => {
     if (offering && offering?.enrollments?.length) {
       setEnrollments(offering?.enrollments);
@@ -104,7 +110,10 @@ const ViewOffering = () => {
         startDate: offering.startDate,
         paymentDeadline: offering.paymentDeadline,
         reviewCost: values?.reviewFee,
+        offeringType: values?.offeringType,
+        schooId: values?.school ?? undefined,
       });
+
       if (res) {
         Swal.fire({
           icon: "success",
@@ -112,8 +121,10 @@ const ViewOffering = () => {
           timer: 2000,
         });
         setIsEditing(false);
+        refetch();
       }
     } catch (error) {
+      console.log(error);
       Swal.fire({
         icon: "error",
         title: "Offering Information Update Error",
@@ -174,7 +185,6 @@ const ViewOffering = () => {
       title: "Enrollee Type",
       dataIndex: "enrolleeType",
       key: "enrolleeType",
-      // render: (data) => formatDate(data),
     },
 
     {
@@ -197,7 +207,6 @@ const ViewOffering = () => {
       return offering?.enrollments || [];
     }
 
-    console.log(offering.enrollments);
     const data = offering.enrollments.filter(
       (record) =>
         record.totalAmountPaid >= searchAmount.min &&
@@ -407,22 +416,49 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Enrollee Type:</strong>{" "}
+                    <strong>Offering Type:</strong>{" "}
                     {isEditing ? (
-                      <Form.Item name="enrolleeType">
-                        <Select className="h-[40px] w-full" name="enrolleeType">
-                          <Option value="combi" key="combi">
-                            Combi Enrollee
-                          </Option>
-                          <Option value="regular" key="regular">
-                            Regular Enrollee
-                          </Option>
+                      <Form.Item name="offeringType">
+                        <Select
+                          className="h-[40px] w-full"
+                          name="offeringType"
+                          defaultValue={offering?.offeringType}
+                          onChange={(value) => {
+                            setOfferingType(value);
+                          }}
+                        >
+                          <Option value="COMBI">COMBI</Option>
+                          <Option value="REGULAR">REGULAR</Option>
                         </Select>
                       </Form.Item>
                     ) : (
-                      ""
+                      offering?.offeringType
                     )}
                   </p>
+                  {offeringType === "REGULAR" && (
+                    <p>
+                      <strong>School:</strong>{" "}
+                      {isEditing ? (
+                        <Form.Item name="schoolId">
+                          <Select
+                            className="h-[40px] w-full"
+                            name="schoolId"
+                            defaultValue={offering?.school?.name}
+                          >
+                            {schools &&
+                              schools?.data?.map((school) => (
+                                <Option value={school.id} key={school.id}>
+                                  {school.name}
+                                </Option>
+                              ))}
+                          </Select>
+                        </Form.Item>
+                      ) : (
+                        offering?.school?.name
+                      )}
+                    </p>
+                  )}
+
                   <Divider />
                 </div>
               </Form>

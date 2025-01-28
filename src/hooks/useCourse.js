@@ -1,4 +1,4 @@
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { COURSE_BASE_URL } from '../constants';
 
 function useCourse(courseId) {
@@ -9,6 +9,11 @@ function useCourse(courseId) {
     data,
     error,
     isLoading,
+    refetch: () => {
+      if (courseId) {
+        mutate(`${COURSE_BASE_URL}/${courseId}`);
+      }
+    },
   };
 }
 

@@ -20,7 +20,7 @@ const ViewCourse = () => {
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
 
-  const { data, error, isLoading } = useCourse(params.courseId);
+  const { data, error, isLoading, refetch } = useCourse(params.courseId);
 
   if (error) {
     navigate("/courses");
@@ -59,6 +59,7 @@ const ViewCourse = () => {
           timer: 2000,
         });
         setIsEditing(false);
+        refetch();
       }
     } catch (error) {
       Swal.fire({

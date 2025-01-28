@@ -37,6 +37,7 @@ export const YEAR_LEVELS = [
   '4th Year',
   '5th Year',
   '6th Year',
+  'Graduated'
 ];
 
 export const SEMESTER = [
@@ -51,6 +52,10 @@ export const SEMESTER = [
   {
     label: 'Summer',
     value: 'SUMMER',
+  },
+  {
+    label: 'Whole Year',
+    value: 'WHOLE_YEAR',
   },
   {
     label: 'January',

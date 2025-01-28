@@ -22,6 +22,7 @@ const AddOfferings = () => {
   } = useSchools();
 
   const navigate = useNavigate();
+  const [enrolleeType, setEnrolleeType] = useState(undefined);
   const { courses, getCoursesLoading, getCoursesError } = useCourse();
   const [selectedCourseId, setSelectedCourseId] = useState(undefined);
   const { mutate: AddOffering, loading: AddOfferingLoading } = useMutation(
@@ -54,6 +55,7 @@ const AddOfferings = () => {
       startDate: formattedStartDate,
       yearOffered: values.yearOffered,
       enrollmentCapacity: 0,
+      schoolId: values?.schoolId,
     };
 
     delete updatedValues.courseId;
@@ -147,7 +149,7 @@ const AddOfferings = () => {
             {programs &&
               programs?.data?.map((program) => (
                 <Option value={program.id} key={program.id}>
-                  {program.name}
+                  {program.name} - {program?.course?.name}
                 </Option>
               ))}
           </Select>
@@ -212,7 +214,13 @@ const AddOfferings = () => {
           name="offeringType"
           rules={[{ required: true, message: "Please Select Enrollee Type!" }]}
         >
-          <Select className="h-[40px] w-full" name="enrolleeType">
+          <Select
+            className="h-[40px] w-full"
+            name="enrolleeType"
+            onChange={(value) => {
+              setEnrolleeType(value);
+            }}
+          >
             <Option value="COMBI" key="combi">
               Combi Enrollee
             </Option>
@@ -222,24 +230,26 @@ const AddOfferings = () => {
           </Select>
         </Form.Item>
 
-        <Form.Item
-          label="School"
-          name="schoolId"
-          rules={[{ required: true, message: "Please input your School" }]}
-        >
-          <Select
-            className="w-full"
-            loading={schoolsLoading}
-            disabled={schoolsLoading || schoolsError}
+        {enrolleeType === "REGULAR" && (
+          <Form.Item
+            label="School"
+            name="schoolId"
+            rules={[{ required: true, message: "Please Select School!" }]}
           >
-            {schools &&
-              schools?.data?.map((school) => (
-                <Option key={school.id} value={school.id}>
-                  {school.name}
-                </Option>
-              ))}
-          </Select>
-        </Form.Item>
+            <Select
+              className="w-full"
+              loading={schoolsLoading}
+              disabled={schoolsLoading || schoolsError}
+            >
+              {schools &&
+                schools?.data?.map((school) => (
+                  <Option key={school.id} value={school.id}>
+                    {school.name}
+                  </Option>
+                ))}
+            </Select>
+          </Form.Item>
+        )}
 
         <div className="text-right mb-5">
           <Form.Item>

@@ -1,4 +1,4 @@
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { OFFERING_BASE_URL } from '../constants';
 
 function useOffering(offeringId) {
@@ -10,6 +10,11 @@ function useOffering(offeringId) {
     data,
     error,
     isLoading,
+    refetch: () => {
+      if (offeringId) {
+        mutate(`${OFFERING_BASE_URL}/${offeringId}?includeEnrollment=true`);
+      }
+    },
   };
 }
 
