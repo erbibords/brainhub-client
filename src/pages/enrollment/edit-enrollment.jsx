@@ -189,7 +189,7 @@ const EditEnrollment = () => {
             label="Review Fee"
             name="reviewFee"
             layout="vertical"
-            className="w-full mb-[2vh] w-full"
+            className="w-full mb-[2vh] w-full border-gray-300"
           >
             <input
               type="number"
@@ -201,7 +201,7 @@ const EditEnrollment = () => {
             label="Discount Amount"
             name="discountAmount"
             layout="vertical"
-            className="w-full mb-[2vh]"
+            className="w-full mb-[2vh] border-gray-300"
           >
             <input
               type="number"
