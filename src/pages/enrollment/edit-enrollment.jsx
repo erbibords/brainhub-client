@@ -210,18 +210,6 @@ const EditEnrollment = () => {
           </Form.Item>
 
           <Form.Item
-            name="enrolleeType"
-            label="Enrollee type"
-            layout="vertical"
-            className="w-1/2"
-          >
-            <Select className="w-full mb=[2vh]" size="large">
-              <Option value="combi">Combi Enrollee</Option>
-              <Option value="regular">Regular Enrollee</Option>
-            </Select>
-          </Form.Item>
-
-          <Form.Item
             name="backedout"
             layout="vertical"
             className="w-1/2 mb-[2vh]"
