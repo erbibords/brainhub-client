@@ -27,7 +27,7 @@ const EditEnrollment = () => {
     navigate("/enrollments");
   }
 
-  const { data: offerings } = useOfferingsContext();
+  const { data: offerings, getOfferingsLoading } = useOfferingsContext();
 
   const { mutate: updatedEnrollment } = useMutation("", "PUT", "enrollments");
 
@@ -145,7 +145,11 @@ const EditEnrollment = () => {
             layout="vertical"
             className="w-1/2 mb-[2vh]"
           >
-            <Select size="large" disabled={error}>
+            <Select
+              size="large"
+              disabled={error || getOfferingsLoading}
+              loading={getOfferingsLoading}
+            >
               {offerings &&
                 offerings?.data?.map((offering) => {
                   return (

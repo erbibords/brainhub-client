@@ -1,40 +1,41 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import CustomInput from '../../components/Input/Input';
-import useSchools from '../../hooks/useSchools';
-import { useCourse } from '../../contexts/courses';
-import { useStudentContext } from '../../contexts/students';
-import { Select, Input, Form, Radio, AutoComplete, Divider } from 'antd';
-import Swal from 'sweetalert2';
-import CustomButton from '../../components/Button/Button';
-import { useOfferingsContext } from '../../contexts/offerings';
-import useMutation from '../../hooks/useMutation';
-import useOffering from '../../hooks/useOffering';
+import React, { useState, useCallback, useEffect, useMemo } from "react";
+import CustomInput from "../../components/Input/Input";
+import useSchools from "../../hooks/useSchools";
+import { useCourse } from "../../contexts/courses";
+import { useStudentContext } from "../../contexts/students";
+import { Select, Input, Form, Radio, AutoComplete, Divider } from "antd";
+import Swal from "sweetalert2";
+import CustomButton from "../../components/Button/Button";
+import { useOfferingsContext } from "../../contexts/offerings";
+import useMutation from "../../hooks/useMutation";
+import useOffering from "../../hooks/useOffering";
 
 import {
   DEFAULT_BRANCH_ID,
   PROCESSED_BY,
   YEAR,
   YEAR_LEVELS,
-} from '../../constants';
-import { useNavigate } from 'react-router-dom';
-import { getCourseOfferingName } from '../../utils/mappings';
+} from "../../constants";
+import { useNavigate } from "react-router-dom";
+import { getCourseOfferingName } from "../../utils/mappings";
 
 const { Option } = Select;
 const { TextArea } = Input;
 
 const options = [
   {
-    label: 'Existing',
-    value: 'existing',
+    label: "Existing",
+    value: "existing",
   },
   {
-    label: 'New',
-    value: 'new',
+    label: "New",
+    value: "new",
   },
 ];
 
 const Enrollment = () => {
   const navigate = useNavigate();
+  const [form] = Form.useForm();
   const {
     data: schools,
     loading: schoolsLoading,
@@ -51,31 +52,31 @@ const Enrollment = () => {
   const { students, studentDataLoading, getStudentError, addStudent } =
     useStudentContext();
   const [studentToEnrollRadioValue, setstudentToEnrollRadioValue] =
-    useState('existing');
+    useState("existing");
   const [selectedOfferingId, setSelectedOfferingId] = useState(undefined);
   const [selectedProcessedBy, setSelectedProcessedBy] = useState(undefined);
   const [selectedExistingStudentId, setSelectedStudentId] = useState(undefined);
-  const [takerType, setTakerType] = useState('FIRST_TAKER');
+  const [takerType, setTakerType] = useState("FIRST_TAKER");
   const [additionalEnrollmentData, setAdditionalEnrollmentData] = useState({
-    yearLevel: '1st Year',
+    yearLevel: "1st Year",
     reviewFee: undefined,
     discountAmount: undefined,
     remarks: undefined,
   });
 
   const { data: selectedOffering } = useOffering(selectedOfferingId ?? null);
-  const isRegularOffering = selectedOffering?.offeringType === 'REGULAR';
+  const isRegularOffering = selectedOffering?.offeringType === "REGULAR";
 
   const filteredSchools = selectedOffering
     ? schools?.data?.filter((sc) => {
-        if (selectedOffering.offeringType === 'COMBI') return true;
+        if (selectedOffering.offeringType === "COMBI") return true;
         return selectedOffering.school && sc.id === selectedOffering.school.id;
       })
     : [];
 
   const isOfferingIntensive = useMemo(() => {
     return (
-      selectedOffering && selectedOffering?.reviewProgram?.name?.includes('INT')
+      selectedOffering && selectedOffering?.reviewProgram?.name?.includes("INT")
     );
   }, [selectedOffering]);
 
@@ -94,8 +95,8 @@ const Enrollment = () => {
 
   const { mutate: addEnrollment, loading: addEnrollmentLoading } = useMutation(
     `/branches/${DEFAULT_BRANCH_ID()}/offerings/${selectedOfferingId}/enrollments`,
-    'PUT',
-    'enrollments'
+    "PUT",
+    "enrollments"
   );
 
   const {
@@ -129,7 +130,7 @@ const Enrollment = () => {
   const filteredStudentOptions = useMemo(() => {
     if (
       !studentSearchText ||
-      studentSearchText === '' ||
+      studentSearchText === "" ||
       !students ||
       students.data < 1
     ) {
@@ -156,8 +157,8 @@ const Enrollment = () => {
 
       if (!data.studentId) {
         Swal.fire({
-          icon: 'warning',
-          title: 'Please add student to enroll!',
+          icon: "warning",
+          title: "Please add student to enroll!",
           timer: 2500,
         });
 
@@ -166,8 +167,8 @@ const Enrollment = () => {
 
       if (!data.takerType) {
         Swal.fire({
-          icon: 'warning',
-          title: 'Please add taker type!',
+          icon: "warning",
+          title: "Please add taker type!",
           timer: 2500,
         });
         return;
@@ -175,8 +176,8 @@ const Enrollment = () => {
 
       if (!data.processedBy) {
         Swal.fire({
-          icon: 'warning',
-          title: 'Please select processed by.',
+          icon: "warning",
+          title: "Please select processed by.",
           timer: 2500,
         });
         return;
@@ -184,8 +185,8 @@ const Enrollment = () => {
 
       if (!data.reviewFee) {
         Swal.fire({
-          icon: 'warning',
-          title: 'Please add review fee.',
+          icon: "warning",
+          title: "Please add review fee.",
           timer: 2500,
         });
         return;
@@ -198,17 +199,17 @@ const Enrollment = () => {
           const studentId = data?.studentId;
           navigate(`/prints/enrollment/${studentId}/${enrollmentId}`);
           Swal.fire({
-            icon: 'success',
-            title: 'Enrollment successful!',
-            text: 'Redirecting to enrollment form printing...',
+            icon: "success",
+            title: "Enrollment successful!",
+            text: "Redirecting to enrollment form printing...",
             timer: 2500,
           });
         }
       } catch (error) {
         Swal.fire({
-          icon: 'error',
-          title: 'Enrollment failed!',
-          text: 'This may be due to inputs. Please try again later!',
+          icon: "error",
+          title: "Enrollment failed!",
+          text: "This may be due to inputs. Please try again later!",
           timer: 2500,
         });
       }
@@ -223,8 +224,8 @@ const Enrollment = () => {
         if (res && res.id) {
           const studentId = res.id;
           const enrollmentData = {
-            takerType: 'FIRST_TAKER',
-            status: '',
+            takerType: "FIRST_TAKER",
+            status: "",
             studentId,
             processedBy: selectedProcessedBy,
             discountAmount: additionalEnrollmentData?.discountAmount,
@@ -233,7 +234,7 @@ const Enrollment = () => {
                 parseFloat(additionalEnrollmentData?.discountAmount ?? 0) ?? 0
             ).toString(),
             yearLevel: isOfferingIntensive
-              ? 'Graduated'
+              ? "Graduated"
               : additionalEnrollmentData?.yearLevel,
             remarks: additionalEnrollmentData?.remarks,
           };
@@ -241,9 +242,9 @@ const Enrollment = () => {
         }
       } catch (error) {
         Swal.fire({
-          icon: 'error',
-          title: 'Error adding student!',
-          text: 'It may be due to inputs, Please double check and try again!',
+          icon: "error",
+          title: "Error adding student!",
+          text: "It may be due to inputs, Please double check and try again!",
           timer: 2000,
         });
       }
@@ -254,8 +255,8 @@ const Enrollment = () => {
   const enrollExistingStudent = useCallback(async () => {
     if (!selectedOfferingId) {
       Swal.fire({
-        icon: 'warning',
-        title: 'Please select course offering!',
+        icon: "warning",
+        title: "Please select course offering!",
         timer: 2000,
       });
       return;
@@ -263,8 +264,8 @@ const Enrollment = () => {
 
     if (!selectedProcessedBy) {
       Swal.fire({
-        icon: 'warning',
-        title: 'Please select processed by.',
+        icon: "warning",
+        title: "Please select processed by.",
         timer: 2500,
       });
       return;
@@ -273,14 +274,16 @@ const Enrollment = () => {
     const data = {
       takerType,
       studentId: selectedExistingStudentId,
-      status: '',
+      status: "",
       processedBy: selectedProcessedBy,
       discountAmount: additionalEnrollmentData?.discountAmount,
       reviewFee: (
         parseFloat(additionalEnrollmentData?.reviewFee) -
           parseFloat(additionalEnrollmentData?.discountAmount ?? 0) ?? 0
       ).toString(),
-      yearLevel: additionalEnrollmentData?.yearLevel,
+      yearLevel: isOfferingIntensive
+        ? "Graduated"
+        : additionalEnrollmentData?.yearLevel,
       remarks: additionalEnrollmentData?.remarks,
     };
 
@@ -298,8 +301,8 @@ const Enrollment = () => {
     async (values) => {
       if (!selectedOfferingId) {
         Swal.fire({
-          icon: 'warning',
-          title: 'Please select course offering!',
+          icon: "warning",
+          title: "Please select course offering!",
           timer: 2000,
         });
         return;
@@ -339,7 +342,7 @@ const Enrollment = () => {
       <h1 className="text-2xl mb-[2vh]">Enroll Student</h1>
 
       <div>
-        <Form layout="vertical" className="w-1/2">
+        <Form layout="vertical" className="w-1/2" form={form}>
           <Form.Item label="Year" name="year">
             <Select
               className="w-full mb=[2vh]"
@@ -347,12 +350,13 @@ const Enrollment = () => {
                 new Date().getFullYear() + 1
               }`}
               size="large"
-              onChange={(value) =>
+              onChange={(value) => {
+                form.resetFields(["course_name", "offering_id"]);
                 setOfferingsSearchParams({
                   ...offeringsSearchParams,
                   yearOffered: value,
-                })
-              }
+                });
+              }}
             >
               {YEAR?.map((year) => (
                 <Option value={year} key={year}>
@@ -382,37 +386,37 @@ const Enrollment = () => {
                 ))}
             </Select>
           </Form.Item>
-        </Form>
 
-        <Form.Item
-          label="Course Offering:"
-          name="courseId"
-          layout="vertical"
-          className="w-1/2 mb-[2vh]"
-        >
-          <Select
-            size="large"
-            disabled={getOfferingsLoading || getOfferingsError}
-            onChange={(value) => {
-              setSelectedOfferingId(value);
-            }}
+          <Form.Item
+            label="Course Offering:"
+            name="offering_id"
+            layout="vertical"
+            className="mb-[2vh]"
           >
-            {offerings &&
-              offerings?.data?.map((offering) => {
-                return (
-                  <Option key={offering?.id} value={offering?.id}>
-                    {getCourseOfferingName(offering)}
-                  </Option>
-                );
-              })}
-          </Select>
+            <Select
+              size="large"
+              disabled={getOfferingsLoading || getOfferingsError}
+              onChange={(value) => {
+                setSelectedOfferingId(value);
+              }}
+            >
+              {offerings &&
+                offerings?.data?.map((offering) => {
+                  return (
+                    <Option key={offering?.id} value={offering?.id}>
+                      {getCourseOfferingName(offering)}
+                    </Option>
+                  );
+                })}
+            </Select>
 
-          {getOfferingsError && (
-            <label className="text-secondary">
-              Error loading offerings. please try again later!{' '}
-            </label>
-          )}
-        </Form.Item>
+            {getOfferingsError && (
+              <label className="text-secondary">
+                Error loading offerings. please try again later!{" "}
+              </label>
+            )}
+          </Form.Item>
+        </Form>
 
         {selectedOffering && (
           <div className="flex flex-col">
@@ -428,7 +432,7 @@ const Enrollment = () => {
 
         {selectedOffering && isOfferingIntensive ? (
           <p className="mb-[16px]">
-            {' '}
+            {" "}
             Year Level: <b>Graduated</b>
           </p>
         ) : (
@@ -538,7 +542,7 @@ const Enrollment = () => {
             value={studentToEnrollRadioValue}
             optionType="button"
           />
-          {studentToEnrollRadioValue === 'existing' && (
+          {studentToEnrollRadioValue === "existing" && (
             <>
               <Form.Item
                 label="Student Name"
@@ -561,7 +565,7 @@ const Enrollment = () => {
                 />
                 {getStudentError && (
                   <label className="text-secondary">
-                    Error loading students. please try again later!{' '}
+                    Error loading students. please try again later!{" "}
                   </label>
                 )}
               </Form.Item>
@@ -584,7 +588,7 @@ const Enrollment = () => {
           )}
         </div>
 
-        {studentToEnrollRadioValue === 'new' && (
+        {studentToEnrollRadioValue === "new" && (
           <Form
             name="enrollment"
             onFinish={onFinish}
@@ -598,7 +602,7 @@ const Enrollment = () => {
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your First Name',
+                    message: "Please input your First Name",
                   },
                 ]}
               >
@@ -615,7 +619,7 @@ const Enrollment = () => {
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your Middle Name',
+                    message: "Please input your Middle Name",
                   },
                 ]}
               >
@@ -632,7 +636,7 @@ const Enrollment = () => {
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your Last Name',
+                    message: "Please input your Last Name",
                   },
                 ]}
               >
@@ -657,7 +661,7 @@ const Enrollment = () => {
                   label="School"
                   name="schoolId"
                   rules={[
-                    { required: true, message: 'Please input your School' },
+                    { required: true, message: "Please input your School" },
                   ]}
                 >
                   <Select
@@ -679,7 +683,7 @@ const Enrollment = () => {
                 label="Address"
                 name="address"
                 rules={[
-                  { required: true, message: 'Please input your address!' },
+                  { required: true, message: "Please input your address!" },
                 ]}
               >
                 <TextArea
@@ -698,7 +702,7 @@ const Enrollment = () => {
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your Contact No.',
+                    message: "Please input your Contact No.",
                   },
                 ]}
               >
@@ -807,7 +811,7 @@ const Enrollment = () => {
         )}
 
         {/* Save button */}
-        {studentToEnrollRadioValue === 'existing' && (
+        {studentToEnrollRadioValue === "existing" && (
           <div className="text-right mb-5 w-1/2 flex justify-center">
             <CustomButton
               type="primary"

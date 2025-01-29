@@ -22,7 +22,7 @@ const StudentProfile = () => {
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
 
-  const { data, error, isLoading } = useProfile(params?.studentId);
+  const { data, error, isLoading, refetch } = useProfile(params?.studentId);
   const {
     data: schools,
     error: isSchoolError,
@@ -64,8 +64,10 @@ const StudentProfile = () => {
           timer: 2000,
         });
         setIsEditing(false);
+        refetch();
       }
     } catch (error) {
+      console.log(error);
       Swal.fire({
         icon: "error",
         title: "Student Information Update Error",
