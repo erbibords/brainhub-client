@@ -50,16 +50,19 @@ const Receipt = () => {
       title: "Particulars",
       dataIndex: "particulars",
       key: "particulars",
+      render: (value) => <span className="">{value}</span>,
     },
     {
       title: "Qty.",
       dataIndex: "qty",
       key: "qty",
+      render: (value) => <span className="">{value}</span>,
     },
     {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
+      render: (value) => <span className="">{value}</span>,
     },
   ];
 
@@ -78,11 +81,14 @@ const Receipt = () => {
           lineHeight: "1.2",
         }}
       >
-        <div className="text-center">
+        <div className="text-center ml-[-20px]">
           <img src={logo} alt="Brain Hub Logo" className="mx-auto mb-2" />
           <p className="text-sm">Iloilo Doctor's College</p>
           <p className="text-sm">West Timawa Molo 5000 Iloilo City</p>
-          <p className="text-sm">Non-Vat Reg. TIN: 310-118-125-00000</p>
+          <p className="text-[14px] py-2">
+            Non-Vat Reg. TIN: 310-118-125-00000
+          </p>
+
           <h2 className="font-bold mt-2">INVOICE RECEIPT</h2>
           <p className="text-sm">No: {paymentDetails?.referenceNo}</p>
         </div>
