@@ -580,6 +580,7 @@ const Enrollment = () => {
                   }}
                 >
                   <Option value="FIRST_TAKER">1st Taker</Option>
+                  <Option value="SECOND_TAKER">2nd Taker</Option>
                   <Option value="RE_TAKER">Re-taker</Option>
                   <Option value="SUMMER">Summer</Option>
                 </Select>

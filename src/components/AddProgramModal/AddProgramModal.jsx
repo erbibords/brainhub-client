@@ -45,6 +45,8 @@ const CustomModal = ({
       <Form form={form} layout="vertical" onFinish={handleSave}>
         <Form.Item
           label="Program"
+          layout="vertical"
+          className="w-full"
           name="name"
           rules={[
             {
@@ -53,8 +55,20 @@ const CustomModal = ({
             },
           ]}
         >
-          <CustomInput type="text" name="name" />
+          <Select
+            className="w-full mb=[2vh]"
+            size="large"
+            defaultValue="ENHANCEMENT"
+          >
+            <Option value="ENHANCEMENT">Enhancement</Option>
+            <Option value="INTENSIVE">Intensive</Option>
+            <Option value="INTENSIFIED">Intensified</Option>
+            <Option value="NCLEX">NCLEX</Option>
+            <Option value="NSG_INHOUSE">NSG Inhouse</Option>
+            <Option value="NSG_RT">NSG RT</Option>
+          </Select>
         </Form.Item>
+
         <Form.Item
           label="Course"
           name="courseId"
