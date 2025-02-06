@@ -81,11 +81,11 @@ const Receipt = () => {
           lineHeight: "1.2",
         }}
       >
-        <div className="text-center ml-[-20px]">
+        <div className="text-center">
           <img src={logo} alt="Brain Hub Logo" className="mx-auto mb-2" />
           <p className="text-sm">Iloilo Doctor's College</p>
           <p className="text-sm">West Timawa Molo 5000 Iloilo City</p>
-          <p className="text-[11px] py-2">
+          <p className="text-[14px] py-2">
             Non-Vat Reg. TIN: 310-118-125-00000
           </p>
 
