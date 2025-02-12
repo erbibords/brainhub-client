@@ -65,7 +65,7 @@ const CustomModal = ({
             <Option value="INTENSIFIED">Intensified</Option>
             <Option value="NCLEX">NCLEX</Option>
             <Option value="NSG_INHOUSE">NSG Inhouse</Option>
-            <Option value="NSG_RT">NSG RT</Option>
+            <Option value="RT_INHOUSE">RT Inhouse</Option>
           </Select>
         </Form.Item>
 
