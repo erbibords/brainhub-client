@@ -1,9 +1,9 @@
-import React from "react";
-import { Modal, Form, Input, Select } from "antd";
-import CustomInput from "../Input/Input";
-import CustomButton from "../Button/Button";
-import { useCourse } from "../../contexts/courses";
-import useSchools from "../../hooks/useSchools";
+import React from 'react';
+import { Modal, Form, Input, Select } from 'antd';
+import CustomInput from '../Input/Input';
+import CustomButton from '../Button/Button';
+import { useCourse } from '../../contexts/courses';
+import useSchools from '../../hooks/useSchools';
 
 const { TextArea } = Input;
 
@@ -42,7 +42,12 @@ const CustomModal = ({
       ]}
       width={700}
     >
-      <Form form={form} layout="vertical" onFinish={handleSave}>
+      <Form
+        form={form}
+        initialValues={{ name: 'ENHANCEMENT' }}
+        layout="vertical"
+        onFinish={handleSave}
+      >
         <Form.Item
           label="Program"
           layout="vertical"
@@ -51,7 +56,7 @@ const CustomModal = ({
           rules={[
             {
               required: true,
-              message: "Please input the Review Program Name!",
+              message: 'Please input the Review Program Name!',
             },
           ]}
         >
@@ -72,7 +77,7 @@ const CustomModal = ({
         <Form.Item
           label="Course"
           name="courseId"
-          rules={[{ required: true, message: "Please select course." }]}
+          rules={[{ required: true, message: 'Please select course.' }]}
         >
           <Select
             name="courseId"
@@ -91,7 +96,7 @@ const CustomModal = ({
         <Form.Item
           label="School"
           name="schoolId"
-          rules={[{ required: true, message: "Please select school." }]}
+          rules={[{ required: true, message: 'Please select school.' }]}
         >
           <Select
             className="w-full"
@@ -109,7 +114,7 @@ const CustomModal = ({
         <Form.Item
           label="Description"
           name="description"
-          rules={[{ required: true, message: "Please input the Description!" }]}
+          rules={[{ required: true, message: 'Please input the Description!' }]}
         >
           <TextArea rows={4} name="description" />
         </Form.Item>
