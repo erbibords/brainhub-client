@@ -75,10 +75,13 @@ const Receipt = () => {
       {/* Content to Print */}
       <div
         ref={contentToPrint}
-        className="p-4 border border-gray-300 print:border-none"
+        className="border border-gray-300 print:border-none"
         style={{
           fontFamily: "Courier New, monospace",
           lineHeight: "1.2",
+          paddingLeft: "2px",
+          paddingRight: "25px",
+          paddingTop: "2px",
         }}
       >
         <div className="text-center">
@@ -118,6 +121,7 @@ const Receipt = () => {
           bordered
           size="small"
           className="text-[9px] font-mono"
+          rowClassName={() => "font-bold"} // <- Add this line
         />
 
         <hr className="my-2" />
