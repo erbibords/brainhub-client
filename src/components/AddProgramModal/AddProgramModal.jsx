@@ -71,6 +71,9 @@ const CustomModal = ({
             <Option value="NCLEX">NCLEX</Option>
             <Option value="NSG_INHOUSE">NSG Inhouse</Option>
             <Option value="RT_INHOUSE">RT Inhouse</Option>
+            <Option value="NSG_NOV_NLE">NSG NOV NLE</Option>
+            <Option value="NSG_MAY_NLE">NSG MAY NLE</Option>
+            <Option value="DEC_RTLE">DEC RTLE</Option>
           </Select>
         </Form.Item>
 
