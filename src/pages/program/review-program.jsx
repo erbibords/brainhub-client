@@ -1,18 +1,18 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { Table, Space, Row, Col, Modal, Form, Button } from 'antd';
-import CustomInput from '../../components/Input/Input';
-import CustomButton from '../../components/Button/Button';
-import AddProgramModal from '../../components/AddProgramModal/AddProgramModal';
-import { REVIEW_PROGRAM_BASE_URL } from '../../constants';
-import useMutation from '../../hooks/useMutation';
-import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import { useProgramContext } from '../../contexts/programs';
-import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
-
+import React, { useState, useCallback, useMemo } from "react";
+import { Table, Space, Row, Col, Modal, Form, Button } from "antd";
+import CustomInput from "../../components/Input/Input";
+import CustomButton from "../../components/Button/Button";
+import AddProgramModal from "../../components/AddProgramModal/AddProgramModal";
+import { REVIEW_PROGRAM_BASE_URL } from "../../constants";
+import useMutation from "../../hooks/useMutation";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { useProgramContext } from "../../contexts/programs";
+import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
+import { formatAmount } from "../../utils/formatting";
 const ReviewProgram = () => {
   const navigate = useNavigate();
-  const [searchProgram, setSearchProgram] = useState('');
+  const [searchProgram, setSearchProgram] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
 
@@ -21,37 +21,37 @@ const ReviewProgram = () => {
 
   const { mutate: addProgram, loading: addProgramLoading } = useMutation(
     REVIEW_PROGRAM_BASE_URL,
-    'POST',
-    'programs'
+    "POST",
+    "programs"
   );
 
   const columns = [
     {
-      title: 'Program',
-      dataIndex: 'name',
+      title: "Program",
+      dataIndex: "name",
     },
     {
-      title: 'Description',
-      dataIndex: 'description',
+      title: "Description",
+      dataIndex: "description",
     },
     {
-      title: 'Course',
-      dataIndex: 'course',
+      title: "Course",
+      dataIndex: "course",
       render: (data) => data?.name,
     },
     {
-      title: 'School',
-      dataIndex: 'school',
+      title: "School",
+      dataIndex: "school",
       render: (data) => data?.name,
     },
     {
-      title: 'Total Collectibles',
-      dataIndex: 'totalCollectibles',
-      render: (data) => data,
+      title: "Total Collected",
+      dataIndex: "totalCollectibles",
+      render: (data) => formatAmount(data),
     },
     {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       render: (_, record) => (
         <Space size="middle">
           <CustomButton
@@ -76,10 +76,10 @@ const ReviewProgram = () => {
 
   const confirmDeleteProgram = (programId, name) => {
     Modal.confirm({
-      title: 'Are you sure you want to delete this program?',
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
+      title: "Are you sure you want to delete this program?",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
       onOk() {
         handleDeleteProgram(programId, name);
       },
@@ -105,16 +105,16 @@ const ReviewProgram = () => {
           form.resetFields();
           setIsModalVisible(false);
           Swal.fire({
-            icon: 'success',
-            title: 'Review Program Added',
+            icon: "success",
+            title: "Review Program Added",
             timer: 2000,
           });
         }
       } catch (error) {
         Swal.fire({
-          icon: 'error',
-          title: 'Something went wrong',
-          text: 'It looks like there might be an encoding issue or a conflict with your entries. Please review and try again.',
+          icon: "error",
+          title: "Something went wrong",
+          text: "It looks like there might be an encoding issue or a conflict with your entries. Please review and try again.",
         });
       }
     },
