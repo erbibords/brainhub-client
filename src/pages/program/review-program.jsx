@@ -47,12 +47,12 @@ const ReviewProgram = () => {
     {
       title: "Total Collected",
       dataIndex: "totalCollected",
-      render: (data) => formatAmount(data),
+      render: (data) => formatAmount(data ?? 0),
     },
     {
       title: "Total Collectibles",
       dataIndex: "totalCollectibles",
-      render: (data) => formatAmount(data),
+      render: (data) => formatAmount(data ?? 0),
     },
     {
       title: "Action",
