@@ -51,7 +51,7 @@ const ReviewProgram = () => {
     },
     {
       title: "Total Remaining Collectibles",
-      dataIndex: "totalRemainingCollictibles",
+      dataIndex: "totalRemainingCollectibles",
       render: (data) => formatAmount(data ?? 0),
     },
     {
