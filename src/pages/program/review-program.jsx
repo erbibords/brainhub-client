@@ -45,8 +45,13 @@ const ReviewProgram = () => {
       render: (data) => data?.name,
     },
     {
-      title: "Total Collected",
+      title: "Total Money Collected",
       dataIndex: "totalCollected",
+      render: (data) => formatAmount(data ?? 0),
+    },
+    {
+      title: "Total Remaining Collectibles",
+      dataIndex: "totalRemainingCollictibles",
       render: (data) => formatAmount(data ?? 0),
     },
     {
