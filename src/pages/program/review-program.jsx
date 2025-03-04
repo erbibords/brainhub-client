@@ -57,7 +57,9 @@ const ReviewProgram = () => {
     {
       title: "Total Remaining Collectibles",
       dataIndex: "totalRemainingCollectibles",
-      render: (data) => formatAmount(data ?? 0),
+      render: (data) => (
+        <p className="text-red-600 font-bold">{formatAmount(data ?? 0)}</p>
+      ),
     },
 
     {
