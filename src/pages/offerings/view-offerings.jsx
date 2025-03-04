@@ -207,10 +207,12 @@ const ViewOffering = () => {
       return offering?.enrollments || [];
     }
 
+    console.log(offering.enrollments);
+
     const data = offering.enrollments.filter(
       (record) =>
-        record.totalAmountPaid >= searchAmount.min &&
-        record.totalAmountPaid <= searchAmount.max
+        record?.remainingBalance >= searchAmount.min &&
+        record?.remainingBalance <= searchAmount.max
     );
     setEnrollments(data);
   }, [searchAmount, offering?.enrollments, setEnrollments]);
@@ -469,7 +471,7 @@ const ViewOffering = () => {
                     Enrolled Student List ({enrollments?.length})
                   </h2>
                   <div className="flex flex-col gap-[6px]">
-                    <label> Amount paid (min - max):</label>
+                    <label> Remaining Balance (min - max):</label>
                     <div className="flex gap-[6px]">
                       <CustomInput
                         type="number"
