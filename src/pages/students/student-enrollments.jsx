@@ -16,11 +16,10 @@ export const StudentEnrollments = ({ enrollments }) => {
     },
     {
       title: "Review Fee",
-      dataIndex: "reviewCost",
-      key: "reviewCost",
-      render: (_, data) => {
-        console.log(data);
-        return formatAmount(data?.courseOffering?.reviewCost);
+      dataIndex: "reviewFee",
+      key: "reviewFee",
+      render: (data) => {
+        return formatAmount(data);
       },
     },
 
@@ -40,14 +39,13 @@ export const StudentEnrollments = ({ enrollments }) => {
       title: "Remaining Balance",
       dataIndex: "remainingBalance",
       key: "remainingBalance",
-      render: (data, row) => {
+      render: (_, row) => {
         const remainingBalance = parseFloat(
-          parseFloat(row?.courseOffering?.reviewCost - row?.totalAmountPaid) -
+          parseFloat(row?.reviewFee - row?.totalAmountPaid) -
             parseFloat(row.discountAmount)
         );
         return (
           <p className="text-red-600 font-bold">
-            {" "}
             {formatAmount(remainingBalance)}
           </p>
         );

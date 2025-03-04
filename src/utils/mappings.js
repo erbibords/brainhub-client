@@ -46,7 +46,11 @@ export const getLatestData = (data) =>
       : latest;
   }, data[0]);
 
-export const getStudentRemainingBalance = (data) => {
-  if (!data) 0;
-  return data.reduce((acc, item) => acc + item.remainingBalance, 0);
-};
+  export const getStudentRemainingBalance = (data) => {
+    if (!data) 0;
+    return data.reduce(
+      (acc, item) =>
+        acc + parseFloat(item.remainingBalance - (item.discountAmount ?? 0)),
+      0
+    );
+  };
