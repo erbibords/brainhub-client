@@ -171,8 +171,10 @@ const ViewOffering = () => {
       title: "Remaining Balance",
       dataIndex: "remainingBalance",
       key: "remainingBalance",
-      render: (data) => (
-        <p className="text-red-600 font-bold">{formatAmount(data)}</p>
+      render: (data, row) => (
+        <p className="text-red-600 font-bold">
+          {formatAmount(parseFloat(data - row?.discountAmount ?? 0) ?? 0)}
+        </p>
       ),
     },
     {
