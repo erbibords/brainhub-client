@@ -40,9 +40,18 @@ export const StudentEnrollments = ({ enrollments }) => {
       title: "Remaining Balance",
       dataIndex: "remainingBalance",
       key: "remainingBalance",
-      render: (data) => (
-        <p className="text-red-600 font-bold"> {formatAmount(data)}</p>
-      ),
+      render: (data, row) => {
+        const remainingBalance = parseFloat(
+          parseFloat(row?.courseOffering?.reviewCost - row?.totalAmountPaid) -
+            parseFloat(row.discountAmount)
+        );
+        return (
+          <p className="text-red-600 font-bold">
+            {" "}
+            {formatAmount(remainingBalance)}
+          </p>
+        );
+      },
     },
     {
       title: "Enrollment Date",
