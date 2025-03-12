@@ -11,7 +11,7 @@ export const getCourseById = (courses, id) => {
 export const getFullName = (studentData) => {
   if (!studentData) return '';
   const { firstName, middleName, lastName } = studentData;
-  return `${firstName} ${middleName} ${lastName}`;
+  return `${firstName} ${middleName ?? ""} ${lastName}`;
 };
 
 export const formatSemesterForOffering = (semester) => {

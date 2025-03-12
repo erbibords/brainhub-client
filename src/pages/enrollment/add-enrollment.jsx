@@ -118,7 +118,9 @@ const Enrollment = () => {
     }
 
     return students?.map((student) => {
-      const studentName = `${student.firstName} ${student.middleName} ${student.lastName}`;
+      const studentName = `${student.firstName} ${student?.middleName ?? ""} ${
+        student.lastName
+      }`;
       return {
         label: studentName,
         value: studentName,
@@ -614,16 +616,7 @@ const Enrollment = () => {
                 />
               </Form.Item>
 
-              <Form.Item
-                label="Middle Name"
-                name="middleName"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your Middle Name",
-                  },
-                ]}
-              >
+              <Form.Item label="Middle Name" name="middleName">
                 <CustomInput
                   type="text"
                   name="middleName"
