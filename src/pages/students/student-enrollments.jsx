@@ -40,9 +40,10 @@ export const StudentEnrollments = ({ enrollments }) => {
       dataIndex: "remainingBalance",
       key: "remainingBalance",
       render: (_, row) => {
+        console.log(row.reviewFee, row.totalAmountPaid, row.discountAmount);
         const remainingBalance = parseFloat(
-          parseFloat(row?.reviewFee - row?.totalAmountPaid) -
-            parseFloat(row.discountAmount)
+          parseFloat(row?.reviewFee ?? 0 - row?.totalAmountPaid ?? 0) -
+            parseFloat(row.discountAmount ?? 0)
         );
         return (
           <p className="text-red-600 font-bold">
