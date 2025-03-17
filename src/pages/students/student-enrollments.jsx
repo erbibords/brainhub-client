@@ -42,7 +42,7 @@ export const StudentEnrollments = ({ enrollments }) => {
       render: (_, row) => {
         console.log(row.reviewFee, row.totalAmountPaid, row.discountAmount);
         const remainingBalance = parseFloat(
-          parseFloat(row?.reviewFee ?? 0 - row?.totalAmountPaid ?? 0) -
+          parseFloat(row?.reviewFee - row?.totalAmountPaid ?? 0) -
             parseFloat(row.discountAmount ?? 0)
         );
         return (
