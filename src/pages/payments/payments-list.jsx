@@ -145,9 +145,16 @@ const PaymentsList = () => {
       title: "Balance after payments",
       dataIndex: "balance",
       key: "balance",
-      render: (data) => (
-        <p className="text-red-600 font-bold">{formatAmount(data ?? 0)}</p>
-      ),
+      render: (data, row) => {
+        const balanceAfterPayment = parseFloat(
+          data - row?.enrollment?.discountAmount ?? 0
+        );
+        return (
+          <p className="text-red-600 font-bold">
+            {formatAmount(balanceAfterPayment ?? 0)}
+          </p>
+        );
+      },
     },
     {
       title: "Payment Method",
@@ -233,6 +240,7 @@ const PaymentsList = () => {
     setIsModalVisible(false);
   };
 
+  console.log(payments);
   return (
     <div>
       <h1 className="text-2xl mb-[2vh]">Payment Lists</h1>
