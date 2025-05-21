@@ -197,7 +197,7 @@ const EditEnrollment = () => {
           >
             <input
               type="number"
-              className="ant-input ant-input-lg css-dev-only-do-not-override-3rel02 ant-input-outlined ant-input-status-success w-1/2 mb-[2vh] px-[12px] py-[10px]"
+              className="ant-input ant-input-lg css-dev-only-do-not-override-3rel02 ant-input-outlined ant-input-status-success w-1/2 mb-[2vh] px-[12px] py-[10px] border border-gray-300 rounded"
             />
           </Form.Item>
 
@@ -209,7 +209,7 @@ const EditEnrollment = () => {
           >
             <input
               type="number"
-              className="ant-input ant-input-lg css-dev-only-do-not-override-3rel02 ant-input-outlined ant-input-status-success w-1/2 mb-[2vh] px-[12px] py-[10px]"
+              className="ant-input ant-input-lg css-dev-only-do-not-override-3rel02 ant-input-outlined ant-input-status-success w-1/2 mb-[2vh] px-[12px] py-[10px] border border-gray-300 rounded"
             />
           </Form.Item>
 
