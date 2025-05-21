@@ -2,6 +2,7 @@ import React from "react";
 import { Row, Table, Col } from "antd";
 import { formatDate, formatAmount } from "../../utils/formatting";
 import { getCourseOfferingName } from "../../utils/mappings";
+import { toSafeNumber } from "../../utils/formatting";
 export const StudentEnrollments = ({ enrollments }) => {
   if (!enrollments) return null;
 
@@ -40,14 +41,13 @@ export const StudentEnrollments = ({ enrollments }) => {
       dataIndex: "remainingBalance",
       key: "remainingBalance",
       render: (_, row) => {
-        console.log(row.reviewFee, row.totalAmountPaid, row.discountAmount);
-        const remainingBalance = parseFloat(
-          parseFloat(row?.reviewFee - row?.totalAmountPaid ?? 0) -
-            parseFloat(row.discountAmount ?? 0)
-        );
+        const reviewFee = toSafeNumber(row?.reviewFee);
+        const discountAmount = toSafeNumber(row?.discountAmount);
+        const totalAmountPaid = toSafeNumber(row?.totalAmountPaid);
+        const remainingBalance = reviewFee - discountAmount - totalAmountPaid;
         return (
           <p className="text-red-600 font-bold">
-            {formatAmount(remainingBalance)}
+            {formatAmount(toSafeNumber(remainingBalance) ?? 0)}
           </p>
         );
       },

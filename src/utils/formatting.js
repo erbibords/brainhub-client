@@ -49,3 +49,8 @@ export const getCourseOfferingName = (offering) => {
     3
   )}-${yearOffered}-${semester}`;
 };
+
+export const toSafeNumber = (value) => {
+  const parsed = parseFloat(value);
+  return isNaN(parsed) ? 0 : parsed;
+};

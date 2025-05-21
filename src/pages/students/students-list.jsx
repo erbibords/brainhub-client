@@ -62,11 +62,13 @@ const StudentsList = () => {
       title: "Remaining Balance.",
       dataIndex: "enrollments",
       key: "balance",
-      render: (data) => (
-        <p className="text-red-600 font-bold">
-          {formatAmount(getStudentRemainingBalance(data))}
-        </p>
-      ),
+      render: (data) => {
+        return (
+          <p className="text-red-600 font-bold">
+            {formatAmount(getStudentRemainingBalance(data))}
+          </p>
+        );
+      },
     },
 
     {
