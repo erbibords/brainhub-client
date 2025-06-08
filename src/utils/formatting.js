@@ -1,10 +1,9 @@
 import { DateTime } from 'luxon';
 
 export const formatDate = (dateVal) => {
-  const date = DateTime.fromISO(dateVal);
-  const formattedDate = date.toFormat('MMM dd, yyyy');
-  return formattedDate;
+  return DateTime.fromISO(dateVal, { zone: 'utc' }).toFormat('MMM dd, yyyy');
 };
+
 export const formatSemester = (semester) => {
   if (semester === 'FIRST_SEMESTER') {
     return '1ST';

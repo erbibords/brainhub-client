@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 function usePayments(params = {}) {
   const {
     pageNo = 1,
-    pageSize = 25,
+    pageSize = 250,
     referenceNo = undefined,
     startDate = undefined,
     endDate = undefined,

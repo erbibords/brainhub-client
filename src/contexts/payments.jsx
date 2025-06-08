@@ -1,5 +1,5 @@
-import React, { createContext, useMemo, useState, useContext } from 'react';
-import usePayments from '../hooks/usePayments';
+import React, { createContext, useMemo, useState, useContext } from "react";
+import usePayments from "../hooks/usePayments";
 
 const PaymentsContext = createContext({
   payments: [],
@@ -19,7 +19,7 @@ export const PaymentsProvider = ({ children }) => {
     semester: undefined,
     yearOffered: undefined,
     pageNo: 1,
-    pageSize: 25,
+    pageSize: 250,
   });
 
   const { data, isLoading, error } = usePayments(params);

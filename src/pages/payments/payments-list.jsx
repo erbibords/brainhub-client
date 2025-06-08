@@ -55,6 +55,7 @@ const PaymentsList = () => {
     error: schoolsError,
   } = useSchools();
   const { courses, getCoursesLoading, getCoursesError } = useCourse();
+  const [pageSize, setPageSize] = useState(25);
 
   const [searchParams, setSearchParams] = useState({
     referenceNo: undefined,
@@ -423,7 +424,7 @@ const PaymentsList = () => {
                 </Form.Item>
               </Col>
 
-              <Col span={3} className="flex items-center items-end mb-1">
+              <Col span={3} className="flex items-end mb-1">
                 <CustomButton
                   type="primary"
                   size="large"
@@ -440,7 +441,7 @@ const PaymentsList = () => {
                     form.resetFields();
                     setParams({
                       pageNo: 1,
-                      pageSize: 25,
+                      pageSize: 250,
                     });
                     setSearchParams({
                       referenceNo: undefined,
@@ -487,6 +488,11 @@ const PaymentsList = () => {
                 dataSource={payments && payments?.data}
                 columns={columns}
                 loading={getPaymentsLoading}
+                pagination={{ pageSize: pageSize }}
+                scroll={{ y: 800 }}
+                onChange={(pagination) => {
+                  setPageSize(pagination.pageSize);
+                }}
               />
             )}
           </Col>

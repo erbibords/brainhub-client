@@ -45,6 +45,7 @@ const Receipt = () => {
     ];
   }, [paymentDetails]);
 
+  console.log(paymentDetails);
   const columns = [
     {
       title: "Particulars",

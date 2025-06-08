@@ -38,7 +38,14 @@ const StudentsList = () => {
   }, []);
 
   const columns = [
-    { title: "Name", dataIndex: "name", key: "name" },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      render: (_, row) => {
+        return `${row?.lastName}, ${row?.firstName} ${row?.middleName}`;
+      },
+    },
     { title: "School", dataIndex: "school", key: "school" },
     {
       title: "Taker Type",
