@@ -36,9 +36,14 @@ export const PaymentHistory = ({ payments }) => {
       title: "Balance after payment",
       dataIndex: "balance",
       key: "balance",
-      render: (data) => (
-        <p className="text-red-600 font-bold">{formatAmount(data ?? 0)}</p>
-      ),
+      render: (data, row) => {
+        const discountAmount = row?.enrollment?.discountAmount ?? 0;
+        return (
+          <p className="text-red-600 font-bold">
+            {formatAmount(parseFloat(data - discountAmount) ?? 0)}
+          </p>
+        );
+      },
     },
     {
       title: "Payment Method",

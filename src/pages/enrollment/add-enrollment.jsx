@@ -18,6 +18,7 @@ import {
 } from "../../constants";
 import { useNavigate } from "react-router-dom";
 import { getCourseOfferingName } from "../../utils/mappings";
+import { toSafeNumber } from "../../utils/formatting";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -118,7 +119,9 @@ const Enrollment = () => {
     }
 
     return students?.map((student) => {
-      const studentName = `${student.firstName} ${student.middleName} ${student.lastName}`;
+      const studentName = `${student.firstName} ${student?.middleName ?? ""} ${
+        student.lastName
+      }`;
       return {
         label: studentName,
         value: studentName,
@@ -230,8 +233,8 @@ const Enrollment = () => {
             processedBy: selectedProcessedBy,
             discountAmount: additionalEnrollmentData?.discountAmount,
             reviewFee: (
-              parseFloat(additionalEnrollmentData?.reviewFee) -
-                parseFloat(additionalEnrollmentData?.discountAmount ?? 0) ?? 0
+              toSafeNumber(additionalEnrollmentData?.reviewFee) -
+                toSafeNumber(additionalEnrollmentData?.discountAmount ?? 0) ?? 0
             ).toString(),
             yearLevel: isOfferingIntensive
               ? "Graduated"
@@ -278,8 +281,8 @@ const Enrollment = () => {
       processedBy: selectedProcessedBy,
       discountAmount: additionalEnrollmentData?.discountAmount,
       reviewFee: (
-        parseFloat(additionalEnrollmentData?.reviewFee) -
-          parseFloat(additionalEnrollmentData?.discountAmount ?? 0) ?? 0
+        toSafeNumber(additionalEnrollmentData?.reviewFee) -
+          toSafeNumber(additionalEnrollmentData?.discountAmount ?? 0) ?? 0
       ).toString(),
       yearLevel: isOfferingIntensive
         ? "Graduated"
@@ -614,16 +617,7 @@ const Enrollment = () => {
                 />
               </Form.Item>
 
-              <Form.Item
-                label="Middle Name"
-                name="middleName"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your Middle Name",
-                  },
-                ]}
-              >
+              <Form.Item label="Middle Name" name="middleName">
                 <CustomInput
                   type="text"
                   name="middleName"

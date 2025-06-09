@@ -280,7 +280,6 @@ const AddNewPayment = () => {
             ]}
           >
             <DatePicker
-              disabled
               className="w-full"
               size="large"
               defaultValue={today}

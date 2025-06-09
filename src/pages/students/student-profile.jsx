@@ -102,7 +102,7 @@ const StudentProfile = () => {
                 <Row gutter={[16, 16]}>
                   <Col xs={24} sm={24} md={16} lg={18}>
                     <h1 className="text-2xl mb-[2vh]">
-                      {data.firstName} {data.middleName} {data.lastName}
+                      {data.firstName} {data?.middleName ?? ""} {data.lastName}
                     </h1>
                   </Col>
                 </Row>
