@@ -7,7 +7,7 @@ function useStudents(params = {}) {
     studentName = undefined,
     schoolId = undefined,
     pageNo = 1,
-    pageSize = 25,
+    pageSize = 10000,
     offeringType = undefined,
   } = params;
 

@@ -211,7 +211,7 @@ const StudentsList = () => {
                 form.resetFields();
                 setParams({
                   pageNo: 1,
-                  pageSize: 25,
+                  pageSize: 10000,
                 });
                 setSearchParams({
                   studentName: undefined,

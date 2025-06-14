@@ -64,6 +64,7 @@ const Enrollment = () => {
     discountAmount: undefined,
     remarks: undefined,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: selectedOffering } = useOffering(selectedOfferingId ?? null);
   const isRegularOffering = selectedOffering?.offeringType === "REGULAR";
@@ -164,7 +165,7 @@ const Enrollment = () => {
           title: "Please add student to enroll!",
           timer: 2500,
         });
-
+        setIsSubmitting(false);
         return;
       }
 
@@ -174,6 +175,7 @@ const Enrollment = () => {
           title: "Please add taker type!",
           timer: 2500,
         });
+        setIsSubmitting(false);
         return;
       }
 
@@ -183,6 +185,7 @@ const Enrollment = () => {
           title: "Please select processed by.",
           timer: 2500,
         });
+        setIsSubmitting(false);
         return;
       }
 
@@ -192,6 +195,7 @@ const Enrollment = () => {
           title: "Please add review fee.",
           timer: 2500,
         });
+        setIsSubmitting(false);
         return;
       }
 
@@ -207,6 +211,7 @@ const Enrollment = () => {
             text: "Redirecting to enrollment form printing...",
             timer: 2500,
           });
+          setIsSubmitting(false);
         }
       } catch (error) {
         Swal.fire({
@@ -215,6 +220,7 @@ const Enrollment = () => {
           text: "This may be due to inputs. Please try again later!",
           timer: 2500,
         });
+        setIsSubmitting(false);
       }
     },
     [addEnrollment, selectedProcessedBy, additionalEnrollmentData]
@@ -232,9 +238,8 @@ const Enrollment = () => {
             studentId,
             processedBy: selectedProcessedBy,
             discountAmount: additionalEnrollmentData?.discountAmount,
-            reviewFee: (
-              toSafeNumber(additionalEnrollmentData?.reviewFee) -
-                toSafeNumber(additionalEnrollmentData?.discountAmount ?? 0) ?? 0
+            reviewFee: toSafeNumber(
+              additionalEnrollmentData?.reviewFee
             ).toString(),
             yearLevel: isOfferingIntensive
               ? "Graduated"
@@ -244,6 +249,7 @@ const Enrollment = () => {
           await enrollStudent(enrollmentData);
         }
       } catch (error) {
+        setIsSubmitting(false);
         Swal.fire({
           icon: "error",
           title: "Error adding student!",
@@ -256,12 +262,14 @@ const Enrollment = () => {
   );
 
   const enrollExistingStudent = useCallback(async () => {
+    setIsSubmitting(true);
     if (!selectedOfferingId) {
       Swal.fire({
         icon: "warning",
         title: "Please select course offering!",
         timer: 2000,
       });
+      setIsSubmitting(false);
       return;
     }
 
@@ -271,6 +279,7 @@ const Enrollment = () => {
         title: "Please select processed by.",
         timer: 2500,
       });
+      setIsSubmitting(false);
       return;
     }
 
@@ -280,10 +289,7 @@ const Enrollment = () => {
       status: "",
       processedBy: selectedProcessedBy,
       discountAmount: additionalEnrollmentData?.discountAmount,
-      reviewFee: (
-        toSafeNumber(additionalEnrollmentData?.reviewFee) -
-          toSafeNumber(additionalEnrollmentData?.discountAmount ?? 0) ?? 0
-      ).toString(),
+      reviewFee: toSafeNumber(additionalEnrollmentData?.reviewFee).toString(),
       yearLevel: isOfferingIntensive
         ? "Graduated"
         : additionalEnrollmentData?.yearLevel,
@@ -308,6 +314,7 @@ const Enrollment = () => {
           title: "Please select course offering!",
           timer: 2000,
         });
+        setIsSubmitting(false);
         return;
       }
       const addStudentValue = {
@@ -811,6 +818,7 @@ const Enrollment = () => {
             <CustomButton
               type="primary"
               size="large"
+              disabled={isSubmitting}
               onClick={enrollExistingStudent}
             >
               Submit

@@ -40,10 +40,7 @@ const EditEnrollment = () => {
   }, [data]);
 
   const onFormSubmission = async (values) => {
-    const reviewFee =
-      parseFloat(data?.discountAmount ?? 0) +
-      parseFloat(values?.reviewFee) -
-      parseFloat(values?.discountAmount ?? 0);
+    const reviewFee = values?.reviewFee;
 
     const updatedValues = {
       ...values,
