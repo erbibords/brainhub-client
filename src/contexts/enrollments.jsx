@@ -18,7 +18,7 @@ export const EnrollmentsProvider = ({ children }) => {
     semester: undefined,
     yearOffered: undefined,
     pageNo: 1,
-    pageSize: 250,
+    pageSize: 10000,
   });
 
   const { data, isLoading, error } = useEnrollments(params);

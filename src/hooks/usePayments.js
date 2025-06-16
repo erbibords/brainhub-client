@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 function usePayments(params = {}) {
   const {
     pageNo = 1,
-    pageSize = 250,
+    pageSize = 10000,
     referenceNo = undefined,
     startDate = undefined,
     endDate = undefined,
@@ -17,6 +17,7 @@ function usePayments(params = {}) {
     offeringType = undefined,
     yearOffered,
     paymentMethod = undefined,
+    programId = undefined
   } = params;
 
   let url = PAYMENTS_BASE_URL;
@@ -35,6 +36,7 @@ function usePayments(params = {}) {
   if (yearOffered) queryParams.append('yearOffered', yearOffered);
   if (paymentMethod) queryParams.append('paymentMethod', paymentMethod);
   if (offeringType) queryParams.append('offeringType', offeringType);
+  if (programId) queryParams.append('programId', programId);
 
   if (queryParams.toString()) {
     url += `?${queryParams.toString()}`;

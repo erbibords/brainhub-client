@@ -137,4 +137,8 @@ export const PAYMENT_METHODS = [
     name: 'Gcash',
     value: 'GCASH',
   },
+  {
+    name: 'Check',
+    value: 'CHECK',
+  },
 ];

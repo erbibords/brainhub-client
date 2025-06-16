@@ -19,7 +19,8 @@ export const PaymentsProvider = ({ children }) => {
     semester: undefined,
     yearOffered: undefined,
     pageNo: 1,
-    pageSize: 250,
+    pageSize: 1000,
+    programId: undefined,
   });
 
   const { data, isLoading, error } = usePayments(params);

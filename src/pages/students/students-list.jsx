@@ -224,6 +224,9 @@ const StudentsList = () => {
           </Col>
         </Row>
       </Form>
+      <p className="text-xl font-bold mb-4">
+        Total Students: {` ${filteredData?.length}`}
+      </p>
 
       <Col span={24}>
         {getStudentError ? (

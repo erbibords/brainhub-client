@@ -369,7 +369,7 @@ const Enrollment = () => {
                     form.resetFields();
                     setParams({
                       pageNo: 1,
-                      pageSize: 250,
+                      pageSize: 10000,
                     });
                     setSearchParams({
                       startDate: undefined,

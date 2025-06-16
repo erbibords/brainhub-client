@@ -32,6 +32,7 @@ import { DateTime } from "luxon";
 import useMutation from "../../hooks/useMutation";
 import { cleanParams, formatAmount, formatDate } from "../../utils/formatting";
 import Swal from "sweetalert2";
+import { useProgramContext } from "../../contexts/programs";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -55,6 +56,8 @@ const PaymentsList = () => {
     error: schoolsError,
   } = useSchools();
   const { courses, getCoursesLoading, getCoursesError } = useCourse();
+  const { programs, programsLoading, programsError } = useProgramContext();
+
   const [pageSize, setPageSize] = useState(25);
 
   const [searchParams, setSearchParams] = useState({
@@ -67,6 +70,7 @@ const PaymentsList = () => {
     semester: undefined,
     yearOffered: undefined,
     offeringType: undefined,
+    programId: undefined,
   });
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -241,7 +245,6 @@ const PaymentsList = () => {
     setIsModalVisible(false);
   };
 
-  console.log(payments);
   return (
     <div>
       <h1 className="text-2xl mb-[2vh]">Payment Lists</h1>
@@ -328,6 +331,27 @@ const PaymentsList = () => {
                     {courses &&
                       courses?.data?.map((course) => (
                         <Option value={course.id}> {course.name}</Option>
+                      ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={4}>
+                <Form.Item name="programId">
+                  <p>Program:</p>
+                  <Select
+                    className="w-full"
+                    loading={programsLoading}
+                    disabled={programsLoading || programsError}
+                    onChange={(e) =>
+                      setSearchParams({
+                        ...searchParams,
+                        programId: e,
+                      })
+                    }
+                  >
+                    {programs &&
+                      programs?.data?.map((prog) => (
+                        <Option value={prog.id}> {prog.name}</Option>
                       ))}
                   </Select>
                 </Form.Item>
@@ -441,7 +465,7 @@ const PaymentsList = () => {
                     form.resetFields();
                     setParams({
                       pageNo: 1,
-                      pageSize: 250,
+                      pageSize: 10000,
                     });
                     setSearchParams({
                       referenceNo: undefined,
@@ -476,7 +500,7 @@ const PaymentsList = () => {
               Total amount paid:{" "}
               {formatAmount(
                 payments &&
-                  payments?.data.reduce((acc, item) => {
+                  payments?.data?.reduce((acc, item) => {
                     return acc + item.amountPaid;
                   }, 0)
               )}
