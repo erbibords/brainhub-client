@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useMemo } from "react";
 import ReactToPrint from "react-to-print";
 import { useNavigate } from "react-router-dom";
 import { Typography, Table } from "antd";
@@ -73,6 +73,10 @@ const PrintComponent = () => {
     getPaymentsError: error,
   } = usePaymentsContext();
 
+  const totalAmount = useMemo(() => {
+    return data?.data?.reduce((acc, item) => acc + item.amountPaid, 0) || 0;
+  }, [data]);
+
   return (
     <div>
       <CustomButton
@@ -92,13 +96,21 @@ const PrintComponent = () => {
           {error ? (
             <GenericErrorDisplay />
           ) : (
-            <Table
-              loading={isLoading}
-              dataSource={data?.data}
-              columns={columns}
-              pagination={false}
-              bordered
-            />
+            <div>
+              <Table
+                loading={isLoading}
+                dataSource={data?.data}
+                columns={columns}
+                pagination={false}
+                bordered
+              />
+              <div className="flex justify-end p-2 mt-4">
+                <h3 className="font-bold text-lg">
+                  {" "}
+                  Total amount: {formatAmount(totalAmount)}
+                </h3>
+              </div>
+            </div>
           )}
         </div>
       </div>

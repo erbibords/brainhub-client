@@ -1,13 +1,11 @@
 import React, { useMemo, useRef } from "react";
-import { Typography, Row, Col, Table, Form } from "antd";
+import { Table, Spin } from "antd";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPaymentById } from "../../utils/mappings";
 import { usePaymentsContext } from "../../contexts/payments";
 import logo from "../../assets/images/brainhub-logo-new.png";
 import { formatDate, formatAmount } from "../../utils/formatting";
 import { useReactToPrint } from "react-to-print";
-
-const { Text } = Typography;
 
 const Receipt = () => {
   const navigate = useNavigate();
@@ -17,7 +15,8 @@ const Receipt = () => {
     navigate("/payments/list");
   }
 
-  const { payments, getPaymentsError } = usePaymentsContext();
+  const { payments, getPaymentsError, getPaymentsLoading } =
+    usePaymentsContext();
   const contentToPrint = useRef(null);
 
   const paymentDetails = useMemo(() => {
@@ -45,7 +44,6 @@ const Receipt = () => {
     ];
   }, [paymentDetails]);
 
-  console.log(paymentDetails);
   const columns = [
     {
       title: "Particulars",
@@ -69,6 +67,15 @@ const Receipt = () => {
 
   if (getPaymentsError) {
     return <div>Error loading payment details.</div>;
+  }
+
+  if (getPaymentsLoading) {
+    return (
+      <div className="w-full flex flex-col h-full items-center justify-center">
+        <p className="mb-6 text-lg">Generating Receipt...</p>
+        <Spin size="large" />
+      </div>
+    );
   }
 
   return (
