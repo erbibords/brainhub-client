@@ -19,9 +19,10 @@ const PrintOfferings = () => {
     0
   );
   const totalReviewFee = data.reduce(
-    (acc, curr) => acc + (curr.reviewFee || 0),
+    (acc, curr) => acc + (Number(curr.reviewFee) || 0),
     0
   );
+
   const totalCollectibles = data.reduce(
     (acc, curr) => acc + (curr.budgetProposal || 0),
     0
