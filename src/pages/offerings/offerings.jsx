@@ -264,23 +264,22 @@ const Offerings = () => {
 
         <Row gutter={[12, 24]}>
           <Col span={24}>
-            <CustomButton
-              className="w-auto bg-primary text-white float-right mt-[3vh]"
-              size="large"
-              onClick={() => {
-                navigate(`/offerings/add`);
-              }}
-            >
-              Add Offerings
-            </CustomButton>
-            <CustomButton
-              type="primary"
-              className="w-auto bg-success text-white mt-[25px] float-right"
-              size="large"
-              onClick={() => navigate(`/prints/payments`)}
-            >
-              Print
-            </CustomButton>
+            <div className="flex justify-end gap-2 mt-[3vh]">
+              <CustomButton
+                className="w-auto bg-success text-white"
+                size="large"
+                onClick={() => navigate(`/prints/payments`)}
+              >
+                Print
+              </CustomButton>
+              <CustomButton
+                className="w-auto bg-primary text-white"
+                size="large"
+                onClick={() => navigate(`/offerings/add`)}
+              >
+                Add Offerings
+              </CustomButton>
+            </div>
           </Col>
 
           <Col span={24}>
