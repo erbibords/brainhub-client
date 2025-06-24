@@ -65,6 +65,15 @@ const PrintOfferings = () => {
       render: (value) => DateTime.fromISO(value).toFormat("MMM dd, yyyy"),
     },
     {
+      title: "Enrollee Type",
+      dataIndex: "offeringType",
+    },
+    {
+      title: "School",
+      dataIndex: "school",
+      render: (value) => value?.name ?? "",
+    },
+    {
       title: "Enrollees",
       dataIndex: "enrollmentCapacity",
     },
@@ -77,15 +86,6 @@ const PrintOfferings = () => {
       title: "Total Collectibles",
       dataIndex: "budgetProposal",
       render: formatAmount,
-    },
-    {
-      title: "Enrollee Type",
-      dataIndex: "offeringType",
-    },
-    {
-      title: "School",
-      dataIndex: "school",
-      render: (value) => value?.name ?? "",
     },
   ];
 
