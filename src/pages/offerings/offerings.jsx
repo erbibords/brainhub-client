@@ -273,8 +273,6 @@ const Offerings = () => {
             >
               Add Offerings
             </CustomButton>
-          </Col>
-          <Col span={24}>
             <CustomButton
               type="primary"
               className="w-auto bg-success text-white mt-[25px] float-right"
@@ -284,6 +282,7 @@ const Offerings = () => {
               Print
             </CustomButton>
           </Col>
+
           <Col span={24}>
             {getOfferingsError ? (
               <GenericErrorDisplay className="!items-start" />
