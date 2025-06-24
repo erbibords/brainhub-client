@@ -275,6 +275,16 @@ const Offerings = () => {
             </CustomButton>
           </Col>
           <Col span={24}>
+            <CustomButton
+              type="primary"
+              className="w-auto bg-success text-white mt-[25px] float-right"
+              size="large"
+              onClick={() => navigate(`/prints/payments`)}
+            >
+              Print
+            </CustomButton>
+          </Col>
+          <Col span={24}>
             {getOfferingsError ? (
               <GenericErrorDisplay className="!items-start" />
             ) : (
