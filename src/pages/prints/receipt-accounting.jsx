@@ -30,13 +30,18 @@ const Receipt = () => {
   });
 
   const dataSource = useMemo(() => {
+    // const particulars =
+    //   `${paymentDetails?.enrollment?.courseOffering?.reviewProgram?.name}-${paymentDetails?.enrollment?.courseOffering?.yearOffered}` ??
+    //   "";
     const particulars = (
-      <>
+      <span className="text-[11px]">
         {paymentDetails?.enrollment?.courseOffering?.reviewProgram?.name} -{" "}
         {paymentDetails?.enrollment?.courseOffering?.yearOffered}
         <br />
-        {paymentDetails?.enrollment?.courseOffering?.course?.name}
-      </>
+        <span className="text-[10px]">
+          {paymentDetails?.enrollment?.courseOffering?.course?.name}
+        </span>
+      </span>
     );
 
     return [
