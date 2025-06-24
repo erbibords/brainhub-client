@@ -28,6 +28,7 @@ import RevieweesPopulation from "./pages/prints/reviewees-population";
 import PaymentPrintList from "./pages/prints/payment-print-list";
 import ViewReviewPogram from "./pages/program/view-review-program";
 import ViewSchools from "./pages/schools/view-schools";
+import PrintOfferings from "./pages/prints/print-offerings";
 
 const App = () => {
   return (
@@ -89,6 +90,7 @@ const App = () => {
           <Route path="/prints/payments" element={<PaymentPrintList />} />
           <Route path="/review-program" element={<ReviewProgram />} />
           <Route path="/schools" element={<Schools />} />
+          <Route path="/prints/offerings" element={<PrintOfferings />} />
         </Routes>
       </Layout>
     </Router>

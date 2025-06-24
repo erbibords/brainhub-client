@@ -268,7 +268,7 @@ const Offerings = () => {
               <CustomButton
                 className="w-auto bg-success text-white"
                 size="large"
-                onClick={() => navigate(`/prints/payments`)}
+                onClick={() => navigate(`/prints/offerings`)}
               >
                 Print
               </CustomButton>
