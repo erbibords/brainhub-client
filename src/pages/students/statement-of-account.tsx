@@ -77,7 +77,7 @@ const StatementOfAccount = () => {
         Print
       </CustomButton>
       <div className="max-w-2xl mx-auto bg-white p-2 rounded shadow mt-4">
-        <div ref={printRef} className="p-2">
+        <div ref={printRef} className="p-2 pt-8">
           <div className="mb-2">
             <div className="text-center mb-2">
               <img
@@ -93,7 +93,13 @@ const StatementOfAccount = () => {
               </p>
               <p className="text-xs font-semibold">
                 <span className="font-bold">Course:</span>{" "}
-                {data?.enrollments?.[0]?.courseOffering?.course?.name || "N/A"}
+                <span
+                  contentEditable
+                  className="border-b border-gray-300 px-1 min-w-[100px] inline-block"
+                >
+                  {data?.enrollments?.[0]?.courseOffering?.course?.name ||
+                    "N/A"}
+                </span>
               </p>
             </div>
             <div className="text-center mb-2">

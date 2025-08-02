@@ -56,6 +56,7 @@ export const SoaParticulars = ({ enrollments }) => {
           pagination={false}
           size="small"
           title={() => <h3 className="text-xs">Particulars</h3>}
+          locale={{ emptyText: "" }}
         />
       </Col>
     </Row>
