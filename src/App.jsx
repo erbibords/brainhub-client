@@ -29,6 +29,7 @@ import PaymentPrintList from "./pages/prints/payment-print-list";
 import ViewReviewPogram from "./pages/program/view-review-program";
 import ViewSchools from "./pages/schools/view-schools";
 import StatementOfAccount from "./pages/students/statement-of-account";
+import PrintOfferings from "./pages/prints/print-offerings";
 
 const App = () => {
   return (
@@ -94,6 +95,7 @@ const App = () => {
             path="/students/:studentId/statement-of-account"
             element={<StatementOfAccount />}
           />
+          <Route path="/prints/offerings" element={<PrintOfferings />} />
         </Routes>
       </Layout>
     </Router>

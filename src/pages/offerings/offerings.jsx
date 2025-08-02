@@ -264,16 +264,24 @@ const Offerings = () => {
 
         <Row gutter={[12, 24]}>
           <Col span={24}>
-            <CustomButton
-              className="w-auto bg-primary text-white float-right mt-[3vh]"
-              size="large"
-              onClick={() => {
-                navigate(`/offerings/add`);
-              }}
-            >
-              Add Offerings
-            </CustomButton>
+            <div className="flex justify-end gap-2 mt-[3vh]">
+              <CustomButton
+                className="w-auto bg-success text-white"
+                size="large"
+                onClick={() => navigate(`/prints/offerings`)}
+              >
+                Print
+              </CustomButton>
+              <CustomButton
+                className="w-auto bg-primary text-white"
+                size="large"
+                onClick={() => navigate(`/offerings/add`)}
+              >
+                Add Offerings
+              </CustomButton>
+            </div>
           </Col>
+
           <Col span={24}>
             {getOfferingsError ? (
               <GenericErrorDisplay className="!items-start" />
