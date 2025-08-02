@@ -7,7 +7,9 @@ import { useReactToPrint } from "react-to-print";
 import CustomButton from "../../components/Button/Button";
 import { formatAmount } from "../../utils/formatting";
 import "./soa.css";
-import logo from "../../assets/images/brainhub-logo2.png";
+import logo from "../../assets/images/brainhub-logo-new.png";
+import INTLogo from "../../assets/images/INT-logo.png";
+import ENHLogo from "../../assets/images/ENH-logo.jpeg";
 
 const StatementOfAccount = () => {
   const params = useParams();
@@ -55,6 +57,20 @@ const StatementOfAccount = () => {
   const totalRemainingBalance =
     totalReviewFee - totalDiscountAmount - totalAmountPaid;
 
+  // Determine which logo to use based on the latest enrollment's review program
+  const latestEnrollment = data?.enrollments?.sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  )?.[0];
+  const reviewProgramName =
+    latestEnrollment?.courseOffering?.reviewProgram?.name;
+
+  let logoToUse = logo; // default to brainhub logo
+  if (reviewProgramName?.toUpperCase().includes("ENHANCEMENT")) {
+    logoToUse = ENHLogo;
+  } else if (reviewProgramName?.toUpperCase().includes("INT")) {
+    logoToUse = INTLogo;
+  }
+
   return (
     <div>
       <CustomButton type="primary" onClick={handlePrint}>
@@ -64,7 +80,11 @@ const StatementOfAccount = () => {
         <div ref={printRef} className="p-2">
           <div className="mb-2">
             <div className="text-center mb-2">
-              <img src={logo} alt="BrainHub Logo" className="h-10 mx-auto" />
+              <img
+                src={logoToUse}
+                alt="Logo"
+                className="h-12 mx-auto w-[280px]"
+              />
             </div>
             <div className="mb-2">
               <p className="text-xs font-semibold">
