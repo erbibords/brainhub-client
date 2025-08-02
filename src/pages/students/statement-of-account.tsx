@@ -67,7 +67,10 @@ const StatementOfAccount = () => {
   let logoToUse = logo; // default to brainhub logo
   if (reviewProgramName?.toUpperCase().includes("ENHANCEMENT")) {
     logoToUse = ENHLogo;
-  } else if (reviewProgramName?.toUpperCase().includes("INT")) {
+  } else if (
+    reviewProgramName?.toUpperCase().includes("INT") ||
+    reviewProgramName?.toUpperCase().includes("INHOUSE")
+  ) {
     logoToUse = INTLogo;
   }
 
@@ -80,11 +83,7 @@ const StatementOfAccount = () => {
         <div ref={printRef} className="p-6 pb-2 pt-8">
           <div className="mb-2">
             <div className="text-center mb-2">
-              <img
-                src={logoToUse}
-                alt="Logo"
-                className="h-12 mx-auto w-[280px]"
-              />
+              <img src={logoToUse} alt="Logo" className="h-18 mx-auto w-3/4" />
             </div>
             <div className="mb-2">
               <p className="text-xs font-semibold">
@@ -130,6 +129,15 @@ const StatementOfAccount = () => {
                 <span className="font-semibold">Remaining Balance:</span>{" "}
                 <span className="font-bold text-red-600">
                   {formatAmount(totalRemainingBalance)}
+                </span>
+              </p>
+              <p className="text-xs">
+                <span className="font-bold text-red-600">Due Date:</span>{" "}
+                <span
+                  contentEditable
+                  className="border-b border-gray-300 px-1 min-w-[80px] inline-block font-bold text-red-600"
+                >
+                  Click to edit
                 </span>
               </p>
             </div>

@@ -9,7 +9,7 @@ export const SoaParticulars = ({ enrollments }) => {
   console.log(enrollments);
   const columns = [
     {
-      title: "Particular",
+      title: "PROGRAM",
       dataIndex: "offering",
       key: "offering",
       render: (_, data) => {
@@ -17,7 +17,7 @@ export const SoaParticulars = ({ enrollments }) => {
       },
     },
     {
-      title: "Offering",
+      title: "OFFERING",
       dataIndex: "offering",
       key: "offering",
       render: (_, data) => {
@@ -25,22 +25,22 @@ export const SoaParticulars = ({ enrollments }) => {
       },
     },
     {
-      title: "Review Fee",
+      title: "REVIEW FEE",
       dataIndex: "reviewFee",
       key: "reviewFee",
       render: (data) => {
-        return formatAmount(data);
+        return <span className="font-bold">{formatAmount(data)}</span>;
       },
     },
 
     {
-      title: "Discount Amount",
+      title: "DISCOUNT AMOUNT",
       dataIndex: "discountAmount",
       key: "discountAmount",
       render: (data) => <p className="font-bold"> {formatAmount(data)}</p>,
     },
     {
-      title: "Remarks",
+      title: "REMARKS",
       dataIndex: "remarks",
       key: "remarks",
     },

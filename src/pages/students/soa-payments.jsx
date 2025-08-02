@@ -17,7 +17,7 @@ export const SoaPayments = ({ payments }) => {
 
   const columns = [
     {
-      title: "Particular",
+      title: "PARTICULAR",
       dataIndex: "enrollment",
       key: "particular",
       render: (data) => data?.courseOffering?.reviewProgram?.name,
@@ -29,21 +29,21 @@ export const SoaPayments = ({ payments }) => {
       render: (data) => data?.courseOffering?.yearOffered,
     },
     {
-      title: "Amount",
+      title: "AMOUNT",
       dataIndex: "amountPaid",
       key: "amountPaid",
-      render: (data) => formatAmount(data),
+      render: (data) => <span className="font-bold">{formatAmount(data)}</span>,
     },
 
     {
-      title: "Date of Payment",
+      title: "DATE OF PAYMENT",
       dataIndex: "paidAt",
       key: "paidAt",
       render: (data) => formatDate(data),
     },
 
     {
-      title: "Reference",
+      title: "REFERENCE",
       dataIndex: "referenceNo",
       key: "referenceNo",
       render: (data) => (data ? data : ""),
@@ -58,6 +58,7 @@ export const SoaPayments = ({ payments }) => {
           size="small"
           dataSource={payments && sortByPaidAt}
           columns={columns}
+          locale={{ emptyText: "" }}
           pagination={false}
           title={() => <h3 className="text-xs">Breakdown of Payments</h3>}
         />
