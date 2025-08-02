@@ -110,11 +110,15 @@ const StatementOfAccount = () => {
             <div className="text-right space-y-1">
               <p className="text-xs">
                 <span className="font-semibold">Total:</span>{" "}
-                {formatAmount(totalReviewFee)}
+                <span className="font-bold">
+                  {formatAmount(totalReviewFee)}
+                </span>
               </p>
               <p className="text-xs">
                 <span className="font-semibold">Total Amount Paid:</span>{" "}
-                {formatAmount(totalAmountPaid)}
+                <span className="font-bold">
+                  {formatAmount(totalAmountPaid)}
+                </span>
               </p>
               <p className="text-xs">
                 <span className="font-semibold">Remaining Balance:</span>{" "}
