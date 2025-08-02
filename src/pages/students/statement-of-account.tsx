@@ -86,25 +86,21 @@ const StatementOfAccount = () => {
           <div className="mb-1">
             <SoaPayments payments={data?.payments ?? []} />
           </div>
-          <div className="mt-4 flex justify-between items-end">
-            <div className="text-xs">
-              <div className="mb-8">
-                <p className="font-bold">_________________________</p>
-                <p>Printed Name & Signature</p>
-              </div>
-            </div>
+          <div className="mt-4 flex justify-end items-end">
             <div className="text-right space-y-1">
               <p className="text-xs">
-                <span className="font-bold">Total:</span>{" "}
+                <span className="font-semibold">Total:</span>{" "}
                 {formatAmount(totalReviewFee)}
               </p>
               <p className="text-xs">
-                <span className="font-bold">Total Paid:</span>{" "}
+                <span className="font-semibold">Total Amount Paid:</span>{" "}
                 {formatAmount(totalAmountPaid)}
               </p>
               <p className="text-xs">
-                <span className="font-bold">Remaining Balance:</span>{" "}
-                {formatAmount(totalRemainingBalance)}
+                <span className="font-semibold">Remaining Balance:</span>{" "}
+                <span className="font-bold text-red-600">
+                  {formatAmount(totalRemainingBalance)}
+                </span>
               </p>
             </div>
           </div>
