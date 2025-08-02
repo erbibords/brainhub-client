@@ -99,6 +99,13 @@ const StudentsList = () => {
             >
               View
             </CustomButton>
+            <CustomButton
+              onClick={() => {
+                handleGenerateSOA(record.id);
+              }}
+            >
+              Generate SOA
+            </CustomButton>
           </Space>
         );
       },
@@ -107,6 +114,10 @@ const StudentsList = () => {
 
   const handleViewStudent = (studentId) => {
     navigate(`/students/${studentId}`);
+  };
+
+  const handleGenerateSOA = (studentId) => {
+    navigate(`/students/${studentId}/statement-of-account`);
   };
 
   const studentAddPayment = (studentId) => {
