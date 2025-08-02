@@ -77,7 +77,7 @@ const StatementOfAccount = () => {
         Print
       </CustomButton>
       <div className="max-w-2xl mx-auto bg-white p-2 rounded shadow mt-4">
-        <div ref={printRef} className="p-2 pt-8">
+        <div ref={printRef} className="p-6 pb-2 pt-8">
           <div className="mb-2">
             <div className="text-center mb-2">
               <img
