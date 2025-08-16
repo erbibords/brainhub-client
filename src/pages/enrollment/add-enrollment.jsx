@@ -1,9 +1,9 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
 import { useCourse } from "../../contexts/courses";
 import { useStudentContext } from "../../contexts/students";
-import { Select, Input, Form, Radio, AutoComplete, Divider } from "antd";
+import { Select, Input, Form, Radio, AutoComplete } from "antd";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
 import { useOfferingsContext } from "../../contexts/offerings";
@@ -67,7 +67,6 @@ const Enrollment = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: selectedOffering } = useOffering(selectedOfferingId ?? null);
-  const isRegularOffering = selectedOffering?.offeringType === "REGULAR";
 
   const filteredSchools = selectedOffering
     ? schools?.data?.filter((sc) => {
@@ -143,12 +142,11 @@ const Enrollment = () => {
 
     return mapStudentsToAutocompleteOptions(
       students.data.filter((student) => {
-        const nameMatch = student.firstName
-          .toLowerCase()
-          .includes(studentSearchText.toLowerCase());
-        if (isRegularOffering) {
-          return student.school.id === selectedOffering.school.id;
-        }
+        const studentName = `${student.firstName} ${
+          student?.middleName ?? ""
+        } ${student.lastName}`?.toLowerCase();
+        const searchText = studentSearchText?.toLowerCase();
+        const nameMatch = studentName?.includes(searchText);
 
         return nameMatch;
       })

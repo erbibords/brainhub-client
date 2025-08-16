@@ -496,7 +496,7 @@ const PaymentsList = () => {
             </Row>
           </Col>
           <Col span={24}>
-            <p className="text-xl font-bold mb-4">
+            {/* <p className="text-xl font-bold mb-4">
               Total amount paid:{" "}
               {formatAmount(
                 payments &&
@@ -504,7 +504,7 @@ const PaymentsList = () => {
                     return acc + item.amountPaid;
                   }, 0)
               )}
-            </p>
+            </p> */}
             {getPaymentsError ? (
               <GenericErrorDisplay />
             ) : (

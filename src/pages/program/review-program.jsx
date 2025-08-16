@@ -50,11 +50,11 @@ const ReviewProgram = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          {/* <CustomButton
+          <CustomButton
             onClick={() => navigate(`/review-program/${record?.id}`)}
           >
             View
-          </CustomButton> */}
+          </CustomButton>
 
           {/* <CustomButton
             type="secondary"
