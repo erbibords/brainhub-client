@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
 import { Row, Col, Card, Divider, Form, Select } from "antd";
@@ -11,6 +11,7 @@ import { getDataById } from "../../utils/mappings";
 import { REVIEW_PROGRAM_BASE_URL } from "../../constants";
 import { useCourse } from "../../contexts/courses";
 import useSchools from "../../hooks/useSchools";
+import StudentsTable from "./students-table";
 const { Option } = Select;
 
 const ViewReviewProgram = () => {
@@ -18,16 +19,12 @@ const ViewReviewProgram = () => {
   const params = useParams();
   const navigate = useNavigate();
   const { programs, getProgramsError } = useProgramContext();
-  const { courses, getCoursesLoading, getCoursesError } = useCourse();
-  const {
-    data: schools,
-    isLoading: schoolsLoading,
-    error: schoolsError,
-  } = useSchools();
+  const { courses } = useCourse();
+  const { data: schools } = useSchools();
 
   const id = params?.programId;
 
-  const { mutate: updateProgram, loading: updateProgramLoading } = useMutation(
+  const { mutate: updateProgram } = useMutation(
     `${REVIEW_PROGRAM_BASE_URL}/${id}`,
     "PUT",
     "programs"
@@ -59,6 +56,7 @@ const ViewReviewProgram = () => {
       });
     }
   };
+
   useEffect(() => {
     if (programs && id && !getProgramsError) {
       form.setFieldsValue({
@@ -119,7 +117,6 @@ const ViewReviewProgram = () => {
                         type="primary"
                         size="large"
                         className="w-auto bg-primary text-white"
-                        // disabled={isLoading}
                         onClick={() => setIsEditing(true)}
                       >
                         Edit
@@ -129,7 +126,7 @@ const ViewReviewProgram = () => {
                 </Col>
               </Row>
               <Divider />
-              <div layout="vertical" className="w-1/2">
+              <div className="w-1/2">
                 <p>
                   <strong>Name:</strong>{" "}
                   {isEditing ? (
@@ -183,7 +180,11 @@ const ViewReviewProgram = () => {
                     >
                       <Select name="courseId">
                         {courses?.data?.map((course) => (
-                          <Option value={course?.id} id={course?.id}>
+                          <Option
+                            key={course?.id}
+                            value={course?.id}
+                            id={course?.id}
+                          >
                             {course?.name}
                           </Option>
                         ))}
@@ -209,7 +210,11 @@ const ViewReviewProgram = () => {
                     >
                       <Select name="schoolId">
                         {schools?.data?.map((school) => (
-                          <Option value={school?.id} id={school?.id}>
+                          <Option
+                            key={school?.id}
+                            value={school?.id}
+                            id={school?.id}
+                          >
                             {school?.name}
                           </Option>
                         ))}
@@ -222,9 +227,15 @@ const ViewReviewProgram = () => {
               </div>
             </Form>
           </Card>
-          {/* //   )} */}
         </Col>
       </Row>
+
+      {/* Students Table Component */}
+      <StudentsTable
+        programId={id}
+        programName={currentProgram?.name}
+        programData={currentProgram}
+      />
     </div>
   );
 };

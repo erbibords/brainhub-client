@@ -1,10 +1,6 @@
 import { useMemo } from "react";
 import { Row, Table, Col } from "antd";
-import {
-  formatAmount,
-  formatDate,
-  getCourseOfferingName,
-} from "../../utils/formatting";
+import { formatAmount, formatDate } from "../../utils/formatting";
 import "./soa.css";
 
 export const SoaPayments = ({ payments }) => {

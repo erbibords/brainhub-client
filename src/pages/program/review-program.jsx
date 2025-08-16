@@ -44,34 +44,17 @@ const ReviewProgram = () => {
       dataIndex: "school",
       render: (data) => data?.name,
     },
-    {
-      title: "Total Collectibles",
-      dataIndex: "totalCollectibles",
-      render: (data) => formatAmount(data ?? 0),
-    },
-    {
-      title: "Total Money Collected",
-      dataIndex: "totalCollected",
-      render: (data) => formatAmount(data ?? 0),
-    },
-    {
-      title: "Total Remaining Collectibles",
-      dataIndex: "totalRemainingCollectibles",
-      render: (data) => (
-        <p className="text-red-600 font-bold">{formatAmount(data ?? 0)}</p>
-      ),
-    },
 
     {
       title: "Action",
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <CustomButton
+          {/* <CustomButton
             onClick={() => navigate(`/review-program/${record?.id}`)}
           >
             View
-          </CustomButton>
+          </CustomButton> */}
 
           {/* <CustomButton
             type="secondary"
