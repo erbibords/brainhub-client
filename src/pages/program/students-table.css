@@ -1,0 +1,88 @@
+/* Print styles for students table */
+@media print {
+  .print-content {
+    padding: 10px;
+  }
+  
+  .print-content h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .print-content h3 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  .print-content .ant-table {
+    font-size: 8px;
+    width: 100%;
+    table-layout: fixed;
+  }
+  
+  .print-content .ant-table-thead > tr > th {
+    background-color: #f5f5f5 !important;
+    font-weight: bold;
+    border: 1px solid #d9d9d9;
+    padding: 2px 4px;
+    font-size: 8px;
+    word-wrap: break-word;
+    white-space: normal;
+  }
+  
+  .print-content .ant-table-tbody > tr > td {
+    border: 1px solid #d9d9d9;
+    padding: 2px 4px;
+    font-size: 7px;
+    word-wrap: break-word;
+    white-space: normal;
+  }
+  
+  /* Ensure all columns fit */
+  .print-content .ant-table-container {
+    width: 100% !important;
+    overflow: visible !important;
+  }
+  
+  .print-content .ant-table-content {
+    width: 100% !important;
+    overflow: visible !important;
+  }
+  
+  .print-content .ant-statistic-title {
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  .print-content .ant-statistic-content {
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  /* Hide elements that shouldn't be printed */
+  .ant-btn,
+  .ant-pagination,
+  .ant-table-pagination {
+    display: none !important;
+  }
+  
+  /* Hide search input when printing */
+  .ant-input {
+    display: none !important;
+  }
+  
+  /* Ensure table fits on page */
+  .print-content .ant-table-wrapper {
+    width: 100%;
+    overflow: visible;
+  }
+  
+  /* Make table more compact */
+  .print-content .ant-table-small > .ant-table-content > .ant-table-body {
+    margin: 0;
+  }
+}

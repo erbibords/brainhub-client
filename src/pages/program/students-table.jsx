@@ -1,14 +1,23 @@
-import { useMemo, useEffect } from "react";
-import { Row, Col, Card, Table, Space, Statistic } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useMemo, useEffect, useRef, useState } from "react";
+import { Row, Col, Card, Table, Statistic, Input } from "antd";
 import { useEnrollmentsContext } from "../../contexts/enrollments";
 import CustomButton from "../../components/Button/Button";
 import { formatAmount } from "../../utils/formatting";
+import { useReactToPrint } from "react-to-print";
+import "./students-table.css";
 
 const StudentsTable = ({ programId, programName, programData }) => {
-  const navigate = useNavigate();
   const { enrollments, getEnrollmentsLoading, getEnrollmentsError, setParams } =
     useEnrollmentsContext();
+  const printRef = useRef();
+
+  const [searchText, setSearchText] = useState("");
+
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+    documentTitle: `Students - ${programName}`,
+    removeAfterPrint: true,
+  });
 
   // Fetch enrollments for this program
   useEffect(() => {
@@ -65,6 +74,18 @@ const StudentsTable = ({ programId, programName, programData }) => {
     });
   }, [enrollments, getEnrollmentsLoading, getEnrollmentsError]);
 
+  // Filter students based on search text
+  const filteredStudentsData = useMemo(() => {
+    if (!searchText.trim()) {
+      return studentsData;
+    }
+
+    return studentsData.filter((student) => {
+      const searchLower = searchText.toLowerCase();
+      return student.name.toLowerCase().includes(searchLower);
+    });
+  }, [studentsData, searchText]);
+
   // Calculate program totals - use program data if available, otherwise calculate from enrollments
   const programTotals = useMemo(() => {
     // If program data has financial information, use it
@@ -113,8 +134,6 @@ const StudentsTable = ({ programId, programName, programData }) => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      sorter: (a, b) => a.name.localeCompare(b.name),
-      defaultSortOrder: "ascend",
     },
 
     {
@@ -130,10 +149,24 @@ const StudentsTable = ({ programId, programName, programData }) => {
       },
     },
     {
+      title: "Total Amount Paid",
+      dataIndex: "enrollments",
+      key: "totalAmountPaid",
+      render: (enrollments) => {
+        const total = enrollments.reduce(
+          (sum, enrollment) =>
+            sum + (parseFloat(enrollment.totalAmountPaid) || 0),
+          0
+        );
+        return formatAmount(total);
+      },
+    },
+    {
       title: "Total Remaining Balance",
       dataIndex: "enrollments",
       key: "totalRemainingBalance",
       render: (enrollments) => {
+        console.log(enrollments);
         const total = enrollments.reduce((sum, enrollment) => {
           const reviewFee = parseFloat(enrollment.reviewFee) || 0;
           const discountAmount = parseFloat(enrollment.discountAmount) || 0;
@@ -147,26 +180,31 @@ const StudentsTable = ({ programId, programName, programData }) => {
         );
       },
     },
-    {
-      title: "Action",
-      key: "action",
-      render: (_, record) => (
-        <Space size="small">
-          <CustomButton onClick={() => navigate(`/students/${record.id}`)}>
-            View Profile
-          </CustomButton>
-        </Space>
-      ),
-    },
   ];
 
   return (
     <Row gutter={[16, 16]} className="mt-6">
       <Col xs={24} sm={24} md={36} lg={36}>
         <Card>
-          <h2 className="text-xl mb-4">Students Enrolled in {programName}</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl">Students Enrolled in {programName}</h2>
+            <CustomButton type="primary" onClick={handlePrint}>
+              Print Students List
+            </CustomButton>
+          </div>
 
-          {/* Program Summary Statistics */}
+          {/* Search Input - Screen Only */}
+          <div className="mb-4">
+            <Input
+              placeholder="Search students by full name..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              allowClear
+              style={{ maxWidth: 400 }}
+            />
+          </div>
+
+          {/* Program Summary Statistics - Screen Only */}
           <Row gutter={[16, 16]} className="mb-6">
             <Col xs={24} sm={8}>
               <Card className="text-center">
@@ -208,19 +246,24 @@ const StudentsTable = ({ programId, programName, programData }) => {
             </Col>
           </Row>
 
-          <Table
-            columns={studentsColumns}
-            dataSource={studentsData}
-            loading={getEnrollmentsLoading}
-            pagination={{
-              pageSize: 10,
-              showSizeChanger: true,
-              showQuickJumper: true,
-              showTotal: (total, range) =>
-                `${range[0]}-${range[1]} of ${total} students`,
-            }}
-            scroll={{ x: 1200 }}
-          />
+          <div ref={printRef} className="print-content">
+            <h3 className="text-lg font-bold mb-4 text-center">
+              Students Enrolled in {programName}
+            </h3>
+            <Table
+              columns={studentsColumns}
+              dataSource={filteredStudentsData}
+              loading={getEnrollmentsLoading}
+              pagination={{
+                pageSize: 10,
+                showSizeChanger: true,
+                showQuickJumper: true,
+                showTotal: (total, range) =>
+                  `${range[0]}-${range[1]} of ${total} students`,
+              }}
+              scroll={{ x: 1200 }}
+            />
+          </div>
         </Card>
       </Col>
     </Row>
