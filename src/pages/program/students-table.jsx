@@ -254,13 +254,7 @@ const StudentsTable = ({ programId, programName, programData }) => {
               columns={studentsColumns}
               dataSource={filteredStudentsData}
               loading={getEnrollmentsLoading}
-              pagination={{
-                pageSize: 10,
-                showSizeChanger: true,
-                showQuickJumper: true,
-                showTotal: (total, range) =>
-                  `${range[0]}-${range[1]} of ${total} students`,
-              }}
+              pagination={false}
               scroll={{ x: 1200 }}
             />
           </div>
