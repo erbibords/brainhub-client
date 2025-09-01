@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 function useEnrollments(params = {}) {
   const {
     pageNo = 1,
-    pageSize = 10000,
+    pageSize = 200, // Changed from 10000 to 200 for better performance
     courseId = undefined,
     studentName = undefined,
     semester = undefined,
@@ -40,17 +40,21 @@ function useEnrollments(params = {}) {
     url += `?${queryParams.toString()}`;
   }
 
-  const { data, mutate, error } = useSWR('enrollments', () => fetcher(url));
+  // Create a unique key for SWR that includes all parameters
+  const swrKey = `enrollments-${JSON.stringify(params)}`;
+
+  const { data, mutate, error } = useSWR(swrKey, () => fetcher(url));
   const isLoading = !data && !error;
 
   useEffect(() => {
     mutate();
-  }, [params]);
+  }, [params, mutate]);
 
   return {
     data,
     error,
     isLoading,
+    mutate,
   };
 }
 

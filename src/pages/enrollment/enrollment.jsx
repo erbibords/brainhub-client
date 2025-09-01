@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo, useEffect } from "react";
 import { Table, Row, Col, Select, DatePicker, Form, Button, Space } from "antd";
 import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
@@ -31,7 +31,9 @@ const Enrollment = () => {
   const { courses, getCoursesLoading, getCoursesError } = useCourse();
   const { enrollments, getEnrollmentsLoading, getEnrollmentsError, setParams } =
     useEnrollmentsContext();
-  const [pageSize, setPageSize] = useState(25);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25); // Display 25 per page
+  const [isFiltered, setIsFiltered] = useState(false); // Track if filters are applied
 
   const [searchParams, setSearchParams] = useState({
     startDate: undefined,
@@ -44,14 +46,34 @@ const Enrollment = () => {
     offeringType: undefined,
   });
 
-  const handleFilter = useCallback(() => {
-    setParams(cleanParams(searchParams));
-  }, [setParams, searchParams]);
+  useEffect(() => {
+    // Initial load: fetch 200 records, Filtered: fetch all records
+    const apiPageSize = isFiltered ? 10000 : 200; // Use large number to get all filtered results
+    const apiPageNo = 1; // Always fetch from page 1
 
-  const [dateRange, setDateRange] = useState({
-    from: null,
-    to: null,
-  });
+    console.log("Enrollments API call params:", {
+      apiPageNo,
+      apiPageSize,
+      isFiltered,
+      currentPage,
+      pageSize,
+    });
+
+    setParams({
+      pageNo: apiPageNo,
+      pageSize: apiPageSize,
+    });
+  }, [isFiltered, setParams]);
+
+  const handleFilter = useCallback(() => {
+    setCurrentPage(1); // Reset to first page when filtering
+    setIsFiltered(true); // Mark as filtered to fetch all records
+    setParams({
+      ...cleanParams(searchParams),
+      pageNo: 1,
+      pageSize: 10000, // Fetch all filtered records
+    });
+  }, [setParams, searchParams]);
 
   const columns = useMemo(
     () => [
@@ -178,7 +200,11 @@ const Enrollment = () => {
         endDate: formattedEndDate,
       });
     } else {
-      setDateRange({ start: null, end: null });
+      setSearchParams({
+        ...searchParams,
+        startDate: undefined,
+        endDate: undefined,
+      });
     }
   };
 
@@ -208,6 +234,15 @@ const Enrollment = () => {
       </div>
     );
   };
+
+  // Apply client-side pagination to the data
+  const paginatedData = useMemo(() => {
+    if (!enrollments?.data) return [];
+    return enrollments.data.slice(
+      (currentPage - 1) * pageSize,
+      currentPage * pageSize
+    );
+  }, [enrollments?.data, currentPage, pageSize]);
 
   return (
     <div>
@@ -367,9 +402,12 @@ const Enrollment = () => {
                   htmlType="button"
                   onClick={() => {
                     form.resetFields();
+                    setCurrentPage(1);
+                    setPageSize(25);
+                    setIsFiltered(false); // Reset filter state
                     setParams({
                       pageNo: 1,
-                      pageSize: 10000,
+                      pageSize: 200, // Reset to fetch 200 records
                     });
                     setSearchParams({
                       startDate: undefined,
@@ -379,6 +417,7 @@ const Enrollment = () => {
                       schoolId: undefined,
                       semester: undefined,
                       yearOffered: undefined,
+                      offeringType: undefined,
                     });
                   }}
                 >
@@ -393,12 +432,30 @@ const Enrollment = () => {
             ) : (
               <Table
                 size="small"
-                dataSource={enrollments?.data}
+                dataSource={paginatedData}
                 columns={columns}
                 loading={getEnrollmentsLoading}
-                pagination={{ pageSize: pageSize }}
+                pagination={{
+                  current: currentPage,
+                  pageSize: pageSize,
+                  total: enrollments?.data?.length || 0,
+                  showSizeChanger: true,
+                  showQuickJumper: true,
+                  showTotal: (total, range) =>
+                    `${range[0]}-${range[1]} of ${
+                      enrollments?.data?.length || 0
+                    } items`,
+                  pageSizeOptions: ["10", "25", "50", "100"],
+                }}
                 scroll={{ y: 800 }}
                 onChange={(pagination) => {
+                  console.log("Enrollments pagination changed:", {
+                    current: pagination.current,
+                    pageSize: pagination.pageSize,
+                    total: enrollments?.data?.length || 0,
+                    isFiltered,
+                  });
+                  setCurrentPage(pagination.current);
                   setPageSize(pagination.pageSize);
                 }}
                 expandable={{
