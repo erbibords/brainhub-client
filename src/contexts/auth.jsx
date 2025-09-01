@@ -8,7 +8,6 @@ import React, {
 import axiosInstance from "../utils/axiosInstance";
 import { setToken, getToken, setBranch } from "../utils/token";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 
 export const AuthContext = createContext();
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import CustomInput from "../../components/Input/Input";
 import { Select, Table, Space, Row, Col, Button, Form } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +21,10 @@ const StudentsList = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { data: schools, loading: schoolsLoading } = useSchools();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25); // Display 25 per page
+  const [isFiltered, setIsFiltered] = useState(false); // Track if filters are applied
+
   const [searchParams, setSearchParams] = useState({
     studentName: undefined,
     schoolId: undefined,
@@ -29,13 +33,34 @@ const StudentsList = () => {
   const { students, studentDataLoading, getStudentError, setParams } =
     useStudentContext();
 
-  const handleFilter = useCallback(() => {
-    setParams(cleanParams(searchParams));
-  }, [setParams, searchParams]);
-
   useEffect(() => {
-    setParams({});
-  }, []);
+    // Initial load: fetch 200 records, Filtered: fetch all records
+    const apiPageSize = isFiltered ? 10000 : 200; // Use large number to get all filtered results
+    const apiPageNo = 1; // Always fetch from page 1
+
+    console.log("Students API call params:", {
+      apiPageNo,
+      apiPageSize,
+      isFiltered,
+      currentPage,
+      pageSize,
+    });
+
+    setParams({
+      pageNo: apiPageNo,
+      pageSize: apiPageSize,
+    });
+  }, [isFiltered, setParams]);
+
+  const handleFilter = useCallback(() => {
+    setCurrentPage(1); // Reset to first page when filtering
+    setIsFiltered(true); // Mark as filtered to fetch all records
+    setParams({
+      ...cleanParams(searchParams),
+      pageNo: 1,
+      pageSize: 10000, // Fetch all filtered records
+    });
+  }, [setParams, searchParams]);
 
   const columns = [
     {
@@ -120,10 +145,6 @@ const StudentsList = () => {
     navigate(`/students/${studentId}/statement-of-account`);
   };
 
-  const studentAddPayment = (studentId) => {
-    navigate(`/payments/add/${studentId}`);
-  };
-
   const filteredData = useMemo(() => {
     if (studentDataLoading || getStudentError) return;
     return students.data.map((student) => {
@@ -134,6 +155,15 @@ const StudentsList = () => {
       };
     });
   }, [students, studentDataLoading, getStudentError]);
+
+  // Apply client-side pagination to the data
+  const paginatedData = useMemo(() => {
+    if (!filteredData) return [];
+    return filteredData.slice(
+      (currentPage - 1) * pageSize,
+      currentPage * pageSize
+    );
+  }, [filteredData, currentPage, pageSize]);
 
   return (
     <div>
@@ -160,7 +190,7 @@ const StudentsList = () => {
                 loading={schoolsLoading}
                 disabled={schoolsLoading}
                 size="large"
-                onChange={(value, t) => {
+                onChange={(value) => {
                   setSearchParams({
                     ...searchParams,
                     schoolId: value,
@@ -185,7 +215,7 @@ const StudentsList = () => {
                 disabled={schoolsLoading}
                 size="large"
                 className="custom-select"
-                onChange={(value, t) => {
+                onChange={(value) => {
                   setSearchParams({
                     ...searchParams,
                     offeringType: value,
@@ -220,13 +250,17 @@ const StudentsList = () => {
               htmlType="button"
               onClick={() => {
                 form.resetFields();
+                setCurrentPage(1);
+                setPageSize(25);
+                setIsFiltered(false); // Reset filter state
                 setParams({
                   pageNo: 1,
-                  pageSize: 10000,
+                  pageSize: 200, // Reset to fetch 200 records
                 });
                 setSearchParams({
                   studentName: undefined,
                   schoolId: undefined,
+                  offeringType: undefined,
                 });
               }}
             >
@@ -236,7 +270,7 @@ const StudentsList = () => {
         </Row>
       </Form>
       <p className="text-xl font-bold mb-4">
-        Total Students: {` ${filteredData?.length}`}
+        Total Students: {` ${filteredData?.length || 0}`}
       </p>
 
       <Col span={24}>
@@ -244,9 +278,29 @@ const StudentsList = () => {
           <GenericErrorDisplay className="!mt-5" />
         ) : (
           <Table
-            dataSource={filteredData}
+            dataSource={paginatedData}
             columns={columns}
             loading={studentDataLoading}
+            pagination={{
+              current: currentPage,
+              pageSize: pageSize,
+              total: filteredData?.length || 0,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total, range) =>
+                `${range[0]}-${range[1]} of ${filteredData?.length || 0} items`,
+              pageSizeOptions: ["10", "25", "50", "100"],
+            }}
+            onChange={(pagination) => {
+              console.log("Students pagination changed:", {
+                current: pagination.current,
+                pageSize: pagination.pageSize,
+                total: filteredData?.length || 0,
+                isFiltered,
+              });
+              setCurrentPage(pagination.current);
+              setPageSize(pagination.pageSize);
+            }}
           />
         )}
       </Col>

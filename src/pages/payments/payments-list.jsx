@@ -1,8 +1,8 @@
-import { useState, useCallback, useEffect } from 'react';
-import CustomInput from '../../components/Input/Input';
-import CustomButton from '../../components/Button/Button';
-import useSchools from '../../hooks/useSchools';
-import { useCourse } from '../../contexts/courses';
+import { useState, useCallback, useEffect } from "react";
+import CustomInput from "../../components/Input/Input";
+import CustomButton from "../../components/Button/Button";
+import useSchools from "../../hooks/useSchools";
+import { useCourse } from "../../contexts/courses";
 import {
   Table,
   Row,
@@ -16,22 +16,22 @@ import {
   Divider,
   Modal,
   Input,
-} from 'antd';
+} from "antd";
 import {
   SEMESTER,
   YEAR,
   PAYMENT_METHODS,
   PAYMENTS_BASE_URL,
-} from '../../constants';
-import { usePaymentsContext } from '../../contexts/payments';
-import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
-import { getCourseOfferingName } from '../../utils/mappings';
-import { useNavigate } from 'react-router-dom';
-import { DateTime } from 'luxon';
-import useMutation from '../../hooks/useMutation';
-import { cleanParams, formatAmount, formatDate } from '../../utils/formatting';
-import Swal from 'sweetalert2';
-import { useProgramContext } from '../../contexts/programs';
+} from "../../constants";
+import { usePaymentsContext } from "../../contexts/payments";
+import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
+import { getCourseOfferingName } from "../../utils/mappings";
+import { useNavigate } from "react-router-dom";
+import { DateTime } from "luxon";
+import useMutation from "../../hooks/useMutation";
+import { cleanParams, formatAmount, formatDate } from "../../utils/formatting";
+import Swal from "sweetalert2";
+import { useProgramContext } from "../../contexts/programs";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -40,14 +40,17 @@ const PaymentsList = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [selectedPaymentid, setSelectedPaymentId] = useState(undefined);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25); // Display 25 per page
+  const [isFiltered, setIsFiltered] = useState(false); // Track if filters are applied
+
   const { payments, getPaymentsLoading, getPaymentsError, setParams } =
     usePaymentsContext();
-  const { mutate: undoPaymentMutate, loading: undoPaymentLoading } =
-    useMutation(
-      `${PAYMENTS_BASE_URL}/${selectedPaymentid}`,
-      'DELETE',
-      'payments'
-    );
+  const { mutate: undoPaymentMutate } = useMutation(
+    `${PAYMENTS_BASE_URL}/${selectedPaymentid}`,
+    "DELETE",
+    "payments"
+  );
 
   const {
     data: schools,
@@ -56,8 +59,6 @@ const PaymentsList = () => {
   } = useSchools();
   const { courses, getCoursesLoading, getCoursesError } = useCourse();
   const { programs, programsLoading, programsError } = useProgramContext();
-
-  const [pageSize, setPageSize] = useState(25);
 
   const [searchParams, setSearchParams] = useState({
     referenceNo: undefined,
@@ -73,15 +74,35 @@ const PaymentsList = () => {
   });
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [password, setPassword] = useState('');
-  const [currentRecord, setCurrentRecord] = useState(null);
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
-    setParams({});
-  }, []);
+    // Initial load: fetch 200 records, Filtered: fetch all records
+    const apiPageSize = isFiltered ? 10000 : 200; // Use large number to get all filtered results
+    const apiPageNo = 1; // Always fetch from page 1
+
+    console.log("API call params:", {
+      apiPageNo,
+      apiPageSize,
+      isFiltered,
+      currentPage,
+      pageSize,
+    });
+
+    setParams({
+      pageNo: apiPageNo,
+      pageSize: apiPageSize,
+    });
+  }, [isFiltered, setParams]);
 
   const handleFilter = useCallback(() => {
-    setParams(cleanParams(searchParams));
+    setCurrentPage(1); // Reset to first page when filtering
+    setIsFiltered(true); // Mark as filtered to fetch all records
+    setParams({
+      ...cleanParams(searchParams),
+      pageNo: 1,
+      pageSize: 10000, // Fetch all filtered records
+    });
   }, [setParams, searchParams]);
 
   const handleDateRangeChange = (dates) => {
@@ -100,7 +121,11 @@ const PaymentsList = () => {
         endDate: formattedEndDate,
       });
     } else {
-      setDateRange({ start: null, end: null });
+      setSearchParams({
+        ...searchParams,
+        startDate: undefined,
+        endDate: undefined,
+      });
     }
   };
 
@@ -111,44 +136,44 @@ const PaymentsList = () => {
       const res = await undoPaymentMutate();
       if (res) {
         Swal.fire({
-          icon: 'success',
-          title: 'Payment Removed!',
+          icon: "success",
+          title: "Payment Removed!",
           timer: 2000,
         });
         setSelectedPaymentId(undefined);
       }
     } catch (error) {
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Error removing payment. Please try again!',
+        icon: "error",
+        title: "Error",
+        text: "Error removing payment. Please try again!",
       });
     }
   }, [selectedPaymentid]);
 
   const columns = [
     {
-      title: 'Name',
+      title: "Name",
       render: (_, record) => record.enrollment.student.fullName,
     },
     {
-      title: 'Reference',
-      dataIndex: 'referenceNo',
+      title: "Reference",
+      dataIndex: "referenceNo",
       render: (data) => {
-        if (data === 'undefined' || undefined || null) return '';
+        if (data === "undefined" || undefined || null) return "";
         return data;
       },
     },
 
     {
-      title: 'Payment Amount',
-      dataIndex: 'amountPaid',
+      title: "Payment Amount",
+      dataIndex: "amountPaid",
       render: (data) => formatAmount(data ?? 0),
     },
     {
-      title: 'Balance after payments',
-      dataIndex: 'balance',
-      key: 'balance',
+      title: "Balance after payments",
+      dataIndex: "balance",
+      key: "balance",
       render: (data, row) => {
         const balanceAfterPayment = parseFloat(
           data - row?.enrollment?.discountAmount ?? 0
@@ -161,47 +186,47 @@ const PaymentsList = () => {
       },
     },
     {
-      title: 'Payment Method',
-      dataIndex: 'paymentMethod',
-      key: 'paymentMethod',
+      title: "Payment Method",
+      dataIndex: "paymentMethod",
+      key: "paymentMethod",
     },
     {
-      title: 'Payment Date',
-      dataIndex: 'paidAt',
+      title: "Payment Date",
+      dataIndex: "paidAt",
       render: (data) => formatDate(data) ?? data,
     },
     {
-      title: 'Attachment',
-      dataIndex: 'attachment',
+      title: "Attachment",
+      dataIndex: "attachment",
       render: (_, record) => {
         return record?.attachments?.length >= 1 &&
-          record?.attachments[0] !== '' ? (
+          record?.attachments[0] !== "" ? (
           <Image
             width={100}
             height={100}
             src={`${record?.attachments[0]}`}
             alt={record?.attachments[0]}
             preview={{
-              className: 'custom-image-preview',
+              className: "custom-image-preview",
               mask: <div>Click to preview</div>,
-              maskClassName: 'custom-mask',
+              maskClassName: "custom-mask",
             }}
           />
         ) : (
-          ''
+          ""
         );
       },
     },
     {
-      title: 'Offering',
-      dataIndex: 'offering',
+      title: "Offering",
+      dataIndex: "offering",
       render: (_, record) =>
         getCourseOfferingName(record.enrollment.courseOffering),
     },
-    { title: 'Processed by', dataIndex: 'processedBy' },
+    { title: "Processed by", dataIndex: "processedBy" },
     {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       render: (_, record) => (
         <Space size="middle">
           <CustomButton
@@ -213,7 +238,6 @@ const PaymentsList = () => {
           <CustomButton
             type="delete"
             onClick={() => {
-              setCurrentRecord(record);
               setIsModalVisible(true);
               setSelectedPaymentId(record.id);
             }}
@@ -227,14 +251,14 @@ const PaymentsList = () => {
 
   const handleOk = useCallback(() => {
     if (!selectedPaymentid) return;
-    if (password === 'brainhubph2024') {
+    if (password === "brainhubph2024") {
       undoPayment();
       setIsModalVisible(false);
       setPassword(null);
     } else {
       Swal.fire({
-        icon: 'warning',
-        title: 'Password not matched!',
+        icon: "warning",
+        title: "Password not matched!",
         timer: 2000,
       });
     }
@@ -255,7 +279,7 @@ const PaymentsList = () => {
                 <Form.Item name="dateRange">
                   <p>Date From - Date To:</p>
                   <RangePicker
-                    placeholder={['Date From', 'Date To']}
+                    placeholder={["Date From", "Date To"]}
                     className="h-[50px] w-full"
                     onChange={handleDateRangeChange}
                   />
@@ -329,7 +353,10 @@ const PaymentsList = () => {
                   >
                     {courses &&
                       courses?.data?.map((course) => (
-                        <Option value={course.id}> {course.name}</Option>
+                        <Option value={course.id} key={course.id}>
+                          {" "}
+                          {course.name}
+                        </Option>
                       ))}
                   </Select>
                 </Form.Item>
@@ -350,7 +377,10 @@ const PaymentsList = () => {
                   >
                     {programs &&
                       programs?.data?.map((prog) => (
-                        <Option value={prog.id}> {prog.name}</Option>
+                        <Option value={prog.id} key={prog.id}>
+                          {" "}
+                          {prog.name}
+                        </Option>
                       ))}
                   </Select>
                 </Form.Item>
@@ -371,7 +401,10 @@ const PaymentsList = () => {
                   >
                     {schools &&
                       schools?.data?.map((school) => (
-                        <Option value={school.id}> {school.name}</Option>
+                        <Option value={school.id} key={school.id}>
+                          {" "}
+                          {school.name}
+                        </Option>
                       ))}
                   </Select>
                 </Form.Item>
@@ -462,9 +495,12 @@ const PaymentsList = () => {
                   htmlType="button"
                   onClick={() => {
                     form.resetFields();
+                    setCurrentPage(1);
+                    setPageSize(25);
+                    setIsFiltered(false); // Reset filter state
                     setParams({
                       pageNo: 1,
-                      pageSize: 10000,
+                      pageSize: 200, // Reset to fetch 200 records
                     });
                     setSearchParams({
                       referenceNo: undefined,
@@ -475,6 +511,8 @@ const PaymentsList = () => {
                       schoolId: undefined,
                       semester: undefined,
                       yearOffered: undefined,
+                      offeringType: undefined,
+                      programId: undefined,
                     });
                   }}
                 >
@@ -508,12 +546,37 @@ const PaymentsList = () => {
               <GenericErrorDisplay />
             ) : (
               <Table
-                dataSource={payments && payments?.data}
+                dataSource={
+                  payments && payments?.data
+                    ? payments.data.slice(
+                        (currentPage - 1) * pageSize,
+                        currentPage * pageSize
+                      )
+                    : []
+                }
                 columns={columns}
                 loading={getPaymentsLoading}
-                pagination={{ pageSize: pageSize }}
+                pagination={{
+                  current: currentPage,
+                  pageSize: pageSize,
+                  total: payments?.data?.length || 0,
+                  showSizeChanger: true,
+                  showQuickJumper: true,
+                  showTotal: (total, range) =>
+                    `${range[0]}-${range[1]} of ${
+                      payments?.data?.length || 0
+                    } items`,
+                  pageSizeOptions: ["10", "25", "50", "100"],
+                }}
                 scroll={{ y: 800 }}
                 onChange={(pagination) => {
+                  console.log("Pagination changed:", {
+                    current: pagination.current,
+                    pageSize: pagination.pageSize,
+                    total: payments?.data?.length || 0,
+                    isFiltered,
+                  });
+                  setCurrentPage(pagination.current);
                   setPageSize(pagination.pageSize);
                 }}
               />

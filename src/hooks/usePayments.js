@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 function usePayments(params = {}) {
   const {
     pageNo = 1,
-    pageSize = 10000,
+    pageSize = 200, 
     referenceNo = undefined,
     startDate = undefined,
     endDate = undefined,
@@ -42,18 +42,22 @@ function usePayments(params = {}) {
     url += `?${queryParams.toString()}`;
   }
 
-  const { data, error, isLoading, mutate } = useSWR('payments', () =>
+  // Create a unique key for SWR that includes all parameters
+  const swrKey = `payments-${JSON.stringify(params)}`;
+
+  const { data, error, isLoading, mutate } = useSWR(swrKey, () =>
     fetcher(url)
   );
 
   useEffect(() => {
     mutate();
-  }, [params]);
+  }, [params, mutate]);
 
   return {
     data,
     error,
     isLoading,
+    mutate,
   };
 }
 

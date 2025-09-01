@@ -2,12 +2,13 @@ import useSWR from 'swr';
 import { DEFAULT_BRANCH_ID } from '../constants';
 import fetcher from '../utils/fetcher';
 import { useEffect } from 'react';
+
 function useStudents(params = {}) {
   const {
     studentName = undefined,
     schoolId = undefined,
     pageNo = 1,
-    pageSize = 10000,
+    pageSize = 200, 
     offeringType = undefined,
   } = params;
 
@@ -28,18 +29,22 @@ function useStudents(params = {}) {
     return url;
   };
 
-  const { data, error, mutate, isLoading } = useSWR('students', () =>
+  // Create a unique key for SWR that includes all parameters
+  const swrKey = `students-${JSON.stringify(params)}`;
+
+  const { data, error, mutate, isLoading } = useSWR(swrKey, () =>
     fetcher(generateUrl())
   );
 
   useEffect(() => {
     mutate();
-  }, [params]);
+  }, [params, mutate]);
 
   return {
     data,
     error,
     isLoading,
+    mutate,
   };
 }
 
