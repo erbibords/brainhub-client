@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { Table, Spin } from "antd";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPaymentById } from "../../utils/mappings";
@@ -17,12 +17,17 @@ const Receipt = () => {
 
   const { payments, getPaymentsError, getPaymentsLoading } =
     usePaymentsContext();
+
+  console.log(payments, getPaymentsLoading);
+
   const contentToPrint = useRef(null);
 
   const paymentDetails = useMemo(() => {
     if (!payments?.data) return null;
     return getPaymentById(payments?.data, params?.paymentId);
   }, [params, payments]);
+
+  console.log(paymentDetails);
 
   const handlePrint = useReactToPrint({
     content: () => contentToPrint.current,
@@ -104,7 +109,7 @@ const Receipt = () => {
       >
         <div className="text-center">
           <img src={logo} alt="Brain Hub Logo" className="mx-auto mb-2" />
-          <p className="text-sm">Iloilo Doctor's College</p>
+          <p className="text-sm">Iloilo Doctor&apos;s College</p>
           <p className="text-sm">West Timawa Molo 5000 Iloilo City</p>
           <p className="text-[14px] py-2">
             Non-Vat Reg. TIN: 310-118-125-00000

@@ -18,6 +18,7 @@ import Swal from "sweetalert2";
 import useCashReference from "../../hooks/useCashReference";
 import dayjs from "dayjs";
 import { useBranch } from "../../contexts/branch";
+import { mutate as swrMutate } from "swr";
 const { Content } = Layout;
 const { Option } = Select;
 
@@ -32,6 +33,7 @@ const AddNewPayment = () => {
   const { data: cashReference, error: cashReferenceError } = useCashReference();
   const { branchId } = useBranch();
   const enrollmentBaseUrl = useMemo(() => ENROLLMENT_BASE_URL(), [branchId]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!params?.studentId) {
     navigate("/students");
@@ -68,7 +70,7 @@ const AddNewPayment = () => {
     } else {
       form.setFieldsValue({ reference: null });
     }
-  }, [selectedPaymentMethod]);
+  }, [selectedPaymentMethod, cashReference?.referenceNo, form]);
 
   const courseOfferings = student?.enrollments
     ? student?.enrollments.map((enrollment) => ({
@@ -86,7 +88,7 @@ const AddNewPayment = () => {
       reference,
       paidAt,
     } = values;
-
+    setIsSubmitting(true);
     if ((selectedPaymentMethod !== "CASH" && !reference) || reference === "") {
       Swal.fire({
         icon: "warning",
@@ -117,12 +119,20 @@ const AddNewPayment = () => {
         `${enrollmentBaseUrl}/${enrollmentId}/payments`
       );
       if (res) {
-        navigate(`/prints/receipt/${res.id}`);
-        Swal.fire({
-          icon: "success",
-          title: "Payments successfully added!",
-          timer: 2000,
-        });
+        // Invalidate all payments-related cache keys
+        swrMutate(
+          (key) => typeof key === "string" && key.startsWith("payments-")
+        );
+
+        setTimeout(() => {
+          navigate(`/prints/receipt/${res.id}`);
+          Swal.fire({
+            icon: "success",
+            title: "Payments successfully added!",
+            timer: 2000,
+          });
+          setIsSubmitting(false);
+        }, 2500);
       }
     } catch (error) {
       console.error(error);
@@ -132,6 +142,7 @@ const AddNewPayment = () => {
           "Something went wrong on adding payments, Please try again later!",
         timer: 2000,
       });
+      setIsSubmitting(false);
     }
   };
 
@@ -314,6 +325,7 @@ const AddNewPayment = () => {
                 htmlType="submit"
                 size="large"
                 className="w-auto bg-primary text-white"
+                loading={isSubmitting}
               >
                 Submit
               </CustomButton>
