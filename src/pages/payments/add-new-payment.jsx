@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import CustomInput from "../../components/Input/Input";
 import { useParams } from "react-router-dom";
 import { Layout, Select, Form, Image, DatePicker, Upload } from "antd";
@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useCashReference from "../../hooks/useCashReference";
 import dayjs from "dayjs";
+import { mutate as swrMutate } from "swr";
 const { Content } = Layout;
 const { Option } = Select;
 
@@ -28,22 +29,18 @@ const AddNewPayment = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
-  const { data: cashReference, error: cashReferenceError } = useCashReference();
+  const { data: cashReference } = useCashReference();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!params?.studentId) {
     navigate("/students");
   }
 
-  const { mutate: updatedPayment, loading: updateStudentLoading } = useMutation(
-    "",
-    "POST",
-    "payments",
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
-  );
+  const { mutate: updatedPayment } = useMutation("", "POST", null, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
   const { data: student } = useProfile(params?.studentId);
 
@@ -65,7 +62,7 @@ const AddNewPayment = () => {
     } else {
       form.setFieldsValue({ reference: null });
     }
-  }, [selectedPaymentMethod]);
+  }, [selectedPaymentMethod, cashReference?.referenceNo, form]);
 
   const courseOfferings = student?.enrollments
     ? student?.enrollments.map((enrollment) => ({
@@ -83,7 +80,7 @@ const AddNewPayment = () => {
       reference,
       paidAt,
     } = values;
-
+    setIsSubmitting(true);
     if ((selectedPaymentMethod !== "CASH" && !reference) || reference === "") {
       Swal.fire({
         icon: "warning",
@@ -114,12 +111,20 @@ const AddNewPayment = () => {
         `${ENROLLMENT_BASE_URL}/${enrollmentId}/payments`
       );
       if (res) {
-        navigate(`/prints/receipt/${res.id}`);
-        Swal.fire({
-          icon: "success",
-          title: "Payments successfully added!",
-          timer: 2000,
-        });
+        // Invalidate all payments-related cache keys
+        swrMutate(
+          (key) => typeof key === "string" && key.startsWith("payments-")
+        );
+
+        setTimeout(() => {
+          navigate(`/prints/receipt/${res.id}`);
+          Swal.fire({
+            icon: "success",
+            title: "Payments successfully added!",
+            timer: 2000,
+          });
+          setIsSubmitting(false);
+        }, 2500);
       }
     } catch (error) {
       console.error(error);
@@ -129,6 +134,7 @@ const AddNewPayment = () => {
           "Something went wrong on adding payments, Please try again later!",
         timer: 2000,
       });
+      setIsSubmitting(false);
     }
   };
 
@@ -311,6 +317,7 @@ const AddNewPayment = () => {
                 htmlType="submit"
                 size="large"
                 className="w-auto bg-primary text-white"
+                loading={isSubmitting}
               >
                 Submit
               </CustomButton>

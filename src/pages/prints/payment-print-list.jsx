@@ -85,6 +85,17 @@ const PrintComponent = () => {
         icon={<ArrowLeftOutlined />}
         className="mb-6"
       />
+
+      <div className="text-right mb-5 w-fullflex justify-center">
+        <ReactToPrint
+          trigger={() => (
+            <CustomButton type="primary" size="large">
+              Print
+            </CustomButton>
+          )}
+          content={() => componentRef.current}
+        />
+      </div>
       <div ref={componentRef}>
         <div className="mx-auto p-5 font-sans">
           <div className="text-center mb-5">
@@ -97,6 +108,12 @@ const PrintComponent = () => {
             <GenericErrorDisplay />
           ) : (
             <div>
+              <div className="flex justify-end p-2 mt-4">
+                <h3 className="font-bold text-lg">
+                  {" "}
+                  Total amount: {formatAmount(totalAmount)}
+                </h3>
+              </div>
               <Table
                 loading={isLoading}
                 dataSource={data?.data}
@@ -104,25 +121,9 @@ const PrintComponent = () => {
                 pagination={false}
                 bordered
               />
-              <div className="flex justify-end p-2 mt-4">
-                <h3 className="font-bold text-lg">
-                  {" "}
-                  Total amount: {formatAmount(totalAmount)}
-                </h3>
-              </div>
             </div>
           )}
         </div>
-      </div>
-      <div className="text-right mb-5 w-fullflex justify-center">
-        <ReactToPrint
-          trigger={() => (
-            <CustomButton type="primary" size="large">
-              Print
-            </CustomButton>
-          )}
-          content={() => componentRef.current}
-        />
       </div>
     </div>
   );
