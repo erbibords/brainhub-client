@@ -3,7 +3,7 @@ import { COURSE_BASE_URL } from '../constants';
 import fetcher from '../utils/fetcher';
 
 function useCourses(params = {}) {
-  const { name = undefined, pageNo = 1, pageSize = 10000 } = params;
+  const { name = undefined, pageNo = 1, pageSize = 200 } = params;
 
   let url = COURSE_BASE_URL;
   const queryParams = new URLSearchParams();
