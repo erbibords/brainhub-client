@@ -44,7 +44,7 @@ const ViewOffering = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [searchAmount, setSearchAmount] = useState({
     min: 0,
-    max: 10000,
+    max: 200,
   });
   const [enrollments, setEnrollments] = useState([]);
   const { courses, coursesError } = useCourse();

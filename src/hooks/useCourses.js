@@ -5,7 +5,7 @@ import fetcher from '../utils/fetcher';
 import { useBranch } from '../contexts/branch';
 
 function useCourses(params = {}) {
-  const { name = undefined, pageNo = 1, pageSize = 10000 } = params;
+  const { name = undefined, pageNo = 1, pageSize = 200 } = params;
 
   const { branchId } = useBranch();
 
