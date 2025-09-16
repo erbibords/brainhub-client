@@ -1,3 +1,25 @@
+/* Overpaid student row highlighting */
+.overpaid-student-row {
+  background-color: #f6ffed !important; /* Light green background */
+}
+
+.overpaid-student-row:hover {
+  background-color: #d9f7be !important; /* Slightly darker green on hover */
+}
+
+/* Main statistics cards with highlighted borders */
+.main-stat-card {
+  border: 3px solid #1890ff !important; /* Thick blue border */
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15) !important; /* Blue shadow */
+  transition: all 0.3s ease !important;
+}
+
+.main-stat-card:hover {
+  border-color: #40a9ff !important; /* Lighter blue on hover */
+  box-shadow: 0 6px 16px rgba(24, 144, 255, 0.25) !important; /* Enhanced shadow on hover */
+  transform: translateY(-2px) !important; /* Slight lift effect */
+}
+
 /* Print styles for students table */
 @media print {
   .print-content {
