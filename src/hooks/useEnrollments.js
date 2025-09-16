@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 function useEnrollments(params = {}) {
   const {
     pageNo = 1,
-    pageSize = 200, // Changed from 10000 to 200 for better performance
+    pageSize = 3500, // Changed from 10000 to 200 for better performance
     courseId = undefined,
     studentName = undefined,
     semester = undefined,

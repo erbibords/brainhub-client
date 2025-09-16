@@ -407,7 +407,7 @@ const Enrollment = () => {
                     setIsFiltered(false); // Reset filter state
                     setParams({
                       pageNo: 1,
-                      pageSize: 200, // Reset to fetch 200 records
+                      pageSize: 3500, // Reset to fetch 200 records
                     });
                     setSearchParams({
                       startDate: undefined,

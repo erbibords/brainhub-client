@@ -166,7 +166,6 @@ const StudentsTable = ({ programId, programName, programData }) => {
       dataIndex: "enrollments",
       key: "totalRemainingBalance",
       render: (enrollments) => {
-        console.log(enrollments);
         const total = enrollments.reduce((sum, enrollment) => {
           const reviewFee = parseFloat(enrollment.reviewFee) || 0;
           const discountAmount = parseFloat(enrollment.discountAmount) || 0;
@@ -181,6 +180,8 @@ const StudentsTable = ({ programId, programName, programData }) => {
       },
     },
   ];
+
+  console.log(filteredStudentsData.length);
 
   return (
     <Row gutter={[16, 16]} className="mt-6">

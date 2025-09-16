@@ -18,7 +18,7 @@ export const EnrollmentsProvider = ({ children }) => {
     semester: undefined,
     yearOffered: undefined,
     pageNo: 1,
-    pageSize: 200,
+    pageSize: 3500,
     programId: undefined,
   });
 
