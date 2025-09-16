@@ -1,57 +1,36 @@
 import useSWR from 'swr';
 import { PAYMENTS_BASE_URL } from '../constants';
 import fetcher from '../utils/fetcher';
-import { useEffect } from 'react';
 
 function usePayments(params = {}) {
-  const {
-    pageNo = 1,
-    pageSize = 200, 
-    referenceNo = undefined,
-    startDate = undefined,
-    endDate = undefined,
-    studentName = undefined,
-    courseId = undefined,
-    schoolId = undefined,
-    semester = undefined,
-    offeringType = undefined,
-    yearOffered,
-    paymentMethod = undefined,
-    programId = undefined
-  } = params;
+  // Create a stable key for SWR that includes all parameters
+  const swrKey = `payments-${params.pageNo || 1}-${params.pageSize || 200}-${params.referenceNo || ''}-${params.startDate || ''}-${params.endDate || ''}-${params.studentName || ''}-${params.courseId || ''}-${params.schoolId || ''}-${params.semester || ''}-${params.offeringType || ''}-${params.yearOffered || ''}-${params.paymentMethod || ''}-${params.programId || ''}`;
 
-  let url = PAYMENTS_BASE_URL;
+  const { data, error, isLoading, mutate } = useSWR(swrKey, async () => {
+    let url = PAYMENTS_BASE_URL;
+    const queryParams = new URLSearchParams();
 
-  const queryParams = new URLSearchParams();
+    if (params.pageNo) queryParams.append('pageNo', params.pageNo);
+    if (params.pageSize) queryParams.append('pageSize', params.pageSize);
+    if (params.startDate) queryParams.append('startDate', params.startDate);
+    if (params.endDate) queryParams.append('endDate', params.endDate);
+    if (params.studentName) queryParams.append('studentName', params.studentName);
+    if (params.courseId) queryParams.append('courseId', params.courseId);
+    if (params.schoolId) queryParams.append('schoolId', params.schoolId);
+    if (params.semester) queryParams.append('semester', params.semester);
+    if (params.referenceNo) queryParams.append('referenceNo', params.referenceNo);
+    if (params.yearOffered) queryParams.append('yearOffered', params.yearOffered);
+    if (params.paymentMethod) queryParams.append('paymentMethod', params.paymentMethod);
+    if (params.offeringType) queryParams.append('offeringType', params.offeringType);
+    if (params.programId) queryParams.append('programId', params.programId);
 
-  if (pageNo) queryParams.append('pageNo', pageNo);
-  if (pageSize) queryParams.append('pageSize', pageSize);
-  if (startDate) queryParams.append('startDate', startDate);
-  if (endDate) queryParams.append('endDate', endDate);
-  if (studentName) queryParams.append('studentName', studentName);
-  if (courseId) queryParams.append('courseId', courseId);
-  if (schoolId) queryParams.append('schoolId', schoolId);
-  if (semester) queryParams.append('semester', semester);
-  if (referenceNo) queryParams.append('referenceNo', referenceNo);
-  if (yearOffered) queryParams.append('yearOffered', yearOffered);
-  if (paymentMethod) queryParams.append('paymentMethod', paymentMethod);
-  if (offeringType) queryParams.append('offeringType', offeringType);
-  if (programId) queryParams.append('programId', programId);
+    if (queryParams.toString()) {
+      url += `?${queryParams.toString()}`;
+    }
 
-  if (queryParams.toString()) {
-    url += `?${queryParams.toString()}`;
-  }
+    return fetcher(url);
+  });
 
-  // Create a unique key for SWR that includes all parameters
-  const swrKey = `payments-${JSON.stringify(params)}`;
-
-  const { data, error, isLoading, mutate } = useSWR(swrKey, () =>
-    fetcher(url)
-  );
-
-  useEffect(() => {
-    mutate();
-  }, [params, mutate]);
 
   return {
     data,

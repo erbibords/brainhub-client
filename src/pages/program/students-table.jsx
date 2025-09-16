@@ -32,8 +32,13 @@ const StudentsTable = ({ programId, programName, programData }) => {
       return [];
     }
 
-    // Extract unique students from enrollments and sort alphabetically
-    const uniqueStudents = enrollments.data.reduce((acc, enrollment) => {
+    // Filter out backedOut students first
+    const activeEnrollments = enrollments.data.filter(
+      (enrollment) => !enrollment.student?.backedOut
+    );
+
+    // Extract unique students from active enrollments and sort alphabetically
+    const uniqueStudents = activeEnrollments.reduce((acc, enrollment) => {
       const student = enrollment.student;
       const studentKey = student.id;
 
@@ -86,27 +91,27 @@ const StudentsTable = ({ programId, programName, programData }) => {
     });
   }, [studentsData, searchText]);
 
-  // Calculate program totals - use program data if available, otherwise calculate from enrollments
+  // Calculate program totals from current enrollments data
   const programTotals = useMemo(() => {
-    // If program data has financial information, use it
-    if (programData?.totalCollectibles !== undefined) {
-      return {
-        totalCollectibles: programData.totalCollectibles || 0,
-        totalMoneyCollected: programData.totalCollected || 0,
-        totalRemainingCollectibles: programData.totalRemainingCollectibles || 0,
-      };
-    }
-
-    // Otherwise calculate from enrollments
+    // Always calculate from current enrollments data, not stale programData
     if (!enrollments?.data || getEnrollmentsLoading || getEnrollmentsError) {
       return {
         totalCollectibles: 0,
+        totalDiscountAmount: 0,
         totalMoneyCollected: 0,
         totalRemainingCollectibles: 0,
+        totalOverpaid: 0,
+        totalBackedOutCollected: 0,
       };
     }
 
-    const totals = enrollments.data.reduce(
+    // Filter out backedOut students for calculations
+    const activeEnrollments = enrollments.data.filter(
+      (enrollment) => !enrollment.student?.backedOut
+    );
+
+    // Calculate totals for active enrollments
+    const totals = activeEnrollments.reduce(
       (acc, enrollment) => {
         const reviewFee = parseFloat(enrollment.reviewFee) || 0;
         const discountAmount = parseFloat(enrollment.discountAmount) || 0;
@@ -114,20 +119,42 @@ const StudentsTable = ({ programId, programName, programData }) => {
         const remainingBalance = reviewFee - discountAmount - totalAmountPaid;
 
         acc.totalCollectibles += reviewFee;
+        acc.totalDiscountAmount += discountAmount;
         acc.totalMoneyCollected += totalAmountPaid;
+        // Include all remaining balances (positive and negative) for accurate math
         acc.totalRemainingCollectibles += remainingBalance;
+
+        // Track overpaid amounts (negative remaining balances)
+        if (remainingBalance < 0) {
+          acc.totalOverpaid += Math.abs(remainingBalance);
+        }
 
         return acc;
       },
       {
         totalCollectibles: 0,
+        totalDiscountAmount: 0,
         totalMoneyCollected: 0,
         totalRemainingCollectibles: 0,
+        totalOverpaid: 0,
       }
     );
 
+    // Calculate total money collected from backed-out students
+    const backedOutEnrollments = enrollments.data.filter(
+      (enrollment) => enrollment.student?.backedOut
+    );
+
+    const backedOutTotal = backedOutEnrollments.reduce((acc, enrollment) => {
+      const totalAmountPaid = parseFloat(enrollment.totalAmountPaid) || 0;
+      acc += totalAmountPaid;
+      return acc;
+    }, 0);
+
+    totals.totalBackedOutCollected = backedOutTotal;
+
     return totals;
-  }, [enrollments, getEnrollmentsLoading, getEnrollmentsError, programData]);
+  }, [enrollments, getEnrollmentsLoading, getEnrollmentsError]);
 
   const studentsColumns = [
     {
@@ -143,6 +170,19 @@ const StudentsTable = ({ programId, programName, programData }) => {
       render: (enrollments) => {
         const total = enrollments.reduce(
           (sum, enrollment) => sum + (parseFloat(enrollment.reviewFee) || 0),
+          0
+        );
+        return formatAmount(total);
+      },
+    },
+    {
+      title: "Total Discount Amount",
+      dataIndex: "enrollments",
+      key: "totalDiscountAmount",
+      render: (enrollments) => {
+        const total = enrollments.reduce(
+          (sum, enrollment) =>
+            sum + (parseFloat(enrollment.discountAmount) || 0),
           0
         );
         return formatAmount(total);
@@ -170,18 +210,27 @@ const StudentsTable = ({ programId, programName, programData }) => {
           const reviewFee = parseFloat(enrollment.reviewFee) || 0;
           const discountAmount = parseFloat(enrollment.discountAmount) || 0;
           const totalAmountPaid = parseFloat(enrollment.totalAmountPaid) || 0;
-          return sum + (reviewFee - discountAmount - totalAmountPaid);
+          const remainingBalance = reviewFee - discountAmount - totalAmountPaid;
+          // Include all remaining balances (positive and negative) for accurate display
+          return sum + remainingBalance;
         }, 0);
+
         return (
-          <span className={total > 0 ? "text-red-600 font-bold" : ""}>
+          <span
+            className={
+              total > 0
+                ? "text-red-600 font-bold"
+                : total < 0
+                ? "text-green-600 font-bold"
+                : ""
+            }
+          >
             {formatAmount(total)}
           </span>
         );
       },
     },
   ];
-
-  console.log(filteredStudentsData.length);
 
   return (
     <Row gutter={[16, 16]} className="mt-6">
@@ -194,21 +243,10 @@ const StudentsTable = ({ programId, programName, programData }) => {
             </CustomButton>
           </div>
 
-          {/* Search Input - Screen Only */}
-          <div className="mb-4">
-            <Input
-              placeholder="Search students by full name..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              allowClear
-              style={{ maxWidth: 400 }}
-            />
-          </div>
-
-          {/* Program Summary Statistics - Screen Only */}
+          {/* Main Financial Statistics - Row 1 */}
           <Row gutter={[16, 16]} className="mb-6">
             <Col xs={24} sm={8}>
-              <Card className="text-center">
+              <Card className="text-center main-stat-card">
                 <Statistic
                   title="Total Collectibles"
                   value={programTotals.totalCollectibles}
@@ -219,7 +257,7 @@ const StudentsTable = ({ programId, programName, programData }) => {
               </Card>
             </Col>
             <Col xs={24} sm={8}>
-              <Card className="text-center">
+              <Card className="text-center main-stat-card">
                 <Statistic
                   title="Total Money Collected"
                   value={programTotals.totalMoneyCollected}
@@ -230,7 +268,7 @@ const StudentsTable = ({ programId, programName, programData }) => {
               </Card>
             </Col>
             <Col xs={24} sm={8}>
-              <Card className="text-center">
+              <Card className="text-center main-stat-card">
                 <Statistic
                   title="Total Remaining Collectibles"
                   value={programTotals.totalRemainingCollectibles}
@@ -247,6 +285,55 @@ const StudentsTable = ({ programId, programName, programData }) => {
             </Col>
           </Row>
 
+          {/* Additional Statistics - Row 2 */}
+          <Row gutter={[16, 16]} className="mb-6">
+            <Col xs={24} sm={8}>
+              <Card className="text-center">
+                <Statistic
+                  title="Total Discount Amount"
+                  value={programTotals.totalDiscountAmount}
+                  precision={2}
+                  valueStyle={{ color: "#fa8c16" }}
+                  prefix="₱"
+                />
+              </Card>
+            </Col>
+            <Col xs={24} sm={8}>
+              <Card className="text-center">
+                <Statistic
+                  title="Total Overpaid Amount"
+                  value={programTotals.totalOverpaid}
+                  precision={2}
+                  valueStyle={{ color: "#52c41a" }}
+                  prefix="₱"
+                />
+              </Card>
+            </Col>
+            <Col xs={24} sm={8}>
+              <Card className="text-center">
+                <Statistic
+                  title="Total Backed-Out Collected"
+                  value={programTotals.totalBackedOutCollected}
+                  precision={2}
+                  valueStyle={{ color: "#722ed1" }}
+                  prefix="₱"
+                />
+              </Card>
+            </Col>
+          </Row>
+
+          {/* Search Input - Screen Only */}
+          <div className="mb-4">
+            <Input
+              placeholder="Search students by full name..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              allowClear
+              size="large"
+              style={{ maxWidth: 400 }}
+            />
+          </div>
+
           <div ref={printRef} className="print-content">
             <h3 className="text-lg font-bold mb-4 text-center">
               Students Enrolled in {programName}
@@ -257,6 +344,25 @@ const StudentsTable = ({ programId, programName, programData }) => {
               loading={getEnrollmentsLoading}
               pagination={false}
               scroll={{ x: 1200 }}
+              rowClassName={(record) => {
+                // Calculate if this student has overpaid
+                const totalRemaining = record.enrollments.reduce(
+                  (sum, enrollment) => {
+                    const reviewFee = parseFloat(enrollment.reviewFee) || 0;
+                    const discountAmount =
+                      parseFloat(enrollment.discountAmount) || 0;
+                    const totalAmountPaid =
+                      parseFloat(enrollment.totalAmountPaid) || 0;
+                    const remainingBalance =
+                      reviewFee - discountAmount - totalAmountPaid;
+                    return sum + remainingBalance;
+                  },
+                  0
+                );
+
+                // Add background color for overpaid students
+                return totalRemaining < 0 ? "overpaid-student-row" : "";
+              }}
             />
           </div>
         </Card>

@@ -29,16 +29,12 @@ function useStudents(params = {}) {
     return url;
   };
 
-  // Create a unique key for SWR that includes all parameters
-  const swrKey = `students-${JSON.stringify(params)}`;
+  // Create a stable key for SWR that includes all parameters
+  const swrKey = `students-${pageNo}-${pageSize}-${studentName || ''}-${schoolId || ''}-${offeringType || ''}`;
 
   const { data, error, mutate, isLoading } = useSWR(swrKey, () =>
     fetcher(generateUrl())
   );
-
-  useEffect(() => {
-    mutate();
-  }, [params, mutate]);
 
   return {
     data,

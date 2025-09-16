@@ -35,13 +35,12 @@ function useOfferings(params = {}) {
     return url;
   };
 
-  const { data, error, isLoading, mutate } = useSWR('offerings', () =>
+  // Create a stable key for SWR that includes all parameters
+  const swrKey = `offerings-${pageNo}-${pageSize}-${courseId || ''}-${reviewProgramName || ''}-${yearOffered || ''}-${semester || ''}-${offeringType || ''}`;
+
+  const { data, error, isLoading, mutate } = useSWR(swrKey, () =>
     fetcher(generateUrl())
   );
-
-  useEffect(() => {
-    mutate();
-  }, [params]);
 
   return {
     data,
