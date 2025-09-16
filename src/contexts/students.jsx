@@ -22,7 +22,7 @@ export const StudentProvider = ({ children }) => {
     studentName: undefined,
     school: undefined,
     pageNo: 1,
-    pageSize: 1000,
+    pageSize: 5000,
   });
   const {
     data: students,
