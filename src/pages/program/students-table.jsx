@@ -6,7 +6,7 @@ import { formatAmount } from "../../utils/formatting";
 import { useReactToPrint } from "react-to-print";
 import "./students-table.css";
 
-const StudentsTable = ({ programId, programName, programData }) => {
+const StudentsTable = ({ programId, programName }) => {
   const { enrollments, getEnrollmentsLoading, getEnrollmentsError, setParams } =
     useEnrollmentsContext();
   const printRef = useRef();
@@ -19,10 +19,14 @@ const StudentsTable = ({ programId, programName, programData }) => {
     removeAfterPrint: true,
   });
 
-  // Fetch enrollments for this program
+  // Fetch ALL enrollments for this program (not paginated)
   useEffect(() => {
     if (programId) {
-      setParams({ programId });
+      setParams({
+        programId,
+        pageNo: 1,
+        pageSize: 10000, // Fetch all records for this program
+      });
     }
   }, [programId, setParams]);
 

@@ -1,11 +1,10 @@
 import useSWR from 'swr';
 import { DEFAULT_BRANCH_ID } from '../constants';
 import fetcher from '../utils/fetcher';
-import { useEffect } from 'react';
 
 function useEnrollments(params = {}) {
   // Create a stable key for SWR that includes all parameters
-  const swrKey = `enrollments-${params.pageNo || 1}-${params.pageSize || 3500}-${params.courseId || ''}-${params.studentName || ''}-${params.semester || ''}-${params.schoolId || ''}-${params.yearOffered || ''}-${params.offeringType || ''}-${params.programId || ''}-${params.startDate || ''}-${params.endDate || ''}`;
+  const swrKey = `enrollments-${params.pageNo || 1}-${params.pageSize || 4500}-${params.courseId || ''}-${params.studentName || ''}-${params.semester || ''}-${params.schoolId || ''}-${params.yearOffered || ''}-${params.offeringType || ''}-${params.programId || ''}-${params.startDate || ''}-${params.endDate || ''}`;
 
   // Generate URL inside the fetcher to ensure it uses current parameters
   const generateUrl = (currentParams) => {
