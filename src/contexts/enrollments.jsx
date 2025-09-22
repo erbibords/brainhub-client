@@ -1,11 +1,11 @@
-import React, { createContext, useMemo, useState, useContext } from "react";
+import { createContext, useMemo, useState, useContext } from "react";
 import useEnrollments from "../hooks/useEnrollments";
 
 const EnrollmentsContext = createContext({
   enrollments: [],
   getEnrollmentsLoading: false,
   getEnrollmentsError: false,
-  setParams: (params) => {},
+  setParams: () => {},
 });
 
 export const EnrollmentsProvider = ({ children }) => {
@@ -18,7 +18,7 @@ export const EnrollmentsProvider = ({ children }) => {
     semester: undefined,
     yearOffered: undefined,
     pageNo: 1,
-    pageSize: 3500,
+    pageSize: 4500,
     programId: undefined,
   });
 

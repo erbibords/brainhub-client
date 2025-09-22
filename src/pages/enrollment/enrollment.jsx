@@ -47,33 +47,21 @@ const Enrollment = () => {
   });
 
   useEffect(() => {
-    // Initial load: fetch 200 records, Filtered: fetch all records
-    const apiPageSize = isFiltered ? 10000 : 200; // Use large number to get all filtered results
-    const apiPageNo = 1; // Always fetch from page 1
-
-    console.log("Enrollments API call params:", {
-      apiPageNo,
-      apiPageSize,
-      isFiltered,
-      currentPage,
-      pageSize,
-    });
-
     setParams({
-      pageNo: apiPageNo,
-      pageSize: apiPageSize,
+      pageNo: currentPage,
+      pageSize: pageSize,
     });
-  }, [isFiltered, setParams]);
+  }, [currentPage, pageSize, setParams, isFiltered]);
 
   const handleFilter = useCallback(() => {
     setCurrentPage(1); // Reset to first page when filtering
-    setIsFiltered(true); // Mark as filtered to fetch all records
+    setIsFiltered(true); // Mark as filtered
     setParams({
       ...cleanParams(searchParams),
       pageNo: 1,
-      pageSize: 10000, // Fetch all filtered records
+      pageSize: pageSize, // Use current page size
     });
-  }, [setParams, searchParams]);
+  }, [setParams, searchParams, pageSize]);
 
   const columns = useMemo(
     () => [
@@ -181,6 +169,7 @@ const Enrollment = () => {
       schools,
       schoolsError,
       schoolsLoading,
+      navigate,
     ]
   );
 
@@ -235,14 +224,7 @@ const Enrollment = () => {
     );
   };
 
-  // Apply client-side pagination to the data
-  const paginatedData = useMemo(() => {
-    if (!enrollments?.data) return [];
-    return enrollments.data.slice(
-      (currentPage - 1) * pageSize,
-      currentPage * pageSize
-    );
-  }, [enrollments?.data, currentPage, pageSize]);
+  // Use server-side pagination - no need for client-side slicing
 
   return (
     <div>
@@ -392,7 +374,7 @@ const Enrollment = () => {
                 </Form.Item>
               </Col>
 
-              <Col span={3} className="flex items-center items-end mb-1">
+              <Col span={3} className="flex items-end mb-1">
                 <CustomButton size="large" onClick={handleFilter}>
                   Filter
                 </CustomButton>
@@ -407,7 +389,7 @@ const Enrollment = () => {
                     setIsFiltered(false); // Reset filter state
                     setParams({
                       pageNo: 1,
-                      pageSize: 3500, // Reset to fetch 200 records
+                      pageSize: pageSize, // Use current page size
                     });
                     setSearchParams({
                       startDate: undefined,
@@ -432,19 +414,17 @@ const Enrollment = () => {
             ) : (
               <Table
                 size="small"
-                dataSource={paginatedData}
+                dataSource={enrollments?.data || []}
                 columns={columns}
                 loading={getEnrollmentsLoading}
                 pagination={{
                   current: currentPage,
                   pageSize: pageSize,
-                  total: enrollments?.data?.length || 0,
+                  total: enrollments?.meta?.totalResults || 0,
                   showSizeChanger: true,
                   showQuickJumper: true,
                   showTotal: (total, range) =>
-                    `${range[0]}-${range[1]} of ${
-                      enrollments?.data?.length || 0
-                    } items`,
+                    `${range[0]}-${range[1]} of ${total} items`,
                   pageSizeOptions: ["10", "25", "50", "100"],
                 }}
                 scroll={{ y: 800 }}
@@ -452,7 +432,7 @@ const Enrollment = () => {
                   console.log("Enrollments pagination changed:", {
                     current: pagination.current,
                     pageSize: pagination.pageSize,
-                    total: enrollments?.data?.length || 0,
+                    total: enrollments?.meta?.totalResults || 0,
                     isFiltered,
                   });
                   setCurrentPage(pagination.current);

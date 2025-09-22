@@ -513,7 +513,7 @@ const PaymentsList = () => {
                     setIsFiltered(false); // Reset filter state
                     setParams({
                       pageNo: 1,
-                      pageSize: 200, // Reset to fetch 200 records
+                      pageSize: 4500, // Reset to fetch 4500 records
                     });
                     setSearchParams({
                       referenceNo: undefined,

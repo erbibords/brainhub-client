@@ -35,7 +35,7 @@ const StudentsList = () => {
 
   useEffect(() => {
     // Initial load: fetch 200 records, Filtered: fetch all records
-    const apiPageSize = isFiltered ? 10000 : 200; // Use large number to get all filtered results
+    const apiPageSize = isFiltered ? 10000 : 4500; // Use large number to get all filtered results
     const apiPageNo = 1; // Always fetch from page 1
 
     console.log("Students API call params:", {
@@ -255,7 +255,7 @@ const StudentsList = () => {
                 setIsFiltered(false); // Reset filter state
                 setParams({
                   pageNo: 1,
-                  pageSize: 200, // Reset to fetch 200 records
+                  pageSize: 4500, // Reset to fetch 4500 records
                 });
                 setSearchParams({
                   studentName: undefined,
