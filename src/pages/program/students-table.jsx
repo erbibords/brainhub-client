@@ -162,6 +162,12 @@ const StudentsTable = ({ programId, programName }) => {
 
   const studentsColumns = [
     {
+      title: "#",
+      key: "number",
+      width: 60,
+      render: (_, __, index) => index + 1,
+    },
+    {
       title: "Name",
       dataIndex: "name",
       key: "name",
