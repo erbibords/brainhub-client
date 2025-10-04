@@ -3,9 +3,9 @@ import { getBranch } from './utils/token';
 export const DEFAULT_BRANCH_ID = () => {
   return getBranch();
 };
-export const BASE_URL = 'https://brainhub-service-cjm6z.ondigitalocean.app/v1/';
+// export const BASE_URL = 'https://brainhub-service-cjm6z.ondigitalocean.app/v1/';
 
-// export const BASE_URL = 'https://brainhub-sandbox-api.onrender.com/v1/';
+export const BASE_URL = 'https://brainhub-sandbox-api.onrender.com/v1/';
 
 export const COURSE_BASE_URL = `branches/${DEFAULT_BRANCH_ID()}/courses`;
 export const STUDENT_BASE_URL = `branches/${DEFAULT_BRANCH_ID()}/students`;
