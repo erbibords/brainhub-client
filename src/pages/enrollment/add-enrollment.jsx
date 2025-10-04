@@ -235,7 +235,9 @@ const Enrollment = () => {
             status: "",
             studentId,
             processedBy: selectedProcessedBy,
-            discountAmount: additionalEnrollmentData?.discountAmount,
+            discountAmount: toSafeNumber(
+              additionalEnrollmentData?.discountAmount
+            ).toString(),
             reviewFee: toSafeNumber(
               additionalEnrollmentData?.reviewFee
             ).toString(),
@@ -286,7 +288,9 @@ const Enrollment = () => {
       studentId: selectedExistingStudentId,
       status: "",
       processedBy: selectedProcessedBy,
-      discountAmount: additionalEnrollmentData?.discountAmount,
+      discountAmount: toSafeNumber(
+        additionalEnrollmentData?.discountAmount
+      ).toString(),
       reviewFee: toSafeNumber(additionalEnrollmentData?.reviewFee).toString(),
       yearLevel: isOfferingIntensive
         ? "Graduated"
@@ -492,7 +496,7 @@ const Enrollment = () => {
         >
           <CustomInput
             type="text"
-            name="discount"
+            name="discountAmount"
             onChange={(e) =>
               setAdditionalEnrollmentData({
                 ...additionalEnrollmentData,

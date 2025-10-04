@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import {
   Select,
   Row,
@@ -47,6 +47,13 @@ const ViewOffering = () => {
     max: 200,
   });
   const [enrollments, setEnrollments] = useState([]);
+
+  const backedOutStudents = useMemo(() => {
+    return enrollments.filter((enrollment) => enrollment.backedOut);
+  }, [enrollments]);
+
+  console.log(backedOutStudents);
+
   const { courses, coursesError } = useCourse();
   const {
     data: offering,
@@ -137,7 +144,19 @@ const ViewOffering = () => {
   };
 
   const columns = [
-    { title: "Name", dataIndex: ["student", "fullName"], key: "name" },
+    {
+      title: "Name",
+      dataIndex: ["student", "fullName"],
+      key: "name",
+      render: (name, record) => (
+        <span
+          className={`${record.backedOut ? "bg-orange-200" : ""}`}
+          style={{ textDecoration: record.backedOut ? "underline" : "none" }}
+        >
+          {name}
+        </span>
+      ),
+    },
     {
       title: "School",
       dataIndex: ["student", "schoolId"],
@@ -469,6 +488,31 @@ const ViewOffering = () => {
                   <Divider />
                 </div>
               </Form>
+
+              {/* Backed Out Students Table */}
+              {backedOutStudents?.length > 0 && (
+                <div className="mt-10 mb-8">
+                  <h2 className="text-2xl mb-2">
+                    Backed Out Students ({backedOutStudents?.length})
+                  </h2>
+                  <p className="text-lg mb-4 text-red-600 font-semibold">
+                    Total Unpaid Review Fee:{" "}
+                    {formatAmount(
+                      backedOutStudents.reduce(
+                        (total, student) =>
+                          total + (student.remainingBalance || 0),
+                        0
+                      )
+                    )}
+                  </p>
+                  <Table
+                    dataSource={backedOutStudents}
+                    columns={columns}
+                    pagination={false}
+                    size="small"
+                  />
+                </div>
+              )}
 
               <Row gutter={[16, 16]}>
                 <Col span={12}>
