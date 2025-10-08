@@ -143,7 +143,7 @@ export const PROCESSED_BY = [
   'Ma. Nelly Wendam',
   'Christine Dela Torre',
   'Elaine Mae Entreguena',
-  'Perlaine Joy Chavez'
+  'Pearlaine Joy Chavez'
 ];
 
 export const PAYMENT_METHODS = [
