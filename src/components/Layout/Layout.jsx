@@ -1,19 +1,19 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
-import Navbar from "../NavBar/Navbar";
-import Sidebar from "../SideBar/Sidebar";
-import { AuthProvider } from "../../contexts/auth";
-import { StudentProvider } from "../../contexts/students";
-import { CoursesProvider } from "../../contexts/courses";
-import { OfferingsProvider } from "../../contexts/offerings";
-import { EnrollmentsProvider } from "../../contexts/enrollments";
-import { ProgramsProvider } from "../../contexts/programs";
-import { PaymentsProvider } from "../../contexts/payments";
+import React from 'react';
+import { useLocation } from 'react-router-dom';
+import Navbar from '../NavBar/Navbar';
+import Sidebar from '../SideBar/Sidebar';
+import { AuthProvider } from '../../contexts/auth';
+import { StudentProvider } from '../../contexts/students';
+import { CoursesProvider } from '../../contexts/courses';
+import { OfferingsProvider } from '../../contexts/offerings';
+import { EnrollmentsProvider } from '../../contexts/enrollments';
+import { ProgramsProvider } from '../../contexts/programs';
+import { PaymentsProvider } from '../../contexts/payments';
 
 const MainLayout = ({ children, showSidebar = true }) => {
   const location = useLocation();
-  const isPrintPage = location.pathname.startsWith("/prints/");
-  const isLoginPage = location.pathname === "/login";
+  const isPrintPage = location.pathname.startsWith('/prints/');
+  const isLoginPage = location.pathname === '/login';
 
   return (
     <AuthProvider>
@@ -37,8 +37,8 @@ const MainLayout = ({ children, showSidebar = true }) => {
                       </>
                     )}
                     <main
-                      className={`flex-1 p-6 ${
-                        isPrintPage || isLoginPage ? "" : "pt-24 ml-52"
+                      className={`flex-1 p-6 overflow-x-auto ${
+                        isPrintPage || isLoginPage ? '' : 'pt-24 ml-52'
                       }`}
                     >
                       {children}

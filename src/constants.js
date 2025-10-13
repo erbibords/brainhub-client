@@ -5,7 +5,7 @@ export const DEFAULT_BRANCH_ID = () => {
 };
 // export const BASE_URL = 'https://brainhub-service-cjm6z.ondigitalocean.app/v1/';
 
-export const BASE_URL = 'https://brainhub-sandbox-api.onrender.com/v1/';
+export const BASE_URL = 'http://localhost:3001/v1/'; //'https://brainhub-sandbox-api.onrender.com/v1/';
 
 export const COURSE_BASE_URL = `branches/${DEFAULT_BRANCH_ID()}/courses`;
 export const STUDENT_BASE_URL = `branches/${DEFAULT_BRANCH_ID()}/students`;
@@ -14,6 +14,7 @@ export const REVIEW_PROGRAM_BASE_URL = `branches/${DEFAULT_BRANCH_ID()}/review-p
 export const PAYMENTS_BASE_URL = `branches/${DEFAULT_BRANCH_ID()}/payments`;
 export const SCHOOLS_BASE_URL = `branches/${DEFAULT_BRANCH_ID()}/schools`;
 export const ENROLLMENT_BASE_URL = `branches/${DEFAULT_BRANCH_ID()}/enrollments`;
+export const EXPENSE_BASE_URL = `branches/${DEFAULT_BRANCH_ID()}/expenses`;
 export const MEDIA_BASE_URL = `${BASE_URL}branches/${DEFAULT_BRANCH_ID()}/payments/uploads`;
 
 export const YEAR = [
@@ -142,5 +143,24 @@ export const PAYMENT_METHODS = [
   {
     name: 'Check',
     value: 'CHECK',
+  },
+];
+
+export const EXPENSE_TYPES = [
+  {
+    label: 'General Expense',
+    value: 'GENERAL',
+  },
+  {
+    label: 'Course Expense',
+    value: 'COURSES',
+  },
+  {
+    label: 'Program Expense',
+    value: 'PROGRAM',
+  },
+  {
+    label: 'Course Offering Expense',
+    value: 'OFFERINGS',
   },
 ];

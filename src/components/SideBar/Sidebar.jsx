@@ -10,6 +10,7 @@ import {
   PlusOutlined,
   FlagOutlined,
   NotificationOutlined,
+  WalletOutlined,
 } from '@ant-design/icons';
 import { useMediaQuery } from 'react-responsive';
 import { getBranch } from '../../utils/token';
@@ -47,6 +48,8 @@ const Sidebar = () => {
       selectedKey = ['program'];
     } else if (pathname.startsWith('/schools')) {
       selectedKey = ['schools'];
+    } else if (pathname.startsWith('/expenses')) {
+      selectedKey = ['expenses'];
     }
 
     return { selectedKey, openKeys };
@@ -92,6 +95,10 @@ const Sidebar = () => {
 
         <Menu.Item key="courses" icon={<BookOutlined />}>
           <Link to="/courses">Courses</Link>
+        </Menu.Item>
+
+        <Menu.Item key="expenses" icon={<WalletOutlined />}>
+          <Link to="/expenses">Expenses</Link>
         </Menu.Item>
 
         {/* <Menu.Item key="addPayment" icon={<PlusOutlined />}>
