@@ -1,7 +1,8 @@
+import { useMemo } from 'react';
 import useSWR from 'swr';
 import { DEFAULT_BRANCH_ID } from '../constants';
 import fetcher from '../utils/fetcher';
-import { useEffect } from 'react';
+import { useBranch } from '../contexts/branch';
 
 function useStudents(params = {}) {
   const {
@@ -12,7 +13,9 @@ function useStudents(params = {}) {
     offeringType = undefined,
   } = params;
 
-  const generateUrl = () => {
+  const { branchId } = useBranch();
+
+  const requestUrl = useMemo(() => {
     let url = `branches/${DEFAULT_BRANCH_ID()}/students`;
     const queryParams = new URLSearchParams();
 
@@ -27,18 +30,15 @@ function useStudents(params = {}) {
     }
 
     return url;
-  };
+  }, [pageNo, pageSize, schoolId, studentName, offeringType, branchId]);
 
-  // Create a unique key for SWR that includes all parameters
-  const swrKey = `students-${JSON.stringify(params)}`;
+  const swrKey = useMemo(() => {
+    return `students-${branchId ?? 'unknown'}-${JSON.stringify(params)}`;
+  }, [branchId, params]);
 
   const { data, error, mutate, isLoading } = useSWR(swrKey, () =>
-    fetcher(generateUrl())
+    fetcher(requestUrl)
   );
-
-  useEffect(() => {
-    mutate();
-  }, [params, mutate]);
 
   return {
     data,

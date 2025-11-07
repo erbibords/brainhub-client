@@ -29,6 +29,7 @@ import { getDataById, getSchoolById } from "../../utils/mappings";
 import useSchools from "../../hooks/useSchools";
 import { useProgramContext } from "../../contexts/programs";
 import dayjs from "dayjs";
+import { useBranch } from "../../contexts/branch";
 
 const ViewOffering = () => {
   const navigate = useNavigate();
@@ -76,7 +77,9 @@ const ViewOffering = () => {
     navigate("/offerings");
   }
 
-  const OFFERING_ENTITY_URL = `${OFFERING_BASE_URL}/${params.offeringId}`;
+  const { branchId } = useBranch();
+  const offeringBaseUrl = useMemo(() => OFFERING_BASE_URL(), [branchId]);
+  const OFFERING_ENTITY_URL = `${offeringBaseUrl}/${params.offeringId}`;
   const { mutate: updateOffering, loading: updateStudentLoading } = useMutation(
     OFFERING_ENTITY_URL,
     "PUT",

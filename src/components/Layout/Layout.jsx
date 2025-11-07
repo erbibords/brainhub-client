@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from '../NavBar/Navbar';
 import Sidebar from '../SideBar/Sidebar';
+import { BranchProvider } from '../../contexts/branch';
 import { AuthProvider } from '../../contexts/auth';
 import { StudentProvider } from '../../contexts/students';
 import { CoursesProvider } from '../../contexts/courses';
@@ -16,13 +17,14 @@ const MainLayout = ({ children, showSidebar = true }) => {
   const isLoginPage = location.pathname === '/login';
 
   return (
-    <AuthProvider>
-      <ProgramsProvider>
-        <EnrollmentsProvider>
-          <StudentProvider>
-            <CoursesProvider>
-              <OfferingsProvider>
-                <PaymentsProvider>
+    <BranchProvider>
+      <AuthProvider>
+        <ProgramsProvider>
+          <EnrollmentsProvider>
+            <StudentProvider>
+              <CoursesProvider>
+                <OfferingsProvider>
+                  <PaymentsProvider>
                   <div className="flex min-h-screen">
                     {!isPrintPage && (
                       <>
@@ -44,13 +46,14 @@ const MainLayout = ({ children, showSidebar = true }) => {
                       {children}
                     </main>
                   </div>
-                </PaymentsProvider>
-              </OfferingsProvider>
-            </CoursesProvider>
-          </StudentProvider>
-        </EnrollmentsProvider>
-      </ProgramsProvider>
-    </AuthProvider>
+                  </PaymentsProvider>
+                </OfferingsProvider>
+              </CoursesProvider>
+            </StudentProvider>
+          </EnrollmentsProvider>
+        </ProgramsProvider>
+      </AuthProvider>
+    </BranchProvider>
   );
 };
 

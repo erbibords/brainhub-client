@@ -5,6 +5,7 @@ import AddCourseModal from "../../components/AddCourseModal/AddCourseModal";
 import useMutation from "../../hooks/useMutation";
 import { COURSE_BASE_URL } from "../../constants";
 import { useCourse } from "../../contexts/courses";
+import { useBranch } from "../../contexts/branch";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
 import { useNavigate } from "react-router-dom";
@@ -15,22 +16,25 @@ const CourseList = () => {
   const navigate = useNavigate();
   const [searchCourse, setSearchCourse] = useState("");
   const { courses, coursesLoading, coursesError } = useCourse();
+  const { branchId } = useBranch();
+  const courseBaseUrl = useMemo(() => COURSE_BASE_URL(), [branchId]);
+  const coursesCacheKey = useMemo(() => `courses-${branchId ?? 'unknown'}`, [branchId]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(undefined);
   const {
     mutate: addCourse,
     loading: addCourseLoading,
     error: addCourseError,
-  } = useMutation(COURSE_BASE_URL, "POST", "courses");
+  } = useMutation(courseBaseUrl, "POST", coursesCacheKey);
 
   const {
     mutate: deleteCourse,
     loading: deleteCourseLoading,
     error: deleteCourseError,
   } = useMutation(
-    `${COURSE_BASE_URL}/${selectedCourse?.id}`,
+    courseBaseUrl,
     "DELETE",
-    "courses"
+    coursesCacheKey
   );
 
   const [editingKey, setEditingKey] = useState("");

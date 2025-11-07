@@ -22,6 +22,7 @@ import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErr
 import useExpenses from '../../hooks/useExpenses';
 import useMutation from '../../hooks/useMutation';
 import { EXPENSE_BASE_URL, EXPENSE_TYPES } from '../../constants';
+import { useBranch } from '../../contexts/branch';
 import { formatAmount, formatDate } from '../../utils/formatting';
 import { DateTime } from 'luxon';
 import Swal from 'sweetalert2';
@@ -60,23 +61,29 @@ const ExpensesList = () => {
     mutate,
   } = useExpenses(filterParams);
 
+  const { branchId } = useBranch();
+  const expenseBaseUrl = useMemo(() => EXPENSE_BASE_URL(), [branchId]);
+  const expenseCacheKey = useMemo(() => {
+    return `expenses-${branchId ?? 'unknown'}-${JSON.stringify(filterParams)}`;
+  }, [branchId, filterParams]);
+
   // Mutations
   const { mutate: createExpense, loading: createLoading } = useMutation(
-    EXPENSE_BASE_URL,
+    expenseBaseUrl,
     'POST',
-    `expenses-${JSON.stringify(filterParams)}`
+    expenseCacheKey
   );
 
   const { mutate: updateExpense, loading: updateLoading } = useMutation(
-    selectedExpense ? `${EXPENSE_BASE_URL}/${selectedExpense.id}` : '',
+    expenseBaseUrl,
     'PUT',
-    `expenses-${JSON.stringify(filterParams)}`
+    expenseCacheKey
   );
 
   const { mutate: deleteExpense, loading: deleteLoading } = useMutation(
-    selectedExpense ? `${EXPENSE_BASE_URL}/${selectedExpense.id}` : '',
+    expenseBaseUrl,
     'DELETE',
-    `expenses-${JSON.stringify(filterParams)}`
+    expenseCacheKey
   );
 
   // Handlers
@@ -198,7 +205,10 @@ const ExpensesList = () => {
           formData.append('attachment', values.attachment);
         }
 
-        const res = await updateExpense(formData);
+        const res = await updateExpense(
+          formData,
+          `${expenseBaseUrl}/${selectedExpense.id}`
+        );
 
         if (res) {
           Swal.fire({
@@ -235,7 +245,10 @@ const ExpensesList = () => {
       if (result.isConfirmed) {
         try {
           setSelectedExpense(expense);
-          const res = await deleteExpense();
+          const res = await deleteExpense(
+            undefined,
+            `${expenseBaseUrl}/${expense.id}`
+          );
           if (res !== undefined) {
             Swal.fire({
               icon: 'success',

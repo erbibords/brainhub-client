@@ -8,9 +8,12 @@ import {
 } from "../../utils/formatting";
 import { useNavigate } from "react-router-dom";
 import { MEDIA_BASE_URL } from "../../constants";
+import { useBranch } from "../../contexts/branch";
 
 export const PaymentHistory = ({ payments }) => {
   const navigate = useNavigate();
+  const { branchId } = useBranch();
+  const mediaBaseUrl = useMemo(() => MEDIA_BASE_URL(), [branchId]);
 
   if (!payments) return null;
 
@@ -64,7 +67,7 @@ export const PaymentHistory = ({ payments }) => {
           <Image
             width={100}
             height={100}
-            src={`${MEDIA_BASE_URL}/${record?.attachments[0]}`}
+            src={`${mediaBaseUrl}/${record?.attachments[0]}`}
             alt={record?.attachments[0]}
             preview={{
               className: "custom-image-preview",

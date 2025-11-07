@@ -1,7 +1,8 @@
+import { useMemo } from 'react';
 import useSWR from 'swr';
 import { DEFAULT_BRANCH_ID } from '../constants';
 import fetcher from '../utils/fetcher';
-import { useEffect } from 'react';
+import { useBranch } from '../contexts/branch';
 
 function useOfferings(params = {}) {
   const {
@@ -14,7 +15,9 @@ function useOfferings(params = {}) {
     offeringType = undefined,
   } = params;
 
-  const generateUrl = () => {
+  const { branchId } = useBranch();
+
+  const requestUrl = useMemo(() => {
     let url = `branches/${DEFAULT_BRANCH_ID()}/offerings`;
 
     const queryParams = new URLSearchParams();
@@ -27,21 +30,28 @@ function useOfferings(params = {}) {
     if (semester) queryParams.append('semester', semester);
     if (courseId) queryParams.append('courseId', courseId);
     if (offeringType) queryParams.append('offeringType', offeringType);
-    queryParams.append('includeEnrollment', true);
+    queryParams.append('includeEnrollment', 'true');
 
     if (queryParams.toString()) {
       url += `?${queryParams.toString()}`;
     }
     return url;
-  };
+  }, [
+    pageNo,
+    pageSize,
+    reviewProgramName,
+    yearOffered,
+    semester,
+    courseId,
+    offeringType,
+    branchId,
+  ]);
 
-  const { data, error, isLoading, mutate } = useSWR('offerings', () =>
-    fetcher(generateUrl())
-  );
+  const swrKey = useMemo(() => {
+    return `offerings-${branchId ?? 'unknown'}-${JSON.stringify(params)}`;
+  }, [branchId, params]);
 
-  useEffect(() => {
-    mutate();
-  }, [params]);
+  const { data, error, isLoading } = useSWR(swrKey, () => fetcher(requestUrl));
 
   return {
     data,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Button,
   Select,
@@ -21,6 +21,7 @@ import useOffering from "../../hooks/useOffering";
 import { formatSemester } from "../../utils/formatting";
 import { REVIEW_PROGRAM, SEMESTER, YEAR } from "../../constants";
 import CustomInput from "../../components/Input/Input";
+import { useBranch } from "../../contexts/branch";
 
 const ViewOffering = () => {
   const navigate = useNavigate();
@@ -49,7 +50,9 @@ const ViewOffering = () => {
     navigate("/offerings");
   }
 
-  const OFFERING_ENTITY_URL = `${OFFERING_BASE_URL}/${params.offeringId}`;
+  const { branchId } = useBranch();
+  const offeringBaseUrl = useMemo(() => OFFERING_BASE_URL(), [branchId]);
+  const OFFERING_ENTITY_URL = `${offeringBaseUrl}/${params.offeringId}`;
   const { mutate: updateOffering, loading: updateStudentLoading } = useMutation(
     OFFERING_ENTITY_URL,
     "PUT",
