@@ -19,6 +19,7 @@ import useCashReference from "../../hooks/useCashReference";
 import dayjs from "dayjs";
 import { useBranch } from "../../contexts/branch";
 import { mutate as swrMutate } from "swr";
+import { useBranch } from "../../contexts/branch";
 const { Content } = Layout;
 const { Option } = Select;
 
@@ -30,10 +31,10 @@ const AddNewPayment = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { data: cashReference, error: cashReferenceError } = useCashReference();
   const { branchId } = useBranch();
   const enrollmentBaseUrl = useMemo(() => ENROLLMENT_BASE_URL(), [branchId]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!params?.studentId) {
     navigate("/students");
