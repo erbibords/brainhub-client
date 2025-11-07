@@ -1,6 +1,6 @@
 const TOKEN_STORAGE_KEY = 'token';
 const PRIMARY_BRANCH_STORAGE_KEY = 'branchId';
-const EMULATED_BRANCH_STORAGE_KEY = 'emulatedBranchId';
+const EMULATED_BRANCH_STORAGE_KEY = 'emulatedBranch';
 const DEFAULT_BRANCH_FALLBACK = '5fc8fbbb-c0b0-410e-a571-ccf1129b523b';
 
 export const setToken = (token) => {
@@ -24,13 +24,33 @@ export const getActualBranch = () => {
   return localStorage.getItem(PRIMARY_BRANCH_STORAGE_KEY);
 };
 
-export const setEmulatedBranch = (branchId) => {
-  console.log('Setting emulated branch id ', branchId);
-  localStorage.setItem(EMULATED_BRANCH_STORAGE_KEY, branchId);
+export const setEmulatedBranch = (branch) => {
+  if (!branch) {
+    clearEmulatedBranch();
+    return;
+  }
+
+  const payload = typeof branch === 'string' ? { id: branch } : branch;
+  console.log('Setting emulated branch', payload);
+  localStorage.setItem(EMULATED_BRANCH_STORAGE_KEY, JSON.stringify(payload));
 };
 
 export const getEmulatedBranch = () => {
-  return localStorage.getItem(EMULATED_BRANCH_STORAGE_KEY) ?? undefined;
+  const storedValue = localStorage.getItem(EMULATED_BRANCH_STORAGE_KEY);
+  if (!storedValue) {
+    return undefined;
+  }
+
+  try {
+    const parsed = JSON.parse(storedValue);
+    if (parsed && typeof parsed === 'object' && parsed.id) {
+      return parsed;
+    }
+    // fallback for legacy string storage
+    return { id: storedValue };
+  } catch (error) {
+    return { id: storedValue };
+  }
 };
 
 export const clearEmulatedBranch = () => {
@@ -39,10 +59,10 @@ export const clearEmulatedBranch = () => {
 };
 
 export const getEffectiveBranch = () => {
-  const emulatedBranchId = getEmulatedBranch();
-  if (emulatedBranchId) {
-    console.log('Fetching emulated branch id ', emulatedBranchId);
-    return emulatedBranchId;
+  const emulatedBranch = getEmulatedBranch();
+  if (emulatedBranch?.id) {
+    console.log('Fetching emulated branch id ', emulatedBranch.id);
+    return emulatedBranch.id;
   }
 
   const branchId = getActualBranch();

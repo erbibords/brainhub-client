@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Enrollment from './pages/enrollment/enrollment';
 import AddEnrollment from './pages/enrollment/add-enrollment';
 import EditEnrollment from './pages/enrollment/edit-enrollment';
@@ -31,6 +31,10 @@ import ViewSchools from './pages/schools/view-schools';
 import StatementOfAccount from './pages/students/statement-of-account';
 import PrintOfferings from './pages/prints/print-offerings';
 import ExpensesList from './pages/expenses/expenses-list';
+import AdminDashboard from './pages/admin/dashboard';
+import AdminExpenses from './pages/admin/expenses';
+import AdminReporting from './pages/admin/reporting';
+import BranchesAdminPage from './pages/admin/branches';
 
 const App = () => {
   return (
@@ -38,6 +42,11 @@ const App = () => {
       <Layout>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/expenses" element={<AdminExpenses />} />
+          <Route path="/admin/reporting" element={<AdminReporting />} />
+          <Route path="/admin/branches" element={<BranchesAdminPage />} />
           <Route path="/add-enrollment" element={<AddEnrollment />} />
           <Route
             path="/enrollments/edit-enrollment/:enrollmentId"
@@ -98,6 +107,7 @@ const App = () => {
           />
           <Route path="/prints/offerings" element={<PrintOfferings />} />
           <Route path="/expenses" element={<ExpensesList />} />
+          <Route path="/" element={<Navigate to="/students" replace />} />
         </Routes>
       </Layout>
     </Router>

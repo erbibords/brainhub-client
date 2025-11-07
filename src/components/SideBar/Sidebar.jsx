@@ -1,5 +1,5 @@
 // src/components/SideBar/Sidebar.jsx
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Layout, Menu } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -7,13 +7,16 @@ import {
   LaptopOutlined,
   DollarCircleOutlined,
   BookOutlined,
-  PlusOutlined,
   FlagOutlined,
   NotificationOutlined,
   WalletOutlined,
+  PieChartOutlined,
+  BarChartOutlined,
+  ApartmentOutlined,
 } from '@ant-design/icons';
 import { useMediaQuery } from 'react-responsive';
-import { getBranch } from '../../utils/token';
+import { useAuth } from '../../contexts/auth';
+import { useBranch } from '../../contexts/branch';
 
 const { Sider } = Layout;
 
@@ -22,13 +25,24 @@ const Sidebar = () => {
     query: '(max-width: 768px) (background:white;)',
   });
   const location = useLocation();
+  const { user } = useAuth();
+  const { branchId, emulatedBranch, isEmulating } = useBranch();
+  const isSuperAdmin = Boolean(user?.isSuperAdmin);
 
   const getMenuKeys = () => {
     const pathname = location.pathname;
     let selectedKey = [];
     let openKeys = [];
 
-    if (pathname.startsWith('/enrollment')) {
+    if (pathname.startsWith('/admin/dashboard')) {
+      selectedKey = ['admin_dashboard'];
+    } else if (pathname.startsWith('/admin/expenses')) {
+      selectedKey = ['admin_expenses'];
+    } else if (pathname.startsWith('/admin/reporting')) {
+      selectedKey = ['admin_reporting'];
+    } else if (pathname.startsWith('/admin/branches')) {
+      selectedKey = ['admin_branches'];
+    } else if (pathname.startsWith('/enrollment')) {
       selectedKey = ['enrollment'];
     } else if (pathname.startsWith('/students')) {
       selectedKey = ['student_list'];
@@ -57,6 +71,87 @@ const Sidebar = () => {
 
   const { selectedKey, openKeys } = getMenuKeys();
 
+  const menuItems = useMemo(() => {
+    if (isSuperAdmin && !isEmulating) {
+      return [
+        {
+          key: 'admin_dashboard',
+          icon: <PieChartOutlined />,
+          label: <Link to="/admin/dashboard">Dashboard</Link>,
+        },
+        {
+          key: 'admin_expenses',
+          icon: <WalletOutlined />,
+          label: <Link to="/admin/expenses">Expenses</Link>,
+        },
+        {
+          key: 'admin_reporting',
+          icon: <BarChartOutlined />,
+          label: <Link to="/admin/reporting">Reporting</Link>,
+        },
+        {
+          key: 'admin_branches',
+          icon: <ApartmentOutlined />,
+          label: <Link to="/admin/branches">Branches</Link>,
+        },
+      ];
+    }
+
+    return [
+      {
+        key: 'student_list',
+        icon: <UserOutlined />,
+        label: <Link to="/students">Students</Link>,
+      },
+      {
+        key: 'enrollment',
+        icon: <LaptopOutlined />,
+        label: <Link to="/enrollments">Enrollments</Link>,
+      },
+      {
+        key: 'payments_list',
+        icon: <DollarCircleOutlined />,
+        label: <Link to="/payments/list">Payments</Link>,
+      },
+      {
+        key: 'offerings',
+        icon: <NotificationOutlined />,
+        label: <Link to="/offerings">Offerings</Link>,
+      },
+      {
+        key: 'program',
+        icon: <FlagOutlined />,
+        label: <Link to="/review-program">Review Program</Link>,
+      },
+      {
+        key: 'schools',
+        icon: <BookOutlined />,
+        label: <Link to="/schools">Schools</Link>,
+      },
+      {
+        key: 'courses',
+        icon: <BookOutlined />,
+        label: <Link to="/courses">Courses</Link>,
+      },
+      {
+        key: 'expenses',
+        icon: <WalletOutlined />,
+        label: <Link to="/expenses">Expenses</Link>,
+      },
+    ];
+  }, [isEmulating, isSuperAdmin]);
+
+  const footerDetails = useMemo(() => {
+    const effectiveBranchLabel = branchId ? branchId.slice(-7) : 'unknown';
+    if (isSuperAdmin && isEmulating && emulatedBranch?.id) {
+      return `Emulating: ${emulatedBranch.name ?? emulatedBranch.id}`;
+    }
+    if (isSuperAdmin) {
+      return `Super Admin • Branch ${effectiveBranchLabel}`;
+    }
+    return `Branch ${effectiveBranchLabel}`;
+  }, [branchId, emulatedBranch, isEmulating, isSuperAdmin]);
+
   return (
     <Sider
       width={200}
@@ -72,43 +167,16 @@ const Sidebar = () => {
         defaultOpenKeys={openKeys}
         className="h-full border-r-0"
       >
-        <Menu.Item key="student_list" icon={<UserOutlined />}>
-          <Link to="/students">Students</Link>
-        </Menu.Item>
-        <Menu.Item key="enrollment" icon={<LaptopOutlined />}>
-          <Link to="/enrollments">Enrollments</Link>
-        </Menu.Item>
-
-        <Menu.Item key="payments_list" icon={<DollarCircleOutlined />}>
-          <Link to="/payments/list">Payments</Link>
-        </Menu.Item>
-
-        <Menu.Item key="offerings" icon={<NotificationOutlined />}>
-          <Link to="/offerings">Offerings</Link>
-        </Menu.Item>
-        <Menu.Item key="program" icon={<FlagOutlined />}>
-          <Link to="/review-program">Review Program</Link>
-        </Menu.Item>
-        <Menu.Item key="schools" icon={<BookOutlined />}>
-          <Link to="/schools">Schools</Link>
-        </Menu.Item>
-
-        <Menu.Item key="courses" icon={<BookOutlined />}>
-          <Link to="/courses">Courses</Link>
-        </Menu.Item>
-
-        <Menu.Item key="expenses" icon={<WalletOutlined />}>
-          <Link to="/expenses">Expenses</Link>
-        </Menu.Item>
-
-        {/* <Menu.Item key="addPayment" icon={<PlusOutlined />}>
-          <Link to="/payments/add">Add Payment</Link>
-        </Menu.Item> */}
+        {menuItems.map((item) => (
+          <Menu.Item key={item.key} icon={item.icon}>
+            {item.label}
+          </Menu.Item>
+        ))}
       </Menu>
 
       <div className="absolute bottom-0 w-full p-4 bg-white">
-        <div class="bg-gray-100 text-gray-300 text-xs font-semibold px-2 py-2 rounded-md">
-          <div>Version: v1.0.0-{getBranch().slice(-7)}</div>
+        <div className="bg-gray-100 text-gray-500 text-xs font-semibold px-2 py-2 rounded-md">
+          <div>{footerDetails}</div>
         </div>
       </div>
     </Sider>

@@ -15,9 +15,9 @@ axiosInstance.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
   }
 
-  const emulatedBranchId = getEmulatedBranch();
-  if (emulatedBranchId) {
-    config.headers['x-emulated-branch-id'] = emulatedBranchId;
+  const emulatedBranch = getEmulatedBranch();
+  if (emulatedBranch?.id) {
+    config.headers['x-emulated-branch-id'] = emulatedBranch.id;
   } else if (config.headers['x-emulated-branch-id']) {
     delete config.headers['x-emulated-branch-id'];
   }

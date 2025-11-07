@@ -1,35 +1,56 @@
 import React from 'react';
-import { Menu, Dropdown, Avatar, Button } from 'antd';
-import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
-import { useNavigate, Link } from 'react-router-dom';
+import { Menu, Dropdown, Avatar, Button, message } from 'antd';
+import { UserOutlined, LogoutOutlined, StopOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/auth';
-import { removeBranch, removeToken } from '../../utils/token';
+import { useBranch } from '../../contexts/branch';
 import logo from '../../assets/images/bhub-logo.png';
 
 const Navbar = ({ currentRoute }) => {
   const navigate = useNavigate();
-  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
+  const {
+    isEmulating,
+    clearEmulatedBranchId,
+    emulatedBranch,
+    branchId,
+  } = useBranch();
+
+  const isSuperAdmin = Boolean(user?.isSuperAdmin);
 
   const handleLogout = () => {
-    removeToken();
-    removeBranch();
-    setIsAuthenticated(false);
-    navigate('/login');
-    // following up on a full reload to knock off localStorage
-    window.location.reload();
+    logout();
   };
 
   const handleAddNewEnrollment = () => {
     navigate('/add-enrollment');
   };
 
-  const menu = (
+  const handleStopEmulation = () => {
+    clearEmulatedBranchId();
+    message.success('Emulation ended. Redirecting to branch list.');
+    navigate('/admin/branches');
+  };
+
+  const dropdownMenu = (
     <Menu>
+      {isSuperAdmin && isEmulating && (
+        <Menu.Item
+          key="stop_emulation"
+          icon={<StopOutlined />}
+          onClick={handleStopEmulation}
+        >
+          Exit Emulation
+        </Menu.Item>
+      )}
       <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={handleLogout}>
         Logout
       </Menu.Item>
     </Menu>
   );
+
+  const showEnrollmentButton =
+    isAuthenticated && (!isSuperAdmin || isEmulating);
 
   return (
     <nav className="bg-secondary px-4 py-2">
@@ -44,15 +65,32 @@ const Navbar = ({ currentRoute }) => {
         </div>
         {isAuthenticated && (
           <div className="flex items-center">
-            <Button
-              type="primary"
-              className="w-auto mr-3 bg-primary text-white"
-              onClick={handleAddNewEnrollment}
-            >
-              <Link to="/enrollments"> Add New Enrollment</Link>
-            </Button>
+            {isSuperAdmin && isEmulating && (
+              <span className="text-white text-sm mr-3">
+                Emulating: {emulatedBranch?.name ?? emulatedBranch?.id ?? branchId}
+              </span>
+            )}
+            {showEnrollmentButton && (
+              <Button
+                type="primary"
+                className="w-auto mr-3 bg-primary text-white"
+                onClick={handleAddNewEnrollment}
+              >
+                Add New Enrollment
+              </Button>
+            )}
+            {isSuperAdmin && isEmulating && (
+              <Button
+                type="default"
+                className="w-auto mr-3"
+                icon={<StopOutlined />}
+                onClick={handleStopEmulation}
+              >
+                Exit Emulation
+              </Button>
+            )}
             {currentRoute !== '/login' && (
-              <Dropdown overlay={menu} placement="bottomRight">
+              <Dropdown overlay={dropdownMenu} placement="bottomRight">
                 <Avatar
                   size="large"
                   icon={<UserOutlined />}

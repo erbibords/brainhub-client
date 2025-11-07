@@ -22,17 +22,59 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState(undefined);
+  const [isBootstrapping, setIsBootstrapping] = useState(true);
   const { setActualBranchId, clearEmulatedBranchId } = useBranch();
 
   useEffect(() => {
     const token = getToken();
     if (!token) {
       setIsAuthenticated(false);
-      navigate('/login');
+      setUser(undefined);
+      setIsBootstrapping(false);
+      if (window.location.pathname !== '/login') {
+        navigate('/login');
+      }
       return;
     }
     setIsAuthenticated(true);
-  }, [navigate]);
+
+    const hydrateUserSession = async () => {
+      try {
+        const res = await axiosInstance.get('/users');
+        if (res?.data) {
+          setUser({
+            id: res.data.id,
+            email: res.data.email,
+            branchId: res.data.branchId,
+            isSuperAdmin: Boolean(res.data.isSuperAdmin),
+          });
+
+          if (res.data.branchId) {
+            setActualBranchId(res.data.branchId);
+          }
+        }
+      } catch (error) {
+        console.error('Unable to bootstrap auth session', { error });
+        /*removeToken();
+        clearBranchIdentifiers();
+        clearEmulatedBranchId();
+        setIsAuthenticated(false);
+        setUser(undefined);
+      if (window.location.pathname !== '/login') {
+          navigate('/login');
+        }*/
+      } finally {
+        setIsBootstrapping(false);
+      }
+    };
+
+    hydrateUserSession();
+  }, [
+    clearBranchIdentifiers,
+    clearEmulatedBranchId,
+    navigate,
+    setActualBranchId,
+  ]);
 
   const login = useCallback(
     async (email, password) => {
@@ -51,11 +93,15 @@ export const AuthProvider = ({ children }) => {
             setActualBranchId(res.data.branchId);
           }
           clearEmulatedBranchId();
-          setUser({
+          const userPayload = {
             branchId: res.data?.branchId ?? null,
             isSuperAdmin: Boolean(res.data?.isSuperAdmin),
-          });
-          return true;
+          };
+          setUser(userPayload);
+          setIsBootstrapping(false);
+          return {
+            ...userPayload,
+          };
         }
 
         return false;
@@ -63,6 +109,7 @@ export const AuthProvider = ({ children }) => {
         console.error(`Unable to process login`, { error });
         setIsLoading(false);
         setIsAuthenticated(false);
+        setIsBootstrapping(false);
         return false;
       }
     },
@@ -89,6 +136,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated,
         user,
         setUser,
+        isBootstrapping,
       }}
     >
       {children}

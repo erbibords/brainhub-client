@@ -1,9 +1,9 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useMemo, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../NavBar/Navbar';
 import Sidebar from '../SideBar/Sidebar';
-import { BranchProvider } from '../../contexts/branch';
-import { AuthProvider } from '../../contexts/auth';
+import { BranchProvider, useBranch } from '../../contexts/branch';
+import { AuthProvider, useAuth } from '../../contexts/auth';
 import { StudentProvider } from '../../contexts/students';
 import { CoursesProvider } from '../../contexts/courses';
 import { OfferingsProvider } from '../../contexts/offerings';
@@ -11,50 +11,93 @@ import { EnrollmentsProvider } from '../../contexts/enrollments';
 import { ProgramsProvider } from '../../contexts/programs';
 import { PaymentsProvider } from '../../contexts/payments';
 
-const MainLayout = ({ children, showSidebar = true }) => {
+const BranchScopedProviders = ({ children }) => (
+  <ProgramsProvider>
+    <EnrollmentsProvider>
+      <StudentProvider>
+        <CoursesProvider>
+          <OfferingsProvider>
+            <PaymentsProvider>{children}</PaymentsProvider>
+          </OfferingsProvider>
+        </CoursesProvider>
+      </StudentProvider>
+    </EnrollmentsProvider>
+  </ProgramsProvider>
+);
+
+const LayoutShell = ({ children, showSidebar }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, isBootstrapping } = useAuth();
+  const { isEmulating } = useBranch();
+
   const isPrintPage = location.pathname.startsWith('/prints/');
   const isLoginPage = location.pathname === '/login';
+  const isSuperAdmin = Boolean(user?.isSuperAdmin);
+  const shouldUseBranchProviders = !isSuperAdmin || isEmulating;
+
+  useEffect(() => {
+    if (!isSuperAdmin || isBootstrapping) {
+      return;
+    }
+
+    const isAdminRoute =
+      location.pathname.startsWith('/admin') || location.pathname === '/login';
+
+    if (!isEmulating && !isAdminRoute) {
+      navigate('/admin/dashboard', { replace: true });
+    }
+  }, [isBootstrapping, isEmulating, isSuperAdmin, location.pathname, navigate]);
+
+  const content = useMemo(() => {
+    if (!shouldUseBranchProviders) {
+      return children;
+    }
+
+    return <BranchScopedProviders>{children}</BranchScopedProviders>;
+  }, [children, shouldUseBranchProviders]);
+
+  const shouldShowSidebar =
+    !isPrintPage && !isLoginPage && showSidebar && !isBootstrapping;
+
+  const mainClasses = useMemo(() => {
+    const classes = ['flex-1', 'p-6', 'overflow-x-auto'];
+
+    if (!isPrintPage && !isLoginPage) {
+      classes.push('pt-24');
+      if (shouldShowSidebar) {
+        classes.push('ml-52');
+      }
+    }
+
+    return classes.join(' ');
+  }, [isLoginPage, isPrintPage, shouldShowSidebar]);
 
   return (
-    <BranchProvider>
-      <AuthProvider>
-        <ProgramsProvider>
-          <EnrollmentsProvider>
-            <StudentProvider>
-              <CoursesProvider>
-                <OfferingsProvider>
-                  <PaymentsProvider>
-                  <div className="flex min-h-screen">
-                    {!isPrintPage && (
-                      <>
-                        <header className="fixed top-0 left-0 right-0 z-50 w-full bg-white shadow">
-                          <Navbar currentRoute={location.pathname} />
-                        </header>
-                        {!isLoginPage && showSidebar && (
-                          <aside className="fixed top-16 left-0 bottom-0 z-40 w-52 bg-gray-100 shadow">
-                            <Sidebar />
-                          </aside>
-                        )}
-                      </>
-                    )}
-                    <main
-                      className={`flex-1 p-6 overflow-x-auto ${
-                        isPrintPage || isLoginPage ? '' : 'pt-24 ml-52'
-                      }`}
-                    >
-                      {children}
-                    </main>
-                  </div>
-                  </PaymentsProvider>
-                </OfferingsProvider>
-              </CoursesProvider>
-            </StudentProvider>
-          </EnrollmentsProvider>
-        </ProgramsProvider>
-      </AuthProvider>
-    </BranchProvider>
+    <div className="flex min-h-screen">
+      {!isPrintPage && (
+        <>
+          <header className="fixed top-0 left-0 right-0 z-50 w-full bg-white shadow">
+            <Navbar currentRoute={location.pathname} />
+          </header>
+          {shouldShowSidebar && (
+            <aside className="fixed top-16 left-0 bottom-0 z-40 w-52 bg-gray-100 shadow">
+              <Sidebar />
+            </aside>
+          )}
+        </>
+      )}
+      <main className={mainClasses}>{content}</main>
+    </div>
   );
 };
+
+const MainLayout = ({ children, showSidebar = true }) => (
+  <BranchProvider>
+    <AuthProvider>
+      <LayoutShell showSidebar={showSidebar}>{children}</LayoutShell>
+    </AuthProvider>
+  </BranchProvider>
+);
 
 export default MainLayout;

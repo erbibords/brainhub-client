@@ -18,7 +18,7 @@ import {
 const BranchContext = createContext({
   branchId: undefined,
   actualBranchId: undefined,
-  emulatedBranchId: undefined,
+  emulatedBranch: undefined,
   isEmulating: false,
   setActualBranchId: () => {},
   setEmulatedBranchId: () => {},
@@ -30,7 +30,7 @@ export const BranchProvider = ({ children }) => {
   const [actualBranchId, setActualBranchIdState] = useState(() =>
     getActualBranch()
   );
-  const [emulatedBranchId, setEmulatedBranchIdState] = useState(() =>
+  const [emulatedBranch, setEmulatedBranchState] = useState(() =>
     getEmulatedBranch()
   );
   const [effectiveBranchId, setEffectiveBranchId] = useState(() =>
@@ -39,11 +39,11 @@ export const BranchProvider = ({ children }) => {
 
   const syncFromStorage = useCallback(() => {
     const storedActualBranchId = getActualBranch();
-    const storedEmulatedBranchId = getEmulatedBranch();
+    const storedEmulatedBranch = getEmulatedBranch();
     const storedEffectiveBranchId = getEffectiveBranch();
 
     setActualBranchIdState(storedActualBranchId ?? undefined);
-    setEmulatedBranchIdState(storedEmulatedBranchId ?? undefined);
+    setEmulatedBranchState(storedEmulatedBranch ?? undefined);
     setEffectiveBranchId(storedEffectiveBranchId);
   }, []);
 
@@ -60,22 +60,24 @@ export const BranchProvider = ({ children }) => {
     setEffectiveBranchId(getEffectiveBranch());
   }, []);
 
-  const handleSetEmulatedBranchId = useCallback((branchId) => {
-    if (!branchId) {
+  const handleSetEmulatedBranchId = useCallback((branch) => {
+    if (!branch) {
       clearEmulatedBranch();
-      setEmulatedBranchIdState(undefined);
+      setEmulatedBranchState(undefined);
       setEffectiveBranchId(getEffectiveBranch());
       return;
     }
 
-    setEmulatedBranch(branchId);
-    setEmulatedBranchIdState(branchId);
+    setEmulatedBranch(branch);
+    const normalizedBranch =
+      typeof branch === 'string' ? { id: branch } : branch;
+    setEmulatedBranchState(normalizedBranch);
     setEffectiveBranchId(getEffectiveBranch());
   }, []);
 
   const handleClearEmulatedBranchId = useCallback(() => {
     clearEmulatedBranch();
-    setEmulatedBranchIdState(undefined);
+    setEmulatedBranchState(undefined);
     setEffectiveBranchId(getEffectiveBranch());
   }, []);
 
@@ -83,8 +85,8 @@ export const BranchProvider = ({ children }) => {
     () => ({
       branchId: effectiveBranchId,
       actualBranchId,
-      emulatedBranchId,
-      isEmulating: Boolean(emulatedBranchId),
+      emulatedBranch,
+      isEmulating: Boolean(emulatedBranch?.id),
       setActualBranchId: handleSetActualBranchId,
       setEmulatedBranchId: handleSetEmulatedBranchId,
       clearEmulatedBranchId: handleClearEmulatedBranchId,
@@ -92,7 +94,7 @@ export const BranchProvider = ({ children }) => {
     }),
     [
       actualBranchId,
-      emulatedBranchId,
+      emulatedBranch,
       effectiveBranchId,
       handleClearEmulatedBranchId,
       handleSetActualBranchId,
