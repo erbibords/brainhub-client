@@ -1,8 +1,5 @@
 import React from 'react';
-import { Typography } from 'antd';
 import ExpensesList from '../expenses/expenses-list';
-
-const { Title, Paragraph } = Typography;
 
 const AdminExpenses = () => {
   return (
