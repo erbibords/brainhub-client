@@ -18,6 +18,7 @@ import { EXPENSE_TYPES } from '../../constants';
 import { useCourse } from '../../contexts/courses';
 import { useProgramContext } from '../../contexts/programs';
 import { useOfferingsContext } from '../../contexts/offerings';
+import { useAuth } from '../../contexts/auth';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -35,6 +36,9 @@ const ExpenseModal = ({
   const [existingAttachment, setExistingAttachment] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
 
+  const { user } = useAuth();
+  const isSuperAdmin = Boolean(user?.isSuperAdmin);
+
   // Fetch entities based on type
   const { courses, getCoursesLoading } = useCourse();
   const { programs, getProgramsLoading } = useProgramContext();
@@ -43,8 +47,9 @@ const ExpenseModal = ({
   // Watch for form type changes and modal visibility
   useEffect(() => {
     if (isVisible) {
-      const type = form.getFieldValue('type');
-      setSelectedType(type);
+      const type = isSuperAdmin ? 'GENERAL' : form.getFieldValue('type');
+      form.setFieldsValue({ type: type || 'GENERAL' });
+      setSelectedType(type || 'GENERAL');
 
       // Handle existing attachment for edit mode
       const attachment = form.getFieldValue('attachment');
@@ -70,7 +75,7 @@ const ExpenseModal = ({
       setExistingAttachment(null);
       setSelectedFile(null);
     }
-  }, [form, isVisible, isEditMode]);
+  }, [form, isVisible, isEditMode, isSuperAdmin]);
 
   const handleTypeChange = (value) => {
     setSelectedType(value);
@@ -162,25 +167,31 @@ const ExpenseModal = ({
         <Form.Item
           label="Expense Type"
           name="type"
-          rules={[
-            { required: true, message: 'Please select an Expense Type!' },
-          ]}
+          rules={
+            isSuperAdmin
+              ? []
+              : [{ required: true, message: 'Please select an Expense Type!' }]
+          }
         >
-          <Select
-            placeholder="Select expense type"
-            size="large"
-            onChange={handleTypeChange}
-          >
-            {EXPENSE_TYPES.map((type) => (
-              <Option value={type.value} key={type.value}>
-                {type.label}
-              </Option>
-            ))}
-          </Select>
+          {isSuperAdmin ? (
+            <Input value="General Expense" disabled size="large" />
+          ) : (
+            <Select
+              placeholder="Select expense type"
+              size="large"
+              onChange={handleTypeChange}
+            >
+              {EXPENSE_TYPES.map((type) => (
+                <Option value={type.value} key={type.value}>
+                  {type.label}
+                </Option>
+              ))}
+            </Select>
+          )}
         </Form.Item>
 
         {/* Conditional Entity Selection based on Expense Type */}
-        {selectedType === 'COURSES' && (
+        {!isSuperAdmin && selectedType === 'COURSES' && (
           <Form.Item
             label="Related Course"
             name="entityId"
@@ -205,8 +216,7 @@ const ExpenseModal = ({
             </Select>
           </Form.Item>
         )}
-
-        {selectedType === 'PROGRAM' && (
+        {!isSuperAdmin && selectedType === 'PROGRAM' && (
           <Form.Item
             label="Related Program"
             name="entityId"
@@ -231,8 +241,7 @@ const ExpenseModal = ({
             </Select>
           </Form.Item>
         )}
-
-        {selectedType === 'OFFERINGS' && (
+        {!isSuperAdmin && selectedType === 'OFFERINGS' && (
           <Form.Item
             label="Related Course Offering"
             name="entityId"

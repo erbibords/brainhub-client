@@ -26,7 +26,13 @@ const BranchesAdminPage = () => {
     }
   }, [isAuthenticated, isSuperAdmin, isBootstrapping, navigate]);
 
-  const tableData = useMemo(() => data?.data ?? [], [data]);
+  const tableData = useMemo(() => {
+    if (!data?.data) {
+      return [];
+    }
+
+    return data.data.filter((branch) => !branch.isCentral);
+  }, [data]);
 
   const handleEmulateBranch = useCallback(
     (branch) => {
@@ -43,6 +49,12 @@ const BranchesAdminPage = () => {
         title: 'Name',
         dataIndex: 'name',
         key: 'name',
+        render: (value, record) => (
+          <Space size="small">
+            <span>{value}</span>
+            {record?.isCentral && <Tag color="gold">Central</Tag>}
+          </Space>
+        ),
       },
       {
         title: 'Location',
