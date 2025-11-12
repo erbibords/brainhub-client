@@ -12,7 +12,7 @@ export const ProgramsProvider = ({ children }) => {
   const [params, setParams] = useState({
     name: undefined,
     pageNo: 1,
-    pageSize: 25,
+    pageSize: 100,
   });
 
   const { programs, isLoading, error } = usePrograms(params);
