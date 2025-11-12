@@ -11,7 +11,7 @@ const OfferingsContext = createContext({
 export const OfferingsProvider = ({ children }) => {
   const [params, setParams] = useState({
     pageNo: 1,
-    pageSize: 25,
+    pageSize: 100,
   });
 
   const {

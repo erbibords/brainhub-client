@@ -28,7 +28,7 @@ const Offerings = () => {
   useEffect(() => {
     setParams({
       pageNo: 1,
-      pageSize: 25,
+      pageSize: 100,
     });
   }, []);
 
@@ -127,7 +127,7 @@ const Offerings = () => {
     setParams({
       ...params,
       pageNo: 1,
-      pageSize: 25,
+      pageSize: 100,
     });
   };
 
@@ -135,7 +135,7 @@ const Offerings = () => {
     form.resetFields();
     setParams({
       pageNo: 1,
-      pageSize: 25,
+      pageSize: 100,
     });
   }, [form]);
 
