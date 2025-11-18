@@ -5,6 +5,20 @@ import fetcher from '../utils/fetcher';
 import { useBranch } from '../contexts/branch';
 
 function useEnrollments(params = {}) {
+    const {
+    pageNo = 1,
+    pageSize = 200, // Changed from 10000 to 200 for better performance
+    courseId = undefined,
+    studentName = undefined,
+    semester = undefined,
+    schoolId = undefined,
+    startDate = undefined,
+    endDate = undefined,
+    yearOffered = undefined,
+    offeringType = undefined,
+    programId = undefined,
+  } = params;
+  
   const { branchId } = useBranch();
 
   const requestUrl = useMemo(() => {

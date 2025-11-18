@@ -5,6 +5,22 @@ import fetcher from '../utils/fetcher';
 import { useBranch } from '../contexts/branch';
 
 function usePayments(params = {}) {
+
+   const {
+    pageNo = 1,
+    pageSize = 200, 
+    referenceNo = undefined,
+    startDate = undefined,
+    endDate = undefined,
+    studentName = undefined,
+    courseId = undefined,
+    schoolId = undefined,
+    semester = undefined,
+    offeringType = undefined,
+    yearOffered,
+    paymentMethod = undefined,
+    programId = undefined
+  } = params;
  
   const { branchId } = useBranch();
 
