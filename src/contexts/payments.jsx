@@ -6,6 +6,7 @@ const PaymentsContext = createContext({
   getPaymentsLoading: false,
   getPaymentsError: false,
   setParams: (params) => {},
+  refreshPayments: () => {},
 });
 
 export const PaymentsProvider = ({ children }) => {
@@ -23,7 +24,7 @@ export const PaymentsProvider = ({ children }) => {
     programId: undefined,
   });
 
-  const { data, isLoading, error } = usePayments(params);
+  const { data, isLoading, error, mutate } = usePayments(params);
 
   const values = useMemo(() => {
     return {
@@ -31,8 +32,9 @@ export const PaymentsProvider = ({ children }) => {
       getPaymentsLoading: isLoading,
       getPaymentsError: error,
       setParams,
+      refreshPayments: mutate,
     };
-  }, [data, isLoading, error, setParams]);
+  }, [data, isLoading, error, setParams, mutate]);
 
   return (
     <PaymentsContext.Provider value={values}>

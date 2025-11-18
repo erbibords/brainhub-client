@@ -1,27 +1,41 @@
+import { useMemo } from 'react';
 import useSWR from 'swr';
 import { DEFAULT_BRANCH_ID } from '../constants';
 import fetcher from '../utils/fetcher';
+import { useBranch } from '../contexts/branch';
 
 function useEnrollments(params = {}) {
-  // Create a stable key for SWR that includes all parameters
-  const swrKey = `enrollments-${params.pageNo || 1}-${params.pageSize || 4500}-${params.courseId || ''}-${params.studentName || ''}-${params.semester || ''}-${params.schoolId || ''}-${params.yearOffered || ''}-${params.offeringType || ''}-${params.programId || ''}-${params.startDate || ''}-${params.endDate || ''}`;
+    const {
+    pageNo = 1,
+    pageSize = 200, // Changed from 10000 to 200 for better performance
+    courseId = undefined,
+    studentName = undefined,
+    semester = undefined,
+    schoolId = undefined,
+    startDate = undefined,
+    endDate = undefined,
+    yearOffered = undefined,
+    offeringType = undefined,
+    programId = undefined,
+  } = params;
+  
+  const { branchId } = useBranch();
 
-  // Generate URL inside the fetcher to ensure it uses current parameters
-  const generateUrl = (currentParams) => {
+  const requestUrl = useMemo(() => {
     let url = `branches/${DEFAULT_BRANCH_ID()}/enrollments`;
     const queryParams = new URLSearchParams();
 
-    if (currentParams.pageNo) queryParams.append('pageNo', currentParams.pageNo);
-    if (currentParams.pageSize) queryParams.append('pageSize', currentParams.pageSize);
-    if (currentParams.courseId) queryParams.append('courseId', currentParams.courseId);
-    if (currentParams.studentName) queryParams.append('studentName', currentParams.studentName);
-    if (currentParams.semester) queryParams.append('semester', currentParams.semester);
-    if (currentParams.schoolId) queryParams.append('schoolId', currentParams.schoolId);
-    if (currentParams.yearOffered) queryParams.append('yearOffered', currentParams.yearOffered);
-    if (currentParams.startDate) queryParams.append('startDate', currentParams.startDate);
-    if (currentParams.endDate) queryParams.append('endDate', currentParams.endDate);
-    if (currentParams.offeringType) queryParams.append('offeringType', currentParams.offeringType);
-    if (currentParams.programId) queryParams.append('programId', currentParams.programId);
+    if (pageNo) queryParams.append('pageNo', pageNo);
+    if (pageSize) queryParams.append('pageSize', pageSize);
+    if (courseId) queryParams.append('courseId', courseId);
+    if (studentName) queryParams.append('studentName', studentName);
+    if (semester) queryParams.append('semester', semester);
+    if (schoolId) queryParams.append('schoolId', schoolId);
+    if (yearOffered) queryParams.append('yearOffered', yearOffered);
+    if (startDate) queryParams.append('startDate', startDate);
+    if (endDate) queryParams.append('endDate', endDate);
+    if (offeringType) queryParams.append('offeringType', offeringType);
+    if (programId) queryParams.append('programId', programId);
 
     queryParams.append('includeStudent', 'true');
     queryParams.append('includeCourseOffering', 'true');
@@ -31,11 +45,27 @@ function useEnrollments(params = {}) {
     }
 
     return url;
-  };
+  }, [
+    pageNo,
+    pageSize,
+    courseId,
+    studentName,
+    semester,
+    schoolId,
+    startDate,
+    endDate,
+    yearOffered,
+    offeringType,
+    programId,
+    branchId,
+  ]);
 
-  const { data, mutate, error } = useSWR(swrKey, () => fetcher(generateUrl(params)));
+  const swrKey = useMemo(() => {
+    return `enrollments-${branchId ?? 'unknown'}-${JSON.stringify(params)}`;
+  }, [branchId, params]);
+
+  const { data, mutate, error } = useSWR(swrKey, () => fetcher(requestUrl));
   const isLoading = !data && !error;
-
 
   return {
     data,

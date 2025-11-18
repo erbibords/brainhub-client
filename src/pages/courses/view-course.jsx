@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
 import { Button, Row, Col, Card, Divider, Skeleton, Form } from "antd";
@@ -8,6 +8,7 @@ import useMutation from "../../hooks/useMutation";
 import useCourse from "../../hooks/useCourse";
 import Swal from "sweetalert2";
 import { COURSE_BASE_URL } from "../../constants";
+import { useBranch } from "../../contexts/branch";
 
 const ViewCourse = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const ViewCourse = () => {
 
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
+  const { branchId } = useBranch();
 
   const { data, error, isLoading, refetch } = useCourse(params.courseId);
 
@@ -26,11 +28,14 @@ const ViewCourse = () => {
     navigate("/courses");
   }
 
-  const COURSE_ENTITY_URL = `${COURSE_BASE_URL}/${params.courseId}`;
+  const COURSE_ENTITY_URL = useMemo(() => {
+    return `${COURSE_BASE_URL()}/${params.courseId}`;
+  }, [branchId, params?.courseId]);
+  const coursesCacheKey = useMemo(() => `courses-${branchId ?? 'unknown'}`, [branchId]);
   const { mutate: updateCourse, loading: updateStudentLoading } = useMutation(
     COURSE_ENTITY_URL,
     "PUT",
-    "courses"
+    coursesCacheKey
   );
 
   useEffect(() => {

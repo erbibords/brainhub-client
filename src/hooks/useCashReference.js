@@ -1,8 +1,13 @@
 import useSWR from 'swr';
 import { PAYMENTS_BASE_URL } from '../constants';
+import { useBranch } from '../contexts/branch';
 
 function useCashReference() {
-  const { data, error, isLoading } = useSWR(`${PAYMENTS_BASE_URL}/cash-reference`);
+  const { branchId } = useBranch();
+
+  const resourceUrl = branchId ? `${PAYMENTS_BASE_URL()}/cash-reference` : null;
+
+  const { data, error, isLoading } = useSWR(resourceUrl);
 
   return {
     data,

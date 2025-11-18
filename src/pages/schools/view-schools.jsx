@@ -9,6 +9,7 @@ import useSchools from "../../hooks/useSchools";
 import Swal from "sweetalert2";
 import { getDataById } from "../../utils/mappings";
 import { SCHOOLS_BASE_URL } from "../../constants";
+import { useBranch } from "../../contexts/branch";
 const ViewSchools = () => {
   const [form] = Form.useForm();
   const params = useParams();
@@ -16,10 +17,13 @@ const ViewSchools = () => {
   const { data, error } = useSchools();
   const [isEditing, setIsEditing] = useState(false);
   const id = params?.schoolId;
+  const { branchId } = useBranch();
+  const schoolsBaseUrl = useMemo(() => SCHOOLS_BASE_URL(), [branchId]);
+  const schoolsCacheKey = useMemo(() => `schools-${branchId ?? 'unknown'}`, [branchId]);
   const { mutate: updateSchool, loading: updateSchoolLoading } = useMutation(
-    `${SCHOOLS_BASE_URL}/${id}`,
+    schoolsBaseUrl,
     "PUT",
-    "schools"
+    schoolsCacheKey
   );
 
   const currentSchool = useMemo(() => {
@@ -38,8 +42,7 @@ const ViewSchools = () => {
   }, [id, currentSchool]);
 
   const onFormSubmission = async (val) => {
-    updateSchool(val);
-    const res = await updateSchool(val);
+    const res = await updateSchool(val, `${schoolsBaseUrl}/${id}`);
     if (res) {
       Swal.fire({
         icon: "success",

@@ -1,35 +1,40 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Enrollment from "./pages/enrollment/enrollment";
-import AddEnrollment from "./pages/enrollment/add-enrollment";
-import EditEnrollment from "./pages/enrollment/edit-enrollment";
-import Login from "./pages/login/login-page";
-import Students from "./pages/students/students-list";
-import StudentProfile from "./pages/students/student-profile";
-import PaymentsList from "./pages/payments/payments-list";
-import AddPayment from "./pages/payments/add-new-payment";
-import ViewPayment from "./pages/payments/view-payment";
-import Courses from "./pages/courses/course-list";
-import ViewCourse from "./pages/courses/view-course";
-import Layout from "./components/Layout/Layout";
-import Offerings from "./pages/offerings/offerings";
-import AddOfferings from "./pages/offerings/add-offerings";
-import EditOfferings from "./pages/offerings/edit-offerings";
-import ViewEnrollment from "./pages/enrollment/view-enrollment";
-import PrintEnrollment from "./pages/prints/print-enrollment";
-import RevieweesPayments from "./pages/prints/reviewees-payments";
-import RevieweesAccounting from "./pages/prints/reviewees-accounting";
-import ReviewProgramAccounting from "./pages/prints/review-program-accounting";
-import ReviewProgram from "./pages/program/review-program";
-import Schools from "./pages/schools/schools";
-import ViewOfferings from "./pages/offerings/view-offerings";
-import Receipt from "./pages/prints/receipt-accounting";
-import RevieweesPopulation from "./pages/prints/reviewees-population";
-import PaymentPrintList from "./pages/prints/payment-print-list";
-import ViewReviewPogram from "./pages/program/view-review-program";
-import ViewSchools from "./pages/schools/view-schools";
-import StatementOfAccount from "./pages/students/statement-of-account";
-import PrintOfferings from "./pages/prints/print-offerings";
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import Enrollment from './pages/enrollment/enrollment';
+import AddEnrollment from './pages/enrollment/add-enrollment';
+import EditEnrollment from './pages/enrollment/edit-enrollment';
+import Login from './pages/login/login-page';
+import Students from './pages/students/students-list';
+import StudentProfile from './pages/students/student-profile';
+import PaymentsList from './pages/payments/payments-list';
+import AddPayment from './pages/payments/add-new-payment';
+import ViewPayment from './pages/payments/view-payment';
+import Courses from './pages/courses/course-list';
+import ViewCourse from './pages/courses/view-course';
+import Layout from './components/Layout/Layout';
+import Offerings from './pages/offerings/offerings';
+import AddOfferings from './pages/offerings/add-offerings';
+import EditOfferings from './pages/offerings/edit-offerings';
+import ViewEnrollment from './pages/enrollment/view-enrollment';
+import PrintEnrollment from './pages/prints/print-enrollment';
+import RevieweesPayments from './pages/prints/reviewees-payments';
+import RevieweesAccounting from './pages/prints/reviewees-accounting';
+import ReviewProgramAccounting from './pages/prints/review-program-accounting';
+import ReviewProgram from './pages/program/review-program';
+import Schools from './pages/schools/schools';
+import ViewOfferings from './pages/offerings/view-offerings';
+import Receipt from './pages/prints/receipt-accounting';
+import RevieweesPopulation from './pages/prints/reviewees-population';
+import PaymentPrintList from './pages/prints/payment-print-list';
+import ViewReviewPogram from './pages/program/view-review-program';
+import ViewSchools from './pages/schools/view-schools';
+import StatementOfAccount from './pages/students/statement-of-account';
+import PrintOfferings from './pages/prints/print-offerings';
+import ExpensesList from './pages/expenses/expenses-list';
+import AdminDashboard from './pages/admin/dashboard';
+import AdminExpenses from './pages/admin/expenses';
+import AdminReporting from './pages/admin/reporting';
+import BranchesAdminPage from './pages/admin/branches';
 
 const App = () => {
   return (
@@ -37,6 +42,11 @@ const App = () => {
       <Layout>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/expenses" element={<AdminExpenses />} />
+          <Route path="/admin/reporting" element={<AdminReporting />} />
+          <Route path="/admin/branches" element={<BranchesAdminPage />} />
           <Route path="/add-enrollment" element={<AddEnrollment />} />
           <Route
             path="/enrollments/edit-enrollment/:enrollmentId"
@@ -96,6 +106,8 @@ const App = () => {
             element={<StatementOfAccount />}
           />
           <Route path="/prints/offerings" element={<PrintOfferings />} />
+          <Route path="/expenses" element={<ExpensesList />} />
+          <Route path="/" element={<Navigate to="/students" replace />} />
         </Routes>
       </Layout>
     </Router>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import CustomInput from "../../components/Input/Input";
 import { useParams } from "react-router-dom";
 import { Layout, Select, Form, Image, DatePicker, Upload } from "antd";
@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useCashReference from "../../hooks/useCashReference";
 import dayjs from "dayjs";
+import { useBranch } from "../../contexts/branch";
 import { mutate as swrMutate } from "swr";
 const { Content } = Layout;
 const { Option } = Select;
@@ -29,18 +30,25 @@ const AddNewPayment = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
-  const { data: cashReference } = useCashReference();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data: cashReference, error: cashReferenceError } = useCashReference();
+  const { branchId } = useBranch();
+  const enrollmentBaseUrl = useMemo(() => ENROLLMENT_BASE_URL(), [branchId]);
 
   if (!params?.studentId) {
     navigate("/students");
   }
 
-  const { mutate: updatedPayment } = useMutation("", "POST", null, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const { mutate: updatedPayment, loading: updateStudentLoading } = useMutation(
+    enrollmentBaseUrl,
+    "POST",
+    null,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
 
   const { data: student } = useProfile(params?.studentId);
 
@@ -108,7 +116,7 @@ const AddNewPayment = () => {
     try {
       const res = await updatedPayment(
         paymentFormData,
-        `${ENROLLMENT_BASE_URL}/${enrollmentId}/payments`
+        `${enrollmentBaseUrl}/${enrollmentId}/payments`
       );
       if (res) {
         // Invalidate all payments-related cache keys

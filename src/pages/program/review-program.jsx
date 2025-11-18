@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import { useProgramContext } from "../../contexts/programs";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { formatAmount } from "../../utils/formatting";
+import { useBranch } from "../../contexts/branch";
 const ReviewProgram = () => {
   const navigate = useNavigate();
   const [searchProgram, setSearchProgram] = useState("");
@@ -18,11 +19,16 @@ const ReviewProgram = () => {
 
   const { programs, getProgramsLoading, getProgramsError } =
     useProgramContext();
+  const { branchId } = useBranch();
+  const reviewProgramBaseUrl = useMemo(() => REVIEW_PROGRAM_BASE_URL(), [branchId]);
+  const programsCacheKey = useMemo(() => {
+    return `programs-${branchId ?? 'unknown'}`;
+  }, [branchId]);
 
   const { mutate: addProgram, loading: addProgramLoading } = useMutation(
-    REVIEW_PROGRAM_BASE_URL,
+    reviewProgramBaseUrl,
     "POST",
-    "programs"
+    programsCacheKey
   );
 
   const columns = [

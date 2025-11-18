@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
 import { Button, Row, Col, Card, Divider, Skeleton, Form, Select } from "antd";
@@ -8,6 +8,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import useMutation from "../../hooks/useMutation";
 import Swal from "sweetalert2";
 import { STUDENT_BASE_URL } from "../../constants";
+import { useBranch } from "../../contexts/branch";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { StudentEnrollments } from "./student-enrollments";
 import { PaymentHistory } from "./payment-history";
@@ -21,6 +22,7 @@ const StudentProfile = () => {
 
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
+  const { branchId } = useBranch();
 
   const { data, error, isLoading, refetch } = useProfile(params?.studentId);
   const {
@@ -33,7 +35,9 @@ const StudentProfile = () => {
     navigate("/students");
   }
 
-  const STUDENT_ENTITY_URL = `${STUDENT_BASE_URL}/${params.studentId}`;
+  const STUDENT_ENTITY_URL = useMemo(() => {
+    return `${STUDENT_BASE_URL()}/${params.studentId}`;
+  }, [branchId, params?.studentId]);
   const { mutate: updateStudentProfile, loading: updateStudentLoading } =
     useMutation(STUDENT_ENTITY_URL, "PUT", "students");
 

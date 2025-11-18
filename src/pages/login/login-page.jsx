@@ -8,25 +8,28 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, login, isLoading } = useAuth();
+  const { isAuthenticated, login, isLoading, user, isBootstrapping } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/students");
+    if (isBootstrapping) {
+      return;
     }
-  }, [isAuthenticated]);
+    if (isAuthenticated && user) {
+      navigate(user.isSuperAdmin ? "/admin/dashboard" : "/students");
+    }
+  }, [isAuthenticated, isBootstrapping, navigate, user]);
 
   const onFinish = useCallback(
     async (values) => {
-      const shouldLogin = await login(values.email, values.password);
+      const loginResult = await login(values.email, values.password);
 
-      if (shouldLogin) {
+      if (loginResult) {
         Swal.fire({
           icon: "success",
           title: "Login success",
           timer: 2000,
         });
-        navigate("/students");
+        navigate(loginResult.isSuperAdmin ? "/admin/dashboard" : "/students");
       } else {
         Swal.fire({
           icon: "error",
@@ -35,7 +38,7 @@ const Login = () => {
         });
       }
     },
-    [login]
+    [login, navigate]
   );
 
   return (

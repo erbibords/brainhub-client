@@ -3,7 +3,11 @@ import fetcher from '../utils/fetcher';
 import { PAYMENTS_BASE_URL } from '../constants';
 
 const fetchAttachmentData = (fileName) => {
-  const { data, error } = useSWR(fileName ? `${PAYMENTS_BASE_URL}/uploads/${fileName}` : null, fetcher);
+  const baseUrl = PAYMENTS_BASE_URL();
+  const { data, error } = useSWR(
+    fileName ? `${baseUrl}/uploads/${fileName}` : null,
+    fetcher
+  );
   const isLoading = !data && !error;
   return { data, error, isLoading };
 };

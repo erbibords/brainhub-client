@@ -10,16 +10,20 @@ import useSchools from "../../hooks/useSchools";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { SCHOOLS_BASE_URL } from "../../constants";
 import { formatAmount } from "../../utils/formatting";
+import { useBranch } from "../../contexts/branch";
 const SchoolList = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { data: schools, isLoading, error } = useSchools();
+  const { branchId } = useBranch();
+  const schoolsBaseUrl = useMemo(() => SCHOOLS_BASE_URL(), [branchId]);
+  const schoolsCacheKey = useMemo(() => `schools-${branchId ?? 'unknown'}`, [branchId]);
   const [searchSchoolText, setSearchSchoolText] = useState("");
   const { mutate: addSchool, loading: addSchoolLoading } = useMutation(
-    SCHOOLS_BASE_URL,
+    schoolsBaseUrl,
     "POST",
-    "schools"
+    schoolsCacheKey
   );
   const showModal = () => {
     setIsModalVisible(true);

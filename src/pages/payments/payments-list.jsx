@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
 import useSchools from "../../hooks/useSchools";
@@ -32,6 +32,7 @@ import useMutation from "../../hooks/useMutation";
 import { cleanParams, formatAmount, formatDate } from "../../utils/formatting";
 import Swal from "sweetalert2";
 import { useProgramContext } from "../../contexts/programs";
+import { useBranch } from "../../contexts/branch";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -44,12 +45,18 @@ const PaymentsList = () => {
   const [pageSize, setPageSize] = useState(25); // Display 25 per page
   const [isFiltered, setIsFiltered] = useState(false); // Track if filters are applied
 
-  const { payments, getPaymentsLoading, getPaymentsError, setParams } =
-    usePaymentsContext();
+  const {
+    payments,
+    getPaymentsLoading,
+    getPaymentsError,
+    setParams,
+    refreshPayments,
+  } = usePaymentsContext();
+  const { branchId } = useBranch();
+  const paymentsBaseUrl = useMemo(() => PAYMENTS_BASE_URL(), [branchId]);
   const { mutate: undoPaymentMutate } = useMutation(
-    `${PAYMENTS_BASE_URL}/${selectedPaymentid}`,
-    "DELETE",
-    "payments"
+    paymentsBaseUrl,
+    "DELETE"
   );
 
   const {
@@ -133,7 +140,10 @@ const PaymentsList = () => {
     if (!selectedPaymentid) return;
 
     try {
-      const res = await undoPaymentMutate();
+      const res = await undoPaymentMutate(
+        undefined,
+        `${paymentsBaseUrl}/${selectedPaymentid}`
+      );
       if (res) {
         Swal.fire({
           icon: "success",
@@ -141,6 +151,9 @@ const PaymentsList = () => {
           timer: 2000,
         });
         setSelectedPaymentId(undefined);
+        if (refreshPayments) {
+          refreshPayments();
+        }
       }
     } catch (error) {
       Swal.fire({
@@ -149,7 +162,7 @@ const PaymentsList = () => {
         text: "Error removing payment. Please try again!",
       });
     }
-  }, [selectedPaymentid]);
+  }, [paymentsBaseUrl, refreshPayments, selectedPaymentid, undoPaymentMutate]);
 
   const columns = [
     {

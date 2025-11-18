@@ -12,6 +12,7 @@ import { REVIEW_PROGRAM_BASE_URL } from "../../constants";
 import { useCourse } from "../../contexts/courses";
 import useSchools from "../../hooks/useSchools";
 import StudentsTable from "./students-table";
+import { useBranch } from "../../contexts/branch";
 const { Option } = Select;
 
 const ViewReviewProgram = () => {
@@ -21,13 +22,19 @@ const ViewReviewProgram = () => {
   const { programs, getProgramsError } = useProgramContext();
   const { courses } = useCourse();
   const { data: schools } = useSchools();
+  const { branchId } = useBranch();
 
   const id = params?.programId;
 
+  const reviewProgramBaseUrl = useMemo(() => REVIEW_PROGRAM_BASE_URL(), [branchId]);
+  const programsCacheKey = useMemo(() => {
+    return `programs-${branchId ?? 'unknown'}`;
+  }, [branchId]);
+
   const { mutate: updateProgram } = useMutation(
-    `${REVIEW_PROGRAM_BASE_URL}/${id}`,
+    reviewProgramBaseUrl,
     "PUT",
-    "programs"
+    programsCacheKey
   );
 
   const currentProgram = useMemo(() => {
@@ -39,8 +46,7 @@ const ViewReviewProgram = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   const onFormSubmission = async (val) => {
-    updateProgram(val);
-    const res = await updateProgram(val);
+    const res = await updateProgram(val, `${reviewProgramBaseUrl}/${id}`);
     if (res) {
       Swal.fire({
         icon: "success",
