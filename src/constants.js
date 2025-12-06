@@ -10,9 +10,9 @@ export const DEFAULT_BRANCH_ID = () => {
 
 export const getActualBranchId = () => getActualBranch();
 export const getEmulatedBranchId = () => getEmulatedBranch();
-// export const BASE_URL = 'https://brainhub-service-cjm6z.ondigitalocean.app/v1/';
+export const BASE_URL = 'https://brainhub-service-cjm6z.ondigitalocean.app/v1/';
 
-export const BASE_URL = 'https://brainhub-sandbox-api.onrender.com/v1/';
+// export const BASE_URL = 'https://brainhub-sandbox-api.onrender.com/v1/';
 
 export const COURSE_BASE_URL = () => `branches/${DEFAULT_BRANCH_ID()}/courses`;
 export const STUDENT_BASE_URL = () =>
@@ -139,7 +139,7 @@ export const PROCESSED_BY = [
   'Ma. Nelly Wendam',
   'Christine Dela Torre',
   'Elaine Mae Entreguena',
-  'Pearlaine Joy Chavez'
+  'Pearlaine Joy Chavez',
 ];
 
 export const PAYMENT_METHODS = [
