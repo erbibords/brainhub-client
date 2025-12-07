@@ -147,7 +147,7 @@ const StudentsList = () => {
 
   const filteredData = useMemo(() => {
     if (studentDataLoading || getStudentError) return;
-    return students.data.map((student) => {
+    return students?.data?.map((student) => {
       return {
         ...student,
         name: `${student.firstName} ${student.middleName} ${student.lastName}`,

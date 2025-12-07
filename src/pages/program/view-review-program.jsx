@@ -26,9 +26,12 @@ const ViewReviewProgram = () => {
 
   const id = params?.programId;
 
-  const reviewProgramBaseUrl = useMemo(() => REVIEW_PROGRAM_BASE_URL(), [branchId]);
+  const reviewProgramBaseUrl = useMemo(
+    () => REVIEW_PROGRAM_BASE_URL(),
+    [branchId]
+  );
   const programsCacheKey = useMemo(() => {
-    return `programs-${branchId ?? 'unknown'}`;
+    return `programs-${branchId ?? "unknown"}`;
   }, [branchId]);
 
   const { mutate: updateProgram } = useMutation(
@@ -89,7 +92,8 @@ const ViewReviewProgram = () => {
               <Row gutter={[16, 16]}>
                 <Col xs={24} sm={24} md={16} lg={18}>
                   <h1 className="text-2xl mb-[2vh]">
-                    Manage {currentProgram?.name}
+                    Manage {currentProgram?.name} -{" "}
+                    {currentProgram?.description}
                   </h1>
                 </Col>
                 <Col xs={24} sm={24} md={8} lg={6}>

@@ -9,6 +9,7 @@ import {
   Form,
   DatePicker,
   Table,
+  Statistic,
 } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useParams, useNavigate } from "react-router-dom";
@@ -30,6 +31,9 @@ import useSchools from "../../hooks/useSchools";
 import { useProgramContext } from "../../contexts/programs";
 import dayjs from "dayjs";
 import { useBranch } from "../../contexts/branch";
+import "./view-offerings.css";
+
+const { Option } = Select;
 
 const ViewOffering = () => {
   const navigate = useNavigate();
@@ -48,12 +52,6 @@ const ViewOffering = () => {
   });
   const [enrollments, setEnrollments] = useState([]);
 
-  const backedOutStudents = useMemo(() => {
-    return enrollments.filter((enrollment) => enrollment.backedOut);
-  }, [enrollments]);
-
-  console.log(backedOutStudents);
-
   const { courses, coursesError } = useCourse();
   const {
     data: offering,
@@ -65,13 +63,29 @@ const ViewOffering = () => {
     useProgramContext();
   const [offeringType, setOfferingType] = useState(offering?.offeringType);
 
+  // Separate backed out students from active enrollments
+  const backedOutStudents = useMemo(() => {
+    if (!offering?.enrollments) return [];
+    return offering.enrollments.filter((enrollment) => enrollment.backedOut);
+  }, [offering?.enrollments]);
+
+  const activeEnrollments = useMemo(() => {
+    if (!offering?.enrollments) return [];
+    return offering.enrollments.filter((enrollment) => !enrollment.backedOut);
+  }, [offering?.enrollments]);
+
   useEffect(() => {
     if (!offering?.offeringType) return;
     setOfferingType(offering?.offeringType);
   }, [offering?.offeringType]);
+
   useEffect(() => {
     if (offering && offering?.enrollments?.length) {
-      setEnrollments(offering?.enrollments);
+      // Initialize with only active (non-backed-out) enrollments
+      const active = offering.enrollments.filter(
+        (enrollment) => !enrollment.backedOut
+      );
+      setEnrollments(active);
     }
   }, [offering]);
 
@@ -219,27 +233,29 @@ const ViewOffering = () => {
   ];
 
   const filterEnrollment = useCallback(() => {
-    if (!searchAmount.min && !searchAmount.max)
-      return offering?.enrollments || [];
-    if (!offering?.enrollments) return [];
+    if (!searchAmount.min && !searchAmount.max) {
+      // Reset to all active enrollments
+      setEnrollments(activeEnrollments);
+      return;
+    }
+    if (!activeEnrollments?.length) return [];
 
     if (searchAmount?.min >= searchAmount?.max) {
       Swal.fire({
         icon: "error",
         title: "min amount cannot be greater than or equal to max amount!",
       });
-      return offering?.enrollments || [];
+      setEnrollments(activeEnrollments);
+      return;
     }
 
-    console.log(offering.enrollments);
-
-    const data = offering.enrollments.filter(
+    const data = activeEnrollments.filter(
       (record) =>
         record?.remainingBalance >= searchAmount.min &&
         record?.remainingBalance <= searchAmount.max
     );
     setEnrollments(data);
-  }, [searchAmount, offering?.enrollments, setEnrollments]);
+  }, [searchAmount, activeEnrollments]);
 
   const reviewProgram = useMemo(() => {
     if (!programs?.data || !offering?.reviewProgramId) return null;
@@ -489,6 +505,37 @@ const ViewOffering = () => {
                 </div>
               </Form>
 
+              {/* Statistics Cards */}
+              <Row gutter={[16, 16]} className="mt-10 mb-6">
+                <Col xs={24} sm={8}>
+                  <Card className="text-center main-stat-card">
+                    <Statistic
+                      title="Total Enrolled Students"
+                      value={offering?.enrollments?.length || 0}
+                      valueStyle={{ color: "#1890ff" }}
+                    />
+                  </Card>
+                </Col>
+                <Col xs={24} sm={8}>
+                  <Card className="text-center main-stat-card">
+                    <Statistic
+                      title="Active Enrollments"
+                      value={activeEnrollments?.length || 0}
+                      valueStyle={{ color: "#3f8600" }}
+                    />
+                  </Card>
+                </Col>
+                <Col xs={24} sm={8}>
+                  <Card className="text-center main-stat-card">
+                    <Statistic
+                      title="Backed Out Students"
+                      value={backedOutStudents?.length || 0}
+                      valueStyle={{ color: "#cf1322" }}
+                    />
+                  </Card>
+                </Col>
+              </Row>
+
               {/* Backed Out Students Table */}
               {backedOutStudents?.length > 0 && (
                 <div className="mt-10 mb-8">
@@ -516,9 +563,6 @@ const ViewOffering = () => {
 
               <Row gutter={[16, 16]}>
                 <Col span={12}>
-                  <h2 className="text-2xl mb-5 mt-10">
-                    Enrolled Student List ({enrollments?.length})
-                  </h2>
                   <div className="flex flex-col gap-[6px]">
                     <label> Remaining Balance (min - max):</label>
                     <div className="flex gap-[6px]">
@@ -563,6 +607,25 @@ const ViewOffering = () => {
                   />
                 </Col>
               </Row>
+
+              <div className="mt-10 mb-8">
+                <p className="text-lg mb-4 text-red-600 font-semibold">
+                  Total Unpaid Review Fee:{" "}
+                  {formatAmount(
+                    backedOutStudents.reduce(
+                      (total, student) =>
+                        total + (student.remainingBalance || 0),
+                      0
+                    )
+                  )}
+                </p>
+                <Table
+                  dataSource={backedOutStudents}
+                  columns={columns}
+                  pagination={false}
+                  size="small"
+                />
+              </div>
             </Card>
           )}
         </Col>
