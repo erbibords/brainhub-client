@@ -1,5 +1,7 @@
-import React, { createContext, useMemo, useState, useContext } from "react";
-import useCourses from "../hooks/useCourses";
+import { createContext, useMemo, useState, useContext } from 'react';
+import { useLocation } from 'react-router-dom';
+import useCourses from '../hooks/useCourses';
+import { useAuth } from './auth';
 
 const CoursesContext = createContext({
   courses: [],
@@ -9,6 +11,11 @@ const CoursesContext = createContext({
 });
 
 export const CoursesProvider = ({ children }) => {
+  const location = useLocation();
+  const { isAuthenticated } = useAuth();
+  const isLoginPage = location.pathname === '/login';
+  const shouldFetch = isAuthenticated && !isLoginPage;
+
   const [params, setParams] = useState({
     name: undefined,
     pageNo: 1,
@@ -19,7 +26,7 @@ export const CoursesProvider = ({ children }) => {
     courses,
     isLoading: coursesLoading,
     error: coursesError,
-  } = useCourses(params);
+  } = useCourses(shouldFetch ? params : null);
 
   const values = useMemo(() => {
     return {

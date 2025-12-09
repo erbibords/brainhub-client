@@ -5,6 +5,8 @@ import fetcher from '../utils/fetcher';
 import { useBranch } from '../contexts/branch';
 
 function useOfferings(params = {}) {
+  // Normalize params - if null, use empty object to avoid destructuring errors
+  const normalizedParams = params === null ? {} : params;
   const {
     pageNo = 1,
     pageSize = 25,
@@ -13,7 +15,7 @@ function useOfferings(params = {}) {
     yearOffered = undefined,
     semester = undefined,
     offeringType = undefined,
-  } = params;
+  } = normalizedParams;
 
   const { branchId } = useBranch();
 
@@ -47,11 +49,13 @@ function useOfferings(params = {}) {
     branchId,
   ]);
 
+  // If params is null, disable fetching by passing null as SWR key
   const swrKey = useMemo(() => {
-    return `offerings-${branchId ?? 'unknown'}-${JSON.stringify(params)}`;
-  }, [branchId, params]);
+    if (params === null) return null;
+    return `offerings-${branchId ?? 'unknown'}-${JSON.stringify(normalizedParams)}`;
+  }, [branchId, normalizedParams, params]);
 
-  const { data, error, isLoading } = useSWR(swrKey, () => fetcher(requestUrl));
+  const { data, error, isLoading } = useSWR(swrKey, swrKey ? () => fetcher(requestUrl) : null);
 
   return {
     data,

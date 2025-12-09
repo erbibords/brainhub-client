@@ -81,9 +81,7 @@ const aggregateByDate = (payments = [], expenses = []) => {
     entry.expenses += Number(expense.amount ?? 0);
   });
 
-  return Array.from(map.values()).sort((a, b) =>
-    a.date.localeCompare(b.date)
-  );
+  return Array.from(map.values()).sort((a, b) => a.date.localeCompare(b.date));
 };
 
 const AdminReporting = () => {
@@ -99,8 +97,7 @@ const AdminReporting = () => {
   ]);
 
   const nonCentralBranches = useMemo(
-    () =>
-      branchesData?.data?.filter((branch) => !branch.isCentral) ?? [],
+    () => branchesData?.data?.filter((branch) => !branch.isCentral) ?? [],
     [branchesData]
   );
 
@@ -171,7 +168,7 @@ const AdminReporting = () => {
 
     doc.text(`Date Range: ${formattedRange}`, 14, 34);
     doc.text(
-          `Totals | Payments: ${formatCurrency(
+      `Totals | Payments: ${formatCurrency(
         data.summary?.totalPayments ?? 0
       )} • Expenses: ${formatCurrency(
         data.summary?.totalExpenses ?? 0
@@ -213,7 +210,15 @@ const AdminReporting = () => {
 
     autoTable(doc, {
       head: [
-        ['Expense ID', 'Name', 'Description', 'Type', 'Amount', 'Date', 'Entity'],
+        [
+          'Expense ID',
+          'Name',
+          'Description',
+          'Type',
+          'Amount',
+          'Date',
+          'Entity',
+        ],
       ],
       body: data.expenses.map((expense) => [
         expense.id,
@@ -221,9 +226,7 @@ const AdminReporting = () => {
         expense.description ?? '',
         expense.type,
         formatCurrency(expense.amount ?? 0),
-        expense.date
-          ? moment(expense.date).format('MMM DD, YYYY hh:mmA')
-          : '',
+        expense.date ? moment(expense.date).format('MMM DD, YYYY hh:mmA') : '',
         expense.entityId ?? '',
       ]),
       startY: doc.lastAutoTable.finalY + 10,
@@ -368,15 +371,11 @@ const AdminReporting = () => {
           <Col xs={24} md={10}>
             <Form.Item label="Date Range">
               <RangePicker
-                value={dateRange?.map((m) =>
-                  m ? dayjs(m.toDate()) : null
-                )}
+                value={dateRange?.map((m) => (m ? dayjs(m.toDate()) : null))}
                 onChange={(value) =>
                   setDateRange(
                     value
-                      ? value.map((d) =>
-                          d ? moment(d.toDate()) : null
-                        )
+                      ? value.map((d) => (d ? moment(d.toDate()) : null))
                       : []
                   )
                 }
@@ -465,12 +464,16 @@ const AdminReporting = () => {
             <XAxis dataKey="date" />
             <YAxis />
             <Tooltip
-            formatter={(value, name) => [
-              formatCurrency(Number(value ?? 0)),
-              name === 'payments' ? 'Payments' : 'Expenses',
-            ]}
+              formatter={(value, name) => [
+                formatCurrency(Number(value ?? 0)),
+                name === 'payments' ? 'Payments' : 'Expenses',
+              ]}
             />
-            <Legend formatter={(value) => (value === 'payments' ? 'Payments' : 'Expenses')} />
+            <Legend
+              formatter={(value) =>
+                value === 'payments' ? 'Payments' : 'Expenses'
+              }
+            />
             <Bar dataKey="payments" fill="#1677ff" name="Payments" />
             <Bar dataKey="expenses" fill="#fa541c" name="Expenses" />
           </BarChart>

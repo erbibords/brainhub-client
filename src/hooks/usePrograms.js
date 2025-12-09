@@ -5,7 +5,9 @@ import fetcher from '../utils/fetcher';
 import { useBranch } from '../contexts/branch';
 
 function usePrograms(params = {}) {
-  const { name = undefined, pageNo = 1, pageSize = 200 } = params;
+  // Normalize params - if null, use empty object to avoid destructuring errors
+  const normalizedParams = params === null ? {} : params;
+  const { name = undefined, pageNo = 1, pageSize = 200 } = normalizedParams;
 
   const { branchId } = useBranch();
 
@@ -24,11 +26,13 @@ function usePrograms(params = {}) {
     return url;
   }, [name, pageNo, pageSize, branchId]);
 
+  // If params is null, disable fetching by passing null as SWR key
   const swrKey = useMemo(() => {
-    return `programs-${branchId ?? 'unknown'}-${JSON.stringify(params)}`;
-  }, [branchId, params]);
+    if (params === null) return null;
+    return `programs-${branchId ?? 'unknown'}-${JSON.stringify(normalizedParams)}`;
+  }, [branchId, normalizedParams, params]);
 
-  const { data, error } = useSWR(swrKey, () => fetcher(requestUrl));
+  const { data, error } = useSWR(swrKey, swrKey ? () => fetcher(requestUrl) : null);
 
   const isLoading = !data && !error;
 

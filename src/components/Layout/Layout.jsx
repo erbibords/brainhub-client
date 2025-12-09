@@ -4,26 +4,6 @@ import Navbar from '../NavBar/Navbar';
 import Sidebar from '../SideBar/Sidebar';
 import { BranchProvider, useBranch } from '../../contexts/branch';
 import { AuthProvider, useAuth } from '../../contexts/auth';
-import { StudentProvider } from '../../contexts/students';
-import { CoursesProvider } from '../../contexts/courses';
-import { OfferingsProvider } from '../../contexts/offerings';
-import { EnrollmentsProvider } from '../../contexts/enrollments';
-import { ProgramsProvider } from '../../contexts/programs';
-import { PaymentsProvider } from '../../contexts/payments';
-
-const BranchScopedProviders = ({ children }) => (
-  <ProgramsProvider>
-    <EnrollmentsProvider>
-      <StudentProvider>
-        <CoursesProvider>
-          <OfferingsProvider>
-            <PaymentsProvider>{children}</PaymentsProvider>
-          </OfferingsProvider>
-        </CoursesProvider>
-      </StudentProvider>
-    </EnrollmentsProvider>
-  </ProgramsProvider>
-);
 
 const LayoutShell = ({ children, showSidebar }) => {
   const location = useLocation();
@@ -34,7 +14,6 @@ const LayoutShell = ({ children, showSidebar }) => {
   const isPrintPage = location.pathname.startsWith('/prints/');
   const isLoginPage = location.pathname === '/login';
   const isSuperAdmin = Boolean(user?.isSuperAdmin);
-  const shouldUseBranchProviders = !isSuperAdmin || isEmulating;
 
   useEffect(() => {
     if (!isSuperAdmin || isBootstrapping) {
@@ -49,13 +28,8 @@ const LayoutShell = ({ children, showSidebar }) => {
     }
   }, [isBootstrapping, isEmulating, isSuperAdmin, location.pathname, navigate]);
 
-  const content = useMemo(() => {
-    if (!shouldUseBranchProviders) {
-      return children;
-    }
-
-    return <BranchScopedProviders>{children}</BranchScopedProviders>;
-  }, [children, shouldUseBranchProviders]);
+  // No global providers - each page will load its own providers lazily
+  const content = children;
 
   const shouldShowSidebar =
     !isPrintPage && !isLoginPage && showSidebar && !isBootstrapping;

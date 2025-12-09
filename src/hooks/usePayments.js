@@ -5,8 +5,9 @@ import fetcher from '../utils/fetcher';
 import { useBranch } from '../contexts/branch';
 
 function usePayments(params = {}) {
-
-   const {
+  // Normalize params - if null, use empty object to avoid destructuring errors
+  const normalizedParams = params === null ? {} : params;
+  const {
     pageNo = 1,
     pageSize = 200, 
     referenceNo = undefined,
@@ -21,7 +22,7 @@ function usePayments(params = {}) {
     paymentMethod = undefined,
     programId = undefined,
     deleted = undefined
-  } = params;
+  } = normalizedParams;
  
   const { branchId } = useBranch();
 
@@ -68,13 +69,15 @@ function usePayments(params = {}) {
     branchId,
   ]);
 
+  // If params is null, disable fetching by passing null as SWR key
   const swrKey = useMemo(() => {
-    return `payments-${branchId ?? 'unknown'}-${JSON.stringify(params)}`;
-  }, [branchId, params]);
+    if (params === null) return null;
+    return `payments-${branchId ?? 'unknown'}-${JSON.stringify(normalizedParams)}`;
+  }, [branchId, normalizedParams, params]);
 
-  const { data, error, isLoading, mutate } = useSWR(swrKey, () =>
+  const { data, error, isLoading, mutate } = useSWR(swrKey, swrKey ? () =>
     fetcher(requestUrl)
-  );
+  : null);
 
   return {
     data,

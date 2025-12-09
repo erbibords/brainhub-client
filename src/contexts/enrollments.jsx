@@ -1,5 +1,7 @@
-import { createContext, useMemo, useState, useContext } from "react";
-import useEnrollments from "../hooks/useEnrollments";
+import { createContext, useMemo, useState, useContext } from 'react';
+import { useLocation } from 'react-router-dom';
+import useEnrollments from '../hooks/useEnrollments';
+import { useAuth } from './auth';
 
 const EnrollmentsContext = createContext({
   enrollments: [],
@@ -9,6 +11,11 @@ const EnrollmentsContext = createContext({
 });
 
 export const EnrollmentsProvider = ({ children }) => {
+  const location = useLocation();
+  const { isAuthenticated } = useAuth();
+  const isLoginPage = location.pathname === '/login';
+  const shouldFetch = isAuthenticated && !isLoginPage;
+
   const [params, setParams] = useState({
     startDate: undefined,
     endDate: undefined,
@@ -22,7 +29,9 @@ export const EnrollmentsProvider = ({ children }) => {
     programId: undefined,
   });
 
-  const { data, isLoading, error } = useEnrollments(params);
+  const { data, isLoading, error } = useEnrollments(
+    shouldFetch ? params : null
+  );
 
   const values = useMemo(() => {
     return {

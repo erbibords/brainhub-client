@@ -1,5 +1,7 @@
 import React, { createContext, useMemo, useState, useContext } from "react";
+import { useLocation } from "react-router-dom";
 import useOfferings from "../hooks/useOfferings";
+import { useAuth } from "./auth";
 
 const OfferingsContext = createContext({
   offerings: [],
@@ -9,6 +11,11 @@ const OfferingsContext = createContext({
 });
 
 export const OfferingsProvider = ({ children }) => {
+  const location = useLocation();
+  const { isAuthenticated } = useAuth();
+  const isLoginPage = location.pathname === '/login';
+  const shouldFetch = isAuthenticated && !isLoginPage;
+
   const [params, setParams] = useState({
     pageNo: 1,
     pageSize: 100,
@@ -18,7 +25,7 @@ export const OfferingsProvider = ({ children }) => {
     data,
     isLoading: getOfferingsLoading,
     error: getOfferingsError,
-  } = useOfferings(params);
+  } = useOfferings(shouldFetch ? params : null);
 
   const values = useMemo(() => {
     return {

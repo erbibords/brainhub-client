@@ -19,9 +19,3 @@ function useAdminAnalytics(range = '7d') {
 }
 
 export default useAdminAnalytics;
-
-
-
-
-
-

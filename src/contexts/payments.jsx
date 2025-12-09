@@ -1,5 +1,7 @@
 import React, { createContext, useMemo, useState, useContext } from "react";
+import { useLocation } from "react-router-dom";
 import usePayments from "../hooks/usePayments";
+import { useAuth } from "./auth";
 
 const PaymentsContext = createContext({
   payments: [],
@@ -10,6 +12,11 @@ const PaymentsContext = createContext({
 });
 
 export const PaymentsProvider = ({ children }) => {
+  const location = useLocation();
+  const { isAuthenticated } = useAuth();
+  const isLoginPage = location.pathname === '/login';
+  const shouldFetch = isAuthenticated && !isLoginPage;
+
   const [params, setParams] = useState({
     startDate: undefined,
     endDate: undefined,
@@ -24,7 +31,7 @@ export const PaymentsProvider = ({ children }) => {
     programId: undefined,
   });
 
-  const { data, isLoading, error, mutate } = usePayments(params);
+  const { data, isLoading, error, mutate } = usePayments(shouldFetch ? params : null);
 
   const values = useMemo(() => {
     return {

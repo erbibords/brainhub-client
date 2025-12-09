@@ -43,4 +43,3 @@ function useAdminReporting(params) {
 }
 
 export default useAdminReporting;
-

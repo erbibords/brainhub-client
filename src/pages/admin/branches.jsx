@@ -84,7 +84,11 @@ const BranchesAdminPage = () => {
               {isActive ? (
                 <Tag color="green">Currently emulating</Tag>
               ) : (
-                <Button size="small" type="primary" onClick={() => handleEmulateBranch(record)}>
+                <Button
+                  size="small"
+                  type="primary"
+                  onClick={() => handleEmulateBranch(record)}
+                >
                   Emulate
                 </Button>
               )}

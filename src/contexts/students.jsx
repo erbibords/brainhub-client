@@ -5,9 +5,11 @@ import React, {
   useState,
   useContext,
 } from "react";
+import { useLocation } from "react-router-dom";
 import useStudents from "../hooks/useStudents";
 import axiosInstance from "../utils/axiosInstance";
 import { DEFAULT_BRANCH_ID } from "../constants";
+import { useAuth } from "./auth";
 
 const StudentContext = createContext({
   students: [],
@@ -18,6 +20,11 @@ const StudentContext = createContext({
 });
 
 export const StudentProvider = ({ children }) => {
+  const location = useLocation();
+  const { isAuthenticated } = useAuth();
+  const isLoginPage = location.pathname === '/login';
+  const shouldFetch = isAuthenticated && !isLoginPage;
+
   const [params, setParams] = useState({
     studentName: undefined,
     school: undefined,
@@ -28,7 +35,7 @@ export const StudentProvider = ({ children }) => {
     data: students,
     isLoading: studentDataLoading,
     error: getStudentError,
-  } = useStudents(params);
+  } = useStudents(shouldFetch ? params : null);
 
   const addStudent = useCallback(
     async ({
