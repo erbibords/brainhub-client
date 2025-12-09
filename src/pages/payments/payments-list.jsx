@@ -16,6 +16,7 @@ import {
   Divider,
   Modal,
   Input,
+  Tabs,
 } from "antd";
 import {
   SEMESTER,
@@ -24,6 +25,7 @@ import {
   PAYMENTS_BASE_URL,
 } from "../../constants";
 import { usePaymentsContext } from "../../contexts/payments";
+import usePayments from "../../hooks/usePayments";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { getCourseOfferingName } from "../../utils/mappings";
 import { useNavigate } from "react-router-dom";
@@ -45,28 +47,6 @@ const PaymentsList = () => {
   const [pageSize, setPageSize] = useState(25); // Display 25 per page
   const [isFiltered, setIsFiltered] = useState(false); // Track if filters are applied
 
-  const {
-    payments,
-    getPaymentsLoading,
-    getPaymentsError,
-    setParams,
-    refreshPayments,
-  } = usePaymentsContext();
-  const { branchId } = useBranch();
-  const paymentsBaseUrl = useMemo(() => PAYMENTS_BASE_URL(), [branchId]);
-  const { mutate: undoPaymentMutate } = useMutation(
-    paymentsBaseUrl,
-    "DELETE"
-  );
-
-  const {
-    data: schools,
-    loading: schoolsLoading,
-    error: schoolsError,
-  } = useSchools();
-  const { courses, getCoursesLoading, getCoursesError } = useCourse();
-  const { programs, programsLoading, programsError } = useProgramContext();
-
   const [searchParams, setSearchParams] = useState({
     referenceNo: undefined,
     startDate: undefined,
@@ -80,8 +60,55 @@ const PaymentsList = () => {
     programId: undefined,
   });
 
+  const {
+    payments,
+    getPaymentsLoading,
+    getPaymentsError,
+    setParams,
+    refreshPayments,
+  } = usePaymentsContext();
+  const { branchId } = useBranch();
+
+  // Fetch undone payments separately
+  const undonePaymentsParams = useMemo(() => {
+    const params = {
+      pageNo: 1,
+      pageSize: isFiltered ? 10000 : 200,
+      deleted: true, // Assuming API supports this parameter
+    };
+
+    // Only include search params if they're set
+    if (searchParams.referenceNo) params.referenceNo = searchParams.referenceNo;
+    if (searchParams.startDate) params.startDate = searchParams.startDate;
+    if (searchParams.endDate) params.endDate = searchParams.endDate;
+    if (searchParams.studentName) params.studentName = searchParams.studentName;
+    if (searchParams.courseId) params.courseId = searchParams.courseId;
+    if (searchParams.schoolId) params.schoolId = searchParams.schoolId;
+    if (searchParams.semester) params.semester = searchParams.semester;
+    if (searchParams.yearOffered) params.yearOffered = searchParams.yearOffered;
+    if (searchParams.offeringType)
+      params.offeringType = searchParams.offeringType;
+    if (searchParams.programId) params.programId = searchParams.programId;
+
+    return params;
+  }, [searchParams, isFiltered]);
+
+  const { data: undonePayments, isLoading: undonePaymentsLoading } =
+    usePayments(undonePaymentsParams);
+  const paymentsBaseUrl = useMemo(() => PAYMENTS_BASE_URL(), [branchId]);
+  const { mutate: undoPaymentMutate } = useMutation(paymentsBaseUrl, "DELETE");
+
+  const {
+    data: schools,
+    loading: schoolsLoading,
+    error: schoolsError,
+  } = useSchools();
+  const { courses, getCoursesLoading, getCoursesError } = useCourse();
+  const { programs, programsLoading, programsError } = useProgramContext();
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [password, setPassword] = useState("");
+  const [activeTab, setActiveTab] = useState("payments");
 
   useEffect(() => {
     // Initial load: fetch 200 records, Filtered: fetch all records
@@ -164,7 +191,8 @@ const PaymentsList = () => {
     }
   }, [paymentsBaseUrl, refreshPayments, selectedPaymentid, undoPaymentMutate]);
 
-  const columns = [
+  // Base columns shared by both tabs
+  const baseColumns = [
     {
       title: "Name",
       render: (_, record) => record.enrollment.student.fullName,
@@ -177,7 +205,6 @@ const PaymentsList = () => {
         return data;
       },
     },
-
     {
       title: "Payment Amount",
       dataIndex: "amountPaid",
@@ -237,6 +264,11 @@ const PaymentsList = () => {
         getCourseOfferingName(record.enrollment.courseOffering),
     },
     { title: "Processed by", dataIndex: "processedBy" },
+  ];
+
+  // Columns for active payments (with Undo button)
+  const activePaymentsColumns = [
+    ...baseColumns,
     {
       title: "Action",
       key: "action",
@@ -258,6 +290,20 @@ const PaymentsList = () => {
             Undo
           </CustomButton>
         </Space>
+      ),
+    },
+  ];
+
+  // Columns for undone payments (without Undo button)
+  const undonePaymentsColumns = [
+    ...baseColumns,
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <CustomButton onClick={() => navigate(`/prints/receipt/${record?.id}`)}>
+          Print
+        </CustomButton>
       ),
     },
   ];
@@ -546,54 +592,112 @@ const PaymentsList = () => {
             </Row>
           </Col>
           <Col span={24}>
-            {/* <p className="text-xl font-bold mb-4">
-              Total amount paid:{" "}
-              {formatAmount(
-                payments &&
-                  payments?.data?.reduce((acc, item) => {
-                    return acc + item.amountPaid;
-                  }, 0)
-              )}
-            </p> */}
-            {getPaymentsError ? (
-              <GenericErrorDisplay />
-            ) : (
-              <Table
-                dataSource={
-                  payments && payments?.data
-                    ? payments.data.slice(
-                        (currentPage - 1) * pageSize,
-                        currentPage * pageSize
-                      )
-                    : []
-                }
-                columns={columns}
-                loading={getPaymentsLoading}
-                pagination={{
-                  current: currentPage,
-                  pageSize: pageSize,
-                  total: payments?.data?.length || 0,
-                  showSizeChanger: true,
-                  showQuickJumper: true,
-                  showTotal: (total, range) =>
-                    `${range[0]}-${range[1]} of ${
-                      payments?.data?.length || 0
-                    } items`,
-                  pageSizeOptions: ["10", "25", "50", "100"],
-                }}
-                scroll={{ y: 800 }}
-                onChange={(pagination) => {
-                  console.log("Pagination changed:", {
-                    current: pagination.current,
-                    pageSize: pagination.pageSize,
-                    total: payments?.data?.length || 0,
-                    isFiltered,
-                  });
-                  setCurrentPage(pagination.current);
-                  setPageSize(pagination.pageSize);
-                }}
-              />
-            )}
+            <Tabs
+              activeKey={activeTab}
+              onChange={(key) => {
+                setActiveTab(key);
+                setCurrentPage(1); // Reset to first page when switching tabs
+              }}
+              items={[
+                {
+                  key: "payments",
+                  label: `Payments (${payments?.data?.length || 0})`,
+                  children: (
+                    <>
+                      {getPaymentsError ? (
+                        <GenericErrorDisplay />
+                      ) : (
+                        <Table
+                          dataSource={
+                            payments && payments?.data
+                              ? payments.data.slice(
+                                  (currentPage - 1) * pageSize,
+                                  currentPage * pageSize
+                                )
+                              : []
+                          }
+                          columns={activePaymentsColumns}
+                          loading={getPaymentsLoading}
+                          pagination={{
+                            current: currentPage,
+                            pageSize: pageSize,
+                            total: payments?.data?.length || 0,
+                            showSizeChanger: true,
+                            showQuickJumper: true,
+                            showTotal: (total, range) =>
+                              `${range[0]}-${range[1]} of ${
+                                payments?.data?.length || 0
+                              } items`,
+                            pageSizeOptions: ["10", "25", "50", "100"],
+                          }}
+                          scroll={{ y: 800 }}
+                          onChange={(pagination) => {
+                            console.log("Pagination changed:", {
+                              current: pagination.current,
+                              pageSize: pagination.pageSize,
+                              total: payments?.data?.length || 0,
+                              isFiltered,
+                            });
+                            setCurrentPage(pagination.current);
+                            setPageSize(pagination.pageSize);
+                          }}
+                        />
+                      )}
+                    </>
+                  ),
+                },
+                {
+                  key: "undidPayments",
+                  label: `Undid Payments (${
+                    undonePayments?.data?.length || 0
+                  })`,
+                  children: (
+                    <Table
+                      dataSource={
+                        undonePayments && undonePayments?.data
+                          ? undonePayments.data.slice(
+                              (currentPage - 1) * pageSize,
+                              currentPage * pageSize
+                            )
+                          : []
+                      }
+                      columns={undonePaymentsColumns}
+                      loading={undonePaymentsLoading}
+                      locale={{
+                        emptyText: (
+                          <div style={{ padding: "40px", textAlign: "center" }}>
+                            <p style={{ fontSize: "16px", color: "#999" }}>
+                              No undone payments found
+                            </p>
+                          </div>
+                        ),
+                      }}
+                      pagination={{
+                        current: currentPage,
+                        pageSize: pageSize,
+                        total: undonePayments?.data?.length || 0,
+                        showSizeChanger: true,
+                        showQuickJumper: true,
+                        showTotal: (total, range) => {
+                          if (total === 0) {
+                            return "No items";
+                          }
+                          return `${range[0]}-${range[1]} of ${
+                            undonePayments?.data?.length || 0
+                          } items`;
+                        },
+                        pageSizeOptions: ["10", "25", "50", "100"],
+                      }}
+                      scroll={{ y: 800 }}
+                      onChange={(pagination) => {
+                        setCurrentPage(pagination.current);
+                        setPageSize(pagination.pageSize);
+                      }}
+                    />
+                  ),
+                },
+              ]}
+            />
           </Col>
         </Row>
       </Form>

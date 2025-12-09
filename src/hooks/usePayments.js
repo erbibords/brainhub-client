@@ -19,7 +19,8 @@ function usePayments(params = {}) {
     offeringType = undefined,
     yearOffered,
     paymentMethod = undefined,
-    programId = undefined
+    programId = undefined,
+    deleted = undefined
   } = params;
  
   const { branchId } = useBranch();
@@ -42,6 +43,7 @@ function usePayments(params = {}) {
     if (paymentMethod) queryParams.append('paymentMethod', paymentMethod);
     if (offeringType) queryParams.append('offeringType', offeringType);
     if (programId) queryParams.append('programId', programId);
+    if (deleted !== undefined) queryParams.append('deleted', deleted);
 
     if (queryParams.toString()) {
       url += `?${queryParams.toString()}`;
@@ -62,6 +64,7 @@ function usePayments(params = {}) {
     paymentMethod,
     offeringType,
     programId,
+    deleted,
     branchId,
   ]);
 

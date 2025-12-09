@@ -36,13 +36,9 @@ const StudentsTable = ({ programId, programName }) => {
       return [];
     }
 
-    // Filter out backedOut students first
-    const activeEnrollments = enrollments.data.filter(
-      (enrollment) => !enrollment.student?.backedOut
-    );
-
-    // Extract unique students from active enrollments and sort alphabetically
-    const uniqueStudents = activeEnrollments.reduce((acc, enrollment) => {
+    // Include all enrollments (both active and backed out)
+    // Extract unique students from all enrollments and sort alphabetically
+    const uniqueStudents = enrollments.data.reduce((acc, enrollment) => {
       const student = enrollment.student;
       const studentKey = student.id;
 
@@ -61,10 +57,14 @@ const StudentsTable = ({ programId, programName }) => {
           address: student.address,
           school: student.school?.name,
           enrollments: [],
+          isBackedOut: false,
         };
       }
 
       acc[studentKey].enrollments.push(enrollment);
+      // Mark as backed out if any enrollment has a backed out student
+      acc[studentKey].isBackedOut =
+        acc[studentKey].isBackedOut || Boolean(enrollment.student?.backedOut);
       return acc;
     }, {});
 
@@ -95,6 +95,15 @@ const StudentsTable = ({ programId, programName }) => {
     });
   }, [studentsData, searchText]);
 
+  // Calculate student counts
+  const studentCounts = useMemo(() => {
+    const total = studentsData?.length || 0;
+    const backedOut =
+      studentsData?.filter((student) => student.isBackedOut).length || 0;
+    const active = total - backedOut;
+    return { total, backedOut, active };
+  }, [studentsData]);
+
   // Calculate program totals from current enrollments data
   const programTotals = useMemo(() => {
     // Always calculate from current enrollments data, not stale programData
@@ -106,6 +115,7 @@ const StudentsTable = ({ programId, programName }) => {
         totalRemainingCollectibles: 0,
         totalOverpaid: 0,
         totalBackedOutCollected: 0,
+        totalBackedOutStudents: 0,
       };
     }
 
@@ -155,7 +165,13 @@ const StudentsTable = ({ programId, programName }) => {
       return acc;
     }, 0);
 
+    // Calculate unique backed out students count
+    const uniqueBackedOutStudents = new Set(
+      backedOutEnrollments.map((enrollment) => enrollment.student?.id)
+    ).size;
+
     totals.totalBackedOutCollected = backedOutTotal;
+    totals.totalBackedOutStudents = uniqueBackedOutStudents;
 
     return totals;
   }, [enrollments, getEnrollmentsLoading, getEnrollmentsError]);
@@ -253,7 +269,7 @@ const StudentsTable = ({ programId, programName }) => {
             </CustomButton>
           </div>
 
-          {/* Main Financial Statistics - Row 1 */}
+          {/* Main Financial Statistics - Row 2 */}
           <Row gutter={[16, 16]} className="mb-6">
             <Col xs={24} sm={8}>
               <Card className="text-center main-stat-card">
@@ -290,6 +306,37 @@ const StudentsTable = ({ programId, programName }) => {
                         : "#3f8600",
                   }}
                   prefix="₱"
+                />
+              </Card>
+            </Col>
+          </Row>
+
+          {/* Student Statistics - Row 1 */}
+          <Row gutter={[16, 16]} className="mb-6">
+            <Col xs={24} sm={8}>
+              <Card className="text-center main-stat-card">
+                <Statistic
+                  title="Total Students"
+                  value={studentCounts.total}
+                  valueStyle={{ color: "#1890ff" }}
+                />
+              </Card>
+            </Col>
+            <Col xs={24} sm={8}>
+              <Card className="text-center main-stat-card">
+                <Statistic
+                  title="Backed Out Students"
+                  value={studentCounts.backedOut}
+                  valueStyle={{ color: "#cf1322" }}
+                />
+              </Card>
+            </Col>
+            <Col xs={24} sm={8}>
+              <Card className="text-center main-stat-card">
+                <Statistic
+                  title="Active Students"
+                  value={studentCounts.active}
+                  valueStyle={{ color: "#3f8600" }}
                 />
               </Card>
             </Col>
@@ -355,6 +402,13 @@ const StudentsTable = ({ programId, programName }) => {
               pagination={false}
               scroll={{ x: 1200 }}
               rowClassName={(record) => {
+                const classes = [];
+
+                // Add strikethrough class for backed out students
+                if (record?.isBackedOut) {
+                  classes.push("backed-out-student-row");
+                }
+
                 // Calculate if this student has overpaid
                 const totalRemaining = record.enrollments.reduce(
                   (sum, enrollment) => {
@@ -371,7 +425,11 @@ const StudentsTable = ({ programId, programName }) => {
                 );
 
                 // Add background color for overpaid students
-                return totalRemaining < 0 ? "overpaid-student-row" : "";
+                if (totalRemaining < 0) {
+                  classes.push("overpaid-student-row");
+                }
+
+                return classes.join(" ");
               }}
             />
           </div>
