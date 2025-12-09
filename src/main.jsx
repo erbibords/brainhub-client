@@ -1,12 +1,12 @@
-import React from "react";
-import "antd/dist/reset.css";
-import ReactDOM from "react-dom/client";
-import { SWRConfig } from "swr";
-import App from "./App.jsx";
-import fetcher from "./utils/fetcher.js";
-import "./index.css";
+import React from 'react';
+import 'antd/dist/reset.css';
+import ReactDOM from 'react-dom/client';
+import { SWRConfig } from 'swr';
+import App from './App.jsx';
+import fetcher from './utils/fetcher.js';
+import './index.css';
 
-// Global SWR configuration to prevent excessive API calls
+// Global SWR configuration to prevent excessive API calls and reduce server load
 const swrConfig = {
   fetcher,
   // Disable automatic refresh to prevent unnecessary API calls
@@ -15,8 +15,11 @@ const swrConfig = {
   revalidateOnFocus: false,
   // Disable revalidation on reconnect to prevent API calls when network reconnects
   revalidateOnReconnect: false,
-  // Dedupe identical requests within 2 seconds
-  dedupingInterval: 2000,
+  // Disable revalidation on mount - only fetch when data is actually needed
+  revalidateOnMount: false,
+  // Increase dedupe window to 10 seconds to prevent duplicate requests
+  // This is critical when multiple components use the same hook
+  dedupingInterval: 10000,
   // Retry failed requests with exponential backoff
   errorRetryInterval: 5000,
   errorRetryCount: 3,
@@ -26,15 +29,15 @@ const swrConfig = {
   loadingTimeout: 0,
   // Global error handler
   onError: (error, key) => {
-    console.error("SWR Error:", error, "for key:", key);
+    console.error('SWR Error:', error, 'for key:', key);
   },
-  // Global success handler for debugging
-  onSuccess: (data, key) => {
-    console.log("SWR Success for key:", key);
-  },
+  // Remove success logging in production to reduce console spam
+  // onSuccess: (data, key) => {
+  //   console.log("SWR Success for key:", key);
+  // },
 };
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <SWRConfig value={swrConfig}>
       <App />
