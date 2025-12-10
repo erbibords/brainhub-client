@@ -1,8 +1,7 @@
 import { useMemo, useRef } from "react";
 import { Table, Spin } from "antd";
 import { useParams, useNavigate } from "react-router-dom";
-import { getPaymentById } from "../../utils/mappings";
-import { usePaymentsContext } from "../../contexts/payments";
+import usePayment from "../../hooks/usePayment";
 import logo from "../../assets/images/brainhub-logo-new.png";
 import { formatDate, formatAmount } from "../../utils/formatting";
 import { useReactToPrint } from "react-to-print";
@@ -15,19 +14,13 @@ const Receipt = () => {
     navigate("/payments/list");
   }
 
-  const { payments, getPaymentsError, getPaymentsLoading } =
-    usePaymentsContext();
-
-  console.log(payments, getPaymentsLoading);
+  const {
+    data: paymentDetails,
+    error: getPaymentsError,
+    isLoading: getPaymentsLoading,
+  } = usePayment(params?.paymentId);
 
   const contentToPrint = useRef(null);
-
-  const paymentDetails = useMemo(() => {
-    if (!payments?.data) return null;
-    return getPaymentById(payments?.data, params?.paymentId);
-  }, [params, payments]);
-
-  console.log(paymentDetails);
 
   const handlePrint = useReactToPrint({
     content: () => contentToPrint.current,
@@ -81,7 +74,19 @@ const Receipt = () => {
   ];
 
   if (getPaymentsError) {
-    return <div>Error loading payment details.</div>;
+    return (
+      <div className="w-full flex flex-col h-full items-center justify-center">
+        <p className="mb-6 text-lg text-red-600">
+          Error loading payment details.
+        </p>
+        <button
+          className="px-4 py-2 bg-gray-300 text-black rounded"
+          onClick={() => navigate("/payments/list")}
+        >
+          Go Back
+        </button>
+      </div>
+    );
   }
 
   if (getPaymentsLoading) {
@@ -89,6 +94,20 @@ const Receipt = () => {
       <div className="w-full flex flex-col h-full items-center justify-center">
         <p className="mb-6 text-lg">Generating Receipt...</p>
         <Spin size="large" />
+      </div>
+    );
+  }
+
+  if (!paymentDetails) {
+    return (
+      <div className="w-full flex flex-col h-full items-center justify-center">
+        <p className="mb-6 text-lg">Payment not found.</p>
+        <button
+          className="px-4 py-2 bg-gray-300 text-black rounded"
+          onClick={() => navigate("/payments/list")}
+        >
+          Go Back
+        </button>
       </div>
     );
   }
@@ -116,22 +135,28 @@ const Receipt = () => {
           </p>
 
           <h2 className="font-bold mt-2">INVOICE RECEIPT</h2>
-          <p className="text-sm">No: {paymentDetails?.referenceNo}</p>
+          <p className="text-sm">No: {paymentDetails?.referenceNo || "N/A"}</p>
         </div>
 
         <hr className="my-2" />
 
         <div>
-          <p>Date: {formatDate(paymentDetails?.paidAt) ?? ""}</p>
+          <p>
+            Date:{" "}
+            {paymentDetails?.paidAt ? formatDate(paymentDetails.paidAt) : ""}
+          </p>
           <p>
             Received From:{" "}
             <span className="font-bold">
-              {paymentDetails?.enrollment?.student?.fullName?.toUpperCase()}
+              {paymentDetails?.enrollment?.student?.fullName?.toUpperCase() ||
+                "N/A"}
             </span>
           </p>
           <p>
             Mode of Payment:{" "}
-            <span className="font-bold">{paymentDetails?.paymentMethod}</span>
+            <span className="font-bold">
+              {paymentDetails?.paymentMethod || "N/A"}
+            </span>
           </p>
         </div>
 
@@ -159,7 +184,7 @@ const Receipt = () => {
         </div>
 
         <div className="mt-4 text-center">
-          <p>{paymentDetails?.processedBy}</p>
+          <p>{paymentDetails?.processedBy || ""}</p>
           <hr className="border-dashed" />
           <p className="text-xs">Authorized Signature</p>
         </div>
