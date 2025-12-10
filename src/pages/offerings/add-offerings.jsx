@@ -3,7 +3,7 @@ import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
 import { Select, Form, DatePicker } from "antd";
 import useSchools from "../../hooks/useSchools";
-import { useCourse } from "../../contexts/courses";
+import useCourses from "../../hooks/useCourses";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { DateTime } from "luxon";
 import useMutation from "../../hooks/useMutation";
@@ -23,7 +23,7 @@ const AddOfferings = () => {
 
   const navigate = useNavigate();
   const [enrolleeType, setEnrolleeType] = useState(undefined);
-  const { courses, getCoursesLoading, getCoursesError } = useCourse();
+  const { courses, isLoading: getCoursesLoading, error: getCoursesError } = useCourses();
   const [selectedCourseId, setSelectedCourseId] = useState(undefined);
   const { mutate: AddOffering, loading: AddOfferingLoading } = useMutation(
     `branches/${DEFAULT_BRANCH_ID()}/courses/${selectedCourseId}/offerings`,

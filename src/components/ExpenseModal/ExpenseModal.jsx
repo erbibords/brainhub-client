@@ -15,7 +15,7 @@ import { UploadOutlined, PaperClipOutlined } from '@ant-design/icons';
 import CustomInput from '../Input/Input';
 import CustomButton from '../Button/Button';
 import { EXPENSE_TYPES } from '../../constants';
-import { useCourse } from '../../contexts/courses';
+import useCourses from '../../hooks/useCourses';
 import { useProgramContext } from '../../contexts/programs';
 import { useOfferingsContext } from '../../contexts/offerings';
 import { useAuth } from '../../contexts/auth';
@@ -40,7 +40,7 @@ const ExpenseModal = ({
   const isSuperAdmin = Boolean(user?.isSuperAdmin);
 
   // Fetch entities based on type
-  const { courses, getCoursesLoading } = useCourse();
+  const { courses, isLoading: getCoursesLoading } = useCourses();
   const { programs, getProgramsLoading } = useProgramContext();
   const { data: offerings, getOfferingsLoading } = useOfferingsContext();
 

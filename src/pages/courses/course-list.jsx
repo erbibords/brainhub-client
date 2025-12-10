@@ -1,77 +1,80 @@
-import React, { useCallback, useState, useMemo, useEffect } from "react";
-import { Input, Table, Space, Row, Col, Button, Form } from "antd";
-import CustomInput from "../../components/Input/Input";
-import AddCourseModal from "../../components/AddCourseModal/AddCourseModal";
-import useMutation from "../../hooks/useMutation";
-import { COURSE_BASE_URL } from "../../constants";
-import { useCourse } from "../../contexts/courses";
-import { useBranch } from "../../contexts/branch";
-import Swal from "sweetalert2";
-import CustomButton from "../../components/Button/Button";
-import { useNavigate } from "react-router-dom";
+import React, { useCallback, useState, useMemo, useEffect } from 'react';
+import { Input, Table, Space, Row, Col, Button, Form } from 'antd';
+import CustomInput from '../../components/Input/Input';
+import AddCourseModal from '../../components/AddCourseModal/AddCourseModal';
+import useMutation from '../../hooks/useMutation';
+import { COURSE_BASE_URL } from '../../constants';
+import useCourses from '../../hooks/useCourses';
+import { useBranch } from '../../contexts/branch';
+import Swal from 'sweetalert2';
+import CustomButton from '../../components/Button/Button';
+import { useNavigate } from 'react-router-dom';
 
 const { TextArea } = Input;
 
 const CourseList = () => {
   const navigate = useNavigate();
-  const [searchCourse, setSearchCourse] = useState("");
-  const { courses, coursesLoading, coursesError } = useCourse();
+  const [searchCourse, setSearchCourse] = useState('');
+  const {
+    courses,
+    isLoading: coursesLoading,
+    error: coursesError,
+  } = useCourses();
   const { branchId } = useBranch();
   const courseBaseUrl = useMemo(() => COURSE_BASE_URL(), [branchId]);
-  const coursesCacheKey = useMemo(() => `courses-${branchId ?? 'unknown'}`, [branchId]);
+  const coursesCacheKey = useMemo(
+    () => `courses-${branchId ?? 'unknown'}`,
+    [branchId]
+  );
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(undefined);
   const {
     mutate: addCourse,
     loading: addCourseLoading,
     error: addCourseError,
-  } = useMutation(courseBaseUrl, "POST", coursesCacheKey);
+  } = useMutation(courseBaseUrl, 'POST', coursesCacheKey);
 
   const {
     mutate: deleteCourse,
     loading: deleteCourseLoading,
     error: deleteCourseError,
-  } = useMutation(
-    courseBaseUrl,
-    "DELETE",
-    coursesCacheKey
-  );
+  } = useMutation(courseBaseUrl, 'DELETE', coursesCacheKey);
 
-  const [editingKey, setEditingKey] = useState("");
+  const [editingKey, setEditingKey] = useState('');
   const [form] = Form.useForm();
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
       render: (text, record) =>
         editingKey === record.key ? (
           <CustomInput
             value={record.course_name}
-            onChange={(e) => handleFieldChange(e, record.key, "name")}
+            onChange={(e) => handleFieldChange(e, record.key, 'name')}
           />
         ) : (
           text
         ),
     },
     {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description',
       render: (text, record) =>
         editingKey === record.id ? (
           <TextArea
             value={record.description}
-            onChange={(e) => handleFieldChange(e, record.id, "description")}
+            onChange={(e) => handleFieldChange(e, record.id, 'description')}
           />
         ) : (
           text
         ),
     },
     {
-      title: "Action",
-      key: "action",
+      title: 'Action',
+      key: 'action',
       render: (text, record) => (
         <Space size="middle">
           <CustomButton onClick={() => navigate(`${record.id}`)}>
@@ -101,7 +104,7 @@ const CourseList = () => {
   };
 
   const cancelEditing = () => {
-    setEditingKey("");
+    setEditingKey('');
   };
 
   const handleDeleteCourse = useCallback(() => {
@@ -146,16 +149,16 @@ const CourseList = () => {
           form.resetFields();
           setIsModalVisible(false);
           Swal.fire({
-            icon: "success",
-            title: "Course Added",
+            icon: 'success',
+            title: 'Course Added',
             timer: 2000,
           });
         }
       } catch (error) {
         Swal.fire({
-          icon: "error",
-          title: "Something went wrong",
-          text: "It looks like there might be an encoding issue or a conflict with your entries. Please review and try again.",
+          icon: 'error',
+          title: 'Something went wrong',
+          text: 'It looks like there might be an encoding issue or a conflict with your entries. Please review and try again.',
         });
       }
     },

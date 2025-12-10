@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   Select,
   Row,
@@ -10,28 +10,28 @@ import {
   DatePicker,
   Table,
   Statistic,
-} from "antd";
-import { ArrowLeftOutlined } from "@ant-design/icons";
-import { useParams, useNavigate } from "react-router-dom";
-import useMutation from "../../hooks/useMutation";
-import { useCourse } from "../../contexts/courses";
-import Swal from "sweetalert2";
-import { OFFERING_BASE_URL } from "../../constants";
-import useOffering from "../../hooks/useOffering";
+} from 'antd';
+import { ArrowLeftOutlined } from '@ant-design/icons';
+import { useParams, useNavigate } from 'react-router-dom';
+import useMutation from '../../hooks/useMutation';
+import useCourses from '../../hooks/useCourses';
+import Swal from 'sweetalert2';
+import { OFFERING_BASE_URL } from '../../constants';
+import useOffering from '../../hooks/useOffering';
 import {
   formatAmount,
   formatDate,
   formatSemester,
-} from "../../utils/formatting";
-import { SEMESTER, YEAR } from "../../constants";
-import CustomInput from "../../components/Input/Input";
-import CustomButton from "../../components/Button/Button";
-import { getDataById, getSchoolById } from "../../utils/mappings";
-import useSchools from "../../hooks/useSchools";
-import { useProgramContext } from "../../contexts/programs";
-import dayjs from "dayjs";
-import { useBranch } from "../../contexts/branch";
-import "./view-offerings.css";
+} from '../../utils/formatting';
+import { SEMESTER, YEAR } from '../../constants';
+import CustomInput from '../../components/Input/Input';
+import CustomButton from '../../components/Button/Button';
+import { getDataById, getSchoolById } from '../../utils/mappings';
+import useSchools from '../../hooks/useSchools';
+import { useProgramContext } from '../../contexts/programs';
+import dayjs from 'dayjs';
+import { useBranch } from '../../contexts/branch';
+import './view-offerings.css';
 
 const { Option } = Select;
 
@@ -41,7 +41,7 @@ const ViewOffering = () => {
   const { data: schools } = useSchools();
 
   if (!params?.offeringId) {
-    navigate("/offerings");
+    navigate('/offerings');
   }
 
   const [form] = Form.useForm();
@@ -52,7 +52,7 @@ const ViewOffering = () => {
   });
   const [enrollments, setEnrollments] = useState([]);
 
-  const { courses, coursesError } = useCourse();
+  const { courses, error: coursesError } = useCourses();
   const {
     data: offering,
     isLoading,
@@ -91,11 +91,11 @@ const ViewOffering = () => {
 
   if (coursesError || offeringError) {
     Swal.fire({
-      icon: "Error",
-      title: "Error viewing course offering. Please try again later",
+      icon: 'Error',
+      title: 'Error viewing course offering. Please try again later',
       timer: 2000,
     });
-    navigate("/offerings");
+    navigate('/offerings');
   }
 
   const { branchId } = useBranch();
@@ -103,8 +103,8 @@ const ViewOffering = () => {
   const OFFERING_ENTITY_URL = `${offeringBaseUrl}/${params.offeringId}`;
   const { mutate: updateOffering, loading: updateStudentLoading } = useMutation(
     OFFERING_ENTITY_URL,
-    "PUT",
-    "offerings"
+    'PUT',
+    'offerings'
   );
 
   useEffect(() => {
@@ -119,8 +119,8 @@ const ViewOffering = () => {
 
   const onFormFailed = (errorInfo) => {
     Swal.fire({
-      icon: "error",
-      title: "Student Information Update Error",
+      icon: 'error',
+      title: 'Student Information Update Error',
       text: JSON.stringify(errorInfo),
     });
   };
@@ -140,8 +140,8 @@ const ViewOffering = () => {
 
       if (res) {
         Swal.fire({
-          icon: "success",
-          title: "Offering information updated!",
+          icon: 'success',
+          title: 'Offering information updated!',
           timer: 2000,
         });
         setIsEditing(false);
@@ -150,63 +150,63 @@ const ViewOffering = () => {
     } catch (error) {
       console.log(error);
       Swal.fire({
-        icon: "error",
-        title: "Offering Information Update Error",
-        text: "There might be some error in your entries. Please double check and try again!",
+        icon: 'error',
+        title: 'Offering Information Update Error',
+        text: 'There might be some error in your entries. Please double check and try again!',
       });
     }
   };
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: ["student", "fullName"],
-      key: "name",
+      title: 'Name',
+      dataIndex: ['student', 'fullName'],
+      key: 'name',
       render: (name, record) => (
         <span
-          className={`${record.backedOut ? "bg-orange-200" : ""}`}
-          style={{ textDecoration: record.backedOut ? "underline" : "none" }}
+          className={`${record.backedOut ? 'bg-orange-200' : ''}`}
+          style={{ textDecoration: record.backedOut ? 'underline' : 'none' }}
         >
           {name}
         </span>
       ),
     },
     {
-      title: "School",
-      dataIndex: ["student", "schoolId"],
-      key: "school",
+      title: 'School',
+      dataIndex: ['student', 'schoolId'],
+      key: 'school',
       render: (data) => {
         const school = getSchoolById(schools?.data, data);
-        return school?.name ?? "";
+        return school?.name ?? '';
       },
     },
     {
-      title: "Review Fee",
-      dataIndex: "reviewFee",
-      key: "reviewFee",
+      title: 'Review Fee',
+      dataIndex: 'reviewFee',
+      key: 'reviewFee',
       render: (data) => formatAmount(data),
     },
     {
-      title: "Discount Amount",
-      dataIndex: "discountAmount",
-      key: "discountAmount",
+      title: 'Discount Amount',
+      dataIndex: 'discountAmount',
+      key: 'discountAmount',
       render: (data) => formatAmount(data),
     },
     {
-      title: "Remarks",
-      dataIndex: "remarks",
-      key: "reviewFee",
+      title: 'Remarks',
+      dataIndex: 'remarks',
+      key: 'reviewFee',
     },
     {
-      title: "Total Amount Paid",
-      dataIndex: "totalAmountPaid",
-      key: "totalAmountPaid",
+      title: 'Total Amount Paid',
+      dataIndex: 'totalAmountPaid',
+      key: 'totalAmountPaid',
       render: (data) => formatAmount(data),
     },
     {
-      title: "Remaining Balance",
-      dataIndex: "remainingBalance",
-      key: "remainingBalance",
+      title: 'Remaining Balance',
+      dataIndex: 'remainingBalance',
+      key: 'remainingBalance',
       render: (data, row) => (
         <p className="text-red-600 font-bold">
           {formatAmount(parseFloat(data - row?.discountAmount ?? 0) ?? 0)}
@@ -214,21 +214,21 @@ const ViewOffering = () => {
       ),
     },
     {
-      title: "Enrollment Date",
-      dataIndex: "createdAt",
-      key: "createdAt",
+      title: 'Enrollment Date',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       render: (data) => formatDate(data),
     },
     {
-      title: "Enrollee Type",
-      dataIndex: "enrolleeType",
-      key: "enrolleeType",
+      title: 'Enrollee Type',
+      dataIndex: 'enrolleeType',
+      key: 'enrolleeType',
     },
 
     {
-      title: "Processed By",
-      dataIndex: "processedBy",
-      key: "processedBy",
+      title: 'Processed By',
+      dataIndex: 'processedBy',
+      key: 'processedBy',
     },
   ];
 
@@ -242,8 +242,8 @@ const ViewOffering = () => {
 
     if (searchAmount?.min >= searchAmount?.max) {
       Swal.fire({
-        icon: "error",
-        title: "min amount cannot be greater than or equal to max amount!",
+        icon: 'error',
+        title: 'min amount cannot be greater than or equal to max amount!',
       });
       setEnrollments(activeEnrollments);
       return;
@@ -266,7 +266,7 @@ const ViewOffering = () => {
     <div>
       <CustomButton
         type="text"
-        onClick={() => navigate("/offerings")}
+        onClick={() => navigate('/offerings')}
         icon={<ArrowLeftOutlined />}
         className="mb-6"
       />
@@ -289,9 +289,9 @@ const ViewOffering = () => {
                 <Row gutter={[16, 16]}>
                   <Col xs={24} sm={24} md={16} lg={18}>
                     <h1 className="text-2xl mb-[2vh]">
-                      {offering.course.name}:{" "}
+                      {offering.course.name}:{' '}
                       {formatSemester(offering.semester)}
-                      {" semester of "}
+                      {' semester of '}
                       {offering.yearOffered}
                     </h1>
                   </Col>
@@ -337,9 +337,9 @@ const ViewOffering = () => {
                 <Divider />
                 <div layout="vertical" className="w-1/2">
                   <p>
-                    <strong>Course:</strong>{" "}
+                    <strong>Course:</strong>{' '}
                     {isEditing ? (
-                      <Form.Item name={["course", "id"]}>
+                      <Form.Item name={['course', 'id']}>
                         <Select
                           options={courses.data.map((course) => ({
                             value: course.id,
@@ -354,7 +354,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Review program:</strong>{" "}
+                    <strong>Review program:</strong>{' '}
                     {isEditing ? (
                       <Form.Item name="reviewProgramId">
                         <Select
@@ -375,7 +375,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Semester Offered:</strong>{" "}
+                    <strong>Semester Offered:</strong>{' '}
                     {isEditing ? (
                       <Form.Item name="semester">
                         <Select
@@ -392,7 +392,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>School Year:</strong>{" "}
+                    <strong>School Year:</strong>{' '}
                     {isEditing ? (
                       <Form.Item name="yearOffered">
                         <Select
@@ -409,7 +409,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Start date:</strong>{" "}
+                    <strong>Start date:</strong>{' '}
                     {isEditing ? (
                       <Form.Item>
                         <DatePicker
@@ -425,7 +425,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Payment Deadline:</strong>{" "}
+                    <strong>Payment Deadline:</strong>{' '}
                     {isEditing ? (
                       <Form.Item>
                         <DatePicker
@@ -446,7 +446,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Review cost:</strong>{" "}
+                    <strong>Review cost:</strong>{' '}
                     {isEditing ? (
                       <Form.Item name="reviewFee">
                         <CustomInput />
@@ -458,7 +458,7 @@ const ViewOffering = () => {
                   <Divider />
 
                   <p>
-                    <strong>Offering Type:</strong>{" "}
+                    <strong>Offering Type:</strong>{' '}
                     {isEditing ? (
                       <Form.Item name="offeringType">
                         <Select
@@ -477,9 +477,9 @@ const ViewOffering = () => {
                       offering?.offeringType
                     )}
                   </p>
-                  {offeringType === "REGULAR" && (
+                  {offeringType === 'REGULAR' && (
                     <p>
-                      <strong>School:</strong>{" "}
+                      <strong>School:</strong>{' '}
                       {isEditing ? (
                         <Form.Item name="schoolId">
                           <Select
@@ -512,7 +512,7 @@ const ViewOffering = () => {
                     <Statistic
                       title="Total Enrolled Students"
                       value={offering?.enrollments?.length || 0}
-                      valueStyle={{ color: "#1890ff" }}
+                      valueStyle={{ color: '#1890ff' }}
                     />
                   </Card>
                 </Col>
@@ -521,7 +521,7 @@ const ViewOffering = () => {
                     <Statistic
                       title="Active Enrollments"
                       value={activeEnrollments?.length || 0}
-                      valueStyle={{ color: "#3f8600" }}
+                      valueStyle={{ color: '#3f8600' }}
                     />
                   </Card>
                 </Col>
@@ -530,7 +530,7 @@ const ViewOffering = () => {
                     <Statistic
                       title="Backed Out Students"
                       value={backedOutStudents?.length || 0}
-                      valueStyle={{ color: "#cf1322" }}
+                      valueStyle={{ color: '#cf1322' }}
                     />
                   </Card>
                 </Col>
@@ -543,7 +543,7 @@ const ViewOffering = () => {
                     Backed Out Students ({backedOutStudents?.length})
                   </h2>
                   <p className="text-lg mb-4 text-red-600 font-semibold">
-                    Total Unpaid Review Fee:{" "}
+                    Total Unpaid Review Fee:{' '}
                     {formatAmount(
                       backedOutStudents.reduce(
                         (total, student) =>
@@ -610,7 +610,7 @@ const ViewOffering = () => {
 
               <div className="mt-10 mb-8">
                 <p className="text-lg mb-4 text-red-600 font-semibold">
-                  Total Unpaid Review Fee:{" "}
+                  Total Unpaid Review Fee:{' '}
                   {formatAmount(
                     backedOutStudents.reduce(
                       (total, student) =>

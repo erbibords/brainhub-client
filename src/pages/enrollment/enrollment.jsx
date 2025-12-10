@@ -3,7 +3,7 @@ import { Table, Row, Col, Select, DatePicker, Form, Button, Space } from "antd";
 import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
 import { useEnrollmentsContext } from "../../contexts/enrollments";
-import { useCourse } from "../../contexts/courses";
+import useCourses from "../../hooks/useCourses";
 import { DateTime } from "luxon";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { getCourseById, getSchoolById } from "../../utils/mappings";
@@ -28,7 +28,7 @@ const Enrollment = () => {
     loading: schoolsLoading,
     error: schoolsError,
   } = useSchools();
-  const { courses, getCoursesLoading, getCoursesError } = useCourse();
+  const { courses, isLoading: getCoursesLoading, error: getCoursesError } = useCourses();
   const { enrollments, getEnrollmentsLoading, getEnrollmentsError, setParams } =
     useEnrollmentsContext();
   const [currentPage, setCurrentPage] = useState(1);

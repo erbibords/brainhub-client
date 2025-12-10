@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
-import { useCourse } from "../../contexts/courses";
+import useCourses from "../../hooks/useCourses";
 import { useStudentContext } from "../../contexts/students";
 import { Select, Input, Form, Radio, AutoComplete } from "antd";
 import Swal from "sweetalert2";
@@ -42,7 +42,7 @@ const Enrollment = () => {
     loading: schoolsLoading,
     error: schoolsError,
   } = useSchools();
-  const { courses, getCoursesLoading, getCoursesError } = useCourse();
+  const { courses, isLoading: getCoursesLoading, error: getCoursesError } = useCourses();
   const [offeringsSearchParams, setOfferingsSearchParams] = useState({
     pageNo: 1,
     pageSize: 50,

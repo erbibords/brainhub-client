@@ -3,7 +3,7 @@ import CustomButton from "../../components/Button/Button";
 import { Table, Space, Row, Col, Button, Select, Form } from "antd";
 import { useNavigate } from "react-router";
 import { useOfferingsContext } from "../../contexts/offerings";
-import { useCourse } from "../../contexts/courses";
+import useCourses from "../../hooks/useCourses";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { DateTime } from "luxon";
 import { formatSemester, formatAmount } from "../../utils/formatting";
@@ -15,7 +15,7 @@ const { Option } = Select;
 const Offerings = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const { courses, getCoursesLoading, getCoursesError } = useCourse();
+  const { courses, isLoading: getCoursesLoading, error: getCoursesError } = useCourses();
   const {
     data: offerings,
     getOfferingsLoading,

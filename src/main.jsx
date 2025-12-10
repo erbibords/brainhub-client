@@ -16,10 +16,10 @@ const swrConfig = {
   // Disable revalidation on reconnect to prevent API calls when network reconnects
   revalidateOnReconnect: false,
   // Revalidate on mount - this is fine now because hooks conditionally disable fetching
-  revalidateOnMount: true,
+  // revalidateOnMount: true,
   // Increase dedupe window to 10 seconds to prevent duplicate requests
   // This is critical when multiple components use the same hook
-  dedupingInterval: 10000,
+  dedupingInterval: 5000,
   // Retry failed requests with exponential backoff
   errorRetryInterval: 5000,
   errorRetryCount: 3,
