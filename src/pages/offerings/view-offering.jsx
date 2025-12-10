@@ -14,7 +14,7 @@ import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useParams, useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 import useMutation from "../../hooks/useMutation";
-import { useCourse } from "../../contexts/courses";
+import useCourses from "../../hooks/useCourses";
 import Swal from "sweetalert2";
 import { OFFERING_BASE_URL } from "../../constants";
 import useOffering from "../../hooks/useOffering";
@@ -34,7 +34,7 @@ const ViewOffering = () => {
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
 
-  const { courses, coursesLoading, coursesError } = useCourse();
+  const { courses, isLoading: coursesLoading, error: coursesError } = useCourses();
   const {
     data: offering,
     isLoading,

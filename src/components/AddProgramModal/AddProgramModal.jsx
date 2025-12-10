@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Form, Input, Select } from 'antd';
 import CustomInput from '../Input/Input';
 import CustomButton from '../Button/Button';
-import { useCourse } from '../../contexts/courses';
+import useCourses from '../../hooks/useCourses';
 import useSchools from '../../hooks/useSchools';
 
 const { TextArea } = Input;
@@ -14,7 +14,7 @@ const CustomModal = ({
   form,
   buttonLoading,
 }) => {
-  const { courses, getCoursesLoading, getCoursesError } = useCourse();
+  const { courses, isLoading: getCoursesLoading, error: getCoursesError } = useCourses();
   const {
     data: schools,
     error: schoolsError,

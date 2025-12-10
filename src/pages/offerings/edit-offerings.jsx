@@ -2,27 +2,27 @@ import React, { useCallback, useState } from 'react';
 import CustomInput from '../../components/Input/Input';
 import CustomButton from '../../components/Button/Button';
 import { Select, Form, DatePicker } from 'antd';
-import { useCourse } from '../../contexts/courses';
+import useCourses from '../../hooks/useCourses';
 import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
 import { DateTime } from 'luxon';
 import useMutation from '../../hooks/useMutation';
 import { DEFAULT_BRANCH_ID, SEMESTER } from '../../constants';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
-import { useProgramContext } from '../../contexts/programs';
+import usePrograms from '../../hooks/usePrograms';
 const { Option } = Select;
 
 const EditOfferings = () => {
   const navigate = useNavigate();
-  const { courses, getCoursesLoading, getCoursesError } = useCourse();
+  const { courses, isLoading: getCoursesLoading, error: getCoursesError } = useCourses();
   const [selectedCourseId, setSelectedCourseId] = useState(undefined);
   const { mutate: AddOffering, loading: AddOfferingLoading } = useMutation(
     `branches/${DEFAULT_BRANCH_ID()}/courses/${selectedCourseId}/offerings`,
     'POST',
     'offerings'
   );
-  const { programs, getProgramsLoading, getProgramsError } =
-    useProgramContext();
+  const { programs, isLoading: getProgramsLoading, error: getProgramsError } =
+    usePrograms();
 
   if (getCoursesError) {
     return <GenericErrorDisplay />;

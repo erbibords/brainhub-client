@@ -1,8 +1,8 @@
-import { useState, useCallback, useEffect, useMemo } from "react";
-import CustomInput from "../../components/Input/Input";
-import CustomButton from "../../components/Button/Button";
-import useSchools from "../../hooks/useSchools";
-import { useCourse } from "../../contexts/courses";
+import { useState, useCallback, useEffect, useMemo } from 'react';
+import CustomInput from '../../components/Input/Input';
+import CustomButton from '../../components/Button/Button';
+import useSchools from '../../hooks/useSchools';
+import useCourses from '../../hooks/useCourses';
 import {
   Table,
   Row,
@@ -17,24 +17,24 @@ import {
   Modal,
   Input,
   Tabs,
-} from "antd";
+} from 'antd';
 import {
   SEMESTER,
   YEAR,
   PAYMENT_METHODS,
   PAYMENTS_BASE_URL,
-} from "../../constants";
-import { usePaymentsContext } from "../../contexts/payments";
-import usePayments from "../../hooks/usePayments";
-import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
-import { getCourseOfferingName } from "../../utils/mappings";
-import { useNavigate } from "react-router-dom";
-import { DateTime } from "luxon";
-import useMutation from "../../hooks/useMutation";
-import { cleanParams, formatAmount, formatDate } from "../../utils/formatting";
-import Swal from "sweetalert2";
-import { useProgramContext } from "../../contexts/programs";
-import { useBranch } from "../../contexts/branch";
+} from '../../constants';
+import { usePaymentsContext } from '../../contexts/payments';
+import usePayments from '../../hooks/usePayments';
+import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
+import { getCourseOfferingName } from '../../utils/mappings';
+import { useNavigate } from 'react-router-dom';
+import { DateTime } from 'luxon';
+import useMutation from '../../hooks/useMutation';
+import { cleanParams, formatAmount, formatDate } from '../../utils/formatting';
+import Swal from 'sweetalert2';
+import usePrograms from '../../hooks/usePrograms';
+import { useBranch } from '../../contexts/branch';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -96,26 +96,34 @@ const PaymentsList = () => {
   const { data: undonePayments, isLoading: undonePaymentsLoading } =
     usePayments(undonePaymentsParams);
   const paymentsBaseUrl = useMemo(() => PAYMENTS_BASE_URL(), [branchId]);
-  const { mutate: undoPaymentMutate } = useMutation(paymentsBaseUrl, "DELETE");
+  const { mutate: undoPaymentMutate } = useMutation(paymentsBaseUrl, 'DELETE');
 
   const {
     data: schools,
     loading: schoolsLoading,
     error: schoolsError,
   } = useSchools();
-  const { courses, getCoursesLoading, getCoursesError } = useCourse();
-  const { programs, programsLoading, programsError } = useProgramContext();
+  const {
+    courses,
+    isLoading: getCoursesLoading,
+    error: getCoursesError,
+  } = useCourses();
+  const {
+    programs,
+    isLoading: programsLoading,
+    error: programsError,
+  } = usePrograms();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [password, setPassword] = useState("");
-  const [activeTab, setActiveTab] = useState("payments");
+  const [password, setPassword] = useState('');
+  const [activeTab, setActiveTab] = useState('payments');
 
   useEffect(() => {
     // Initial load: fetch 200 records, Filtered: fetch all records
     const apiPageSize = isFiltered ? 10000 : 200; // Use large number to get all filtered results
     const apiPageNo = 1; // Always fetch from page 1
 
-    console.log("API call params:", {
+    console.log('API call params:', {
       apiPageNo,
       apiPageSize,
       isFiltered,
@@ -173,8 +181,8 @@ const PaymentsList = () => {
       );
       if (res) {
         Swal.fire({
-          icon: "success",
-          title: "Payment Removed!",
+          icon: 'success',
+          title: 'Payment Removed!',
           timer: 2000,
         });
         setSelectedPaymentId(undefined);
@@ -184,9 +192,9 @@ const PaymentsList = () => {
       }
     } catch (error) {
       Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Error removing payment. Please try again!",
+        icon: 'error',
+        title: 'Error',
+        text: 'Error removing payment. Please try again!',
       });
     }
   }, [paymentsBaseUrl, refreshPayments, selectedPaymentid, undoPaymentMutate]);
@@ -194,26 +202,26 @@ const PaymentsList = () => {
   // Base columns shared by both tabs
   const baseColumns = [
     {
-      title: "Name",
+      title: 'Name',
       render: (_, record) => record.enrollment.student.fullName,
     },
     {
-      title: "Reference",
-      dataIndex: "referenceNo",
+      title: 'Reference',
+      dataIndex: 'referenceNo',
       render: (data) => {
-        if (data === "undefined" || undefined || null) return "";
+        if (data === 'undefined' || undefined || null) return '';
         return data;
       },
     },
     {
-      title: "Payment Amount",
-      dataIndex: "amountPaid",
+      title: 'Payment Amount',
+      dataIndex: 'amountPaid',
       render: (data) => formatAmount(data ?? 0),
     },
     {
-      title: "Balance after payments",
-      dataIndex: "balance",
-      key: "balance",
+      title: 'Balance after payments',
+      dataIndex: 'balance',
+      key: 'balance',
       render: (data, row) => {
         const balanceAfterPayment = parseFloat(
           data - row?.enrollment?.discountAmount ?? 0
@@ -226,52 +234,52 @@ const PaymentsList = () => {
       },
     },
     {
-      title: "Payment Method",
-      dataIndex: "paymentMethod",
-      key: "paymentMethod",
+      title: 'Payment Method',
+      dataIndex: 'paymentMethod',
+      key: 'paymentMethod',
     },
     {
-      title: "Payment Date",
-      dataIndex: "paidAt",
+      title: 'Payment Date',
+      dataIndex: 'paidAt',
       render: (data) => formatDate(data) ?? data,
     },
     {
-      title: "Attachment",
-      dataIndex: "attachment",
+      title: 'Attachment',
+      dataIndex: 'attachment',
       render: (_, record) => {
         return record?.attachments?.length >= 1 &&
-          record?.attachments[0] !== "" ? (
+          record?.attachments[0] !== '' ? (
           <Image
             width={100}
             height={100}
             src={`${record?.attachments[0]}`}
             alt={record?.attachments[0]}
             preview={{
-              className: "custom-image-preview",
+              className: 'custom-image-preview',
               mask: <div>Click to preview</div>,
-              maskClassName: "custom-mask",
+              maskClassName: 'custom-mask',
             }}
           />
         ) : (
-          ""
+          ''
         );
       },
     },
     {
-      title: "Offering",
-      dataIndex: "offering",
+      title: 'Offering',
+      dataIndex: 'offering',
       render: (_, record) =>
         getCourseOfferingName(record.enrollment.courseOffering),
     },
-    { title: "Processed by", dataIndex: "processedBy" },
+    { title: 'Processed by', dataIndex: 'processedBy' },
   ];
 
   // Columns for active payments (with Undo button)
   const activePaymentsColumns = [
     ...baseColumns,
     {
-      title: "Action",
-      key: "action",
+      title: 'Action',
+      key: 'action',
       render: (_, record) => (
         <Space size="middle">
           <CustomButton
@@ -298,8 +306,8 @@ const PaymentsList = () => {
   const undonePaymentsColumns = [
     ...baseColumns,
     {
-      title: "Action",
-      key: "action",
+      title: 'Action',
+      key: 'action',
       render: (_, record) => (
         <CustomButton onClick={() => navigate(`/prints/receipt/${record?.id}`)}>
           Print
@@ -310,14 +318,14 @@ const PaymentsList = () => {
 
   const handleOk = useCallback(() => {
     if (!selectedPaymentid) return;
-    if (password === "brainhubph2024") {
+    if (password === 'brainhubph2024') {
       undoPayment();
       setIsModalVisible(false);
       setPassword(null);
     } else {
       Swal.fire({
-        icon: "warning",
-        title: "Password not matched!",
+        icon: 'warning',
+        title: 'Password not matched!',
         timer: 2000,
       });
     }
@@ -338,7 +346,7 @@ const PaymentsList = () => {
                 <Form.Item name="dateRange">
                   <p>Date From - Date To:</p>
                   <RangePicker
-                    placeholder={["Date From", "Date To"]}
+                    placeholder={['Date From', 'Date To']}
                     className="h-[50px] w-full"
                     onChange={handleDateRangeChange}
                   />
@@ -413,7 +421,7 @@ const PaymentsList = () => {
                     {courses &&
                       courses?.data?.map((course) => (
                         <Option value={course.id} key={course.id}>
-                          {" "}
+                          {' '}
                           {course.name}
                         </Option>
                       ))}
@@ -437,7 +445,7 @@ const PaymentsList = () => {
                     {programs &&
                       programs?.data?.map((prog) => (
                         <Option value={prog.id} key={prog.id}>
-                          {" "}
+                          {' '}
                           {prog.name}
                         </Option>
                       ))}
@@ -461,7 +469,7 @@ const PaymentsList = () => {
                     {schools &&
                       schools?.data?.map((school) => (
                         <Option value={school.id} key={school.id}>
-                          {" "}
+                          {' '}
                           {school.name}
                         </Option>
                       ))}
@@ -600,7 +608,7 @@ const PaymentsList = () => {
               }}
               items={[
                 {
-                  key: "payments",
+                  key: 'payments',
                   label: `Payments (${payments?.data?.length || 0})`,
                   children: (
                     <>
@@ -628,11 +636,11 @@ const PaymentsList = () => {
                               `${range[0]}-${range[1]} of ${
                                 payments?.data?.length || 0
                               } items`,
-                            pageSizeOptions: ["10", "25", "50", "100"],
+                            pageSizeOptions: ['10', '25', '50', '100'],
                           }}
                           scroll={{ y: 800 }}
                           onChange={(pagination) => {
-                            console.log("Pagination changed:", {
+                            console.log('Pagination changed:', {
                               current: pagination.current,
                               pageSize: pagination.pageSize,
                               total: payments?.data?.length || 0,
@@ -647,7 +655,7 @@ const PaymentsList = () => {
                   ),
                 },
                 {
-                  key: "undidPayments",
+                  key: 'undidPayments',
                   label: `Undid Payments (${
                     undonePayments?.data?.length || 0
                   })`,
@@ -665,8 +673,8 @@ const PaymentsList = () => {
                       loading={undonePaymentsLoading}
                       locale={{
                         emptyText: (
-                          <div style={{ padding: "40px", textAlign: "center" }}>
-                            <p style={{ fontSize: "16px", color: "#999" }}>
+                          <div style={{ padding: '40px', textAlign: 'center' }}>
+                            <p style={{ fontSize: '16px', color: '#999' }}>
                               No undone payments found
                             </p>
                           </div>
@@ -680,13 +688,13 @@ const PaymentsList = () => {
                         showQuickJumper: true,
                         showTotal: (total, range) => {
                           if (total === 0) {
-                            return "No items";
+                            return 'No items';
                           }
                           return `${range[0]}-${range[1]} of ${
                             undonePayments?.data?.length || 0
                           } items`;
                         },
-                        pageSizeOptions: ["10", "25", "50", "100"],
+                        pageSizeOptions: ['10', '25', '50', '100'],
                       }}
                       scroll={{ y: 800 }}
                       onChange={(pagination) => {

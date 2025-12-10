@@ -1,26 +1,26 @@
-import { useEffect, useMemo, useState } from "react";
-import CustomInput from "../../components/Input/Input";
-import CustomButton from "../../components/Button/Button";
-import { Row, Col, Card, Divider, Form, Select } from "antd";
-import { ArrowLeftOutlined } from "@ant-design/icons";
-import { useParams, useNavigate } from "react-router-dom";
-import useMutation from "../../hooks/useMutation";
-import { useProgramContext } from "../../contexts/programs";
-import Swal from "sweetalert2";
-import { getDataById } from "../../utils/mappings";
-import { REVIEW_PROGRAM_BASE_URL } from "../../constants";
-import { useCourse } from "../../contexts/courses";
-import useSchools from "../../hooks/useSchools";
-import StudentsTable from "./students-table";
-import { useBranch } from "../../contexts/branch";
+import { useEffect, useMemo, useState } from 'react';
+import CustomInput from '../../components/Input/Input';
+import CustomButton from '../../components/Button/Button';
+import { Row, Col, Card, Divider, Form, Select } from 'antd';
+import { ArrowLeftOutlined } from '@ant-design/icons';
+import { useParams, useNavigate } from 'react-router-dom';
+import useMutation from '../../hooks/useMutation';
+import usePrograms from '../../hooks/usePrograms';
+import Swal from 'sweetalert2';
+import { getDataById } from '../../utils/mappings';
+import { REVIEW_PROGRAM_BASE_URL } from '../../constants';
+import useCourses from '../../hooks/useCourses';
+import useSchools from '../../hooks/useSchools';
+import StudentsTable from './students-table';
+import { useBranch } from '../../contexts/branch';
 const { Option } = Select;
 
 const ViewReviewProgram = () => {
   const [form] = Form.useForm();
   const params = useParams();
   const navigate = useNavigate();
-  const { programs, getProgramsError } = useProgramContext();
-  const { courses } = useCourse();
+  const { programs, error: getProgramsError } = usePrograms();
+  const { courses } = useCourses();
   const { data: schools } = useSchools();
   const { branchId } = useBranch();
 
@@ -31,12 +31,12 @@ const ViewReviewProgram = () => {
     [branchId]
   );
   const programsCacheKey = useMemo(() => {
-    return `programs-${branchId ?? "unknown"}`;
+    return `programs-${branchId ?? 'unknown'}`;
   }, [branchId]);
 
   const { mutate: updateProgram } = useMutation(
     reviewProgramBaseUrl,
-    "PUT",
+    'PUT',
     programsCacheKey
   );
 
@@ -52,15 +52,15 @@ const ViewReviewProgram = () => {
     const res = await updateProgram(val, `${reviewProgramBaseUrl}/${id}`);
     if (res) {
       Swal.fire({
-        icon: "success",
-        title: "Review program updated!",
+        icon: 'success',
+        title: 'Review program updated!',
         timer: 2000,
       });
       setIsEditing(false);
     } else {
       Swal.fire({
-        icon: "error",
-        title: "Error updating review program!",
+        icon: 'error',
+        title: 'Error updating review program!',
         timer: 2000,
       });
     }
@@ -72,7 +72,7 @@ const ViewReviewProgram = () => {
         ...currentProgram,
       });
     } else {
-      navigate("/review-program");
+      navigate('/review-program');
     }
   }, [programs, id, getProgramsError]);
 
@@ -80,7 +80,7 @@ const ViewReviewProgram = () => {
     <div>
       <CustomButton
         type="text"
-        onClick={() => navigate("/review-program")}
+        onClick={() => navigate('/review-program')}
         icon={<ArrowLeftOutlined />}
         className="mb-6"
       />
@@ -92,7 +92,7 @@ const ViewReviewProgram = () => {
               <Row gutter={[16, 16]}>
                 <Col xs={24} sm={24} md={16} lg={18}>
                   <h1 className="text-2xl mb-[2vh]">
-                    Manage {currentProgram?.name} -{" "}
+                    Manage {currentProgram?.name} -{' '}
                     {currentProgram?.description}
                   </h1>
                 </Col>
@@ -101,8 +101,8 @@ const ViewReviewProgram = () => {
                     {isEditing ? (
                       <div
                         style={{
-                          display: "flex",
-                          justifyContent: "flex-end",
+                          display: 'flex',
+                          justifyContent: 'flex-end',
                         }}
                       >
                         <CustomButton
@@ -138,14 +138,14 @@ const ViewReviewProgram = () => {
               <Divider />
               <div className="w-1/2">
                 <p>
-                  <strong>Name:</strong>{" "}
+                  <strong>Name:</strong>{' '}
                   {isEditing ? (
                     <Form.Item
                       name="name"
                       rules={[
                         {
                           required: true,
-                          message: "Please input program name",
+                          message: 'Please input program name',
                         },
                       ]}
                     >
@@ -157,14 +157,14 @@ const ViewReviewProgram = () => {
                 </p>
                 <Divider />
                 <p>
-                  <strong>Description:</strong>{" "}
+                  <strong>Description:</strong>{' '}
                   {isEditing ? (
                     <Form.Item
                       name="description"
                       rules={[
                         {
                           required: true,
-                          message: "Please input program description",
+                          message: 'Please input program description',
                         },
                       ]}
                     >
@@ -177,14 +177,14 @@ const ViewReviewProgram = () => {
 
                 <Divider />
                 <p>
-                  <strong>Course:</strong>{" "}
+                  <strong>Course:</strong>{' '}
                   {isEditing ? (
                     <Form.Item
                       name="courseId"
                       rules={[
                         {
                           required: true,
-                          message: "Please select course",
+                          message: 'Please select course',
                         },
                       ]}
                     >
@@ -207,14 +207,14 @@ const ViewReviewProgram = () => {
 
                 <Divider />
                 <p>
-                  <strong>School:</strong>{" "}
+                  <strong>School:</strong>{' '}
                   {isEditing ? (
                     <Form.Item
                       name="schoolId"
                       rules={[
                         {
                           required: true,
-                          message: "Please select school",
+                          message: 'Please select school',
                         },
                       ]}
                     >

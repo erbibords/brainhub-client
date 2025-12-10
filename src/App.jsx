@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -6,7 +6,7 @@ import {
   Navigate,
 } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
-import { withProviders } from './components/Providers/PageProviders';
+// import { withProviders } from './components/Providers/PageProviders';
 
 // Import pages
 import Login from './pages/login/login-page';
@@ -44,6 +44,7 @@ import AdminExpenses from './pages/admin/expenses';
 import AdminReporting from './pages/admin/reporting';
 import BranchesAdminPage from './pages/admin/branches';
 
+/*
 const StudentsPage = withProviders(Students, ['students']);
 const PaymentsPage = withProviders(PaymentsList, [
   'payments',
@@ -72,6 +73,7 @@ const ViewReviewProgramPage = withProviders(ViewReviewPogram, [
 ]);
 const PrintOfferingsPage = withProviders(PrintOfferings, ['offerings']);
 const PaymentPrintListPage = withProviders(PaymentPrintList, ['payments']);
+*/
 
 const App = () => {
   return (
@@ -87,33 +89,30 @@ const App = () => {
           <Route path="/admin/expenses" element={<AdminExpenses />} />
           <Route path="/admin/reporting" element={<AdminReporting />} />
           <Route path="/admin/branches" element={<BranchesAdminPage />} />
-          <Route path="/add-enrollment" element={<AddEnrollmentPage />} />
+          <Route path="/add-enrollment" element={<AddEnrollment />} />
           <Route
             path="/enrollments/edit-enrollment/:enrollmentId"
-            element={<EditEnrollmentPage />}
+            element={<EditEnrollment />}
           />
 
-          <Route path="/enrollments" element={<EnrollmentsPage />} />
-          <Route path="/students" element={<StudentsPage />} />
+          <Route path="/enrollments" element={<Enrollment />} />
+          <Route path="/students" element={<Students />} />
           <Route path="/students/:studentId" element={<StudentProfile />} />
-          <Route path="/offerings" element={<OfferingsPage />} />
-          <Route path="/offerings/add" element={<AddOfferingsPage />} />
+          <Route path="/offerings" element={<Offerings />} />
+          <Route path="/offerings/add" element={<AddOfferings />} />
           <Route
             path="/offerings/edit/:offeringId"
-            element={<EditOfferingsPage />}
+            element={<EditOfferings />}
           />
-          <Route
-            path="/offerings/:offeringId"
-            element={<ViewOfferingsPage />}
-          />
-          <Route path="/payments/list" element={<PaymentsPage />} />
+          <Route path="/offerings/:offeringId" element={<ViewOfferings />} />
+          <Route path="/payments/list" element={<PaymentsList />} />
           <Route path="/payments/add/:studentId" element={<AddPayment />} />
           <Route path="/payments/:id" element={<ViewPayment />} />
-          <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:courseId" element={<ViewCourse />} />
           <Route
             path="/review-program/:programId"
-            element={<ViewReviewProgramPage />}
+            element={<ViewReviewPogram />}
           />
           <Route path="/schools/:schoolId" element={<ViewSchools />} />
           <Route
@@ -141,14 +140,14 @@ const App = () => {
             path="/prints/reviewees-population/:Id"
             element={<RevieweesPopulation />}
           />
-          <Route path="/prints/payments" element={<PaymentPrintListPage />} />
-          <Route path="/review-program" element={<ReviewProgramPage />} />
+          <Route path="/prints/payments" element={<PaymentPrintList />} />
+          <Route path="/review-program" element={<ReviewProgram />} />
           <Route path="/schools" element={<Schools />} />
           <Route
             path="/students/:studentId/statement-of-account"
             element={<StatementOfAccount />}
           />
-          <Route path="/prints/offerings" element={<PrintOfferingsPage />} />
+          <Route path="/prints/offerings" element={<PrintOfferings />} />
           <Route path="/expenses" element={<ExpensesList />} />
           <Route path="/" element={<Navigate to="/students" replace />} />
         </Routes>
