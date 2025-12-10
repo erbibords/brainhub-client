@@ -5,7 +5,7 @@ import { Row, Col, Card, Divider, Form, Select } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import useMutation from '../../hooks/useMutation';
-import { useProgramContext } from '../../contexts/programs';
+import usePrograms from '../../hooks/usePrograms';
 import Swal from 'sweetalert2';
 import { getDataById } from '../../utils/mappings';
 import { REVIEW_PROGRAM_BASE_URL } from '../../constants';
@@ -19,7 +19,7 @@ const ViewReviewProgram = () => {
   const [form] = Form.useForm();
   const params = useParams();
   const navigate = useNavigate();
-  const { programs, getProgramsError } = useProgramContext();
+  const { programs, error: getProgramsError } = usePrograms();
   const { courses } = useCourses();
   const { data: schools } = useSchools();
   const { branchId } = useBranch();

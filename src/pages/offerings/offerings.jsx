@@ -8,7 +8,7 @@ import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErr
 import { DateTime } from "luxon";
 import { formatSemester, formatAmount } from "../../utils/formatting";
 import { SEMESTER, YEAR } from "../../constants";
-import { useProgramContext } from "../../contexts/programs";
+import usePrograms from "../../hooks/usePrograms";
 import { cleanParams } from "../../utils/formatting";
 const { Option } = Select;
 
@@ -22,8 +22,8 @@ const Offerings = () => {
     getOfferingsError,
     setParams,
   } = useOfferingsContext();
-  const { programs, getProgramsLoading, getProgramsError } =
-    useProgramContext();
+  const { programs, isLoading: getProgramsLoading, error: getProgramsError } =
+    usePrograms();
 
   useEffect(() => {
     setParams({

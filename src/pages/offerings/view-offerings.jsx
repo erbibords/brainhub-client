@@ -28,7 +28,7 @@ import CustomInput from '../../components/Input/Input';
 import CustomButton from '../../components/Button/Button';
 import { getDataById, getSchoolById } from '../../utils/mappings';
 import useSchools from '../../hooks/useSchools';
-import { useProgramContext } from '../../contexts/programs';
+import usePrograms from '../../hooks/usePrograms';
 import dayjs from 'dayjs';
 import { useBranch } from '../../contexts/branch';
 import './view-offerings.css';
@@ -59,8 +59,11 @@ const ViewOffering = () => {
     error: offeringError,
     refetch,
   } = useOffering(params.offeringId);
-  const { programs, getProgramsLoading, getProgramsError } =
-    useProgramContext();
+  const {
+    programs,
+    isLoading: getProgramsLoading,
+    error: getProgramsError,
+  } = usePrograms();
   const [offeringType, setOfferingType] = useState(offering?.offeringType);
 
   // Separate backed out students from active enrollments

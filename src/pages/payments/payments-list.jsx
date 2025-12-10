@@ -33,7 +33,7 @@ import { DateTime } from 'luxon';
 import useMutation from '../../hooks/useMutation';
 import { cleanParams, formatAmount, formatDate } from '../../utils/formatting';
 import Swal from 'sweetalert2';
-import { useProgramContext } from '../../contexts/programs';
+import usePrograms from '../../hooks/usePrograms';
 import { useBranch } from '../../contexts/branch';
 
 const { Option } = Select;
@@ -108,7 +108,11 @@ const PaymentsList = () => {
     isLoading: getCoursesLoading,
     error: getCoursesError,
   } = useCourses();
-  const { programs, programsLoading, programsError } = useProgramContext();
+  const {
+    programs,
+    isLoading: programsLoading,
+    error: programsError,
+  } = usePrograms();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [password, setPassword] = useState('');

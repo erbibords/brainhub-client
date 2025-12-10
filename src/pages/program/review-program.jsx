@@ -7,7 +7,7 @@ import { REVIEW_PROGRAM_BASE_URL } from "../../constants";
 import useMutation from "../../hooks/useMutation";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { useProgramContext } from "../../contexts/programs";
+import usePrograms from "../../hooks/usePrograms";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
 import { useBranch } from "../../contexts/branch";
 const ReviewProgram = () => {
@@ -16,8 +16,8 @@ const ReviewProgram = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
 
-  const { programs, getProgramsLoading, getProgramsError } =
-    useProgramContext();
+  const { programs, isLoading: getProgramsLoading, error: getProgramsError } =
+    usePrograms();
   const { branchId } = useBranch();
   const reviewProgramBaseUrl = useMemo(
     () => REVIEW_PROGRAM_BASE_URL(),

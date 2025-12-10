@@ -8,19 +8,16 @@ import { AuthProvider, useAuth } from '../../contexts/auth';
 import { StudentProvider } from '../../contexts/students';
 import { OfferingsProvider } from '../../contexts/offerings';
 import { EnrollmentsProvider } from '../../contexts/enrollments';
-import { ProgramsProvider } from '../../contexts/programs';
 import { PaymentsProvider } from '../../contexts/payments';
 
 const BranchScopedProviders = ({ children }) => (
-  <ProgramsProvider>
-    <EnrollmentsProvider>
-      <StudentProvider>
-        <OfferingsProvider>
-          <PaymentsProvider>{children}</PaymentsProvider>
-        </OfferingsProvider>
-      </StudentProvider>
-    </EnrollmentsProvider>
-  </ProgramsProvider>
+  <EnrollmentsProvider>
+    <StudentProvider>
+      <OfferingsProvider>
+        <PaymentsProvider>{children}</PaymentsProvider>
+      </OfferingsProvider>
+    </StudentProvider>
+  </EnrollmentsProvider>
 );
 
 const LayoutShell = ({ children, showSidebar }) => {

@@ -16,7 +16,7 @@ import CustomInput from '../Input/Input';
 import CustomButton from '../Button/Button';
 import { EXPENSE_TYPES } from '../../constants';
 import useCourses from '../../hooks/useCourses';
-import { useProgramContext } from '../../contexts/programs';
+import usePrograms from '../../hooks/usePrograms';
 import { useOfferingsContext } from '../../contexts/offerings';
 import { useAuth } from '../../contexts/auth';
 
@@ -41,7 +41,7 @@ const ExpenseModal = ({
 
   // Fetch entities based on type
   const { courses, isLoading: getCoursesLoading } = useCourses();
-  const { programs, getProgramsLoading } = useProgramContext();
+  const { programs, isLoading: getProgramsLoading } = usePrograms();
   const { data: offerings, getOfferingsLoading } = useOfferingsContext();
 
   // Watch for form type changes and modal visibility

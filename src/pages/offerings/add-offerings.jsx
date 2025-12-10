@@ -10,7 +10,7 @@ import useMutation from "../../hooks/useMutation";
 import { DEFAULT_BRANCH_ID, SEMESTER, YEAR } from "../../constants";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import { useProgramContext } from "../../contexts/programs";
+import usePrograms from "../../hooks/usePrograms";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 const { Option } = Select;
 
@@ -30,8 +30,8 @@ const AddOfferings = () => {
     "POST",
     "offerings"
   );
-  const { programs, getProgramsLoading, getProgramsError } =
-    useProgramContext();
+  const { programs, isLoading: getProgramsLoading, error: getProgramsError } =
+    usePrograms();
 
   if (getCoursesError) {
     return <GenericErrorDisplay />;
