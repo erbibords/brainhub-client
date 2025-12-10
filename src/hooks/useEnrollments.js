@@ -65,7 +65,9 @@ function useEnrollments(params = {}) {
   // If params is null, disable fetching by passing null as SWR key
   const swrKey = useMemo(() => {
     if (params === null) return null;
-    return `enrollments-${branchId ?? 'unknown'}-${JSON.stringify(normalizedParams)}`;
+    const key = `enrollments-${branchId ?? 'unknown'}-${JSON.stringify(normalizedParams)}`;
+    console.log('useEnrollments: SWR key:', key, 'params:', normalizedParams);
+    return key;
   }, [branchId, normalizedParams, params]);
 
   const { data, mutate, error } = useSWR(swrKey, swrKey ? () => fetcher(requestUrl) : null);

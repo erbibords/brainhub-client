@@ -1,7 +1,7 @@
-import React, { createContext, useMemo, useState, useContext } from "react";
-import { useLocation } from "react-router-dom";
-import usePayments from "../hooks/usePayments";
-import { useAuth } from "./auth";
+import React, { createContext, useMemo, useState, useContext } from 'react';
+import { useLocation } from 'react-router-dom';
+import usePayments from '../hooks/usePayments';
+import { useAuth } from './auth';
 
 const PaymentsContext = createContext({
   payments: [],
@@ -27,11 +27,14 @@ export const PaymentsProvider = ({ children }) => {
     semester: undefined,
     yearOffered: undefined,
     pageNo: 1,
-    pageSize: 1000,
+    pageSize: 100, // Default to 100, will increase to 1000 when searching
     programId: undefined,
   });
 
-  const { data, isLoading, error, mutate } = usePayments(shouldFetch ? params : null);
+  // Use params directly - let the page component control pageSize for proper server-side pagination
+  const { data, isLoading, error, mutate } = usePayments(
+    shouldFetch ? params : null
+  );
 
   const values = useMemo(() => {
     return {

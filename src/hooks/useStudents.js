@@ -11,7 +11,7 @@ function useStudents(params = {}) {
     studentName = undefined,
     schoolId = undefined,
     pageNo = 1,
-    pageSize = 5000, 
+    pageSize = 100, // Default to 100
     offeringType = undefined,
   } = normalizedParams;
 

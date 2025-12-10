@@ -70,6 +70,7 @@ const ReviewProgramPage = withProviders(ReviewProgram, ['programs']);
 const ViewReviewProgramPage = withProviders(ViewReviewPogram, [
   'courses',
   'programs',
+  'enrollments', // Needed for students-table component
 ]);
 const PrintOfferingsPage = withProviders(PrintOfferings, ['offerings']);
 const PaymentPrintListPage = withProviders(PaymentPrintList, ['payments']);

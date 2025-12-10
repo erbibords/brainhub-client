@@ -4,12 +4,12 @@ import React, {
   useMemo,
   useState,
   useContext,
-} from "react";
-import { useLocation } from "react-router-dom";
-import useStudents from "../hooks/useStudents";
-import axiosInstance from "../utils/axiosInstance";
-import { DEFAULT_BRANCH_ID } from "../constants";
-import { useAuth } from "./auth";
+} from 'react';
+import { useLocation } from 'react-router-dom';
+import useStudents from '../hooks/useStudents';
+import axiosInstance from '../utils/axiosInstance';
+import { DEFAULT_BRANCH_ID } from '../constants';
+import { useAuth } from './auth';
 
 const StudentContext = createContext({
   students: [],
@@ -27,10 +27,13 @@ export const StudentProvider = ({ children }) => {
 
   const [params, setParams] = useState({
     studentName: undefined,
-    school: undefined,
+    schoolId: undefined,
+    offeringType: undefined,
     pageNo: 1,
-    pageSize: 5000,
+    pageSize: 100, // Default to 100, will increase to 5000 when searching
   });
+
+  // Use params directly - let the page component control pageSize for proper server-side pagination
   const {
     data: students,
     isLoading: studentDataLoading,
@@ -41,7 +44,7 @@ export const StudentProvider = ({ children }) => {
     async ({
       firstName,
       lastName,
-      middleName = "",
+      middleName = '',
       schoolId,
       address,
       age,
@@ -55,7 +58,7 @@ export const StudentProvider = ({ children }) => {
           {
             firstName,
             lastName,
-            middleName: middleName ?? "",
+            middleName: middleName ?? '',
             schoolId,
             address,
             age,

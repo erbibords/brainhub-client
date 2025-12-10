@@ -1,21 +1,21 @@
-import { useCallback, useState, useMemo, useEffect } from "react";
-import { Table, Row, Col, Select, DatePicker, Form, Button, Space } from "antd";
-import CustomInput from "../../components/Input/Input";
-import useSchools from "../../hooks/useSchools";
-import { useEnrollmentsContext } from "../../contexts/enrollments";
-import useCourses from "../../hooks/useCourses";
-import { DateTime } from "luxon";
-import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
-import { getCourseById, getSchoolById } from "../../utils/mappings";
-import CustomButton from "../../components/Button/Button";
+import { useCallback, useState, useMemo, useEffect } from 'react';
+import { Table, Row, Col, Select, DatePicker, Form, Button, Space } from 'antd';
+import CustomInput from '../../components/Input/Input';
+import useSchools from '../../hooks/useSchools';
+import { useEnrollmentsContext } from '../../contexts/enrollments';
+import useCourses from '../../hooks/useCourses';
+import { DateTime } from 'luxon';
+import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
+import { getCourseById, getSchoolById } from '../../utils/mappings';
+import CustomButton from '../../components/Button/Button';
 import {
   formatAmount,
   formatSemester,
   formatTakerType,
-} from "../../utils/formatting";
-import { SEMESTER, YEAR } from "../../constants";
-import { useNavigate } from "react-router-dom";
-import { cleanParams } from "../../utils/formatting";
+} from '../../utils/formatting';
+import { SEMESTER, YEAR } from '../../constants';
+import { useNavigate } from 'react-router-dom';
+import { cleanParams } from '../../utils/formatting';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -28,7 +28,11 @@ const Enrollment = () => {
     loading: schoolsLoading,
     error: schoolsError,
   } = useSchools();
-  const { courses, isLoading: getCoursesLoading, error: getCoursesError } = useCourses();
+  const {
+    courses,
+    isLoading: getCoursesLoading,
+    error: getCoursesError,
+  } = useCourses();
   const { enrollments, getEnrollmentsLoading, getEnrollmentsError, setParams } =
     useEnrollmentsContext();
   const [currentPage, setCurrentPage] = useState(1);
@@ -47,90 +51,90 @@ const Enrollment = () => {
   });
 
   useEffect(() => {
+    // Use server-side pagination: fetch the current page with the display pageSize
+    // Don't touch programId - let students-table manage it when it's mounted
     setParams({
+      ...(isFiltered ? cleanParams(searchParams) : {}),
       pageNo: currentPage,
       pageSize: pageSize,
+      // Don't set programId here - preserve whatever is already set (or undefined)
     });
-  }, [currentPage, pageSize, setParams, isFiltered]);
+  }, [currentPage, pageSize, isFiltered, setParams, searchParams]);
 
   const handleFilter = useCallback(() => {
     setCurrentPage(1); // Reset to first page when filtering
     setIsFiltered(true); // Mark as filtered
-    setParams({
-      ...cleanParams(searchParams),
-      pageNo: 1,
-      pageSize: pageSize, // Use current page size
-    });
-  }, [setParams, searchParams, pageSize]);
+    // The useEffect will handle the API call with the updated searchParams
+  }, []);
 
   const columns = useMemo(
     () => [
       {
-        title: "Name",
-        dataIndex: ["student", "fullName"],
+        title: 'Name',
+        dataIndex: ['student', 'fullName'],
         render: (data) => <label className="p-1">{data}</label>,
       },
       {
-        title: "Contact #",
-        dataIndex: "student",
+        title: 'Contact #',
+        dataIndex: 'student',
         render: (student) => {
           return <label>{student?.contactNumber}</label>;
         },
       },
       {
-        title: "Semester",
-        dataIndex: "courseOffering",
+        title: 'Semester',
+        dataIndex: 'courseOffering',
         render: (course) => {
           return formatSemester(course.semester);
         },
       },
       {
-        title: "Year Level",
-        dataIndex: "yearLevel",
-        key: "yearLevel",
+        title: 'Year Level',
+        dataIndex: 'yearLevel',
+        key: 'yearLevel',
       },
       {
-        title: "Enrollment Date",
-        dataIndex: "createdAt",
-        key: "createdAt",
+        title: 'Enrollment Date',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
         render: (val) => {
           const date = DateTime.fromISO(val);
-          const formattedDate = date.toFormat("MMM dd, yyyy");
+          const formattedDate = date.toFormat('MMM dd, yyyy');
           return <label>{formattedDate}</label>;
         },
       },
       {
-        title: "Review Fee",
-        dataIndex: "reviewFee",
-        key: "reviewFee",
+        title: 'Review Fee',
+        dataIndex: 'reviewFee',
+        key: 'reviewFee',
         render: (data) => formatAmount(data ?? 0),
       },
       {
-        title: "Discount Amount",
-        dataIndex: "discountAmount",
-        key: "discountAmount",
+        title: 'Discount Amount',
+        dataIndex: 'discountAmount',
+        key: 'discountAmount',
         render: (data) => formatAmount(data ?? 0),
       },
       {
-        title: "Remarks",
-        dataIndex: "remarks",
-        key: "remarks",
+        title: 'Remarks',
+        dataIndex: 'remarks',
+        key: 'remarks',
       },
       {
-        title: "Processed By",
-        dataIndex: "processedBy",
-        key: "processedBy",
+        title: 'Processed By',
+        dataIndex: 'processedBy',
+        key: 'processedBy',
       },
 
       {
-        title: "Enrollee Type",
-        dataIndex: "courseOffering",
-        key: "enrolleeType",
+        title: 'Enrollee Type',
+        dataIndex: 'courseOffering',
+        key: 'enrolleeType',
         render: (data) => data.offeringType,
       },
       {
-        title: "Action",
-        key: "action",
+        title: 'Action',
+        key: 'action',
         render: (_, record) => {
           return (
             <Space size="middle">
@@ -237,7 +241,7 @@ const Enrollment = () => {
                 <Form.Item name="dateRange">
                   <p>Date From - Date To:</p>
                   <RangePicker
-                    placeholder={["Date From", "Date To"]}
+                    placeholder={['Date From', 'Date To']}
                     className="h-[50px] w-full"
                     onChange={handleDateRangeChange}
                   />
@@ -387,10 +391,6 @@ const Enrollment = () => {
                     setCurrentPage(1);
                     setPageSize(25);
                     setIsFiltered(false); // Reset filter state
-                    setParams({
-                      pageNo: 1,
-                      pageSize: pageSize, // Use current page size
-                    });
                     setSearchParams({
                       startDate: undefined,
                       endDate: undefined,
@@ -401,6 +401,7 @@ const Enrollment = () => {
                       yearOffered: undefined,
                       offeringType: undefined,
                     });
+                    // The useEffect will trigger a new API call with reset params
                   }}
                 >
                   Clear
@@ -425,11 +426,11 @@ const Enrollment = () => {
                   showQuickJumper: true,
                   showTotal: (total, range) =>
                     `${range[0]}-${range[1]} of ${total} items`,
-                  pageSizeOptions: ["10", "25", "50", "100"],
+                  pageSizeOptions: ['10', '25', '50', '100'],
                 }}
                 scroll={{ y: 800 }}
                 onChange={(pagination) => {
-                  console.log("Enrollments pagination changed:", {
+                  console.log('Enrollments pagination changed:', {
                     current: pagination.current,
                     pageSize: pagination.pageSize,
                     total: enrollments?.meta?.totalResults || 0,
@@ -437,6 +438,7 @@ const Enrollment = () => {
                   });
                   setCurrentPage(pagination.current);
                   setPageSize(pagination.pageSize);
+                  // The useEffect will trigger a new API call with the updated pageNo/pageSize
                 }}
                 expandable={{
                   expandedRowRender,

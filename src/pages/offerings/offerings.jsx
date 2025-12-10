@@ -1,48 +1,63 @@
-import React, { useCallback, useEffect } from "react";
-import CustomButton from "../../components/Button/Button";
-import { Table, Space, Row, Col, Button, Select, Form } from "antd";
-import { useNavigate } from "react-router";
-import { useOfferingsContext } from "../../contexts/offerings";
-import useCourses from "../../hooks/useCourses";
-import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
-import { DateTime } from "luxon";
-import { formatSemester, formatAmount } from "../../utils/formatting";
-import { SEMESTER, YEAR } from "../../constants";
-import usePrograms from "../../hooks/usePrograms";
-import { cleanParams } from "../../utils/formatting";
+import { useCallback, useEffect, useState } from 'react';
+import CustomButton from '../../components/Button/Button';
+import { Table, Space, Row, Col, Select, Form } from 'antd';
+import { useNavigate } from 'react-router';
+import { useOfferingsContext } from '../../contexts/offerings';
+import useCourses from '../../hooks/useCourses';
+import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
+import { DateTime } from 'luxon';
+import { formatSemester, formatAmount } from '../../utils/formatting';
+import { SEMESTER, YEAR } from '../../constants';
+import usePrograms from '../../hooks/usePrograms';
+import { cleanParams } from '../../utils/formatting';
 const { Option } = Select;
 
 const Offerings = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const { courses, isLoading: getCoursesLoading, error: getCoursesError } = useCourses();
+  const {
+    courses,
+    isLoading: getCoursesLoading,
+    error: getCoursesError,
+  } = useCourses();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25); // Display 25 per page
+  const [isFiltered, setIsFiltered] = useState(false); // Track if filters are applied
+  const [searchParams, setSearchParams] = useState({});
+
   const {
     data: offerings,
     getOfferingsLoading,
     getOfferingsError,
     setParams,
   } = useOfferingsContext();
-  const { programs, isLoading: getProgramsLoading, error: getProgramsError } =
-    usePrograms();
+  const {
+    programs,
+    isLoading: getProgramsLoading,
+    error: getProgramsError,
+  } = usePrograms();
 
   useEffect(() => {
+    // Use server-side pagination: fetch the current page with the display pageSize
+    // Include search params when filtered
     setParams({
-      pageNo: 1,
-      pageSize: 100,
+      ...(isFiltered ? cleanParams(searchParams) : {}),
+      pageNo: currentPage,
+      pageSize: pageSize,
     });
-  }, []);
+  }, [currentPage, pageSize, isFiltered, searchParams, setParams]);
 
   const columns = [
     {
-      title: "Course",
-      dataIndex: "course",
-      key: "course",
+      title: 'Course',
+      dataIndex: 'course',
+      key: 'course',
       render: (_, record) => <p>{record?.course?.name}</p>,
     },
     {
-      title: "Review Program",
-      dataIndex: "reviewProgram",
-      key: "reviewProgram",
+      title: 'Review Program',
+      dataIndex: 'reviewProgram',
+      key: 'reviewProgram',
       render: (data) => {
         return (
           <p>
@@ -53,61 +68,61 @@ const Offerings = () => {
     },
 
     {
-      title: "Semester",
-      dataIndex: "semester",
-      key: "semester",
+      title: 'Semester',
+      dataIndex: 'semester',
+      key: 'semester',
       render: (value) => {
         return formatSemester(value);
       },
     },
-    { title: "School Year", dataIndex: "yearOffered", key: "yearOffered" },
+    { title: 'School Year', dataIndex: 'yearOffered', key: 'yearOffered' },
     {
-      title: "Start Date",
-      dataIndex: "startDate",
-      key: "startDate",
+      title: 'Start Date',
+      dataIndex: 'startDate',
+      key: 'startDate',
       render: (value) => {
-        return DateTime.fromISO(value).toFormat("MMM dd, yyyy");
+        return DateTime.fromISO(value).toFormat('MMM dd, yyyy');
       },
     },
     {
-      title: "Payment Deadline",
-      dataIndex: "paymentDeadline",
-      key: "paymentDeadline",
+      title: 'Payment Deadline',
+      dataIndex: 'paymentDeadline',
+      key: 'paymentDeadline',
       render: (value) => {
-        return DateTime.fromISO(value).toFormat("MMM dd, yyyy");
+        return DateTime.fromISO(value).toFormat('MMM dd, yyyy');
       },
     },
     {
-      title: "Enrollees",
-      dataIndex: "enrollmentCapacity",
+      title: 'Enrollees',
+      dataIndex: 'enrollmentCapacity',
     },
     {
-      title: "Review Fee",
-      dataIndex: "reviewFee",
+      title: 'Review Fee',
+      dataIndex: 'reviewFee',
       render: (value) => formatAmount(value),
     },
     {
-      title: "Total Collectibles",
-      dataIndex: "budgetProposal",
-      key: "budgetProposal",
+      title: 'Total Collectibles',
+      dataIndex: 'budgetProposal',
+      key: 'budgetProposal',
       render: (value) => formatAmount(value),
     },
     {
-      title: "Enrollee Type",
-      dataIndex: "offeringType",
-      key: "enrolleeType",
+      title: 'Enrollee Type',
+      dataIndex: 'offeringType',
+      key: 'enrolleeType',
     },
     {
-      title: "School",
-      dataIndex: "school",
-      key: "school",
+      title: 'School',
+      dataIndex: 'school',
+      key: 'school',
       render: (value) => {
-        return value?.name ?? "";
+        return value?.name ?? '';
       },
     },
     {
-      title: "Action",
-      key: "action",
+      title: 'Action',
+      key: 'action',
       render: (_, record) => (
         <Space size="small">
           <CustomButton
@@ -123,20 +138,20 @@ const Offerings = () => {
 
   const onSearch = (values) => {
     const params = cleanParams(values);
-    console.log("filtering courses by", params);
-    setParams({
-      ...params,
-      pageNo: 1,
-      pageSize: 100,
-    });
+    console.log('filtering courses by', params);
+    setCurrentPage(1); // Reset to first page when filtering
+    setIsFiltered(true); // Mark as filtered
+    setSearchParams(values); // Store filter params
+    // The useEffect will handle the API call with the updated searchParams
   };
 
   const handleClear = useCallback(() => {
     form.resetFields();
-    setParams({
-      pageNo: 1,
-      pageSize: 100,
-    });
+    setCurrentPage(1);
+    setPageSize(25);
+    setIsFiltered(false); // Reset filter state
+    setSearchParams({}); // Clear search params
+    // The useEffect will trigger a new API call with reset params
   }, [form]);
 
   return (
@@ -288,9 +303,30 @@ const Offerings = () => {
             ) : (
               <Table
                 size="small"
-                dataSource={offerings && offerings?.data}
+                dataSource={offerings?.data || []}
                 columns={columns}
                 loading={getOfferingsLoading}
+                pagination={{
+                  current: currentPage,
+                  pageSize: pageSize,
+                  total: offerings?.meta?.totalResults || 0,
+                  showSizeChanger: true,
+                  showQuickJumper: true,
+                  showTotal: (total, range) =>
+                    `${range[0]}-${range[1]} of ${total} items`,
+                  pageSizeOptions: ['10', '25', '50', '100'],
+                }}
+                onChange={(pagination) => {
+                  console.log('Offerings pagination changed:', {
+                    current: pagination.current,
+                    pageSize: pagination.pageSize,
+                    total: offerings?.meta?.totalResults || 0,
+                    isFiltered,
+                  });
+                  setCurrentPage(pagination.current);
+                  setPageSize(pagination.pageSize);
+                  // The useEffect will trigger a new API call with the updated pageNo/pageSize
+                }}
               />
             )}
           </Col>

@@ -1,4 +1,10 @@
-import { createContext, useMemo, useState, useContext } from 'react';
+import {
+  createContext,
+  useMemo,
+  useState,
+  useContext,
+  useCallback,
+} from 'react';
 import { useLocation } from 'react-router-dom';
 import useEnrollments from '../hooks/useEnrollments';
 import { useAuth } from './auth';
@@ -16,7 +22,7 @@ export const EnrollmentsProvider = ({ children }) => {
   const isLoginPage = location.pathname === '/login';
   const shouldFetch = isAuthenticated && !isLoginPage;
 
-  const [params, setParams] = useState({
+  const [params, setParamsState] = useState({
     startDate: undefined,
     endDate: undefined,
     studentName: undefined,
@@ -25,10 +31,24 @@ export const EnrollmentsProvider = ({ children }) => {
     semester: undefined,
     yearOffered: undefined,
     pageNo: 1,
-    pageSize: 4500,
+    pageSize: 100, // Default to 100, will increase to 4500 when searching
     programId: undefined,
   });
 
+  // Wrap setParams to merge with existing params instead of replacing
+  const setParams = useCallback((newParams) => {
+    console.log('EnrollmentsContext: setParams called with:', newParams);
+    setParamsState((prevParams) => {
+      const merged = {
+        ...prevParams,
+        ...newParams,
+      };
+      console.log('EnrollmentsContext: Merged params:', merged);
+      return merged;
+    });
+  }, []);
+
+  // Use params directly - let the page component control pageSize for proper server-side pagination
   const { data, isLoading, error } = useEnrollments(
     shouldFetch ? params : null
   );

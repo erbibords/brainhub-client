@@ -69,29 +69,34 @@ const PaymentsList = () => {
   } = usePaymentsContext();
   const { branchId } = useBranch();
 
-  // Fetch undone payments separately
+  // Fetch undone payments separately with server-side pagination
   const undonePaymentsParams = useMemo(() => {
     const params = {
-      pageNo: 1,
-      pageSize: isFiltered ? 10000 : 200,
+      pageNo: currentPage,
+      pageSize: pageSize,
       deleted: true, // Assuming API supports this parameter
     };
 
-    // Only include search params if they're set
-    if (searchParams.referenceNo) params.referenceNo = searchParams.referenceNo;
-    if (searchParams.startDate) params.startDate = searchParams.startDate;
-    if (searchParams.endDate) params.endDate = searchParams.endDate;
-    if (searchParams.studentName) params.studentName = searchParams.studentName;
-    if (searchParams.courseId) params.courseId = searchParams.courseId;
-    if (searchParams.schoolId) params.schoolId = searchParams.schoolId;
-    if (searchParams.semester) params.semester = searchParams.semester;
-    if (searchParams.yearOffered) params.yearOffered = searchParams.yearOffered;
-    if (searchParams.offeringType)
-      params.offeringType = searchParams.offeringType;
-    if (searchParams.programId) params.programId = searchParams.programId;
+    // Include search params if filtered
+    if (isFiltered) {
+      if (searchParams.referenceNo)
+        params.referenceNo = searchParams.referenceNo;
+      if (searchParams.startDate) params.startDate = searchParams.startDate;
+      if (searchParams.endDate) params.endDate = searchParams.endDate;
+      if (searchParams.studentName)
+        params.studentName = searchParams.studentName;
+      if (searchParams.courseId) params.courseId = searchParams.courseId;
+      if (searchParams.schoolId) params.schoolId = searchParams.schoolId;
+      if (searchParams.semester) params.semester = searchParams.semester;
+      if (searchParams.yearOffered)
+        params.yearOffered = searchParams.yearOffered;
+      if (searchParams.offeringType)
+        params.offeringType = searchParams.offeringType;
+      if (searchParams.programId) params.programId = searchParams.programId;
+    }
 
     return params;
-  }, [searchParams, isFiltered]);
+  }, [searchParams, isFiltered, currentPage, pageSize]);
 
   const { data: undonePayments, isLoading: undonePaymentsLoading } =
     usePayments(undonePaymentsParams);
@@ -129,23 +134,22 @@ const PaymentsList = () => {
       isFiltered,
       currentPage,
       pageSize,
+      isFiltered,
+      searchParams,
     });
 
     setParams({
-      pageNo: apiPageNo,
-      pageSize: apiPageSize,
+      ...(isFiltered ? cleanParams(searchParams) : {}),
+      pageNo: currentPage,
+      pageSize: pageSize,
     });
-  }, [isFiltered, setParams]);
+  }, [currentPage, pageSize, isFiltered, setParams, searchParams]);
 
   const handleFilter = useCallback(() => {
     setCurrentPage(1); // Reset to first page when filtering
-    setIsFiltered(true); // Mark as filtered to fetch all records
-    setParams({
-      ...cleanParams(searchParams),
-      pageNo: 1,
-      pageSize: 10000, // Fetch all filtered records
-    });
-  }, [setParams, searchParams]);
+    setIsFiltered(true); // Mark as filtered
+    // The useEffect will handle the API call with the updated searchParams
+  }, []);
 
   const handleDateRangeChange = (dates) => {
     if (dates) {
@@ -565,10 +569,6 @@ const PaymentsList = () => {
                     setCurrentPage(1);
                     setPageSize(25);
                     setIsFiltered(false); // Reset filter state
-                    setParams({
-                      pageNo: 1,
-                      pageSize: 4500, // Reset to fetch 4500 records
-                    });
                     setSearchParams({
                       referenceNo: undefined,
                       startDate: undefined,
@@ -581,6 +581,7 @@ const PaymentsList = () => {
                       offeringType: undefined,
                       programId: undefined,
                     });
+                    // The useEffect will trigger a new API call with reset params
                   }}
                 >
                   Clear
@@ -616,20 +617,13 @@ const PaymentsList = () => {
                         <GenericErrorDisplay />
                       ) : (
                         <Table
-                          dataSource={
-                            payments && payments?.data
-                              ? payments.data.slice(
-                                  (currentPage - 1) * pageSize,
-                                  currentPage * pageSize
-                                )
-                              : []
-                          }
+                          dataSource={payments?.data || []}
                           columns={activePaymentsColumns}
                           loading={getPaymentsLoading}
                           pagination={{
                             current: currentPage,
                             pageSize: pageSize,
-                            total: payments?.data?.length || 0,
+                            total: payments?.meta?.totalResults || 0,
                             showSizeChanger: true,
                             showQuickJumper: true,
                             showTotal: (total, range) =>
@@ -643,11 +637,12 @@ const PaymentsList = () => {
                             console.log('Pagination changed:', {
                               current: pagination.current,
                               pageSize: pagination.pageSize,
-                              total: payments?.data?.length || 0,
+                              total: payments?.meta?.totalResults || 0,
                               isFiltered,
                             });
                             setCurrentPage(pagination.current);
                             setPageSize(pagination.pageSize);
+                            // The useEffect will trigger a new API call with the updated pageNo/pageSize
                           }}
                         />
                       )}
@@ -661,14 +656,7 @@ const PaymentsList = () => {
                   })`,
                   children: (
                     <Table
-                      dataSource={
-                        undonePayments && undonePayments?.data
-                          ? undonePayments.data.slice(
-                              (currentPage - 1) * pageSize,
-                              currentPage * pageSize
-                            )
-                          : []
-                      }
+                      dataSource={undonePayments?.data || []}
                       columns={undonePaymentsColumns}
                       loading={undonePaymentsLoading}
                       locale={{
@@ -683,16 +671,14 @@ const PaymentsList = () => {
                       pagination={{
                         current: currentPage,
                         pageSize: pageSize,
-                        total: undonePayments?.data?.length || 0,
+                        total: undonePayments?.meta?.totalResults || 0,
                         showSizeChanger: true,
                         showQuickJumper: true,
                         showTotal: (total, range) => {
                           if (total === 0) {
                             return 'No items';
                           }
-                          return `${range[0]}-${range[1]} of ${
-                            undonePayments?.data?.length || 0
-                          } items`;
+                          return `${range[0]}-${range[1]} of ${total} items`;
                         },
                         pageSizeOptions: ['10', '25', '50', '100'],
                       }}
@@ -700,6 +686,7 @@ const PaymentsList = () => {
                       onChange={(pagination) => {
                         setCurrentPage(pagination.current);
                         setPageSize(pagination.pageSize);
+                        // The useEffect and undonePaymentsParams will trigger a new API call
                       }}
                     />
                   ),

@@ -1,17 +1,17 @@
-import { useMemo, useEffect, useRef, useState } from "react";
-import { Row, Col, Card, Table, Statistic, Input } from "antd";
-import { useEnrollmentsContext } from "../../contexts/enrollments";
-import CustomButton from "../../components/Button/Button";
-import { formatAmount } from "../../utils/formatting";
-import { useReactToPrint } from "react-to-print";
-import "./students-table.css";
+import { useMemo, useEffect, useRef, useState } from 'react';
+import { Row, Col, Card, Table, Statistic, Input } from 'antd';
+import { useEnrollmentsContext } from '../../contexts/enrollments';
+import CustomButton from '../../components/Button/Button';
+import { formatAmount } from '../../utils/formatting';
+import { useReactToPrint } from 'react-to-print';
+import './students-table.css';
 
 const StudentsTable = ({ programId, programName }) => {
   const { enrollments, getEnrollmentsLoading, getEnrollmentsError, setParams } =
     useEnrollmentsContext();
   const printRef = useRef();
 
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
 
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
@@ -22,10 +22,22 @@ const StudentsTable = ({ programId, programName }) => {
   // Fetch ALL enrollments for this program (not paginated)
   useEffect(() => {
     if (programId) {
+      console.log('StudentsTable: Setting params with programId:', programId);
+      console.log('StudentsTable: setParams function:', setParams);
+      console.log('StudentsTable: setParams type:', typeof setParams);
+      if (typeof setParams === 'function') {
+        setParams({
+          programId,
+          pageNo: 1,
+          pageSize: 10000, // Fetch all records for this program
+        });
+      } else {
+        console.error('StudentsTable: setParams is not a function!', setParams);
+      }
+    } else {
+      // Clear programId when component unmounts or programId becomes undefined
       setParams({
-        programId,
-        pageNo: 1,
-        pageSize: 10000, // Fetch all records for this program
+        programId: undefined,
       });
     }
   }, [programId, setParams]);
@@ -47,7 +59,7 @@ const StudentsTable = ({ programId, programName }) => {
           key: studentKey,
           id: student.id,
           name: `${student.lastName}, ${student.firstName} ${
-            student.middleName || ""
+            student.middleName || ''
           }`.trim(),
           firstName: student.firstName,
           lastName: student.lastName,
@@ -79,7 +91,7 @@ const StudentsTable = ({ programId, programName }) => {
       if (firstNameComparison !== 0) return firstNameComparison;
 
       // If firstNames are also equal, compare by middleName
-      return (a.middleName || "").localeCompare(b.middleName || "");
+      return (a.middleName || '').localeCompare(b.middleName || '');
     });
   }, [enrollments, getEnrollmentsLoading, getEnrollmentsError]);
 
@@ -178,21 +190,21 @@ const StudentsTable = ({ programId, programName }) => {
 
   const studentsColumns = [
     {
-      title: "#",
-      key: "number",
+      title: '#',
+      key: 'number',
       width: 60,
       render: (_, __, index) => index + 1,
     },
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
     },
 
     {
-      title: "Total Review Fee",
-      dataIndex: "enrollments",
-      key: "totalReviewFee",
+      title: 'Total Review Fee',
+      dataIndex: 'enrollments',
+      key: 'totalReviewFee',
       render: (enrollments) => {
         const total = enrollments.reduce(
           (sum, enrollment) => sum + (parseFloat(enrollment.reviewFee) || 0),
@@ -202,9 +214,9 @@ const StudentsTable = ({ programId, programName }) => {
       },
     },
     {
-      title: "Total Discount Amount",
-      dataIndex: "enrollments",
-      key: "totalDiscountAmount",
+      title: 'Total Discount Amount',
+      dataIndex: 'enrollments',
+      key: 'totalDiscountAmount',
       render: (enrollments) => {
         const total = enrollments.reduce(
           (sum, enrollment) =>
@@ -215,9 +227,9 @@ const StudentsTable = ({ programId, programName }) => {
       },
     },
     {
-      title: "Total Amount Paid",
-      dataIndex: "enrollments",
-      key: "totalAmountPaid",
+      title: 'Total Amount Paid',
+      dataIndex: 'enrollments',
+      key: 'totalAmountPaid',
       render: (enrollments) => {
         const total = enrollments.reduce(
           (sum, enrollment) =>
@@ -228,9 +240,9 @@ const StudentsTable = ({ programId, programName }) => {
       },
     },
     {
-      title: "Total Remaining Balance",
-      dataIndex: "enrollments",
-      key: "totalRemainingBalance",
+      title: 'Total Remaining Balance',
+      dataIndex: 'enrollments',
+      key: 'totalRemainingBalance',
       render: (enrollments) => {
         const total = enrollments.reduce((sum, enrollment) => {
           const reviewFee = parseFloat(enrollment.reviewFee) || 0;
@@ -245,10 +257,10 @@ const StudentsTable = ({ programId, programName }) => {
           <span
             className={
               total > 0
-                ? "text-red-600 font-bold"
+                ? 'text-red-600 font-bold'
                 : total < 0
-                ? "text-green-600 font-bold"
-                : ""
+                ? 'text-green-600 font-bold'
+                : ''
             }
           >
             {formatAmount(total)}
@@ -277,7 +289,7 @@ const StudentsTable = ({ programId, programName }) => {
                   title="Total Collectibles"
                   value={programTotals.totalCollectibles}
                   precision={2}
-                  valueStyle={{ color: "#3f8600" }}
+                  valueStyle={{ color: '#3f8600' }}
                   prefix="₱"
                 />
               </Card>
@@ -288,7 +300,7 @@ const StudentsTable = ({ programId, programName }) => {
                   title="Total Money Collected"
                   value={programTotals.totalMoneyCollected}
                   precision={2}
-                  valueStyle={{ color: "#1890ff" }}
+                  valueStyle={{ color: '#1890ff' }}
                   prefix="₱"
                 />
               </Card>
@@ -302,8 +314,8 @@ const StudentsTable = ({ programId, programName }) => {
                   valueStyle={{
                     color:
                       programTotals.totalRemainingCollectibles > 0
-                        ? "#cf1322"
-                        : "#3f8600",
+                        ? '#cf1322'
+                        : '#3f8600',
                   }}
                   prefix="₱"
                 />
@@ -318,7 +330,7 @@ const StudentsTable = ({ programId, programName }) => {
                 <Statistic
                   title="Total Students"
                   value={studentCounts.total}
-                  valueStyle={{ color: "#1890ff" }}
+                  valueStyle={{ color: '#1890ff' }}
                 />
               </Card>
             </Col>
@@ -327,7 +339,7 @@ const StudentsTable = ({ programId, programName }) => {
                 <Statistic
                   title="Backed Out Students"
                   value={studentCounts.backedOut}
-                  valueStyle={{ color: "#cf1322" }}
+                  valueStyle={{ color: '#cf1322' }}
                 />
               </Card>
             </Col>
@@ -336,7 +348,7 @@ const StudentsTable = ({ programId, programName }) => {
                 <Statistic
                   title="Active Students"
                   value={studentCounts.active}
-                  valueStyle={{ color: "#3f8600" }}
+                  valueStyle={{ color: '#3f8600' }}
                 />
               </Card>
             </Col>
@@ -350,7 +362,7 @@ const StudentsTable = ({ programId, programName }) => {
                   title="Total Discount Amount"
                   value={programTotals.totalDiscountAmount}
                   precision={2}
-                  valueStyle={{ color: "#fa8c16" }}
+                  valueStyle={{ color: '#fa8c16' }}
                   prefix="₱"
                 />
               </Card>
@@ -361,7 +373,7 @@ const StudentsTable = ({ programId, programName }) => {
                   title="Total Overpaid Amount"
                   value={programTotals.totalOverpaid}
                   precision={2}
-                  valueStyle={{ color: "#52c41a" }}
+                  valueStyle={{ color: '#52c41a' }}
                   prefix="₱"
                 />
               </Card>
@@ -372,7 +384,7 @@ const StudentsTable = ({ programId, programName }) => {
                   title="Total Backed-Out Collected"
                   value={programTotals.totalBackedOutCollected}
                   precision={2}
-                  valueStyle={{ color: "#722ed1" }}
+                  valueStyle={{ color: '#722ed1' }}
                   prefix="₱"
                 />
               </Card>
@@ -406,7 +418,7 @@ const StudentsTable = ({ programId, programName }) => {
 
                 // Add strikethrough class for backed out students
                 if (record?.isBackedOut) {
-                  classes.push("backed-out-student-row");
+                  classes.push('backed-out-student-row');
                 }
 
                 // Calculate if this student has overpaid
@@ -426,10 +438,10 @@ const StudentsTable = ({ programId, programName }) => {
 
                 // Add background color for overpaid students
                 if (totalRemaining < 0) {
-                  classes.push("overpaid-student-row");
+                  classes.push('overpaid-student-row');
                 }
 
-                return classes.join(" ");
+                return classes.join(' ');
               }}
             />
           </div>

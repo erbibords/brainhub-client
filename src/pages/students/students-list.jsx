@@ -1,20 +1,20 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import CustomInput from "../../components/Input/Input";
-import { Select, Table, Space, Row, Col, Button, Form } from "antd";
-import { useNavigate } from "react-router-dom";
-import { useStudentContext } from "../../contexts/students";
-import useSchools from "../../hooks/useSchools";
-import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
-import CustomButton from "../../components/Button/Button";
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import CustomInput from '../../components/Input/Input';
+import { Select, Table, Space, Row, Col, Button, Form } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { useStudentContext } from '../../contexts/students';
+import useSchools from '../../hooks/useSchools';
+import GenericErrorDisplay from '../../components/GenericErrorDisplay/GenericErrorDisplay';
+import CustomButton from '../../components/Button/Button';
 import {
   cleanParams,
   formatAmount,
   formatTakerType,
-} from "../../utils/formatting";
+} from '../../utils/formatting';
 import {
   getLatestData,
   getStudentRemainingBalance,
-} from "../../utils/mappings";
+} from '../../utils/mappings';
 const { Option } = Select;
 
 const StudentsList = () => {
@@ -34,66 +34,63 @@ const StudentsList = () => {
     useStudentContext();
 
   useEffect(() => {
-    // Initial load: fetch 200 records, Filtered: fetch all records
-    const apiPageSize = isFiltered ? 10000 : 4500; // Use large number to get all filtered results
-    const apiPageNo = 1; // Always fetch from page 1
+    // Use server-side pagination: fetch the current page with the display pageSize
+    // Always use the pageSize from state for proper server-side pagination
+    const apiPageNo = currentPage;
 
-    console.log("Students API call params:", {
+    console.log('Students API call params:', {
       apiPageNo,
-      apiPageSize,
+      pageSize,
       isFiltered,
       currentPage,
-      pageSize,
+      searchParams,
     });
 
     setParams({
+      ...(isFiltered ? cleanParams(searchParams) : {}),
       pageNo: apiPageNo,
-      pageSize: apiPageSize,
+      pageSize: pageSize,
     });
-  }, [isFiltered, setParams]);
+  }, [currentPage, pageSize, isFiltered, setParams, searchParams]);
 
   const handleFilter = useCallback(() => {
     setCurrentPage(1); // Reset to first page when filtering
     setIsFiltered(true); // Mark as filtered to fetch all records
-    setParams({
-      ...cleanParams(searchParams),
-      pageNo: 1,
-      pageSize: 10000, // Fetch all filtered records
-    });
-  }, [setParams, searchParams]);
+    // The useEffect will handle the API call with the updated searchParams
+  }, []);
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
       render: (_, row) => {
         return `${row?.lastName}, ${row?.firstName} ${row?.middleName}`;
       },
     },
-    { title: "School", dataIndex: "school", key: "school" },
+    { title: 'School', dataIndex: 'school', key: 'school' },
     {
-      title: "Taker Type",
-      dataIndex: "status",
-      key: "status",
+      title: 'Taker Type',
+      dataIndex: 'status',
+      key: 'status',
       render: (_, record) => {
         return (
-          formatTakerType(getLatestData(record?.enrollments)?.takerType) ?? ""
+          formatTakerType(getLatestData(record?.enrollments)?.takerType) ?? ''
         );
       },
     },
-    { title: "Contact No.", dataIndex: "contactNumber", key: "contact" },
-    { title: "Address.", dataIndex: "address", key: "address" },
+    { title: 'Contact No.', dataIndex: 'contactNumber', key: 'contact' },
+    { title: 'Address.', dataIndex: 'address', key: 'address' },
     {
-      title: "Enrollee Type:.",
-      dataIndex: "enrollments",
-      key: "enrolleeType",
+      title: 'Enrollee Type:.',
+      dataIndex: 'enrollments',
+      key: 'enrolleeType',
       render: (data) => data[0]?.courseOffering?.offeringType,
     },
     {
-      title: "Remaining Balance.",
-      dataIndex: "enrollments",
-      key: "balance",
+      title: 'Remaining Balance.',
+      dataIndex: 'enrollments',
+      key: 'balance',
       render: (data) => {
         return (
           <p className="text-red-600 font-bold">
@@ -104,8 +101,8 @@ const StudentsList = () => {
     },
 
     {
-      title: "Action",
-      key: "action",
+      title: 'Action',
+      key: 'action',
       render: (_, record) => {
         return (
           <Space size="small">
@@ -146,24 +143,17 @@ const StudentsList = () => {
   };
 
   const filteredData = useMemo(() => {
-    if (studentDataLoading || getStudentError) return;
-    return students?.data?.map((student) => {
-      return {
-        ...student,
-        name: `${student.firstName} ${student.middleName} ${student.lastName}`,
-        school: student.school.name,
-      };
-    });
-  }, [students, studentDataLoading, getStudentError]);
-
-  // Apply client-side pagination to the data
-  const paginatedData = useMemo(() => {
-    if (!filteredData) return [];
-    return filteredData.slice(
-      (currentPage - 1) * pageSize,
-      currentPage * pageSize
+    if (studentDataLoading || getStudentError) return [];
+    return (
+      students?.data?.map((student) => {
+        return {
+          ...student,
+          name: `${student.firstName} ${student.middleName} ${student.lastName}`,
+          school: student.school.name,
+        };
+      }) || []
     );
-  }, [filteredData, currentPage, pageSize]);
+  }, [students, studentDataLoading, getStudentError]);
 
   return (
     <div>
@@ -253,15 +243,12 @@ const StudentsList = () => {
                 setCurrentPage(1);
                 setPageSize(25);
                 setIsFiltered(false); // Reset filter state
-                setParams({
-                  pageNo: 1,
-                  pageSize: 4500, // Reset to fetch 4500 records
-                });
                 setSearchParams({
                   studentName: undefined,
                   schoolId: undefined,
                   offeringType: undefined,
                 });
+                // The useEffect will trigger a new API call with reset params
               }}
             >
               Clear
@@ -270,7 +257,7 @@ const StudentsList = () => {
         </Row>
       </Form>
       <p className="text-xl font-bold mb-4">
-        Total Students: {` ${filteredData?.length || 0}`}
+        Total Students: {` ${students?.meta?.totalResults || 0}`}
       </p>
 
       <Col span={24}>
@@ -278,28 +265,29 @@ const StudentsList = () => {
           <GenericErrorDisplay className="!mt-5" />
         ) : (
           <Table
-            dataSource={paginatedData}
+            dataSource={filteredData}
             columns={columns}
             loading={studentDataLoading}
             pagination={{
               current: currentPage,
               pageSize: pageSize,
-              total: filteredData?.length || 0,
+              total: students?.meta?.totalResults || 0,
               showSizeChanger: true,
               showQuickJumper: true,
               showTotal: (total, range) =>
-                `${range[0]}-${range[1]} of ${filteredData?.length || 0} items`,
-              pageSizeOptions: ["10", "25", "50", "100"],
+                `${range[0]}-${range[1]} of ${total} items`,
+              pageSizeOptions: ['10', '25', '50', '100'],
             }}
             onChange={(pagination) => {
-              console.log("Students pagination changed:", {
+              console.log('Students pagination changed:', {
                 current: pagination.current,
                 pageSize: pagination.pageSize,
-                total: filteredData?.length || 0,
+                total: students?.meta?.totalResults || 0,
                 isFiltered,
               });
               setCurrentPage(pagination.current);
               setPageSize(pagination.pageSize);
+              // The useEffect will trigger a new API call with the updated pageNo/pageSize
             }}
           />
         )}

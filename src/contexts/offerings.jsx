@@ -18,7 +18,7 @@ export const OfferingsProvider = ({ children }) => {
 
   const [params, setParams] = useState({
     pageNo: 1,
-    pageSize: 100,
+    pageSize: 100, // Default to 100, will be controlled by page component
   });
 
   const {
