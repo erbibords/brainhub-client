@@ -123,27 +123,59 @@ const PaymentsList = () => {
   const [password, setPassword] = useState('');
   const [activeTab, setActiveTab] = useState('payments');
 
+  // When filtering, use pageSize 1000 for initial call
   useEffect(() => {
-    // Initial load: fetch 200 records, Filtered: fetch all records
-    const apiPageSize = isFiltered ? 10000 : 200; // Use large number to get all filtered results
-    const apiPageNo = 1; // Always fetch from page 1
+    // Use pageSize 1000 when filtered, otherwise use the display pageSize
+    const apiPageSize = isFiltered ? 1000 : pageSize;
+    const apiPageNo = currentPage;
 
-    console.log('API call params:', {
+    console.log('Payments API call params:', {
       apiPageNo,
       apiPageSize,
       isFiltered,
       currentPage,
       pageSize,
-      isFiltered,
       searchParams,
     });
 
     setParams({
       ...(isFiltered ? cleanParams(searchParams) : {}),
-      pageNo: currentPage,
-      pageSize: pageSize,
+      pageNo: apiPageNo,
+      pageSize: apiPageSize,
     });
   }, [currentPage, pageSize, isFiltered, setParams, searchParams]);
+
+  // When filtered and totalResults > 1000, update context to fetch all results for printing
+  // This ensures the print page has access to all filtered results
+  useEffect(() => {
+    if (
+      isFiltered &&
+      payments?.meta?.totalResults &&
+      payments.meta.totalResults > 1000
+    ) {
+      // Check if we've already fetched all results
+      const currentPageSize = payments.meta.pageSize || 1000;
+      if (currentPageSize < payments.meta.totalResults) {
+        // Update context to fetch all results with the same filters
+        // This happens after the initial 1000 results are loaded
+        console.log(
+          'Payments: Total results > 1000, fetching all results for printing:',
+          payments.meta.totalResults
+        );
+        setParams({
+          ...cleanParams(searchParams),
+          pageNo: 1,
+          pageSize: payments.meta.totalResults, // Fetch all results for printing
+        });
+      }
+    }
+  }, [
+    isFiltered,
+    payments?.meta?.totalResults,
+    payments?.meta?.pageSize,
+    searchParams,
+    setParams,
+  ]);
 
   const handleFilter = useCallback(() => {
     setCurrentPage(1); // Reset to first page when filtering
