@@ -653,28 +653,31 @@ const PaymentsList = () => {
                           columns={activePaymentsColumns}
                           loading={getPaymentsLoading}
                           pagination={{
-                            current: currentPage,
-                            pageSize: pageSize,
+                            current: isFiltered ? 1 : currentPage,
+                            pageSize: isFiltered
+                              ? payments?.meta?.totalResults || 1000
+                              : pageSize,
                             total: payments?.meta?.totalResults || 0,
-                            showSizeChanger: true,
-                            showQuickJumper: true,
+                            showSizeChanger: !isFiltered, // Hide size changer when filtered
+                            showQuickJumper: !isFiltered, // Hide quick jumper when filtered
                             showTotal: (total, range) =>
-                              `${range[0]}-${range[1]} of ${
-                                payments?.data?.length || 0
-                              } items`,
+                              `${range[0]}-${range[1]} of ${total} items`,
                             pageSizeOptions: ['10', '25', '50', '100'],
                           }}
                           scroll={{ y: 800 }}
                           onChange={(pagination) => {
-                            console.log('Pagination changed:', {
-                              current: pagination.current,
-                              pageSize: pagination.pageSize,
-                              total: payments?.meta?.totalResults || 0,
-                              isFiltered,
-                            });
-                            setCurrentPage(pagination.current);
-                            setPageSize(pagination.pageSize);
-                            // The useEffect will trigger a new API call with the updated pageNo/pageSize
+                            if (!isFiltered) {
+                              // Only allow pagination changes when not filtered
+                              console.log('Pagination changed:', {
+                                current: pagination.current,
+                                pageSize: pagination.pageSize,
+                                total: payments?.meta?.totalResults || 0,
+                                isFiltered,
+                              });
+                              setCurrentPage(pagination.current);
+                              setPageSize(pagination.pageSize);
+                              // The useEffect will trigger a new API call with the updated pageNo/pageSize
+                            }
                           }}
                         />
                       )}
@@ -701,11 +704,13 @@ const PaymentsList = () => {
                         ),
                       }}
                       pagination={{
-                        current: currentPage,
-                        pageSize: pageSize,
+                        current: isFiltered ? 1 : currentPage,
+                        pageSize: isFiltered
+                          ? undonePayments?.meta?.totalResults || 1000
+                          : pageSize,
                         total: undonePayments?.meta?.totalResults || 0,
-                        showSizeChanger: true,
-                        showQuickJumper: true,
+                        showSizeChanger: !isFiltered, // Hide size changer when filtered
+                        showQuickJumper: !isFiltered, // Hide quick jumper when filtered
                         showTotal: (total, range) => {
                           if (total === 0) {
                             return 'No items';
@@ -716,9 +721,12 @@ const PaymentsList = () => {
                       }}
                       scroll={{ y: 800 }}
                       onChange={(pagination) => {
-                        setCurrentPage(pagination.current);
-                        setPageSize(pagination.pageSize);
-                        // The useEffect and undonePaymentsParams will trigger a new API call
+                        if (!isFiltered) {
+                          // Only allow pagination changes when not filtered
+                          setCurrentPage(pagination.current);
+                          setPageSize(pagination.pageSize);
+                          // The useEffect and undonePaymentsParams will trigger a new API call
+                        }
                       }}
                     />
                   ),
