@@ -1,22 +1,34 @@
 import React from 'react';
 import 'antd/dist/reset.css';
 import ReactDOM from 'react-dom/client';
-import { SWRConfig } from 'swr';
+import { SWRConfig, cache } from 'swr';
 import App from './App.jsx';
 import fetcher from './utils/fetcher.js';
+import { DISABLE_API_CALLS } from './utils/axiosInstance.js';
 import './index.css';
+
+// Disabled fetcher that prevents all API calls
+const disabledFetcher = async (url) => {
+  console.warn('API calls are disabled. Request blocked for:', url);
+  return Promise.resolve(null);
+};
+
+// Clear SWR cache if API calls are disabled
+if (DISABLE_API_CALLS) {
+  cache.clear();
+}
 
 // Global SWR configuration to prevent excessive API calls and reduce server load
 const swrConfig = {
-  fetcher,
+  fetcher: DISABLE_API_CALLS ? disabledFetcher : fetcher,
   // Disable automatic refresh to prevent unnecessary API calls
   refreshInterval: 0,
   // Disable revalidation on focus to prevent API calls when user switches tabs
   revalidateOnFocus: false,
   // Disable revalidation on reconnect to prevent API calls when network reconnects
   revalidateOnReconnect: false,
-  // Revalidate on mount - this is fine now because hooks conditionally disable fetching
-  // revalidateOnMount: true,
+  // Disable revalidation on mount to prevent using cached data
+  revalidateOnMount: false,
   // Increase dedupe window to 10 seconds to prevent duplicate requests
   // This is critical when multiple components use the same hook
   dedupingInterval: 5000,
