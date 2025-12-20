@@ -3,7 +3,7 @@ import { BASE_URL } from '../constants';
 import { getEmulatedBranch, getToken } from './token';
 
 // Set to true to disable all API calls
-export const DISABLE_API_CALLS = true;
+export const DISABLE_API_CALLS = false;
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
