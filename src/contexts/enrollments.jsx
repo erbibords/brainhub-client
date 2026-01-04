@@ -37,13 +37,11 @@ export const EnrollmentsProvider = ({ children }) => {
 
   // Wrap setParams to merge with existing params instead of replacing
   const setParams = useCallback((newParams) => {
-    console.log('EnrollmentsContext: setParams called with:', newParams);
     setParamsState((prevParams) => {
       const merged = {
         ...prevParams,
         ...newParams,
       };
-      console.log('EnrollmentsContext: Merged params:', merged);
       return merged;
     });
   }, []);

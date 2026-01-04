@@ -66,7 +66,6 @@ function useEnrollments(params = {}) {
   const swrKey = useMemo(() => {
     if (params === null) return null;
     const key = `enrollments-${branchId ?? 'unknown'}-${JSON.stringify(normalizedParams)}`;
-    console.log('useEnrollments: SWR key:', key, 'params:', normalizedParams);
     return key;
   }, [branchId, normalizedParams, params]);
 

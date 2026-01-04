@@ -85,12 +85,10 @@ const ExpenseModal = ({
 
   // File upload handlers
   const handleFileChange = ({ fileList: newFileList }) => {
-    console.log('🔍 Modal file change:', newFileList);
     setFileList(newFileList);
 
     // Set the file in state (following payments pattern)
     if (newFileList.length > 0) {
-      console.log('🔍 Setting selectedFile:', newFileList[0].originFileObj);
       setSelectedFile(newFileList[0].originFileObj);
     } else {
       setSelectedFile(null);

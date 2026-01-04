@@ -7,11 +7,18 @@
   background-color: #d9f7be !important; /* Slightly darker green on hover */
 }
 
-/* Backed out student row with strikethrough */
+/* Backed out student row with strikethrough and light red background */
+.backed-out-student-row {
+  background-color: #fff1f0 !important; /* Light red background */
+}
+
+.backed-out-student-row:hover {
+  background-color: #ffe7e5 !important; /* Slightly darker red on hover */
+}
+
 .backed-out-student-row > td {
   text-decoration: line-through !important;
   color: #6b7280 !important;
-  opacity: 0.7;
 }
 
 /* Main statistics cards with highlighted borders */
@@ -116,9 +123,12 @@
   }
   
   /* Strikethrough backed out students in print */
+  .print-content .backed-out-student-row {
+    background-color: #fff1f0 !important; /* Light red background */
+  }
+  
   .print-content .backed-out-student-row > td {
     text-decoration: line-through !important;
     color: #6b7280 !important;
-    opacity: 0.7;
   }
 }

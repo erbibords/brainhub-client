@@ -31,10 +31,6 @@ const swrConfig = {
   onError: (error, key) => {
     console.error('SWR Error:', error, 'for key:', key);
   },
-  // Remove success logging in production to reduce console spam
-  // onSuccess: (data, key) => {
-  //   console.log("SWR Success for key:", key);
-  // },
 };
 
 ReactDOM.createRoot(document.getElementById('root')).render(

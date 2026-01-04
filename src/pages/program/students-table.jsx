@@ -22,9 +22,7 @@ const StudentsTable = ({ programId, programName }) => {
   // Fetch ALL enrollments for this program (not paginated)
   useEffect(() => {
     if (programId) {
-      console.log('StudentsTable: Setting params with programId:', programId);
-      console.log('StudentsTable: setParams function:', setParams);
-      console.log('StudentsTable: setParams type:', typeof setParams);
+
       if (typeof setParams === 'function') {
         setParams({
           programId,
@@ -59,7 +57,7 @@ const StudentsTable = ({ programId, programName }) => {
           key: studentKey,
           id: student.id,
           name: `${student.lastName}, ${student.firstName} ${
-            student.middleName || ''
+            student.middleName || ""
           }`.trim(),
           firstName: student.firstName,
           lastName: student.lastName,
@@ -74,9 +72,10 @@ const StudentsTable = ({ programId, programName }) => {
       }
 
       acc[studentKey].enrollments.push(enrollment);
-      // Mark as backed out if any enrollment has a backed out student
-      acc[studentKey].isBackedOut =
-        acc[studentKey].isBackedOut || Boolean(enrollment.student?.backedOut);
+      // Mark as backed out if student has backedoutAt (backed out date) or if enrollment has backedoutAt
+      // Check both enrollment.backedoutAt and enrollment.student?.backedoutAt
+      const isBackedOut = Boolean(enrollment.backedoutAt || enrollment.student?.backedoutAt || student?.backedoutAt);
+      acc[studentKey].isBackedOut = acc[studentKey].isBackedOut || isBackedOut;
       return acc;
     }, {});
 
@@ -132,8 +131,9 @@ const StudentsTable = ({ programId, programName }) => {
     }
 
     // Filter out backedOut students for calculations
+    // Check if enrollment or student has backedoutAt
     const activeEnrollments = enrollments.data.filter(
-      (enrollment) => !enrollment.student?.backedOut
+      (enrollment) => !enrollment.backedoutAt && !enrollment.student?.backedoutAt
     );
 
     // Calculate totals for active enrollments
@@ -167,8 +167,9 @@ const StudentsTable = ({ programId, programName }) => {
     );
 
     // Calculate total money collected from backed-out students
+    // Check if enrollment or student has backedoutAt
     const backedOutEnrollments = enrollments.data.filter(
-      (enrollment) => enrollment.student?.backedOut
+      (enrollment) => enrollment.backedoutAt || enrollment.student?.backedoutAt
     );
 
     const backedOutTotal = backedOutEnrollments.reduce((acc, enrollment) => {

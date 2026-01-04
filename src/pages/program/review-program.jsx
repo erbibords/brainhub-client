@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
-import { Table, Space, Row, Col, Modal, Form } from "antd";
+import { Table, Space, Row, Col, Form } from "antd";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
 import AddProgramModal from "../../components/AddProgramModal/AddProgramModal";
@@ -63,16 +63,6 @@ const ReviewProgram = () => {
           >
             View
           </CustomButton>
-
-          {/* <CustomButton
-            type="secondary"
-            className="w-auto bg-secondary text-white"
-            onClick={() =>
-              confirmDeleteProgram(record.id, record.reviewProgram)
-            }
-          >
-            Delete
-          </CustomButton> */}
         </Space>
       ),
     },
@@ -111,6 +101,7 @@ const ReviewProgram = () => {
     [addProgram]
   );
 
+
   const filteredData = useMemo(() => {
     if (getProgramsError) return [];
     if (!programs) return [];
@@ -119,6 +110,7 @@ const ReviewProgram = () => {
       program.name.toLowerCase().includes(searchProgram.toLowerCase())
     );
   }, [searchProgram, programs, getProgramsError]);
+
 
   return (
     <div>
