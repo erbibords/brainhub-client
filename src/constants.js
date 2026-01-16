@@ -140,6 +140,7 @@ export const PROCESSED_BY = [
   'Christine Dela Torre',
   'Elaine Mae Entreguena',
   'Pearlaine Joy Chavez',
+  'Hermie Tajanlangit',
 ];
 
 export const PAYMENT_METHODS = [
