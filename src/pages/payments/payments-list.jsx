@@ -101,7 +101,7 @@ const PaymentsList = () => {
   const { data: undonePayments, isLoading: undonePaymentsLoading } =
     usePayments(undonePaymentsParams);
   const paymentsBaseUrl = useMemo(() => PAYMENTS_BASE_URL(), [branchId]);
-  const { mutate: undoPaymentMutate } = useMutation(paymentsBaseUrl, 'DELETE');
+  const { mutate: undoPaymentMutate } = useMutation(paymentsBaseUrl, 'DELETE', ["payments-", "enrollments-", "students-"]);
 
   const {
     data: schools,

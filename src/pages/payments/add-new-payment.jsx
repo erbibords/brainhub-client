@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import CustomInput from "../../components/Input/Input";
 import { useParams } from "react-router-dom";
 import { Layout, Select, Form, Image, DatePicker, Upload } from "antd";
@@ -17,8 +17,6 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useCashReference from "../../hooks/useCashReference";
 import dayjs from "dayjs";
-import { useBranch } from "../../contexts/branch";
-import { mutate as swrMutate } from "swr";
 const { Content } = Layout;
 const { Option } = Select;
 
@@ -31,18 +29,17 @@ const AddNewPayment = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { data: cashReference, error: cashReferenceError } = useCashReference();
-  const { branchId } = useBranch();
-  const enrollmentBaseUrl = useMemo(() => ENROLLMENT_BASE_URL(), [branchId]);
+  const { data: cashReference} = useCashReference();
+  const enrollmentBaseUrl = useMemo(() => ENROLLMENT_BASE_URL(), []);
 
   if (!params?.studentId) {
     navigate("/students");
   }
 
-  const { mutate: updatedPayment, loading: updateStudentLoading } = useMutation(
+  const { mutate: updatedPayment } = useMutation(
     enrollmentBaseUrl,
     "POST",
-    null,
+    ["payments-", "enrollments-", "students-"],
     {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -95,6 +92,7 @@ const AddNewPayment = () => {
         title: "Please add reference no.",
         timer: 2000,
       });
+      setIsSubmitting(false);
       return;
     }
 
@@ -119,11 +117,6 @@ const AddNewPayment = () => {
         `${enrollmentBaseUrl}/${enrollmentId}/payments`
       );
       if (res) {
-        // Invalidate all payments-related cache keys
-        swrMutate(
-          (key) => typeof key === "string" && key.startsWith("payments-")
-        );
-
         setTimeout(() => {
           navigate(`/prints/receipt/${res.id}`);
           Swal.fire({

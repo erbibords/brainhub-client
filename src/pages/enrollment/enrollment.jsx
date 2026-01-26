@@ -38,6 +38,7 @@ const Enrollment = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25); // Display 25 per page
   const [isFiltered, setIsFiltered] = useState(false); // Track if filters are applied
+  const [debouncedStudentName, setDebouncedStudentName] = useState('');
 
   const [searchParams, setSearchParams] = useState({
     startDate: undefined,
@@ -51,15 +52,22 @@ const Enrollment = () => {
   });
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedStudentName(searchParams.studentName || '');
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchParams.studentName]);
+
+  useEffect(() => {
     // Use server-side pagination: fetch the current page with the display pageSize
     // Don't touch programId - let students-table manage it when it's mounted
     setParams({
-      ...(isFiltered ? cleanParams(searchParams) : {}),
+      ...(isFiltered ? cleanParams({...searchParams, studentName: debouncedStudentName}) : {}),
       pageNo: currentPage,
       pageSize: pageSize,
       // Don't set programId here - preserve whatever is already set (or undefined)
     });
-  }, [currentPage, pageSize, isFiltered, setParams, searchParams]);
+  }, [currentPage, pageSize, isFiltered, setParams, searchParams, debouncedStudentName]);
 
   const handleFilter = useCallback(() => {
     setCurrentPage(1); // Reset to first page when filtering
@@ -252,10 +260,10 @@ const Enrollment = () => {
                   <p>Student Name:</p>
                   <CustomInput
                     onChange={(e) =>
-                      setSearchParams({
-                        ...searchParams,
+                      setSearchParams((prev) => ({
+                        ...prev,
                         studentName: e.target.value,
-                      })
+                      }))
                     }
                     size="large"
                   />

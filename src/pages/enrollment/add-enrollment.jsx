@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
 import useCourses from "../../hooks/useCourses";
@@ -65,6 +65,7 @@ const Enrollment = () => {
     remarks: undefined,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmittingRef = useRef(false);
 
   const { data: selectedOffering } = useOffering(selectedOfferingId ?? null);
 
@@ -155,7 +156,12 @@ const Enrollment = () => {
 
   const enrollStudent = useCallback(
     async (data) => {
-      if (!data) return;
+      if (isSubmittingRef.current) return; 
+      isSubmittingRef.current = true;
+      if (!data) {
+        isSubmittingRef.current = false;
+        return;
+      }
 
       if (!data.studentId) {
         Swal.fire({
@@ -163,6 +169,7 @@ const Enrollment = () => {
           title: "Please add student to enroll!",
           timer: 2500,
         });
+        isSubmittingRef.current = false;
         setIsSubmitting(false);
         return;
       }
@@ -173,6 +180,7 @@ const Enrollment = () => {
           title: "Please add taker type!",
           timer: 2500,
         });
+        isSubmittingRef.current = false;
         setIsSubmitting(false);
         return;
       }
@@ -183,6 +191,7 @@ const Enrollment = () => {
           title: "Please select processed by.",
           timer: 2500,
         });
+        isSubmittingRef.current = false;
         setIsSubmitting(false);
         return;
       }
@@ -193,6 +202,7 @@ const Enrollment = () => {
           title: "Please add review fee.",
           timer: 2500,
         });
+        isSubmittingRef.current = false;
         setIsSubmitting(false);
         return;
       }
@@ -209,8 +219,9 @@ const Enrollment = () => {
             text: "Redirecting to enrollment form printing...",
             timer: 2500,
           });
-          setIsSubmitting(false);
         }
+        isSubmittingRef.current = false;
+        setIsSubmitting(false);
       } catch (error) {
         Swal.fire({
           icon: "error",
@@ -218,6 +229,7 @@ const Enrollment = () => {
           text: "This may be due to inputs. Please try again later!",
           timer: 2500,
         });
+        isSubmittingRef.current = false;
         setIsSubmitting(false);
       }
     },
@@ -226,6 +238,8 @@ const Enrollment = () => {
 
   const enrollNewStudent = useCallback(
     async (values) => {
+      if (isSubmittingRef.current) return; // Guard
+      isSubmittingRef.current = true;
       try {
         const res = await addStudent(values);
         if (res && res.id) {
@@ -249,6 +263,7 @@ const Enrollment = () => {
           await enrollStudent(enrollmentData);
         }
       } catch (error) {
+        isSubmittingRef.current = false;
         setIsSubmitting(false);
         Swal.fire({
           icon: "error",
@@ -262,6 +277,8 @@ const Enrollment = () => {
   );
 
   const enrollExistingStudent = useCallback(async () => {
+    if (isSubmittingRef.current) return; // Guard
+    isSubmittingRef.current = true;
     setIsSubmitting(true);
     if (!selectedOfferingId) {
       Swal.fire({
@@ -269,6 +286,7 @@ const Enrollment = () => {
         title: "Please select course offering!",
         timer: 2000,
       });
+      isSubmittingRef.current = false;
       setIsSubmitting(false);
       return;
     }
@@ -279,6 +297,7 @@ const Enrollment = () => {
         title: "Please select processed by.",
         timer: 2500,
       });
+      isSubmittingRef.current = false;
       setIsSubmitting(false);
       return;
     }
