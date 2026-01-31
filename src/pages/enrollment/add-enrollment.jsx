@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import CustomInput from "../../components/Input/Input";
 import useSchools from "../../hooks/useSchools";
 import useCourses from "../../hooks/useCourses";
@@ -64,17 +64,16 @@ const Enrollment = () => {
     discountAmount: undefined,
     remarks: undefined,
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const isSubmittingRef = useRef(false);
 
   const { data: selectedOffering } = useOffering(selectedOfferingId ?? null);
 
-  const filteredSchools = selectedOffering
-    ? schools?.data?.filter((sc) => {
-        if (selectedOffering.offeringType === "COMBI") return true;
-        return selectedOffering.school && sc.id === selectedOffering.school.id;
-      })
-    : [];
+  const filteredSchools = useMemo(() => {
+    if (!selectedOffering) return [];
+    return schools?.data?.filter((sc) => {
+      if (selectedOffering.offeringType === "COMBI") return true;
+      return selectedOffering.school && sc.id === selectedOffering.school.id;
+    }) || [];
+  }, [selectedOffering, schools?.data]);
 
   const isOfferingIntensive = useMemo(() => {
     return (
@@ -84,10 +83,10 @@ const Enrollment = () => {
 
   useEffect(() => {
     if (selectedOffering) {
-      setAdditionalEnrollmentData({
-        ...additionalEnrollmentData,
+      setAdditionalEnrollmentData((prev) => ({
+        ...prev,
         reviewFee: selectedOffering?.reviewFee ?? undefined,
-      });
+      }));
     }
   }, [selectedOffering, selectedOfferingId]);
 
@@ -112,7 +111,7 @@ const Enrollment = () => {
     if (offeringsSearchParams) {
       setOfferingsSearchParamsInContext(offeringsSearchParams);
     }
-  }, [offeringsSearchParams]);
+  }, [offeringsSearchParams, setOfferingsSearchParamsInContext]);
 
   const mapStudentsToAutocompleteOptions = (students) => {
     if (!students || students.length < 1) {
@@ -156,10 +155,7 @@ const Enrollment = () => {
 
   const enrollStudent = useCallback(
     async (data) => {
-      if (isSubmittingRef.current) return; 
-      isSubmittingRef.current = true;
       if (!data) {
-        isSubmittingRef.current = false;
         return;
       }
 
@@ -169,8 +165,6 @@ const Enrollment = () => {
           title: "Please add student to enroll!",
           timer: 2500,
         });
-        isSubmittingRef.current = false;
-        setIsSubmitting(false);
         return;
       }
 
@@ -180,8 +174,6 @@ const Enrollment = () => {
           title: "Please add taker type!",
           timer: 2500,
         });
-        isSubmittingRef.current = false;
-        setIsSubmitting(false);
         return;
       }
 
@@ -191,8 +183,6 @@ const Enrollment = () => {
           title: "Please select processed by.",
           timer: 2500,
         });
-        isSubmittingRef.current = false;
-        setIsSubmitting(false);
         return;
       }
 
@@ -202,92 +192,148 @@ const Enrollment = () => {
           title: "Please add review fee.",
           timer: 2500,
         });
-        isSubmittingRef.current = false;
-        setIsSubmitting(false);
         return;
       }
 
-      try {
-        const enrollmentRes = await addEnrollment(data);
-        if (enrollmentRes) {
-          const enrollmentId = enrollmentRes?.id;
-          const studentId = data?.studentId;
-          navigate(`/prints/enrollment/${studentId}/${enrollmentId}`);
-          Swal.fire({
-            icon: "success",
-            title: "Enrollment successful!",
-            text: "Redirecting to enrollment form printing...",
-            timer: 2500,
-          });
-        }
-        isSubmittingRef.current = false;
-        setIsSubmitting(false);
-      } catch (error) {
+      // Validate selectedOfferingId before making the request
+      if (!selectedOfferingId) {
         Swal.fire({
-          icon: "error",
-          title: "Enrollment failed!",
-          text: "This may be due to inputs. Please try again later!",
+          icon: "warning",
+          title: "Please select course offering!",
           timer: 2500,
         });
-        isSubmittingRef.current = false;
-        setIsSubmitting(false);
+        return;
       }
+
+      // Show "Creating student..." modal first, wait 2 seconds, then execute enrollment
+      Swal.fire({
+        title: "Creating student, please wait while we enroll...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        willClose: async () => {
+          // After modal closes (2 seconds), execute enrollment
+          try {
+            // Build the URL dynamically with current selectedOfferingId
+            const enrollmentUrl = `/branches/${DEFAULT_BRANCH_ID()}/offerings/${selectedOfferingId}/enrollments`;
+            const enrollmentRes = await addEnrollment(data, enrollmentUrl);
+            
+            if (enrollmentRes) {
+              const enrollmentId = enrollmentRes?.id;
+              const studentId = data?.studentId;
+              
+              // Show success modal
+              Swal.fire({
+                icon: "success",
+                title: "Enrollment successful!",
+                text: "Redirecting to enrollment form printing...",
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                willClose: () => {
+                  navigate(`/prints/enrollment/${studentId}/${enrollmentId}`);
+                },
+              });
+            } else {
+              Swal.fire({
+                icon: "warning",
+                title: "Enrollment response was empty",
+                text: "Please check if enrollment was created successfully.",
+                timer: 2500,
+              });
+            }
+          } catch (error) {
+            console.error('[EnrollStudent] Enrollment error:', error);
+            console.error('[EnrollStudent] Error details:', {
+              message: error?.message,
+              response: error?.response?.data,
+              status: error?.response?.status,
+            });
+            Swal.fire({
+              icon: "error",
+              title: "Enrollment failed!",
+              text: error?.response?.data?.message || error?.message || "This may be due to inputs. Please try again later!",
+              timer: 2500,
+            });
+          }
+        },
+      });
     },
-    [addEnrollment, selectedProcessedBy, additionalEnrollmentData]
+    [addEnrollment, navigate, selectedOfferingId]
   );
 
   const enrollNewStudent = useCallback(
     async (values) => {
-      if (isSubmittingRef.current) return; // Guard
-      isSubmittingRef.current = true;
-      try {
-        const res = await addStudent(values);
-        if (res && res.id) {
-          const studentId = res.id;
-          const enrollmentData = {
-            takerType: "FIRST_TAKER",
-            status: "",
-            studentId,
-            processedBy: selectedProcessedBy,
-            discountAmount: toSafeNumber(
-              additionalEnrollmentData?.discountAmount
-            ).toString(),
-            reviewFee: toSafeNumber(
-              additionalEnrollmentData?.reviewFee
-            ).toString(),
-            yearLevel: isOfferingIntensive
-              ? "Graduated"
-              : additionalEnrollmentData?.yearLevel,
-            remarks: additionalEnrollmentData?.remarks,
-          };
-          await enrollStudent(enrollmentData);
-        }
-      } catch (error) {
-        isSubmittingRef.current = false;
-        setIsSubmitting(false);
-        Swal.fire({
-          icon: "error",
-          title: "Error adding student!",
-          text: "It may be due to inputs, Please double check and try again!",
-          timer: 2000,
-        });
-      }
+      // Show "Creating student..." modal first, wait 2 seconds, then execute enrollment
+      Swal.fire({
+        title: "Creating student, please wait while we enroll...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        willClose: async () => {
+          // After modal closes (2 seconds), execute enrollment
+          try {
+            const res = await addStudent(values);
+            if (res && res.id) {
+              const studentId = res.id;
+              const enrollmentData = {
+                takerType: "FIRST_TAKER",
+                status: "",
+                studentId,
+                processedBy: selectedProcessedBy,
+                discountAmount: toSafeNumber(
+                  additionalEnrollmentData?.discountAmount
+                ).toString(),
+                reviewFee: toSafeNumber(
+                  additionalEnrollmentData?.reviewFee
+                ).toString(),
+                yearLevel: isOfferingIntensive
+                  ? "Graduated"
+                  : additionalEnrollmentData?.yearLevel,
+                remarks: additionalEnrollmentData?.remarks,
+              };
+              await enrollStudent(enrollmentData);
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Error adding student!",
+                text: "Student was not created successfully. Please try again!",
+                timer: 2000,
+              });
+            }
+          } catch (error) {
+            Swal.fire({
+              icon: "error",
+              title: "Error adding student!",
+              text: "It may be due to inputs, Please double check and try again!",
+              timer: 2000,
+            });
+          }
+        },
+      });
     },
-    [addStudent, addEnrollment, selectedProcessedBy, additionalEnrollmentData]
+    [addStudent, enrollStudent, selectedProcessedBy, additionalEnrollmentData, isOfferingIntensive]
   );
 
   const enrollExistingStudent = useCallback(async () => {
-    if (isSubmittingRef.current) return; // Guard
-    isSubmittingRef.current = true;
-    setIsSubmitting(true);
     if (!selectedOfferingId) {
       Swal.fire({
         icon: "warning",
         title: "Please select course offering!",
         timer: 2000,
       });
-      isSubmittingRef.current = false;
-      setIsSubmitting(false);
       return;
     }
 
@@ -297,8 +343,6 @@ const Enrollment = () => {
         title: "Please select processed by.",
         timer: 2500,
       });
-      isSubmittingRef.current = false;
-      setIsSubmitting(false);
       return;
     }
 
@@ -317,7 +361,11 @@ const Enrollment = () => {
       remarks: additionalEnrollmentData?.remarks,
     };
 
-    await enrollStudent(data);
+    try {
+      await enrollStudent(data);
+    } catch (error) {
+      // enrollStudent handles its own errors
+    }
   }, [
     enrollStudent,
     selectedOfferingId,
@@ -325,6 +373,7 @@ const Enrollment = () => {
     selectedExistingStudentId,
     selectedProcessedBy,
     additionalEnrollmentData,
+    isOfferingIntensive,
   ]);
 
   const onFinish = useCallback(
@@ -335,7 +384,6 @@ const Enrollment = () => {
           title: "Please select course offering!",
           timer: 2000,
         });
-        setIsSubmitting(false);
         return;
       }
       const addStudentValue = {
@@ -360,11 +408,9 @@ const Enrollment = () => {
       await enrollNewStudent(addStudentValue);
     },
     [
-      addStudent,
-      setSelectedOfferingId,
-      addEnrollment,
       enrollNewStudent,
-      selectedProcessedBy,
+      filteredSchools,
+      selectedOfferingId,
     ]
   );
 
@@ -839,7 +885,7 @@ const Enrollment = () => {
             <CustomButton
               type="primary"
               size="large"
-              disabled={isSubmitting}
+              disabled={addEnrollmentLoading}
               onClick={enrollExistingStudent}
             >
               Submit
