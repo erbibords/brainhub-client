@@ -41,10 +41,12 @@ const EditEnrollment = () => {
 
   const onFormSubmission = async (values) => {
     const reviewFee = values?.reviewFee;
+    const discountAmount = values?.discountAmount;
 
     const updatedValues = {
       ...values,
-      reviewFee: reviewFee.toString(),
+      reviewFee: reviewFee?.toString(),
+      discountAmount: discountAmount?.toString(),
     };
 
     if (!updatedValues.takerType) {
