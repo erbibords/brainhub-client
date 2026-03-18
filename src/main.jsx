@@ -11,10 +11,12 @@ const swrConfig = {
   fetcher,
   // Disable automatic refresh to prevent unnecessary API calls
   refreshInterval: 0,
-  // Disable revalidation on focus to prevent API calls when user switches tabs
-  revalidateOnFocus: false,
-  // Disable revalidation on reconnect to prevent API calls when network reconnects
-  revalidateOnReconnect: false,
+  // Enable revalidation on focus with throttling to refresh stale data when user returns
+  revalidateOnFocus: true,
+  // Throttle focus revalidation to prevent excessive calls
+  focusThrottleInterval: 5000,
+  // Enable revalidation on reconnect to refresh data when network reconnects
+  revalidateOnReconnect: true,
   // Revalidate on mount - this is fine now because hooks conditionally disable fetching
   revalidateOnMount: true,
   // Increase dedupe window to 10 seconds to prevent duplicate requests
@@ -23,8 +25,6 @@ const swrConfig = {
   // Retry failed requests with exponential backoff
   errorRetryInterval: 5000,
   errorRetryCount: 3,
-  // Keep data fresh for 5 minutes before considering it stale
-  focusThrottleInterval: 5000,
   // Disable loading timeout
   loadingTimeout: 0,
   // Global error handler

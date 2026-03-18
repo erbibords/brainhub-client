@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import  { useEffect } from "react";
 import CustomInput from "../../components/Input/Input";
 import { Select, Form, Checkbox } from "antd";
 import CustomButton from "../../components/Button/Button";
@@ -29,7 +29,7 @@ const EditEnrollment = () => {
 
   const { data: offerings, getOfferingsLoading } = useOfferingsContext();
 
-  const { mutate: updatedEnrollment } = useMutation("", "PUT", "enrollments");
+  const { mutate: updatedEnrollment } = useMutation("", "PUT", ["enrollments-", "students-", "programs-"]);
 
   useEffect(() => {
     if (data) {
@@ -37,14 +37,16 @@ const EditEnrollment = () => {
         ...data,
       });
     }
-  }, [data]);
+  }, [data, form]);
 
   const onFormSubmission = async (values) => {
     const reviewFee = values?.reviewFee;
+    const discountAmount = values?.discountAmount;
 
     const updatedValues = {
       ...values,
-      reviewFee: reviewFee.toString(),
+      reviewFee: reviewFee?.toString(),
+      discountAmount: discountAmount?.toString(),
     };
 
     if (!updatedValues.takerType) {
@@ -192,10 +194,7 @@ const EditEnrollment = () => {
             layout="vertical"
             className="w-full mb-[2vh] w-full border-gray-300"
           >
-            <input
-              type="number"
-              className="ant-input ant-input-lg css-dev-only-do-not-override-3rel02 ant-input-outlined ant-input-status-success w-1/2 mb-[2vh] px-[12px] py-[10px] border border-gray-300 rounded"
-            />
+            <CustomInput type="number" className="w-1/2"/>
           </Form.Item>
 
           <Form.Item
@@ -204,10 +203,7 @@ const EditEnrollment = () => {
             layout="vertical"
             className="w-full mb-[2vh] border-gray-300"
           >
-            <input
-              type="number"
-              className="ant-input ant-input-lg css-dev-only-do-not-override-3rel02 ant-input-outlined ant-input-status-success w-1/2 mb-[2vh] px-[12px] py-[10px] border border-gray-300 rounded"
-            />
+            <CustomInput type="number" className="w-1/2" />
           </Form.Item>
 
           <Form.Item
@@ -232,7 +228,7 @@ const EditEnrollment = () => {
             layout="vertical"
             className="w-1/2 mb-[2vh]"
           >
-            <CustomInput type="text" name="remarks" onChange={(e) => {}} />
+            <CustomInput type="text" name="remarks" />
           </Form.Item>
 
           <Form.Item
@@ -241,10 +237,7 @@ const EditEnrollment = () => {
             layout="vertical"
             className="w-1/2 mb-[2vh]"
           >
-            <Select
-              size="large"
-              onChange={(value) => setSelectedProcessedBy(value)}
-            >
+            <Select size="large">
               {PROCESSED_BY.map((processedby) => (
                 <Option value={processedby} key={processedby}>
                   {processedby}

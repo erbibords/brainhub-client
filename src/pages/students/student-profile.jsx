@@ -162,12 +162,12 @@ const StudentProfile = () => {
                         <Select
                           options={schools.data.map((school) => ({
                             value: school.id,
-                            label: school.name,
+                            label: school?.name,
                           }))}
                         />
                       </Form.Item>
                     ) : (
-                      data.school.name
+                      data.school?.name
                     )}
                   </p>
                   <Divider />
@@ -207,7 +207,7 @@ const StudentProfile = () => {
                         <CustomInput />
                       </Form.Item>
                     ) : (
-                      data.emergencyContact.name
+                      data.emergencyContact?.name
                     )}
                   </p>
                   <Divider />
@@ -218,7 +218,7 @@ const StudentProfile = () => {
                         <CustomInput />
                       </Form.Item>
                     ) : (
-                      data.emergencyContact.relationship
+                      data.emergencyContact?.relationship
                     )}
                   </p>
                   <Divider />
@@ -229,7 +229,7 @@ const StudentProfile = () => {
                         <CustomInput />
                       </Form.Item>
                     ) : (
-                      data.emergencyContact.address
+                      data.emergencyContact?.address
                     )}
                   </p>
                   <Divider />
@@ -240,7 +240,7 @@ const StudentProfile = () => {
                         <CustomInput />
                       </Form.Item>
                     ) : (
-                      data.emergencyContact.contactNumber
+                      data.emergencyContact?.contactNumber
                     )}
                   </p>
                 </div>

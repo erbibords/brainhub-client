@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import axiosInstance from '../utils/axiosInstance';
 import { mutate as swrMutate } from 'swr';
+import { invalidateCacheByPattern } from '../utils/cacheInvalidation';
 
 const useMutation = (
   url,
@@ -14,6 +15,7 @@ const useMutation = (
 
   const executeMutation = useCallback(
     async (data, optionalUrl) => {
+      if (loading) return; // Guard
       setLoading(true);
       setError(null);
       try {
@@ -37,7 +39,11 @@ const useMutation = (
         }
 
         if (cacheKey) {
-          swrMutate(cacheKey);
+          if (Array.isArray(cacheKey) || cacheKey.includes("-") || cacheKey.includes("*")) {
+            invalidateCacheByPattern(cacheKey);
+          } else {
+            swrMutate(cacheKey);
+          }
         }
 
         return response.data;
@@ -48,7 +54,7 @@ const useMutation = (
         setLoading(false);
       }
     },
-    [url, method, cacheKey]
+    [url, method, cacheKey, loading]
   );
 
   return { mutate: executeMutation, loading, error };
