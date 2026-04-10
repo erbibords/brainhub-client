@@ -145,8 +145,34 @@ const PaymentsList = () => {
   }, []);
 
   const handlePrintList = useCallback(async () => {
-    const hasAnyFilter = Object.keys(effectiveFilters).length > 0;
-    if (!hasAnyFilter) {
+    const pendingFilters = cleanParams(searchParams);
+    const hasAppliedFilters = Object.keys(effectiveFilters).length > 0;
+    const hasPendingUnappliedFilters =
+      !isFiltered && Object.keys(pendingFilters).length > 0;
+    let filtersToUse = effectiveFilters;
+
+    if (hasPendingUnappliedFilters) {
+      const result = await Swal.fire({
+        icon: 'question',
+        title: 'Apply selected filters first?',
+        text: 'You have selected filters that are not applied yet.',
+        showCancelButton: true,
+        showDenyButton: true,
+        confirmButtonText: 'Apply and Print',
+        denyButtonText: 'Print All',
+        cancelButtonText: 'Cancel',
+      });
+
+      if (result.isConfirmed) {
+        filtersToUse = pendingFilters;
+        setIsFiltered(true);
+        setCurrentPage(1);
+      } else if (result.isDenied) {
+        filtersToUse = {};
+      } else {
+        return;
+      }
+    } else if (!hasAppliedFilters) {
       const result = await Swal.fire({
         icon: 'warning',
         title: 'Print all payments?',
@@ -165,7 +191,7 @@ const PaymentsList = () => {
       setIsPreparingPrint(true);
       const allPayments = await fetchAllPages({
         baseUrl: PAYMENTS_BASE_URL(),
-        params: effectiveFilters,
+        params: filtersToUse,
         pageSize: 300,
         maxPages: 300,
       });
@@ -173,7 +199,7 @@ const PaymentsList = () => {
       navigate(`/prints/payments`, {
         state: {
           paymentsData: allPayments.data,
-          filters: effectiveFilters,
+          filters: filtersToUse,
         },
       });
     } catch (error) {
@@ -185,7 +211,7 @@ const PaymentsList = () => {
     } finally {
       setIsPreparingPrint(false);
     }
-  }, [effectiveFilters, navigate]);
+  }, [effectiveFilters, isFiltered, navigate, searchParams]);
 
   const handleDateRangeChange = (dates) => {
     if (dates) {
