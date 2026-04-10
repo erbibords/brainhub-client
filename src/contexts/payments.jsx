@@ -15,7 +15,10 @@ export const PaymentsProvider = ({ children }) => {
   const location = useLocation();
   const { isAuthenticated } = useAuth();
   const isLoginPage = location.pathname === '/login';
-  const shouldFetch = isAuthenticated && !isLoginPage;
+  const isPaymentsRoute =
+    location.pathname === '/payments/list' ||
+    location.pathname === '/prints/payments';
+  const shouldFetch = isAuthenticated && !isLoginPage && isPaymentsRoute;
 
   const [params, setParams] = useState({
     startDate: undefined,

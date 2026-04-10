@@ -34,7 +34,7 @@ export const EnrollmentsProvider = ({ children }) => {
     semester: undefined,
     yearOffered: undefined,
     pageNo: 1,
-    pageSize: 100, // Default to 100, will increase to 4500 when searching
+    pageSize: 25, // Match enrollments page default to avoid initial mismatch fetch
     programId: undefined,
   });
 

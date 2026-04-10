@@ -14,11 +14,18 @@ export const OfferingsProvider = ({ children }) => {
   const location = useLocation();
   const { isAuthenticated } = useAuth();
   const isLoginPage = location.pathname === '/login';
-  const shouldFetch = isAuthenticated && !isLoginPage;
+  const isOfferingsRoute =
+    location.pathname === '/offerings' ||
+    location.pathname === '/add-enrollment' ||
+    location.pathname.startsWith('/enrollments/edit-enrollment/') ||
+    location.pathname === '/prints/offerings' ||
+    location.pathname === '/expenses' ||
+    location.pathname === '/admin/expenses';
+  const shouldFetch = isAuthenticated && !isLoginPage && isOfferingsRoute;
 
   const [params, setParams] = useState({
     pageNo: 1,
-    pageSize: 100, // Default to 100, will be controlled by page component
+    pageSize: 25, // Match offerings page default to avoid initial double-fetch mismatch
   });
 
   const {

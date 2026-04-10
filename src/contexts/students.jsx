@@ -23,14 +23,16 @@ export const StudentProvider = ({ children }) => {
   const location = useLocation();
   const { isAuthenticated } = useAuth();
   const isLoginPage = location.pathname === '/login';
-  const shouldFetch = isAuthenticated && !isLoginPage;
+  const isStudentsRoute =
+    location.pathname === '/students' || location.pathname === '/add-enrollment';
+  const shouldFetch = isAuthenticated && !isLoginPage && isStudentsRoute;
 
   const [params, setParams] = useState({
     studentName: undefined,
     schoolId: undefined,
     offeringType: undefined,
     pageNo: 1,
-    pageSize: 100, // Default to 100, will increase to 5000 when searching
+    pageSize: 25, // Match students page default to avoid initial mismatch fetch
   });
 
   // Use params directly - let the page component control pageSize for proper server-side pagination
