@@ -5,6 +5,7 @@ import fetcher from '../utils/fetcher';
 import { useBranch } from '../contexts/branch';
 
 function useExpenses(params = {}) {
+  const normalizedParams = params === null ? {} : params;
   const {
     pageNo = 1,
     pageSize = 200,
@@ -15,7 +16,7 @@ function useExpenses(params = {}) {
     dateTo = undefined,
     minAmount = undefined,
     maxAmount = undefined,
-  } = params;
+  } = normalizedParams;
 
   const { branchId } = useBranch();
 
@@ -52,10 +53,14 @@ function useExpenses(params = {}) {
   ]);
 
   const swrKey = useMemo(() => {
-    return `expenses-${branchId ?? 'unknown'}-${JSON.stringify(params)}`;
-  }, [branchId, params]);
+    if (params === null) return null;
+    return requestUrl;
+  }, [params, requestUrl]);
 
-  const { data, error, isLoading, mutate } = useSWR(swrKey, () => fetcher(requestUrl));
+  const { data, error, isLoading, mutate } = useSWR(
+    swrKey,
+    swrKey ? () => fetcher(requestUrl) : null
+  );
 
   return {
     data,

@@ -3,7 +3,8 @@ import useSWR, { mutate } from 'swr';
 import { OFFERING_BASE_URL } from '../constants';
 import { useBranch } from '../contexts/branch';
 
-function useOffering(offeringId) {
+function useOffering(offeringId, options = {}) {
+  const { includeEnrollment = false } = options;
   const { branchId } = useBranch();
 
   const resourceUrl = useMemo(() => {
@@ -11,8 +12,11 @@ function useOffering(offeringId) {
       return null;
     }
 
-    return `${OFFERING_BASE_URL()}/${offeringId}?includeEnrollment=true`;
-  }, [branchId, offeringId]);
+    const includeEnrollmentQuery = includeEnrollment
+      ? '?includeEnrollment=true'
+      : '';
+    return `${OFFERING_BASE_URL()}/${offeringId}${includeEnrollmentQuery}`;
+  }, [branchId, offeringId, includeEnrollment]);
 
   const { data, error } = useSWR(resourceUrl);
   const isLoading = !data && !error;

@@ -60,6 +60,8 @@ const PaymentsList = () => {
     offeringType: undefined,
     programId: undefined,
   });
+  const [activeTab, setActiveTab] = useState('payments');
+  const [isPreparingPrint, setIsPreparingPrint] = useState(false);
 
   const {
     payments,
@@ -100,7 +102,7 @@ const PaymentsList = () => {
   }, [searchParams, isFiltered, currentPage, pageSize]);
 
   const { data: undonePayments, isLoading: undonePaymentsLoading } =
-    usePayments(undonePaymentsParams);
+    usePayments(activeTab === 'undidPayments' ? undonePaymentsParams : null);
   const paymentsBaseUrl = useMemo(() => PAYMENTS_BASE_URL(), [branchId]);
   const { mutate: undoPaymentMutate } = useMutation(paymentsBaseUrl, 'DELETE', ["payments-", "enrollments-", "students-"]);
 
@@ -122,9 +124,6 @@ const PaymentsList = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [password, setPassword] = useState('');
-  const [activeTab, setActiveTab] = useState('payments');
-  const [isPreparingPrint, setIsPreparingPrint] = useState(false);
-
   const effectiveFilters = useMemo(
     () => (isFiltered ? cleanParams(searchParams) : {}),
     [isFiltered, searchParams]

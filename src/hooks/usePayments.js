@@ -72,8 +72,8 @@ function usePayments(params = {}) {
   // If params is null, disable fetching by passing null as SWR key
   const swrKey = useMemo(() => {
     if (params === null) return null;
-    return `payments-${branchId ?? 'unknown'}-${JSON.stringify(normalizedParams)}`;
-  }, [branchId, normalizedParams, params]);
+    return requestUrl;
+  }, [params, requestUrl]);
 
   const { data, error, isLoading, mutate } = useSWR(swrKey, swrKey ? () =>
     fetcher(requestUrl)

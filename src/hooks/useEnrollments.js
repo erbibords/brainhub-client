@@ -19,6 +19,8 @@ function useEnrollments(params = {}) {
     yearOffered = undefined,
     offeringType = undefined,
     programId = undefined,
+    includeStudent = true,
+    includeCourseOffering = true,
   } = normalizedParams;
   
   const { branchId } = useBranch();
@@ -39,8 +41,10 @@ function useEnrollments(params = {}) {
     if (offeringType) queryParams.append('offeringType', offeringType);
     if (programId) queryParams.append('programId', programId);
 
-    queryParams.append('includeStudent', 'true');
-    queryParams.append('includeCourseOffering', 'true');
+    if (includeStudent) queryParams.append('includeStudent', 'true');
+    if (includeCourseOffering) {
+      queryParams.append('includeCourseOffering', 'true');
+    }
 
     if (queryParams.toString()) {
       url += `?${queryParams.toString()}`;
@@ -59,15 +63,16 @@ function useEnrollments(params = {}) {
     yearOffered,
     offeringType,
     programId,
+    includeStudent,
+    includeCourseOffering,
     branchId,
   ]);
 
   // If params is null, disable fetching by passing null as SWR key
   const swrKey = useMemo(() => {
     if (params === null) return null;
-    const key = `enrollments-${branchId ?? 'unknown'}-${JSON.stringify(normalizedParams)}`;
-    return key;
-  }, [branchId, normalizedParams, params]);
+    return requestUrl;
+  }, [params, requestUrl]);
 
   const { data, mutate, error } = useSWR(swrKey, swrKey ? () => fetcher(requestUrl) : null);
   const isLoading = !data && !error;

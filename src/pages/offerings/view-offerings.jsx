@@ -58,7 +58,7 @@ const ViewOffering = () => {
     isLoading,
     error: offeringError,
     refetch,
-  } = useOffering(params.offeringId);
+  } = useOffering(params.offeringId, { includeEnrollment: true });
   const {
     programs,
     isLoading: getProgramsLoading,

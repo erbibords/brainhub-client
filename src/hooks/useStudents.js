@@ -37,8 +37,8 @@ function useStudents(params = {}) {
   // If params is null, disable fetching by passing null as SWR key
   const swrKey = useMemo(() => {
     if (params === null) return null;
-    return `students-${branchId ?? 'unknown'}-${JSON.stringify(normalizedParams)}`;
-  }, [branchId, normalizedParams, params]);
+    return requestUrl;
+  }, [params, requestUrl]);
 
   const { data, error, mutate, isLoading } = useSWR(swrKey, swrKey ? () =>
     fetcher(requestUrl)
