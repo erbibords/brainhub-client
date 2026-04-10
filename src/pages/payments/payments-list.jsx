@@ -145,6 +145,22 @@ const PaymentsList = () => {
   }, []);
 
   const handlePrintList = useCallback(async () => {
+    const hasAnyFilter = Object.keys(effectiveFilters).length > 0;
+    if (!hasAnyFilter) {
+      const result = await Swal.fire({
+        icon: 'warning',
+        title: 'Print all payments?',
+        text: 'No filters are applied. This will fetch and print the entire payments list, which may take longer.',
+        showCancelButton: true,
+        confirmButtonText: 'Print all',
+        cancelButtonText: 'Cancel',
+      });
+
+      if (!result.isConfirmed) {
+        return;
+      }
+    }
+
     try {
       setIsPreparingPrint(true);
       const allPayments = await fetchAllPages({
