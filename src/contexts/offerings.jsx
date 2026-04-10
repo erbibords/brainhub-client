@@ -16,7 +16,6 @@ export const OfferingsProvider = ({ children }) => {
   const isLoginPage = location.pathname === '/login';
   const isOfferingsRoute =
     location.pathname === '/offerings' ||
-    location.pathname === '/add-enrollment' ||
     location.pathname.startsWith('/enrollments/edit-enrollment/') ||
     location.pathname === '/prints/offerings' ||
     location.pathname === '/expenses' ||

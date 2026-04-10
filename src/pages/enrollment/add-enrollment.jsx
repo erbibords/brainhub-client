@@ -6,9 +6,9 @@ import { useStudentContext } from "../../contexts/students";
 import { Select, Input, Form, Radio, AutoComplete } from "antd";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/Button/Button";
-import { useOfferingsContext } from "../../contexts/offerings";
 import useMutation from "../../hooks/useMutation";
 import useOffering from "../../hooks/useOffering";
+import fetchAllPages from "../../utils/fetchAllPages";
 
 import {
   DEFAULT_BRANCH_ID,
@@ -44,10 +44,11 @@ const Enrollment = () => {
   } = useSchools();
   const { courses, isLoading: getCoursesLoading, error: getCoursesError } = useCourses();
   const [offeringsSearchParams, setOfferingsSearchParams] = useState({
-    pageNo: 1,
-    pageSize: 50,
     yearOffered: `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`,
   });
+  const [offerings, setOfferings] = useState({ data: [], meta: {} });
+  const [getOfferingsLoading, setGetOfferingsLoading] = useState(false);
+  const [getOfferingsError, setGetOfferingsError] = useState(false);
 
   const [studentSearchText, setStudentSearchText] = useState();
   const { students, studentDataLoading, getStudentError, addStudent } =
@@ -100,18 +101,45 @@ const Enrollment = () => {
     "enrollments"
   );
 
-  const {
-    data: offerings,
-    getOfferingsLoading,
-    getOfferingsError,
-    setParams: setOfferingsSearchParamsInContext,
-  } = useOfferingsContext();
-
   useEffect(() => {
-    if (offeringsSearchParams) {
-      setOfferingsSearchParamsInContext(offeringsSearchParams);
-    }
-  }, [offeringsSearchParams, setOfferingsSearchParamsInContext]);
+    let cancelled = false;
+
+    const loadOfferings = async () => {
+      try {
+        setGetOfferingsLoading(true);
+        setGetOfferingsError(false);
+        const result = await fetchAllPages({
+          baseUrl: `/branches/${DEFAULT_BRANCH_ID()}/offerings`,
+          params: offeringsSearchParams,
+          pageSize: 300,
+          maxPages: 200,
+          shouldCancel: () => cancelled,
+        });
+
+        if (!cancelled) {
+          setOfferings({
+            data: result.data || [],
+            meta: result.meta || {},
+          });
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setGetOfferingsError(error || true);
+          setOfferings({ data: [], meta: {} });
+        }
+      } finally {
+        if (!cancelled) {
+          setGetOfferingsLoading(false);
+        }
+      }
+    };
+
+    loadOfferings();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [offeringsSearchParams]);
 
   const mapStudentsToAutocompleteOptions = (students) => {
     if (!students || students.length < 1) {
