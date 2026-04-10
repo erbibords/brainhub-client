@@ -1,17 +1,19 @@
 import { useMemo, useEffect, useRef, useState } from 'react';
 import { Row, Col, Card, Table, Statistic, Input } from 'antd';
-import { useEnrollmentsContext } from '../../contexts/enrollments';
 import CustomButton from '../../components/Button/Button';
 import { formatAmount } from '../../utils/formatting';
 import { useReactToPrint } from 'react-to-print';
+import { ENROLLMENT_BASE_URL } from '../../constants';
+import fetchAllPages from '../../utils/fetchAllPages';
 import './students-table.css';
 
 const StudentsTable = ({ programId, programName }) => {
-  const { enrollments, getEnrollmentsLoading, getEnrollmentsError, setParams } =
-    useEnrollmentsContext();
   const printRef = useRef();
 
   const [searchText, setSearchText] = useState('');
+  const [enrollmentsData, setEnrollmentsData] = useState([]);
+  const [getEnrollmentsLoading, setGetEnrollmentsLoading] = useState(false);
+  const [getEnrollmentsError, setGetEnrollmentsError] = useState(false);
 
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
@@ -19,36 +21,59 @@ const StudentsTable = ({ programId, programName }) => {
     removeAfterPrint: true,
   });
 
-  // Fetch ALL enrollments for this program (not paginated)
   useEffect(() => {
-    if (programId) {
+    let isCancelled = false;
 
-      if (typeof setParams === 'function') {
-        setParams({
-          programId,
-          pageNo: 1,
-          pageSize: 10000, // Fetch all records for this program
-        });
-      } else {
-        console.error('StudentsTable: setParams is not a function!', setParams);
+    const loadProgramEnrollments = async () => {
+      if (!programId) {
+        setEnrollmentsData([]);
+        return;
       }
-    } else {
-      // Clear programId when component unmounts or programId becomes undefined
-      setParams({
-        programId: undefined,
-      });
-    }
-  }, [programId, setParams]);
+
+      try {
+        setGetEnrollmentsLoading(true);
+        setGetEnrollmentsError(false);
+        const result = await fetchAllPages({
+          baseUrl: ENROLLMENT_BASE_URL(),
+          params: {
+            programId,
+          },
+          pageSize: 300,
+          maxPages: 300,
+          shouldCancel: () => isCancelled,
+        });
+
+        if (!isCancelled) {
+          setEnrollmentsData(result.data || []);
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          setGetEnrollmentsError(error || true);
+          setEnrollmentsData([]);
+        }
+      } finally {
+        if (!isCancelled) {
+          setGetEnrollmentsLoading(false);
+        }
+      }
+    };
+
+    loadProgramEnrollments();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [programId]);
 
   // Process and sort students alphabetically
   const studentsData = useMemo(() => {
-    if (!enrollments?.data || getEnrollmentsLoading || getEnrollmentsError) {
+    if (!enrollmentsData?.length || getEnrollmentsLoading || getEnrollmentsError) {
       return [];
     }
 
     // Include all enrollments (both active and backed out)
     // Extract unique students from all enrollments and sort alphabetically
-    const uniqueStudents = enrollments.data.reduce((acc, enrollment) => {
+    const uniqueStudents = enrollmentsData.reduce((acc, enrollment) => {
       const student = enrollment.student;
       const studentKey = student.id;
 
@@ -92,7 +117,7 @@ const StudentsTable = ({ programId, programName }) => {
       // If firstNames are also equal, compare by middleName
       return (a.middleName || '').localeCompare(b.middleName || '');
     });
-  }, [enrollments, getEnrollmentsLoading, getEnrollmentsError]);
+  }, [enrollmentsData, getEnrollmentsLoading, getEnrollmentsError]);
 
   // Filter students based on search text
   const filteredStudentsData = useMemo(() => {
@@ -118,7 +143,7 @@ const StudentsTable = ({ programId, programName }) => {
   // Calculate program totals from current enrollments data
   const programTotals = useMemo(() => {
     // Always calculate from current enrollments data, not stale programData
-    if (!enrollments?.data || getEnrollmentsLoading || getEnrollmentsError) {
+    if (!enrollmentsData?.length || getEnrollmentsLoading || getEnrollmentsError) {
       return {
         totalCollectibles: 0,
         totalDiscountAmount: 0,
@@ -132,7 +157,7 @@ const StudentsTable = ({ programId, programName }) => {
 
     // Filter out backedOut students for calculations
     // Check if enrollment or student has backedoutAt
-    const activeEnrollments = enrollments.data.filter(
+    const activeEnrollments = enrollmentsData.filter(
       (enrollment) => !enrollment.backedoutAt && !enrollment.student?.backedoutAt
     );
 
@@ -168,7 +193,7 @@ const StudentsTable = ({ programId, programName }) => {
 
     // Calculate total money collected from backed-out students
     // Check if enrollment or student has backedoutAt
-    const backedOutEnrollments = enrollments.data.filter(
+    const backedOutEnrollments = enrollmentsData.filter(
       (enrollment) => enrollment.backedoutAt || enrollment.student?.backedoutAt
     );
 
@@ -187,7 +212,7 @@ const StudentsTable = ({ programId, programName }) => {
     totals.totalBackedOutStudents = uniqueBackedOutStudents;
 
     return totals;
-  }, [enrollments, getEnrollmentsLoading, getEnrollmentsError]);
+  }, [enrollmentsData, getEnrollmentsLoading, getEnrollmentsError]);
 
   const studentsColumns = [
     {

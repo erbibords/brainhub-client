@@ -1,6 +1,6 @@
 import React, { useRef, useMemo } from "react";
 import ReactToPrint from "react-to-print";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Typography, Table } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import CustomButton from "../../components/Button/Button";
@@ -66,6 +66,7 @@ const columns = [
 const PrintComponent = () => {
   const componentRef = useRef();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     payments: data,
@@ -73,9 +74,16 @@ const PrintComponent = () => {
     getPaymentsError: error,
   } = usePaymentsContext();
 
+  const printRows = useMemo(() => {
+    if (Array.isArray(location?.state?.paymentsData)) {
+      return location.state.paymentsData;
+    }
+    return data?.data || [];
+  }, [data, location?.state?.paymentsData]);
+
   const totalAmount = useMemo(() => {
-    return data?.data?.reduce((acc, item) => acc + item.amountPaid, 0) || 0;
-  }, [data]);
+    return printRows.reduce((acc, item) => acc + item.amountPaid, 0) || 0;
+  }, [printRows]);
 
   return (
     <div>
@@ -116,7 +124,7 @@ const PrintComponent = () => {
               </div>
               <Table
                 loading={isLoading}
-                dataSource={data?.data}
+                dataSource={printRows}
                 columns={columns}
                 pagination={false}
                 bordered

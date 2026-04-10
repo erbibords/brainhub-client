@@ -35,6 +35,7 @@ import { cleanParams, formatAmount, formatDate } from '../../utils/formatting';
 import Swal from 'sweetalert2';
 import usePrograms from '../../hooks/usePrograms';
 import { useBranch } from '../../contexts/branch';
+import fetchAllPages from '../../utils/fetchAllPages';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -122,66 +123,53 @@ const PaymentsList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [password, setPassword] = useState('');
   const [activeTab, setActiveTab] = useState('payments');
+  const [isPreparingPrint, setIsPreparingPrint] = useState(false);
 
-  // When filtering, use pageSize 1000 for initial call
+  const effectiveFilters = useMemo(
+    () => (isFiltered ? cleanParams(searchParams) : {}),
+    [isFiltered, searchParams]
+  );
+
   useEffect(() => {
-    // Use pageSize 1000 when filtered, otherwise use the display pageSize
-    const apiPageSize = isFiltered ? 1000 : pageSize;
-    const apiPageNo = currentPage;
-
-    console.log('Payments API call params:', {
-      apiPageNo,
-      apiPageSize,
-      isFiltered,
-      currentPage,
-      pageSize,
-      searchParams,
-    });
-
     setParams({
-      ...(isFiltered ? cleanParams(searchParams) : {}),
-      pageNo: apiPageNo,
-      pageSize: apiPageSize,
+      ...effectiveFilters,
+      pageNo: currentPage,
+      pageSize,
     });
-  }, [currentPage, pageSize, isFiltered, setParams, searchParams]);
-
-  // When filtered and totalResults > 1000, update context to fetch all results for printing
-  // This ensures the print page has access to all filtered results
-  useEffect(() => {
-    if (
-      isFiltered &&
-      payments?.meta?.totalResults &&
-      payments.meta.totalResults > 1000
-    ) {
-      // Check if we've already fetched all results
-      const currentPageSize = payments.meta.pageSize || 1000;
-      if (currentPageSize < payments.meta.totalResults) {
-        // Update context to fetch all results with the same filters
-        // This happens after the initial 1000 results are loaded
-        console.log(
-          'Payments: Total results > 1000, fetching all results for printing:',
-          payments.meta.totalResults
-        );
-        setParams({
-          ...cleanParams(searchParams),
-          pageNo: 1,
-          pageSize: payments.meta.totalResults, // Fetch all results for printing
-        });
-      }
-    }
-  }, [
-    isFiltered,
-    payments?.meta?.totalResults,
-    payments?.meta?.pageSize,
-    searchParams,
-    setParams,
-  ]);
+  }, [currentPage, pageSize, effectiveFilters, setParams]);
 
   const handleFilter = useCallback(() => {
     setCurrentPage(1); // Reset to first page when filtering
     setIsFiltered(true); // Mark as filtered
     // The useEffect will handle the API call with the updated searchParams
   }, []);
+
+  const handlePrintList = useCallback(async () => {
+    try {
+      setIsPreparingPrint(true);
+      const allPayments = await fetchAllPages({
+        baseUrl: PAYMENTS_BASE_URL(),
+        params: effectiveFilters,
+        pageSize: 300,
+        maxPages: 300,
+      });
+
+      navigate(`/prints/payments`, {
+        state: {
+          paymentsData: allPayments.data,
+          filters: effectiveFilters,
+        },
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Unable to prepare print list',
+        text: 'Please try again in a few moments.',
+      });
+    } finally {
+      setIsPreparingPrint(false);
+    }
+  }, [effectiveFilters, navigate]);
 
   const handleDateRangeChange = (dates) => {
     if (dates) {
@@ -259,9 +247,8 @@ const PaymentsList = () => {
       dataIndex: 'balance',
       key: 'balance',
       render: (data, row) => {
-        const balanceAfterPayment = parseFloat(
-          data - row?.enrollment?.discountAmount ?? 0
-        );
+        const discountAmount = Number(row?.enrollment?.discountAmount ?? 0);
+        const balanceAfterPayment = Number(data) - discountAmount;
         return (
           <p className="text-red-600 font-bold">
             {formatAmount(balanceAfterPayment ?? 0)}
@@ -625,7 +612,8 @@ const PaymentsList = () => {
                   type="primary"
                   className="w-auto bg-success text-white mt-[25px] float-right"
                   size="large"
-                  onClick={() => navigate(`/prints/payments`)}
+                  loading={isPreparingPrint}
+                  onClick={handlePrintList}
                 >
                   Print List
                 </CustomButton>
@@ -653,31 +641,19 @@ const PaymentsList = () => {
                           columns={activePaymentsColumns}
                           loading={getPaymentsLoading}
                           pagination={{
-                            current: isFiltered ? 1 : currentPage,
-                            pageSize: isFiltered
-                              ? payments?.meta?.totalResults || 1000
-                              : pageSize,
+                            current: currentPage,
+                            pageSize,
                             total: payments?.meta?.totalResults || 0,
-                            showSizeChanger: !isFiltered, // Hide size changer when filtered
-                            showQuickJumper: !isFiltered, // Hide quick jumper when filtered
+                            showSizeChanger: true,
+                            showQuickJumper: true,
                             showTotal: (total, range) =>
                               `${range[0]}-${range[1]} of ${total} items`,
                             pageSizeOptions: ['10', '25', '50', '100'],
                           }}
                           scroll={{ y: 800 }}
                           onChange={(pagination) => {
-                            if (!isFiltered) {
-                              // Only allow pagination changes when not filtered
-                              console.log('Pagination changed:', {
-                                current: pagination.current,
-                                pageSize: pagination.pageSize,
-                                total: payments?.meta?.totalResults || 0,
-                                isFiltered,
-                              });
-                              setCurrentPage(pagination.current);
-                              setPageSize(pagination.pageSize);
-                              // The useEffect will trigger a new API call with the updated pageNo/pageSize
-                            }
+                            setCurrentPage(pagination.current);
+                            setPageSize(pagination.pageSize);
                           }}
                         />
                       )}
@@ -704,13 +680,11 @@ const PaymentsList = () => {
                         ),
                       }}
                       pagination={{
-                        current: isFiltered ? 1 : currentPage,
-                        pageSize: isFiltered
-                          ? undonePayments?.meta?.totalResults || 1000
-                          : pageSize,
+                        current: currentPage,
+                        pageSize,
                         total: undonePayments?.meta?.totalResults || 0,
-                        showSizeChanger: !isFiltered, // Hide size changer when filtered
-                        showQuickJumper: !isFiltered, // Hide quick jumper when filtered
+                        showSizeChanger: true,
+                        showQuickJumper: true,
                         showTotal: (total, range) => {
                           if (total === 0) {
                             return 'No items';
@@ -721,12 +695,8 @@ const PaymentsList = () => {
                       }}
                       scroll={{ y: 800 }}
                       onChange={(pagination) => {
-                        if (!isFiltered) {
-                          // Only allow pagination changes when not filtered
-                          setCurrentPage(pagination.current);
-                          setPageSize(pagination.pageSize);
-                          // The useEffect and undonePaymentsParams will trigger a new API call
-                        }
+                        setCurrentPage(pagination.current);
+                        setPageSize(pagination.pageSize);
                       }}
                     />
                   ),

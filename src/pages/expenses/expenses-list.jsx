@@ -50,7 +50,7 @@ const ExpensesList = () => {
     minAmount: undefined,
     maxAmount: undefined,
     pageNo: 1,
-    pageSize: 200,
+    pageSize: 25,
   });
 
   // Fetch expenses using custom hook
@@ -283,9 +283,9 @@ const ExpensesList = () => {
       minAmount: values.minAmount || undefined,
       maxAmount: values.maxAmount || undefined,
       pageNo: 1,
-      pageSize: 10000,
+      pageSize,
     });
-  }, [filterForm]);
+  }, [filterForm, pageSize]);
 
   const handleClearFilters = useCallback(() => {
     filterForm.resetFields();
@@ -299,7 +299,7 @@ const ExpensesList = () => {
       minAmount: undefined,
       maxAmount: undefined,
       pageNo: 1,
-      pageSize: 200,
+      pageSize: 25,
     });
   }, [filterForm]);
 
@@ -448,15 +448,6 @@ const ExpensesList = () => {
     },
   ];
 
-  // Client-side pagination
-  const paginatedData = useMemo(() => {
-    if (!expenses?.data) return [];
-    return expenses.data.slice(
-      (currentPage - 1) * pageSize,
-      currentPage * pageSize
-    );
-  }, [expenses?.data, currentPage, pageSize]);
-
   return (
     <div className="w-full max-w-full overflow-hidden">
       <div className="flex justify-between items-center">
@@ -582,7 +573,7 @@ const ExpensesList = () => {
             <GenericErrorDisplay />
           ) : (
             <Table
-              dataSource={paginatedData}
+              dataSource={expenses?.data || []}
               columns={columns}
               loading={isLoading}
               rowKey="id"
@@ -590,17 +581,20 @@ const ExpensesList = () => {
               pagination={{
                 current: currentPage,
                 pageSize: pageSize,
-                total: expenses?.data?.length || 0,
+                total: expenses?.meta?.totalResults || 0,
                 showSizeChanger: true,
                 showQuickJumper: true,
                 showTotal: (total, range) =>
-                  `${range[0]}-${range[1]} of ${
-                    expenses?.data?.length || 0
-                  } items`,
+                  `${range[0]}-${range[1]} of ${total} items`,
                 pageSizeOptions: ['10', '25', '50', '100'],
                 onChange: (page, size) => {
                   setCurrentPage(page);
                   setPageSize(size);
+                  setFilterParams((prev) => ({
+                    ...prev,
+                    pageNo: page,
+                    pageSize: size,
+                  }));
                 },
               }}
             />
