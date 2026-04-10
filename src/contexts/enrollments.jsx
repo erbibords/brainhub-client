@@ -20,7 +20,10 @@ export const EnrollmentsProvider = ({ children }) => {
   const location = useLocation();
   const { isAuthenticated } = useAuth();
   const isLoginPage = location.pathname === '/login';
-  const shouldFetch = isAuthenticated && !isLoginPage;
+  const isEnrollmentsRoute =
+    location.pathname === '/enrollments' ||
+    location.pathname.startsWith('/enrollments/');
+  const shouldFetch = isAuthenticated && !isLoginPage && isEnrollmentsRoute;
 
   const [params, setParamsState] = useState({
     startDate: undefined,
