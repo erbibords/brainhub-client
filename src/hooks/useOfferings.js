@@ -15,6 +15,7 @@ function useOfferings(params = {}) {
     yearOffered = undefined,
     semester = undefined,
     offeringType = undefined,
+    includeEnrollment = false,
   } = normalizedParams;
 
   const { branchId } = useBranch();
@@ -32,7 +33,7 @@ function useOfferings(params = {}) {
     if (semester) queryParams.append('semester', semester);
     if (courseId) queryParams.append('courseId', courseId);
     if (offeringType) queryParams.append('offeringType', offeringType);
-    queryParams.append('includeEnrollment', 'true');
+    if (includeEnrollment) queryParams.append('includeEnrollment', 'true');
 
     if (queryParams.toString()) {
       url += `?${queryParams.toString()}`;
@@ -46,6 +47,7 @@ function useOfferings(params = {}) {
     semester,
     courseId,
     offeringType,
+    includeEnrollment,
     branchId,
   ]);
 

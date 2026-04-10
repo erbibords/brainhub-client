@@ -1,4 +1,5 @@
-import React, { createContext, useMemo, useState, useContext } from "react";
+import { createContext, useMemo, useState, useContext } from "react";
+import PropTypes from 'prop-types';
 import { useLocation } from "react-router-dom";
 import useOfferings from "../hooks/useOfferings";
 import { useAuth } from "./auth";
@@ -7,7 +8,7 @@ const OfferingsContext = createContext({
   offerings: [],
   getOfferingsLoading: false,
   getOfferingsError: false,
-  setParams: (params) => {},
+  setParams: () => {},
 });
 
 export const OfferingsProvider = ({ children }) => {
@@ -17,10 +18,10 @@ export const OfferingsProvider = ({ children }) => {
   const isOfferingsRoute =
     location.pathname === '/offerings' ||
     location.pathname.startsWith('/enrollments/edit-enrollment/') ||
-    location.pathname === '/prints/offerings' ||
-    location.pathname === '/expenses' ||
-    location.pathname === '/admin/expenses';
+    location.pathname === '/prints/offerings';
   const shouldFetch = isAuthenticated && !isLoginPage && isOfferingsRoute;
+  const needsEnrollmentDetails =
+    location.pathname === '/offerings' || location.pathname === '/prints/offerings';
 
   const [params, setParams] = useState({
     pageNo: 1,
@@ -31,7 +32,14 @@ export const OfferingsProvider = ({ children }) => {
     data,
     isLoading: getOfferingsLoading,
     error: getOfferingsError,
-  } = useOfferings(shouldFetch ? params : null);
+  } = useOfferings(
+    shouldFetch
+      ? {
+          ...params,
+          includeEnrollment: needsEnrollmentDetails,
+        }
+      : null
+  );
 
   const values = useMemo(() => {
     return {
@@ -47,6 +55,10 @@ export const OfferingsProvider = ({ children }) => {
       {children}
     </OfferingsContext.Provider>
   );
+};
+
+OfferingsProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default OfferingsContext;

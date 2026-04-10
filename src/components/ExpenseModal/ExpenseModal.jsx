@@ -17,7 +17,7 @@ import CustomButton from '../Button/Button';
 import { EXPENSE_TYPES } from '../../constants';
 import useCourses from '../../hooks/useCourses';
 import usePrograms from '../../hooks/usePrograms';
-import { useOfferingsContext } from '../../contexts/offerings';
+import useOfferings from '../../hooks/useOfferings';
 import { useAuth } from '../../contexts/auth';
 
 const { TextArea } = Input;
@@ -42,7 +42,17 @@ const ExpenseModal = ({
   // Fetch entities based on type
   const { courses, isLoading: getCoursesLoading } = useCourses();
   const { programs, isLoading: getProgramsLoading } = usePrograms();
-  const { data: offerings, getOfferingsLoading } = useOfferingsContext();
+  const shouldFetchOfferings =
+    isVisible && !isSuperAdmin && selectedType === 'OFFERINGS';
+  const { data: offerings, isLoading: getOfferingsLoading } = useOfferings(
+    shouldFetchOfferings
+      ? {
+          pageNo: 1,
+          pageSize: 300,
+          includeEnrollment: false,
+        }
+      : null
+  );
 
   // Watch for form type changes and modal visibility
   useEffect(() => {
