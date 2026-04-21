@@ -43,6 +43,7 @@ import AdminDashboard from './pages/admin/dashboard';
 import AdminExpenses from './pages/admin/expenses';
 import AdminReporting from './pages/admin/reporting';
 import BranchesAdminPage from './pages/admin/branches';
+import AuditLogsList from './pages/audit-logs/audit-logs-list';
 
 /*
 const StudentsPage = withProviders(Students, ['students']);
@@ -150,6 +151,7 @@ const App = () => {
           />
           <Route path="/prints/offerings" element={<PrintOfferings />} />
           <Route path="/expenses" element={<ExpensesList />} />
+          <Route path="/audit-logs" element={<AuditLogsList />} />
           <Route path="/" element={<Navigate to="/students" replace />} />
         </Routes>
       </Layout>

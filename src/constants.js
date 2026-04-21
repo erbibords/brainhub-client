@@ -28,6 +28,8 @@ export const ENROLLMENT_BASE_URL = () =>
   `branches/${DEFAULT_BRANCH_ID()}/enrollments`;
 export const EXPENSE_BASE_URL = () =>
   `branches/${DEFAULT_BRANCH_ID()}/expenses`;
+export const AUDIT_LOGS_BASE_URL = () =>
+  `branches/${DEFAULT_BRANCH_ID()}/audit-logs`;
 export const MEDIA_BASE_URL = () =>
   `${BASE_URL}branches/${DEFAULT_BRANCH_ID()}/payments/uploads`;
 

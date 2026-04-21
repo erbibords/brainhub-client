@@ -1,6 +1,11 @@
 import React from 'react';
 import { Menu, Dropdown, Avatar, Button, message } from 'antd';
-import { UserOutlined, LogoutOutlined, StopOutlined } from '@ant-design/icons';
+import {
+  UserOutlined,
+  LogoutOutlined,
+  StopOutlined,
+  FileTextOutlined,
+} from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/auth';
 import { useBranch } from '../../contexts/branch';
@@ -26,6 +31,10 @@ const Navbar = ({ currentRoute }) => {
     navigate('/add-enrollment');
   };
 
+  const handleViewAuditLogs = () => {
+    navigate('/audit-logs');
+  };
+
   const handleStopEmulation = () => {
     clearEmulatedBranchId();
     message.success('Emulation ended. Redirecting to branch list.');
@@ -43,6 +52,13 @@ const Navbar = ({ currentRoute }) => {
           Exit Emulation
         </Menu.Item>
       )}
+      <Menu.Item
+        key="audit_logs"
+        icon={<FileTextOutlined />}
+        onClick={handleViewAuditLogs}
+      >
+        Audit Logs
+      </Menu.Item>
       <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={handleLogout}>
         Logout
       </Menu.Item>
