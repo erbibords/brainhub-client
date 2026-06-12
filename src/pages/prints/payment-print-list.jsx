@@ -6,6 +6,7 @@ import { ArrowLeftOutlined } from "@ant-design/icons";
 import CustomButton from "../../components/Button/Button";
 import { usePaymentsContext } from "../../contexts/payments";
 import GenericErrorDisplay from "../../components/GenericErrorDisplay/GenericErrorDisplay";
+import PaymentMethodDisplay from "../../components/PaymentMethodDisplay/PaymentMethodDisplay";
 import {
   getCourseOfferingName,
   formatDate,
@@ -45,6 +46,12 @@ const columns = [
     dataIndex: "paymentMethod",
     key: "paymentMethod",
     width: 100,
+    render: (_, record) => (
+      <PaymentMethodDisplay
+        paymentMethod={record?.paymentMethod}
+        bankName={record?.bankName}
+      />
+    ),
   },
   {
     title: "Payment Date",

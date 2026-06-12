@@ -39,6 +39,7 @@ import ViewSchools from './pages/schools/view-schools';
 import StatementOfAccount from './pages/students/statement-of-account';
 import PrintOfferings from './pages/prints/print-offerings';
 import ExpensesList from './pages/expenses/expenses-list';
+import BanksPage from './pages/banks/banks';
 import AdminDashboard from './pages/admin/dashboard';
 import AdminExpenses from './pages/admin/expenses';
 import AdminReporting from './pages/admin/reporting';
@@ -151,6 +152,7 @@ const App = () => {
           />
           <Route path="/prints/offerings" element={<PrintOfferings />} />
           <Route path="/expenses" element={<ExpensesList />} />
+          <Route path="/banks" element={<BanksPage />} />
           <Route path="/audit-logs" element={<AuditLogsList />} />
           <Route path="/" element={<Navigate to="/students" replace />} />
         </Routes>

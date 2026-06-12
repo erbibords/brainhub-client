@@ -9,6 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { MEDIA_BASE_URL } from "../../constants";
 import { useBranch } from "../../contexts/branch";
+import PaymentMethodDisplay from "../../components/PaymentMethodDisplay/PaymentMethodDisplay";
 
 export const PaymentHistory = ({ payments }) => {
   const navigate = useNavigate();
@@ -52,6 +53,12 @@ export const PaymentHistory = ({ payments }) => {
       title: "Payment Method",
       dataIndex: "paymentMethod",
       key: "paymentMethod",
+      render: (_, record) => (
+        <PaymentMethodDisplay
+          paymentMethod={record?.paymentMethod}
+          bankName={record?.bankName}
+        />
+      ),
     },
     {
       title: "Payment Date",
