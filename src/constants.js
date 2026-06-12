@@ -11,7 +11,7 @@ export const DEFAULT_BRANCH_ID = () => {
 export const getActualBranchId = () => getActualBranch();
 export const getEmulatedBranchId = () => getEmulatedBranch();
 export const BASE_URL = 'https://brainhub-service-cjm6z.ondigitalocean.app/v1/';
-// export const BASE_URL = 'http://localhost:3001/v1/';
+//export const BASE_URL = 'http://localhost:3001/v1/';
 //export const BASE_URL = 'https://brainhub-sandbox-api.onrender.com/v1/';
 
 export const COURSE_BASE_URL = () => `branches/${DEFAULT_BRANCH_ID()}/courses`;
@@ -30,6 +30,7 @@ export const EXPENSE_BASE_URL = () =>
   `branches/${DEFAULT_BRANCH_ID()}/expenses`;
 export const AUDIT_LOGS_BASE_URL = () =>
   `branches/${DEFAULT_BRANCH_ID()}/audit-logs`;
+export const BANK_NAMES_BASE_URL = () => `bank-names`;
 export const MEDIA_BASE_URL = () =>
   `${BASE_URL}branches/${DEFAULT_BRANCH_ID()}/payments/uploads`;
 
