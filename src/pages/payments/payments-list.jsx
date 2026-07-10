@@ -36,6 +36,7 @@ import Swal from 'sweetalert2';
 import usePrograms from '../../hooks/usePrograms';
 import { useBranch } from '../../contexts/branch';
 import fetchAllPages from '../../utils/fetchAllPages';
+import PaymentMethodDisplay from '../../components/PaymentMethodDisplay/PaymentMethodDisplay';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -301,6 +302,12 @@ const PaymentsList = () => {
       title: 'Payment Method',
       dataIndex: 'paymentMethod',
       key: 'paymentMethod',
+      render: (_, record) => (
+        <PaymentMethodDisplay
+          paymentMethod={record?.paymentMethod}
+          bankName={record?.bankName}
+        />
+      ),
     },
     {
       title: 'Payment Date',

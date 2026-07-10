@@ -69,12 +69,12 @@ const ViewOffering = () => {
   // Separate backed out students from active enrollments
   const backedOutStudents = useMemo(() => {
     if (!offering?.enrollments) return [];
-    return offering.enrollments.filter((enrollment) => enrollment.backedOut);
+    return offering.enrollments.filter((enrollment) => enrollment.backedout);
   }, [offering?.enrollments]);
 
   const activeEnrollments = useMemo(() => {
     if (!offering?.enrollments) return [];
-    return offering.enrollments.filter((enrollment) => !enrollment.backedOut);
+    return offering.enrollments.filter((enrollment) => !enrollment.backedout);
   }, [offering?.enrollments]);
 
   useEffect(() => {
@@ -86,7 +86,7 @@ const ViewOffering = () => {
     if (offering && offering?.enrollments?.length) {
       // Initialize with only active (non-backed-out) enrollments
       const active = offering.enrollments.filter(
-        (enrollment) => !enrollment.backedOut
+        (enrollment) => !enrollment.backedout,
       );
       setEnrollments(active);
     }
@@ -107,7 +107,7 @@ const ViewOffering = () => {
   const { mutate: updateOffering, loading: updateStudentLoading } = useMutation(
     OFFERING_ENTITY_URL,
     'PUT',
-    'offerings'
+    'offerings',
   );
 
   useEffect(() => {
@@ -167,8 +167,8 @@ const ViewOffering = () => {
       key: 'name',
       render: (name, record) => (
         <span
-          className={`${record.backedOut ? 'bg-orange-200' : ''}`}
-          style={{ textDecoration: record.backedOut ? 'underline' : 'none' }}
+          className={`${record.backedout ? 'bg-orange-200' : ''}`}
+          style={{ textDecoration: record.backedout ? 'underline' : 'none' }}
         >
           {name}
         </span>
@@ -255,7 +255,7 @@ const ViewOffering = () => {
     const data = activeEnrollments.filter(
       (record) =>
         record?.remainingBalance >= searchAmount.min &&
-        record?.remainingBalance <= searchAmount.max
+        record?.remainingBalance <= searchAmount.max,
     );
     setEnrollments(data);
   }, [searchAmount, activeEnrollments]);
@@ -551,8 +551,8 @@ const ViewOffering = () => {
                       backedOutStudents.reduce(
                         (total, student) =>
                           total + (student.remainingBalance || 0),
-                        0
-                      )
+                        0,
+                      ),
                     )}
                   </p>
                   <Table
@@ -618,8 +618,8 @@ const ViewOffering = () => {
                     backedOutStudents.reduce(
                       (total, student) =>
                         total + (student.remainingBalance || 0),
-                      0
-                    )
+                      0,
+                    ),
                   )}
                 </p>
                 <Table

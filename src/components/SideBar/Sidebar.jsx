@@ -13,6 +13,7 @@ import {
   PieChartOutlined,
   BarChartOutlined,
   ApartmentOutlined,
+  BankOutlined,
 } from '@ant-design/icons';
 import { useMediaQuery } from 'react-responsive';
 import { useAuth } from '../../contexts/auth';
@@ -64,6 +65,8 @@ const Sidebar = () => {
       selectedKey = ['schools'];
     } else if (pathname.startsWith('/expenses')) {
       selectedKey = ['expenses'];
+    } else if (pathname.startsWith('/banks')) {
+      selectedKey = ['banks'];
     }
 
     return { selectedKey, openKeys };
@@ -137,6 +140,11 @@ const Sidebar = () => {
         key: 'expenses',
         icon: <WalletOutlined />,
         label: <Link to="/expenses">Expenses</Link>,
+      },
+      {
+        key: 'banks',
+        icon: <BankOutlined />,
+        label: <Link to="/banks">Banks</Link>,
       },
     ];
   }, [isEmulating, isSuperAdmin]);
