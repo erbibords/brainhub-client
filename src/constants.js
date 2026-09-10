@@ -11,7 +11,7 @@ export const DEFAULT_BRANCH_ID = () => {
 export const getActualBranchId = () => getActualBranch();
 export const getEmulatedBranchId = () => getEmulatedBranch();
 export const BASE_URL = 'https://brainhub-service-cjm6z.ondigitalocean.app/v1/';
-//export const BASE_URL = 'http://localhost:3001/v1/';
+// export const BASE_URL = 'http://localhost:3001/v1/';
 //export const BASE_URL = 'https://brainhub-sandbox-api.onrender.com/v1/';
 
 export const COURSE_BASE_URL = () => `branches/${DEFAULT_BRANCH_ID()}/courses`;
