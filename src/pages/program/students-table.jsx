@@ -1,19 +1,22 @@
-import { useMemo, useEffect, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Row, Col, Card, Table, Statistic, Input } from 'antd';
+import useSWR from 'swr';
 import CustomButton from '../../components/Button/Button';
 import { formatAmount } from '../../utils/formatting';
 import { useReactToPrint } from 'react-to-print';
 import { ENROLLMENT_BASE_URL } from '../../constants';
 import fetchAllPages from '../../utils/fetchAllPages';
+import { useBranch } from '../../contexts/branch';
 import './students-table.css';
+
+const isEnrollmentBackedOut = (enrollment) =>
+  Boolean(enrollment?.backedout || enrollment?.backedoutAt);
 
 const StudentsTable = ({ programId, programName }) => {
   const printRef = useRef();
+  const { branchId } = useBranch();
 
   const [searchText, setSearchText] = useState('');
-  const [enrollmentsData, setEnrollmentsData] = useState([]);
-  const [getEnrollmentsLoading, setGetEnrollmentsLoading] = useState(false);
-  const [getEnrollmentsError, setGetEnrollmentsError] = useState(false);
 
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
@@ -21,49 +24,28 @@ const StudentsTable = ({ programId, programName }) => {
     removeAfterPrint: true,
   });
 
-  useEffect(() => {
-    let isCancelled = false;
+  const enrollmentsCacheKey = programId
+    ? `enrollments-program-${branchId ?? 'unknown'}-${programId}`
+    : null;
 
-    const loadProgramEnrollments = async () => {
-      if (!programId) {
-        setEnrollmentsData([]);
-        return;
-      }
-
-      try {
-        setGetEnrollmentsLoading(true);
-        setGetEnrollmentsError(false);
-        const result = await fetchAllPages({
-          baseUrl: ENROLLMENT_BASE_URL(),
-          params: {
-            programId,
-          },
-          pageSize: 300,
-          maxPages: 300,
-          shouldCancel: () => isCancelled,
-        });
-
-        if (!isCancelled) {
-          setEnrollmentsData(result.data || []);
-        }
-      } catch (error) {
-        if (!isCancelled) {
-          setGetEnrollmentsError(error || true);
-          setEnrollmentsData([]);
-        }
-      } finally {
-        if (!isCancelled) {
-          setGetEnrollmentsLoading(false);
-        }
-      }
-    };
-
-    loadProgramEnrollments();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [programId]);
+  const {
+    data: enrollmentsData = [],
+    error: getEnrollmentsError,
+    isLoading: getEnrollmentsLoading,
+  } = useSWR(enrollmentsCacheKey, async () => {
+    const result = await fetchAllPages({
+      baseUrl: ENROLLMENT_BASE_URL(),
+      params: {
+        programId,
+        includeStudent: 'true',
+        includePayments: 'true',
+        includeCourseOffering: 'true',
+      },
+      pageSize: 300,
+      maxPages: 300,
+    });
+    return result.data || [];
+  });
 
   // Process and sort students alphabetically
   const studentsData = useMemo(() => {
@@ -75,6 +57,9 @@ const StudentsTable = ({ programId, programName }) => {
     // Extract unique students from all enrollments and sort alphabetically
     const uniqueStudents = enrollmentsData.reduce((acc, enrollment) => {
       const student = enrollment.student;
+      if (!student?.id) {
+        return acc;
+      }
       const studentKey = student.id;
 
       if (!acc[studentKey]) {
@@ -97,10 +82,8 @@ const StudentsTable = ({ programId, programName }) => {
       }
 
       acc[studentKey].enrollments.push(enrollment);
-      // Mark as backed out if student has backedoutAt (backed out date) or if enrollment has backedoutAt
-      // Check both enrollment.backedoutAt and enrollment.student?.backedoutAt
-      const isBackedOut = Boolean(enrollment.backedoutAt || enrollment.student?.backedoutAt || student?.backedoutAt);
-      acc[studentKey].isBackedOut = acc[studentKey].isBackedOut || isBackedOut;
+      acc[studentKey].isBackedOut =
+        acc[studentKey].isBackedOut || isEnrollmentBackedOut(enrollment);
       return acc;
     }, {});
 
@@ -155,10 +138,8 @@ const StudentsTable = ({ programId, programName }) => {
       };
     }
 
-    // Filter out backedOut students for calculations
-    // Check if enrollment or student has backedoutAt
     const activeEnrollments = enrollmentsData.filter(
-      (enrollment) => !enrollment.backedoutAt && !enrollment.student?.backedoutAt
+      (enrollment) => !isEnrollmentBackedOut(enrollment)
     );
 
     // Calculate totals for active enrollments
@@ -191,11 +172,7 @@ const StudentsTable = ({ programId, programName }) => {
       }
     );
 
-    // Calculate total money collected from backed-out students
-    // Check if enrollment or student has backedoutAt
-    const backedOutEnrollments = enrollmentsData.filter(
-      (enrollment) => enrollment.backedoutAt || enrollment.student?.backedoutAt
-    );
+    const backedOutEnrollments = enrollmentsData.filter(isEnrollmentBackedOut);
 
     const backedOutTotal = backedOutEnrollments.reduce((acc, enrollment) => {
       const totalAmountPaid = parseFloat(enrollment.totalAmountPaid) || 0;

@@ -22,19 +22,20 @@ const EditEnrollment = () => {
 
   const [form] = Form.useForm();
 
-  const { data, error } = useEnrollment(params?.enrollmentId);
+  const { data, error, mutate: refetchEnrollment } = useEnrollment(params?.enrollmentId);
   if (error) {
     navigate("/enrollments");
   }
 
   const { data: offerings, getOfferingsLoading } = useOfferingsContext();
 
-  const { mutate: updatedEnrollment } = useMutation("", "PUT", ["enrollments-", "students-", "programs-"]);
+  const { mutate: updatedEnrollment } = useMutation("", "PUT", ["enrollments-", "students-", "programs-", "offerings"]);
 
   useEffect(() => {
     if (data) {
       form.setFieldsValue({
         ...data,
+        backedout: Boolean(data.backedout || data.backedoutAt),
       });
     }
   }, [data, form]);
@@ -47,6 +48,9 @@ const EditEnrollment = () => {
       ...values,
       reviewFee: reviewFee?.toString(),
       discountAmount: discountAmount?.toString(),
+      backedout: Boolean(
+        values?.backedout ?? data?.backedout ?? data?.backedoutAt
+      ),
     };
 
     if (!updatedValues.takerType) {
@@ -96,6 +100,13 @@ const EditEnrollment = () => {
         }/enrollments`
       );
       if (enrollmentRes) {
+        form.setFieldsValue({
+          ...enrollmentRes,
+          backedout: Boolean(
+            enrollmentRes.backedout || enrollmentRes.backedoutAt
+          ),
+        });
+        await refetchEnrollment?.();
         Swal.fire({
           icon: "success",
           title: "Enrollment Updated!",
@@ -208,16 +219,12 @@ const EditEnrollment = () => {
 
           <Form.Item
             name="backedout"
+            valuePropName="checked"
+            initialValue={false}
             layout="vertical"
             className="w-1/2 mb-[2vh]"
           >
-            <Checkbox
-              name="backedout"
-              size="large"
-              onChange={(e) => {
-                form.setFieldsValue({ backedout: e.target.checked });
-              }}
-            >
+            <Checkbox size="large">
               Backout
             </Checkbox>
           </Form.Item>

@@ -14,13 +14,14 @@ function useEnrollment(enrollmentId) {
     return `${ENROLLMENT_BASE_URL()}/${enrollmentId}`;
   }, [branchId, enrollmentId]);
 
-  const { data, error } = useSWR(resourceKey);
+  const { data, error, mutate } = useSWR(resourceKey);
   const isLoading = !data && !error;
 
   return {
     data,
     error,
     isLoading,
+    mutate,
   };
 }
 
