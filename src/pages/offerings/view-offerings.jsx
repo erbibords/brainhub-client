@@ -26,7 +26,12 @@ import {
 import { SEMESTER, YEAR } from '../../constants';
 import CustomInput from '../../components/Input/Input';
 import CustomButton from '../../components/Button/Button';
-import { getDataById, getSchoolById } from '../../utils/mappings';
+import {
+  compareEnrollmentsByStudentName,
+  getDataById,
+  getRosterName,
+  getSchoolById,
+} from '../../utils/mappings';
 import useSchools from '../../hooks/useSchools';
 import usePrograms from '../../hooks/usePrograms';
 import dayjs from 'dayjs';
@@ -69,12 +74,16 @@ const ViewOffering = () => {
   // Separate backed out students from active enrollments
   const backedOutStudents = useMemo(() => {
     if (!offering?.enrollments) return [];
-    return offering.enrollments.filter((enrollment) => enrollment.backedout);
+    return offering.enrollments
+      .filter((enrollment) => enrollment.backedout)
+      .sort(compareEnrollmentsByStudentName);
   }, [offering?.enrollments]);
 
   const activeEnrollments = useMemo(() => {
     if (!offering?.enrollments) return [];
-    return offering.enrollments.filter((enrollment) => !enrollment.backedout);
+    return offering.enrollments
+      .filter((enrollment) => !enrollment.backedout)
+      .sort(compareEnrollmentsByStudentName);
   }, [offering?.enrollments]);
 
   useEffect(() => {
@@ -83,14 +92,8 @@ const ViewOffering = () => {
   }, [offering?.offeringType]);
 
   useEffect(() => {
-    if (offering && offering?.enrollments?.length) {
-      // Initialize with only active (non-backed-out) enrollments
-      const active = offering.enrollments.filter(
-        (enrollment) => !enrollment.backedout,
-      );
-      setEnrollments(active);
-    }
-  }, [offering]);
+    setEnrollments(activeEnrollments);
+  }, [activeEnrollments]);
 
   if (coursesError || offeringError) {
     Swal.fire({
@@ -163,14 +166,13 @@ const ViewOffering = () => {
   const columns = [
     {
       title: 'Name',
-      dataIndex: ['student', 'fullName'],
       key: 'name',
-      render: (name, record) => (
+      render: (_, record) => (
         <span
           className={`${record.backedout ? 'bg-orange-200' : ''}`}
           style={{ textDecoration: record.backedout ? 'underline' : 'none' }}
         >
-          {name}
+          {getRosterName(record.student)}
         </span>
       ),
     },
@@ -252,11 +254,13 @@ const ViewOffering = () => {
       return;
     }
 
-    const data = activeEnrollments.filter(
-      (record) =>
-        record?.remainingBalance >= searchAmount.min &&
-        record?.remainingBalance <= searchAmount.max,
-    );
+    const data = activeEnrollments
+      .filter(
+        (record) =>
+          record?.remainingBalance >= searchAmount.min &&
+          record?.remainingBalance <= searchAmount.max,
+      )
+      .sort(compareEnrollmentsByStudentName);
     setEnrollments(data);
   }, [searchAmount, activeEnrollments]);
 

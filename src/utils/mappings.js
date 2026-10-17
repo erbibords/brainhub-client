@@ -14,6 +14,43 @@ export const getFullName = (studentData) => {
   return `${firstName} ${middleName ?? ""} ${lastName}`;
 };
 
+export const getRosterName = (studentData) => {
+  if (!studentData) return '';
+
+  const firstName = studentData.firstName?.trim() ?? '';
+  const lastName = studentData.lastName?.trim() ?? '';
+  const middleInitial = (studentData.middleName ?? '')
+    .replace(/[^A-Za-z]/g, '')
+    .charAt(0)
+    .toUpperCase();
+
+  if (!lastName || !firstName) {
+    return studentData.fullName ?? '';
+  }
+
+  if (!middleInitial) {
+    return `${lastName}, ${firstName}`;
+  }
+
+  return `${lastName} ${middleInitial}, ${firstName}`;
+};
+
+export const compareEnrollmentsByStudentName = (a, b) => {
+  const lastNameComparison = (a?.student?.lastName || '').localeCompare(
+    b?.student?.lastName || '',
+  );
+  if (lastNameComparison !== 0) return lastNameComparison;
+
+  const firstNameComparison = (a?.student?.firstName || '').localeCompare(
+    b?.student?.firstName || '',
+  );
+  if (firstNameComparison !== 0) return firstNameComparison;
+
+  return (a?.student?.middleName || '').localeCompare(
+    b?.student?.middleName || '',
+  );
+};
+
 export const formatSemesterForOffering = (semester) => {
   if (semester === 'FIRST_SEMESTER') return '1ST_SEM';
   if (semester === 'SECOND_SEMESTER') return '2ND_SEM';
