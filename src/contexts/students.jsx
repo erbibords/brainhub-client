@@ -54,8 +54,9 @@ export const StudentProvider = ({ children }) => {
       email,
       emergencyContact,
     }) => {
+      let res;
       try {
-        const res = await axiosInstance.post(
+        res = await axiosInstance.post(
           `branches/${DEFAULT_BRANCH_ID()}/students`,
           {
             firstName,
@@ -69,14 +70,24 @@ export const StudentProvider = ({ children }) => {
             emergencyContact,
           }
         );
-
-        if (res.data) {
-          return res.data;
-        }
-        return false;
       } catch (error) {
-        return false;
+        console.error('[AddStudent] Error:', error);
+        console.error('[AddStudent] Error details:', {
+          message: error?.message,
+          response: error?.response?.data,
+          status: error?.response?.status,
+        });
+        throw error;
       }
+
+      if (!res.data?.id) {
+        console.error('[AddStudent] Response missing student id:', res?.data);
+        throw new Error(
+          'Student was not created successfully. Please try again!'
+        );
+      }
+
+      return res.data;
     },
     [axiosInstance]
   );

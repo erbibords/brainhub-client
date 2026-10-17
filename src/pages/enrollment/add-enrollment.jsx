@@ -182,30 +182,116 @@ const Enrollment = () => {
   }, [studentSearchText, students]);
 
   const enrollStudent = useCallback(
-    async (data) => {
+    async (data, { studentAlreadySaved = false } = {}) => {
+      const warn = (title, text) => {
+        Swal.fire({
+          icon: "warning",
+          title: studentAlreadySaved
+            ? "Student was saved, but enrollment did not finish"
+            : title,
+          text: studentAlreadySaved
+            ? `${text || title} Submit again to enroll this student.`
+            : text,
+          timer: studentAlreadySaved ? 4000 : 2500,
+        });
+      };
+
       if (!data) {
         return;
       }
 
       if (!data.studentId) {
-        Swal.fire({
-          icon: "warning",
-          title: "Please add student to enroll!",
-          timer: 2500,
-        });
+        warn("Please add student to enroll!");
         return;
       }
 
       if (!data.takerType) {
-        Swal.fire({
-          icon: "warning",
-          title: "Please add taker type!",
-          timer: 2500,
-        });
+        warn("Please add taker type!");
         return;
       }
 
       if (!data.processedBy) {
+        warn("Please select processed by.");
+        return;
+      }
+
+      if (!data.reviewFee) {
+        warn("Please add review fee.");
+        return;
+      }
+
+      if (!selectedOfferingId) {
+        warn("Please select course offering!");
+        return;
+      }
+
+      Swal.fire({
+        title: "Enrolling student...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      try {
+        const enrollmentUrl = `/branches/${DEFAULT_BRANCH_ID()}/offerings/${selectedOfferingId}/enrollments`;
+        const enrollmentRes = await addEnrollment(data, enrollmentUrl);
+
+        if (enrollmentRes?.id) {
+          const enrollmentId = enrollmentRes.id;
+          const studentId = data?.studentId;
+
+          Swal.fire({
+            icon: "success",
+            title: "Enrollment successful!",
+            text: "Redirecting to enrollment form printing...",
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            willClose: () => {
+              navigate(`/prints/enrollment/${studentId}/${enrollmentId}`);
+            },
+          });
+          return enrollmentRes;
+        }
+
+        console.error('[EnrollStudent] Response missing enrollment id:', enrollmentRes);
+        warn(
+          "Enrollment response was empty",
+          "Please check if enrollment was created successfully."
+        );
+      } catch (error) {
+        console.error('[EnrollStudent] Enrollment error:', error);
+        console.error('[EnrollStudent] Error details:', {
+          message: error?.message,
+          response: error?.response?.data,
+          status: error?.response?.status,
+        });
+        const serverMessage =
+          error?.response?.data?.message ||
+          error?.message ||
+          "This may be due to inputs. Please try again later!";
+        Swal.fire({
+          icon: "error",
+          title: studentAlreadySaved
+            ? "Student was saved, but enrollment failed"
+            : "Enrollment failed!",
+          text: studentAlreadySaved
+            ? `${serverMessage} Submit again to enroll this student.`
+            : serverMessage,
+          timer: 4000,
+        });
+      }
+    },
+    [addEnrollment, navigate, selectedOfferingId]
+  );
+
+  const enrollNewStudent = useCallback(
+    async (values) => {
+      if (!selectedProcessedBy) {
         Swal.fire({
           icon: "warning",
           title: "Please select processed by.",
@@ -214,7 +300,7 @@ const Enrollment = () => {
         return;
       }
 
-      if (!data.reviewFee) {
+      if (!toSafeNumber(additionalEnrollmentData?.reviewFee)) {
         Swal.fire({
           icon: "warning",
           title: "Please add review fee.",
@@ -223,134 +309,53 @@ const Enrollment = () => {
         return;
       }
 
-      // Validate selectedOfferingId before making the request
-      if (!selectedOfferingId) {
-        Swal.fire({
-          icon: "warning",
-          title: "Please select course offering!",
-          timer: 2500,
+      Swal.fire({
+        title: "Creating student...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      try {
+        const res = await addStudent(values);
+        const enrollmentData = {
+          takerType: "FIRST_TAKER",
+          status: "",
+          studentId: res.id,
+          processedBy: selectedProcessedBy,
+          discountAmount: toSafeNumber(
+            additionalEnrollmentData?.discountAmount
+          ).toString(),
+          reviewFee: toSafeNumber(
+            additionalEnrollmentData?.reviewFee
+          ).toString(),
+          yearLevel: isOfferingIntensive
+            ? "Graduated"
+            : additionalEnrollmentData?.yearLevel,
+          remarks: additionalEnrollmentData?.remarks,
+        };
+        await enrollStudent(enrollmentData, { studentAlreadySaved: true });
+      } catch (error) {
+        console.error('[AddStudent] Enrollment page error:', error);
+        console.error('[AddStudent] Error details:', {
+          message: error?.message,
+          response: error?.response?.data,
+          status: error?.response?.status,
         });
-        return;
+        Swal.fire({
+          icon: "error",
+          title: "Error adding student!",
+          text:
+            error?.response?.data?.message ||
+            error?.message ||
+            "It may be due to inputs. Please double check and try again!",
+          timer: 4000,
+        });
       }
-
-      // Show "Creating student..." modal first, wait 2 seconds, then execute enrollment
-      Swal.fire({
-        title: "Creating student, please wait while we enroll...",
-        text: "Please wait while we process your request.",
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-        willClose: async () => {
-          // After modal closes (2 seconds), execute enrollment
-          try {
-            // Build the URL dynamically with current selectedOfferingId
-            const enrollmentUrl = `/branches/${DEFAULT_BRANCH_ID()}/offerings/${selectedOfferingId}/enrollments`;
-            const enrollmentRes = await addEnrollment(data, enrollmentUrl);
-            
-            if (enrollmentRes) {
-              const enrollmentId = enrollmentRes?.id;
-              const studentId = data?.studentId;
-              
-              // Show success modal
-              Swal.fire({
-                icon: "success",
-                title: "Enrollment successful!",
-                text: "Redirecting to enrollment form printing...",
-                timer: 2000,
-                timerProgressBar: true,
-                showConfirmButton: false,
-                willClose: () => {
-                  navigate(`/prints/enrollment/${studentId}/${enrollmentId}`);
-                },
-              });
-            } else {
-              Swal.fire({
-                icon: "warning",
-                title: "Enrollment response was empty",
-                text: "Please check if enrollment was created successfully.",
-                timer: 2500,
-              });
-            }
-          } catch (error) {
-            console.error('[EnrollStudent] Enrollment error:', error);
-            console.error('[EnrollStudent] Error details:', {
-              message: error?.message,
-              response: error?.response?.data,
-              status: error?.response?.status,
-            });
-            Swal.fire({
-              icon: "error",
-              title: "Enrollment failed!",
-              text: error?.response?.data?.message || error?.message || "This may be due to inputs. Please try again later!",
-              timer: 2500,
-            });
-          }
-        },
-      });
-    },
-    [addEnrollment, navigate, selectedOfferingId]
-  );
-
-  const enrollNewStudent = useCallback(
-    async (values) => {
-      // Show "Creating student..." modal first, wait 2 seconds, then execute enrollment
-      Swal.fire({
-        title: "Creating student, please wait while we enroll...",
-        text: "Please wait while we process your request.",
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-        willClose: async () => {
-          // After modal closes (2 seconds), execute enrollment
-          try {
-            const res = await addStudent(values);
-            if (res && res.id) {
-              const studentId = res.id;
-              const enrollmentData = {
-                takerType: "FIRST_TAKER",
-                status: "",
-                studentId,
-                processedBy: selectedProcessedBy,
-                discountAmount: toSafeNumber(
-                  additionalEnrollmentData?.discountAmount
-                ).toString(),
-                reviewFee: toSafeNumber(
-                  additionalEnrollmentData?.reviewFee
-                ).toString(),
-                yearLevel: isOfferingIntensive
-                  ? "Graduated"
-                  : additionalEnrollmentData?.yearLevel,
-                remarks: additionalEnrollmentData?.remarks,
-              };
-              await enrollStudent(enrollmentData);
-            } else {
-              Swal.fire({
-                icon: "error",
-                title: "Error adding student!",
-                text: "Student was not created successfully. Please try again!",
-                timer: 2000,
-              });
-            }
-          } catch (error) {
-            Swal.fire({
-              icon: "error",
-              title: "Error adding student!",
-              text: "It may be due to inputs, Please double check and try again!",
-              timer: 2000,
-            });
-          }
-        },
-      });
     },
     [addStudent, enrollStudent, selectedProcessedBy, additionalEnrollmentData, isOfferingIntensive]
   );

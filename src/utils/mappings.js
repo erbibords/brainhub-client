@@ -32,7 +32,7 @@ export const getRosterName = (studentData) => {
     return `${lastName}, ${firstName}`;
   }
 
-  return `${lastName} ${middleInitial}, ${firstName}`;
+  return `${lastName}, ${firstName} ${middleInitial}.`;
 };
 
 export const compareEnrollmentsByStudentName = (a, b) => {
